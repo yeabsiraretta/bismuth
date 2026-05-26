@@ -19,9 +19,12 @@
       }
     },
     "bundle": {
-      "active": false,
+      "active": true,
       "targets": "all",
-      "identifier": "com.bismuth.app"
+      "identifier": "com.bismuth.app",
+      "icon": [
+        "icons/icon.png"
+      ]
     },
     "security": {
       "csp": null
