@@ -12,12 +12,6 @@ import type { Link } from '../../types';
  */
 const WIKILINK_REGEX = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
 
-/**
- * Regular expression for matching embed syntax
- * Matches: ![[target]]
- * @constant
- */
-const EMBED_REGEX = /!\[\[([^\]]+)\]\]/g;
 
 /**
  * Parses a wikilink string and extracts its components
@@ -38,7 +32,7 @@ export function parseWikilink(linkText: string): Link | null {
     return null;
   }
 
-  const [, targetTitle, heading, alias] = match;
+  const [, targetTitle, , alias] = match;
 
   return {
     sourcePath: '', // Will be set by caller
@@ -71,7 +65,7 @@ export function extractWikilinks(content: string, sourcePath: string): Link[] {
   WIKILINK_REGEX.lastIndex = 0;
 
   while ((match = WIKILINK_REGEX.exec(content)) !== null) {
-    const [fullMatch, targetTitle, heading, alias] = match;
+    const [fullMatch, targetTitle, , alias] = match;
 
     links.push({
       sourcePath,
