@@ -1,0 +1,204 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'hotfix/**']
+  pull_request:
+    branches: [main, develop]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # Rust backend checks
+  rust-checks:
+    name: Rust Checks
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        rust: [stable]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Check formatting
+        working-directory: src-tauri
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy
+        working-directory: src-tauri
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests
+        working-directory: src-tauri
+        run: cargo test --all-features
+
+      - name: Build
+        working-directory: src-tauri
+        run: cargo build --release
+
+  # Frontend checks
+  frontend-checks:
+    name: Frontend Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm prettier --check .
+
+      - name: Run ESLint
+        run: pnpm eslint .
+
+      - name: Type check
+        run: pnpm svelte-check
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+  # E2E tests
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    needs: [rust-checks, frontend-checks]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm playwright install --with-deps
+
+      - name: Run E2E tests
+        run: pnpm playwright test
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.os }}
+          path: playwright-report/
+          retention-days: 7
+
+  # Security audit
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Audit Rust dependencies
+        working-directory: src-tauri
+        run: |
+          cargo install cargo-audit
+          cargo audit
+
+      - name: Audit npm dependencies
+        run: |
+          pnpm audit --audit-level=moderate
+
+  # Code coverage
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: [rust-checks, frontend-checks]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install tarpaulin
+        run: cargo install cargo-tarpaulin
+
+      - name: Generate coverage
+        working-directory: src-tauri
+        run: cargo tarpaulin --out Xml --output-dir ../coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/cobertura.xml
+          fail_ci_if_error: false
+
+  # Validate commit messages
+  commit-lint:
+    name: Validate Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install commitlint
+        run: |
+          npm install -g @commitlint/cli @commitlint/config-conventional
+
+      - name: Validate commits
+        run: |
+          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

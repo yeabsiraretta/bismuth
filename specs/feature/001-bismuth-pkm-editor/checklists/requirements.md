@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — **2 open markers** (runtime host, structured data format)
+- [x] No [NEEDS CLARIFICATION] markers remain — **RESOLVED**: Runtime host = Tauri v2, Structured data = YAML frontmatter (confirmed in plan.md)
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -24,7 +24,7 @@
 
 ## Feature Readiness
 
-- [ ] All [NEEDS CLARIFICATION] items resolved before planning proceeds
+- [x] All [NEEDS CLARIFICATION] items resolved before planning proceeds
 - [x] User stories are independently testable
 - [x] Each user story delivers standalone MVP value
 - [x] Priorities (P1–P7) assigned to all user stories (US8 P3, US9 P4 added)
@@ -41,8 +41,8 @@
 
 ## Open Items
 
-- [ ] Resolve: Runtime host (Tauri vs Electron vs browser) — blocks technology section in plan
-- [ ] Resolve: Structured data format (YAML frontmatter / sidecar JSON / SQLite) — blocks entity system and graph design
+- [x] Resolve: Runtime host (Tauri vs Electron vs browser) — **RESOLVED**: Tauri v2.10.0 selected (plan.md)
+- [x] Resolve: Structured data format (YAML frontmatter / sidecar JSON / SQLite) — **RESOLVED**: YAML frontmatter selected (plan.md)
 - [x] Spec directory restructured to `specs/feature/001-bismuth-pkm-editor/` (type-based organization adopted)
 - [x] User Story 8 (Search Engine — MiniSearch, BM25, OCR, HTTP API, Vim nav) added as P3
 - [x] User Story 9 (Canvas — JSON Canvas, nodes/edges, groups, portals, presentation) added as P4
@@ -82,4 +82,4 @@
 - [x] FR-273–FR-274 added to spec.md for automatic metadata updates: auto-update frontmatter `created` (ctime) and `updated` (mtime) on file save, configurable date format (Obsidian default or custom), support string/number types (Unix timestamps), exclude folders (templates), read from filesystem for external changes
 - [x] FR-259–FR-265 added to US5 for comprehensive PDF++ features (beyond basic FR-017): backlink-to-highlight transformation with `&color=` parameter, color palette toolbar with customizable link templates, hover-to-preview/open + double-click-to-open highlights, backlink filtering by page + bidirectional hover sync + optional direct PDF annotation, page composition + outline editing + page labels, enhanced PDF embeds (click-to-open, trim-selection, rect embeds), keyboard shortcuts + external app integration with focus sync
 - [x] FR-028–FR-244, NFR-009–NFR-026, SC-011–SC-057 added for search, canvas, API, lifecycle, templates, feeds, typing, navigator, sequencer, tabs, longform, branching, radial timeline, speed reader, git, homepage, tips, changelog, recent files, semantic connections, rich editing toolbar, typewriter mode, LaTeX math suite, and digital garden publishing
-- [ ] Resolve the 2 remaining NEEDS CLARIFICATION markers before proceeding to /speckit.plan
+- [x] Resolve the 2 remaining NEEDS CLARIFICATION markers before proceeding to /speckit.plan — **COMPLETE**: All items resolved

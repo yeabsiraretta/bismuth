@@ -1,0 +1,58 @@
+# Code Owners for Bismuth
+# These owners will be automatically requested for review when someone opens a pull request.
+
+# Default owners for everything in the repo
+* @yeabsiraretta
+
+# Rust backend
+/src-tauri/ @yeabsiraretta
+/src-tauri/src/models/ @yeabsiraretta
+/src-tauri/src/services/ @yeabsiraretta
+/src-tauri/src/commands/ @yeabsiraretta
+*.rs @yeabsiraretta
+Cargo.toml @yeabsiraretta
+Cargo.lock @yeabsiraretta
+
+# Frontend
+/src/ @yeabsiraretta
+/src/lib/components/ @yeabsiraretta
+/src/lib/stores/ @yeabsiraretta
+/src/lib/services/ @yeabsiraretta
+*.svelte @yeabsiraretta
+*.ts @yeabsiraretta
+*.js @yeabsiraretta
+package.json @yeabsiraretta
+pnpm-lock.yaml @yeabsiraretta
+
+# CI/CD and GitHub workflows
+/.github/ @yeabsiraretta
+/.github/workflows/ @yeabsiraretta
+.github/CODEOWNERS @yeabsiraretta
+
+# Configuration files
+*.toml @yeabsiraretta
+*.json @yeabsiraretta
+*.yml @yeabsiraretta
+*.yaml @yeabsiraretta
+.eslintrc.* @yeabsiraretta
+.prettierrc* @yeabsiraretta
+commitlint.config.js @yeabsiraretta
+
+# Documentation
+*.md @yeabsiraretta
+/docs/ @yeabsiraretta
+/specs/ @yeabsiraretta
+CONTRIBUTING.md @yeabsiraretta
+README.md @yeabsiraretta
+CHANGELOG.md @yeabsiraretta
+
+# Git hooks and tooling
+/.husky/ @yeabsiraretta
+.lintstagedrc.json @yeabsiraretta
+.gitignore @yeabsiraretta
+
+# Tests
+/tests/ @yeabsiraretta
+*.test.ts @yeabsiraretta
+*.spec.ts @yeabsiraretta
+playwright.config.ts @yeabsiraretta

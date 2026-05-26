@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run tests before pushing
+echo "🧪 Running tests before push..."
+
+# Frontend tests
+pnpm test || {
+  echo "❌ Frontend tests failed. Fix them before pushing."
+  exit 1
+}
+
+# Rust tests
+cd src-tauri && cargo test --all-features || {
+  echo "❌ Rust tests failed. Fix them before pushing."
+  exit 1
+}
+
+echo "✅ All tests passed. Pushing..."

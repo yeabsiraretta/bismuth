@@ -1,0 +1,80 @@
+{
+  "header": "# Changelog\n\nAll notable changes to Bismuth will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n",
+  "types": [
+    {
+      "type": "feat",
+      "section": "✨ Features"
+    },
+    {
+      "type": "fix",
+      "section": "🐛 Bug Fixes"
+    },
+    {
+      "type": "perf",
+      "section": "⚡ Performance Improvements"
+    },
+    {
+      "type": "refactor",
+      "section": "♻️ Code Refactoring"
+    },
+    {
+      "type": "docs",
+      "section": "📚 Documentation"
+    },
+    {
+      "type": "style",
+      "section": "💄 Styles",
+      "hidden": false
+    },
+    {
+      "type": "test",
+      "section": "✅ Tests"
+    },
+    {
+      "type": "build",
+      "section": "🏗️ Build System"
+    },
+    {
+      "type": "ci",
+      "section": "👷 CI/CD"
+    },
+    {
+      "type": "chore",
+      "section": "🔧 Chores",
+      "hidden": false
+    },
+    {
+      "type": "revert",
+      "section": "⏪ Reverts"
+    }
+  ],
+  "commitUrlFormat": "https://github.com/yeabsiraretta/bismuth/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/yeabsiraretta/bismuth/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "https://github.com/yeabsiraretta/bismuth/issues/{{id}}",
+  "userUrlFormat": "https://github.com/{{user}}",
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}",
+  "issuePrefixes": ["#"],
+  "bumpFiles": [
+    {
+      "filename": "package.json",
+      "type": "json"
+    },
+    {
+      "filename": "src-tauri/Cargo.toml",
+      "updater": "scripts/cargo-version-updater.js"
+    },
+    {
+      "filename": "src-tauri/tauri.conf.json",
+      "type": "json"
+    }
+  ],
+  "skip": {
+    "changelog": false,
+    "commit": false,
+    "tag": false
+  },
+  "scripts": {
+    "prerelease": "echo 'Running pre-release checks...'",
+    "postrelease": "echo 'Release complete! Remember to push tags: git push --follow-tags origin main'"
+  }
+}
