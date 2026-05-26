@@ -2,13 +2,17 @@
 //!
 //! This module contains the core data structures used throughout the application.
 
+// Allow dead code for models - they're infrastructure not yet integrated
+#![allow(dead_code)]
+#![allow(unused_imports)]
+
+pub mod link;
 pub mod note;
 pub mod vault;
-pub mod link;
 
+pub use link::Link;
 pub use note::Note;
 pub use vault::Vault;
-pub use link::Link;
 
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -18,7 +22,7 @@ use std::path::PathBuf;
 pub struct Tag {
     /// Tag name (without # prefix)
     pub name: String,
-    
+
     /// Number of notes using this tag
     pub count: usize,
 }
@@ -35,13 +39,13 @@ impl Tag {
 pub struct SearchResult {
     /// Path to the note
     pub path: PathBuf,
-    
+
     /// Note title
     pub title: String,
-    
+
     /// Snippet of matching content
     pub snippet: String,
-    
+
     /// Relevance score (0.0 to 1.0)
     pub score: f32,
 }
@@ -61,14 +65,14 @@ impl SearchResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_tag_creation() {
         let tag = Tag::new("rust".to_string(), 5);
         assert_eq!(tag.name, "rust");
         assert_eq!(tag.count, 5);
     }
-    
+
     #[test]
     fn test_search_result_creation() {
         let result = SearchResult::new(
@@ -77,7 +81,7 @@ mod tests {
             "This is a snippet...".to_string(),
             0.85,
         );
-        
+
         assert_eq!(result.title, "Test Note");
         assert_eq!(result.score, 0.85);
     }

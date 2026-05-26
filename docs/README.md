@@ -9,9 +9,10 @@ This directory contains technical documentation for Bismuth development.
 ```
 docs/
 ├── README.md                           # This file
-├── WIKI_STRUCTURE.md                   # GitHub Wiki organization plan
 │
 ├── architecture/                       # System architecture
+│   ├── bismuth-canvas-system.md
+│   ├── canvas-mcp-protocol.md
 │   ├── BISMUTH_ARCHITECTURE_PROPOSAL.md
 │   ├── MODULAR_ARCHITECTURE.md
 │   └── TOLARIA_ARCHITECTURE_ANALYSIS.md
@@ -21,6 +22,14 @@ docs/
 │   ├── DEMO_PLAN.md
 │   └── DEMO_CHECKLIST.md
 │
+├── implementation/                     # Implementation tracking
+│   └── mvp-checklist.md
+│
+├── milestones/                         # Completion reports
+│   ├── phase-1-complete.md
+│   ├── phase-2.1-complete.md
+│   └── functional-ui-complete.md
+│
 ├── processes/                          # Project processes
 │   ├── GIT_WORKFLOW.md
 │   ├── GIT_SETUP_SUMMARY.md
@@ -28,6 +37,10 @@ docs/
 │   ├── GIT_IMPLEMENTATION_COMPLETE.md
 │   ├── MODULAR_ARCHITECTURE_COMPLETE.md
 │   └── VERSIONING_SETUP_COMPLETE.md
+│
+├── standards/                          # Project standards
+│   ├── naming-conventions.md
+│   └── documentation-template.md
 │
 └── status/                             # Project status
     ├── IMPLEMENTATION_STATUS.md
@@ -42,6 +55,8 @@ docs/
 
 High-level system design and technical decisions:
 
+- **[Bismuth Canvas System](./architecture/bismuth-canvas-system.md)** - Figma-like design tool integration
+- **[Canvas MCP Protocol](./architecture/canvas-mcp-protocol.md)** - MCP server specification for design-to-code
 - **[Bismuth Architecture Proposal](./architecture/BISMUTH_ARCHITECTURE_PROPOSAL.md)** - Initial architecture design
 - **[Modular Architecture](./architecture/MODULAR_ARCHITECTURE.md)** - Component-based design
 - **[Tolaria Architecture Analysis](./architecture/TOLARIA_ARCHITECTURE_ANALYSIS.md)** - Reference architecture study
@@ -65,6 +80,27 @@ Project management and workflow processes:
 - **[Modular Architecture Complete](./processes/MODULAR_ARCHITECTURE_COMPLETE.md)** - Architecture setup completion
 - **[Versioning Setup Complete](./processes/VERSIONING_SETUP_COMPLETE.md)** - Versioning setup completion
 
+### Implementation Tracking
+
+Implementation progress and checklists:
+
+- **[MVP Checklist](./implementation/mvp-checklist.md)** - Complete MVP implementation checklist
+
+### Milestones
+
+Completed phase reports and achievements:
+
+- **[Phase 1 Complete](./milestones/phase-1-complete.md)** - Project setup completion
+- **[Phase 2.1 Complete](./milestones/phase-2.1-complete.md)** - Rust data models completion
+- **[Functional UI Complete](./milestones/functional-ui-complete.md)** - UI implementation completion
+
+### Project Standards
+
+Coding standards and conventions:
+
+- **[Naming Conventions](./standards/naming-conventions.md)** - File and code naming standards
+- **[Documentation Template](./standards/documentation-template.md)** - Standard doc format
+
 ### Status Tracking
 
 Current project status and progress:
@@ -77,16 +113,19 @@ Current project status and progress:
 ## 🔗 Related Documentation
 
 ### Root Level
+
 - **[README.md](../README.md)** - Project overview
 - **[CHANGELOG.md](../CHANGELOG.md)** - Version history
 - **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Contribution guidelines
 
 ### GitHub Wiki
+
 - **[User Guide](https://github.com/yeabsiraretta/bismuth/wiki/User-Guide)** - For end users
 - **[Developer Guide](https://github.com/yeabsiraretta/bismuth/wiki/Developer-Guide)** - For contributors
 - **[API Reference](https://github.com/yeabsiraretta/bismuth/wiki/API-Reference)** - Complete API docs
 
 ### Specifications
+
 - **[Feature Specs](../specs/feature/)** - Detailed feature specifications
 - **[Tasks](../specs/feature/001-bismuth-pkm-editor/tasks.md)** - Implementation tasks
 
@@ -103,9 +142,19 @@ Current project status and progress:
 
 ### File Naming
 
-- Use `SCREAMING_SNAKE_CASE.md` for technical docs
-- Use `kebab-case.md` for user-facing docs (wiki)
-- Be descriptive: `FEATURE_DEVELOPMENT_GUIDE.md` not `GUIDE.md`
+**Standard**: Use `kebab-case.md` for all new markdown documentation
+
+- ✅ `bismuth-canvas-system.md`
+- ✅ `phase-2.1-complete.md`
+- ✅ `naming-conventions.md`
+- ❌ `BISMUTH_CANVAS_SYSTEM.md`
+- ❌ `Phase_2_Complete.md`
+
+**Exceptions**: `README.md`, `CHANGELOG.md`, `LICENSE.md` (standard conventions)
+
+**Legacy**: Existing `SCREAMING_SNAKE_CASE.md` files will be migrated gradually
+
+See **[Naming Conventions](./standards/naming-conventions.md)** for complete standards.
 
 ### Content Structure
 
@@ -160,16 +209,19 @@ Content...
 
 ## 🎯 Quick Reference
 
-| Need | Document |
-|------|----------|
-| System architecture | [Architecture Proposal](./architecture/BISMUTH_ARCHITECTURE_PROPOSAL.md) |
-| Build a feature | [Feature Development Guide](./development/FEATURE_DEVELOPMENT_GUIDE.md) |
-| Git workflow | [Git Workflow](./processes/GIT_WORKFLOW.md) |
-| Current progress | [Implementation Status](./status/IMPLEMENTATION_STATUS.md) |
-| Missing assets | [Assets Tracker](./status/ASSETS_TRACKER.md) |
-| Demo preparation | [Demo Checklist](./development/DEMO_CHECKLIST.md) |
+| Need                 | Document                                                                 |
+| -------------------- | ------------------------------------------------------------------------ |
+| Canvas design system | [Bismuth Canvas System](./architecture/bismuth-canvas-system.md)         |
+| MCP protocol         | [Canvas MCP Protocol](./architecture/canvas-mcp-protocol.md)             |
+| System architecture  | [Architecture Proposal](./architecture/BISMUTH_ARCHITECTURE_PROPOSAL.md) |
+| Build a feature      | [Feature Development Guide](./development/FEATURE_DEVELOPMENT_GUIDE.md)  |
+| MVP checklist        | [MVP Checklist](./implementation/mvp-checklist.md)                       |
+| Naming standards     | [Naming Conventions](./standards/naming-conventions.md)                  |
+| Git workflow         | [Git Workflow](./processes/GIT_WORKFLOW.md)                              |
+| Current progress     | [Implementation Status](./status/IMPLEMENTATION_STATUS.md)               |
+| Latest milestone     | [Phase 2.1 Complete](./milestones/phase-2.1-complete.md)                 |
 
 ---
 
-**Last Updated**: 2026-05-25  
+**Last Updated**: 2026-05-26  
 **Maintainer**: Yeabsira Moges
