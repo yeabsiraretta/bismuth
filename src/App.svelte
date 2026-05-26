@@ -1,98 +1,146 @@
 <script lang="ts">
-  /**
-   * Main application component for Bismuth PKM Editor
-   *
-   * This is the root component that initializes the application
-   * and manages the overall application state.
-   *
-   * @component
-   */
+  import Sidebar from './lib/components/Sidebar.svelte';
+  import Editor from './lib/components/Editor.svelte';
+  import Welcome from './lib/components/Welcome.svelte';
+  
+  interface Note {
+    name: string;
+    path: string;
+    content: string;
+  }
+  
+  let notes: Note[] = [
+    {
+      name: 'Welcome.md',
+      path: 'welcome',
+      content: `# Welcome to Bismuth
 
-  /**
-   * Demo counter state
-   * @type {number}
-   */
-  let count = 0;
+This is your first note! 
 
-  /**
-   * Increments the counter by 1
-   * @returns {void}
-   */
-  function increment(): void {
-    count += 1;
+## Features
+
+- **Markdown Support**: Write in plain Markdown
+- **Wikilinks**: Link notes with [[Note Name]]
+- **Local-First**: All data stays on your computer
+
+## Getting Started
+
+1. Create new notes with the + button
+2. Edit this note to see live updates
+3. Use Markdown for formatting
+
+## Markdown Examples
+
+### Text Formatting
+**Bold text** and *italic text*
+
+### Lists
+- Item 1
+- Item 2
+- Item 3
+
+### Code
+\`\`\`javascript
+console.log('Hello, Bismuth!');
+\`\`\`
+
+### Links
+[[Another Note]] - Create wikilinks like this
+
+---
+
+Start building your knowledge base! 🚀`
+    }
+  ];
+  
+  let currentNotePath: string | null = 'welcome';
+  let currentNote: Note | null = notes[0];
+  let noteCounter = 1;
+  
+  function handleSelectFile(event: CustomEvent<{ path: string }>) {
+    const note = notes.find(n => n.path === event.detail.path);
+    if (note) {
+      currentNotePath = note.path;
+      currentNote = note;
+    }
+  }
+  
+  function handleCreateNote() {
+    noteCounter++;
+    const newNote: Note = {
+      name: `Note ${noteCounter}.md`,
+      path: `note-${noteCounter}`,
+      content: `# Note ${noteCounter}
+
+Start writing here...
+`
+    };
+    
+    notes = [...notes, newNote];
+    currentNotePath = newNote.path;
+    currentNote = newNote;
+  }
+  
+  function handleEditorChange(event: CustomEvent<{ content: string }>) {
+    if (currentNote) {
+      currentNote.content = event.detail.content;
+      // Update the note in the array
+      notes = notes.map(n => 
+        n.path === currentNote?.path 
+          ? { ...n, content: event.detail.content }
+          : n
+      );
+    }
+  }
+  
+  // Keyboard shortcuts
+  function handleKeydown(event: KeyboardEvent) {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'n') {
+      event.preventDefault();
+      handleCreateNote();
+    }
   }
 </script>
 
-<main>
-  <div class="container">
-    <h1>Bismuth PKM Editor</h1>
-    <p>Welcome to Bismuth - Your local-first knowledge management system</p>
+<svelte:window on:keydown={handleKeydown} />
 
-    <div class="card">
-      <button on:click={increment}>
-        Count is {count}
-      </button>
-      <p>Click the button to test Svelte reactivity</p>
-    </div>
-
-    <p class="read-the-docs">Development environment ready. Begin implementing features.</p>
-  </div>
+<main class="app">
+  <Sidebar 
+    files={notes}
+    currentFile={currentNotePath}
+    on:select={handleSelectFile}
+    on:create={handleCreateNote}
+  />
+  
+  {#if currentNote}
+    <Editor 
+      bind:content={currentNote.content}
+      fileName={currentNote.name}
+      on:change={handleEditorChange}
+    />
+  {:else}
+    <Welcome on:create={handleCreateNote} />
+  {/if}
 </main>
 
 <style>
-  :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-text-size-adjust: 100%;
-  }
-
-  .container {
+  :global(body) {
     margin: 0;
-    padding: 2rem;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-  }
-
-  .card {
-    padding: 2em;
-  }
-
-  .read-the-docs {
-    color: #888;
-  }
-
-  button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
+    padding: 0;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
+    color: rgba(255, 255, 255, 0.87);
+    overflow: hidden;
+  }
+  
+  :global(*) {
+    box-sizing: border-box;
   }
 
-  button:hover {
-    border-color: #646cff;
-  }
-
-  button:focus,
-  button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+  .app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
   }
 </style>
