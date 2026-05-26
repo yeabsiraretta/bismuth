@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Bump minor version on push
+echo "📦 Bumping minor version..."
+pnpm run version:push
+git add package.json src-tauri/Cargo.toml CHANGELOG.md
+git commit -m "chore: bump version on push" --no-verify || true
+
 # Run tests before pushing
 echo "🧪 Running tests before push..."
 

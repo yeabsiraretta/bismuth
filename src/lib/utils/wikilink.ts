@@ -1,205 +1,137 @@
 /**
- * Wikilink parsing and resolution utilities
- * @module lib/utils/wikilink
+ * Wikilink parsing and manipulation utilities
  */
 
-import type { Link } from '../../types';
+export interface WikilinkMatch {
+	raw: string;
+	text: string;
+	alias?: string;
+	start: number;
+	end: number;
+}
+
+const WIKILINK_REGEX = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
 
 /**
- * Regular expression for matching wikilinks
- * Matches: [[target]], [[target|alias]], [[target#heading]]
- * @constant
+ * Parse wikilinks from markdown content
  */
-const WIKILINK_REGEX = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
+export function parseWikilinks(content: string): WikilinkMatch[] {
+	const matches: WikilinkMatch[] = [];
+	let match: RegExpExecArray | null;
 
+	while ((match = WIKILINK_REGEX.exec(content)) !== null) {
+		matches.push({
+			raw: match[0],
+			text: match[1].trim(),
+			alias: match[2]?.trim(),
+			start: match.index,
+			end: match.index + match[0].length,
+		});
+	}
 
-/**
- * Parses a wikilink string and extracts its components
- *
- * @param {string} linkText - The wikilink text (e.g., "[[Note Title|Alias]]")
- * @returns {Link | null} Parsed link object or null if invalid
- *
- * @example
- * ```typescript
- * const link = parseWikilink("[[My Note|Display Text]]");
- * // Returns: { targetTitle: "My Note", alias: "Display Text", ... }
- * ```
- */
-export function parseWikilink(linkText: string): Link | null {
-  const match = linkText.match(/\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/);
-
-  if (!match) {
-    return null;
-  }
-
-  const [, targetTitle, , alias] = match;
-
-  return {
-    sourcePath: '', // Will be set by caller
-    targetTitle: targetTitle.trim(),
-    alias: alias?.trim(),
-    isResolved: false,
-    type: 'wikilink',
-  };
+	return matches;
 }
 
 /**
- * Extracts all wikilinks from markdown content
- *
- * @param {string} content - Markdown content to parse
- * @param {string} sourcePath - Path of the source note
- * @returns {Link[]} Array of extracted links
- *
- * @example
- * ```typescript
- * const content = "See [[Note 1]] and [[Note 2|Link Text]]";
- * const links = extractWikilinks(content, "/vault/current-note.md");
- * // Returns array of Link objects
- * ```
+ * Extract all linked note names from content
  */
-export function extractWikilinks(content: string, sourcePath: string): Link[] {
-  const links: Link[] = [];
-  let match: RegExpExecArray | null;
-
-  // Reset regex state
-  WIKILINK_REGEX.lastIndex = 0;
-
-  while ((match = WIKILINK_REGEX.exec(content)) !== null) {
-    const [fullMatch, targetTitle, , alias] = match;
-
-    links.push({
-      sourcePath,
-      targetTitle: targetTitle.trim(),
-      alias: alias?.trim(),
-      isResolved: false,
-      type: fullMatch.startsWith('!') ? 'embed' : 'wikilink',
-    });
-  }
-
-  return links;
+export function extractLinkedNotes(content: string): string[] {
+	const wikilinks = parseWikilinks(content);
+	return wikilinks.map((link) => link.text);
 }
 
 /**
- * Checks if a string contains wikilink syntax
- *
- * @param {string} text - Text to check
- * @returns {boolean} True if text contains wikilinks
- *
- * @example
- * ```typescript
- * hasWikilinks("This has a [[link]]"); // true
- * hasWikilinks("This has no links"); // false
- * ```
+ * Check if content contains a specific wikilink
  */
-export function hasWikilinks(text: string): boolean {
-  return WIKILINK_REGEX.test(text);
+export function hasWikilink(content: string, noteName: string): boolean {
+	const wikilinks = parseWikilinks(content);
+	return wikilinks.some((link) => link.text === noteName);
 }
 
 /**
- * Converts a wikilink to markdown link format
- *
- * @param {Link} link - Link object to convert
- * @param {string} [baseUrl=''] - Base URL for the link
- * @returns {string} Markdown link string
- *
- * @example
- * ```typescript
- * const link = { targetTitle: "Note", alias: "Link Text", ... };
- * wikilinkToMarkdown(link); // "[Link Text](Note.md)"
- * ```
+ * Create a wikilink string
  */
-export function wikilinkToMarkdown(link: Link, baseUrl = ''): string {
-  const displayText = link.alias || link.targetTitle;
-  const href = link.targetPath
-    ? `${baseUrl}${link.targetPath}`
-    : `${baseUrl}${link.targetTitle}.md`;
-
-  return `[${displayText}](${href})`;
+export function createWikilink(noteName: string, alias?: string): string {
+	if (alias) {
+		return `[[${noteName}|${alias}]]`;
+	}
+	return `[[${noteName}]]`;
 }
 
 /**
- * Resolves a wikilink target to an actual file path
- *
- * @param {string} targetTitle - The target note title
- * @param {string[]} allNotePaths - Array of all note paths in the vault
- * @returns {string | null} Resolved path or null if not found
- *
- * @example
- * ```typescript
- * const paths = ["/vault/notes/my-note.md", "/vault/other.md"];
- * resolveWikilink("My Note", paths); // "/vault/notes/my-note.md"
- * ```
+ * Update wikilinks when a note is renamed
  */
-export function resolveWikilink(targetTitle: string, allNotePaths: string[]): string | null {
-  const normalizedTarget = targetTitle.toLowerCase().replace(/\s+/g, '-');
+export function updateWikilinksOnRename(
+	content: string,
+	oldName: string,
+	newName: string
+): string {
+	const wikilinks = parseWikilinks(content);
+	let updatedContent = content;
+	let offset = 0;
 
-  // Try exact match first
-  const exactMatch = allNotePaths.find((path) => {
-    const filename = path.split('/').pop()?.replace('.md', '').toLowerCase();
-    return filename === normalizedTarget;
-  });
+	for (const link of wikilinks) {
+		if (link.text === oldName) {
+			const newLink = createWikilink(newName, link.alias);
+			const start = link.start + offset;
+			const end = link.end + offset;
 
-  if (exactMatch) {
-    return exactMatch;
-  }
+			updatedContent =
+				updatedContent.substring(0, start) +
+				newLink +
+				updatedContent.substring(end);
 
-  // Try fuzzy match
-  const fuzzyMatch = allNotePaths.find((path) => {
-    const filename = path.split('/').pop()?.replace('.md', '').toLowerCase();
-    return filename?.includes(normalizedTarget);
-  });
+			offset += newLink.length - link.raw.length;
+		}
+	}
 
-  return fuzzyMatch || null;
+	return updatedContent;
 }
 
 /**
- * Validates wikilink syntax
- *
- * @param {string} linkText - Wikilink text to validate
- * @returns {boolean} True if valid wikilink syntax
- *
- * @example
- * ```typescript
- * isValidWikilink("[[Valid Link]]"); // true
- * isValidWikilink("[[]]"); // false
- * isValidWikilink("[Invalid]"); // false
- * ```
+ * Find unlinked mentions of a note name in content
  */
-export function isValidWikilink(linkText: string): boolean {
-  if (!linkText.startsWith('[[') || !linkText.endsWith(']]')) {
-    return false;
-  }
+export function findUnlinkedMentions(
+	content: string,
+	noteName: string
+): Array<{ text: string; start: number; end: number }> {
+	const mentions: Array<{ text: string; start: number; end: number }> = [];
+	const wikilinks = parseWikilinks(content);
 
-  const content = linkText.slice(2, -2).trim();
-  return content.length > 0;
+	// Create a set of ranges that are already wikilinks
+	const linkedRanges = wikilinks.map((link) => ({
+		start: link.start,
+		end: link.end,
+	}));
+
+	// Simple word boundary regex for the note name
+	const mentionRegex = new RegExp(`\\b${escapeRegex(noteName)}\\b`, 'gi');
+	let match: RegExpExecArray | null;
+
+	while ((match = mentionRegex.exec(content)) !== null) {
+		const start = match.index;
+		const end = start + match[0].length;
+
+		// Check if this mention is already a wikilink
+		const isLinked = linkedRanges.some(
+			(range) => start >= range.start && end <= range.end
+		);
+
+		if (!isLinked) {
+			mentions.push({
+				text: match[0],
+				start,
+				end,
+			});
+		}
+	}
+
+	return mentions;
 }
 
 /**
- * Extracts backlinks for a given note
- *
- * @param {string} notePath - Path of the note to find backlinks for
- * @param {Map<string, Link[]>} allLinks - Map of note paths to their outgoing links
- * @returns {Link[]} Array of backlinks pointing to this note
- *
- * @example
- * ```typescript
- * const backlinks = getBacklinks("/vault/target.md", linksMap);
- * // Returns all links from other notes pointing to target.md
- * ```
+ * Escape special regex characters
  */
-export function getBacklinks(notePath: string, allLinks: Map<string, Link[]>): Link[] {
-  const backlinks: Link[] = [];
-
-  for (const [sourcePath, links] of allLinks.entries()) {
-    for (const link of links) {
-      if (link.targetPath === notePath) {
-        backlinks.push({
-          ...link,
-          sourcePath,
-        });
-      }
-    }
-  }
-
-  return backlinks;
+function escapeRegex(str: string): string {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

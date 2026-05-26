@@ -19,4 +19,11 @@ pnpm lint-staged
   exit 1
 }
 
+# Check file sizes (Constitution Principle VI)
+bash scripts/check-file-sizes.sh || {
+  echo "❌ File size check failed. Files must not exceed 300 lines."
+  echo "   See Constitution Principle VI for details."
+  exit 1
+}
+
 echo "✅ Pre-commit checks passed"

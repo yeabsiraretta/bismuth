@@ -8,43 +8,55 @@ This directory contains technical documentation for Bismuth development.
 
 ```
 docs/
-├── README.md                           # This file
+├── README.md                           # This file (index)
 │
-├── architecture/                       # System architecture
+├── architecture/                       # System architecture & design
+│   ├── bismuth-architecture-proposal.md
 │   ├── bismuth-canvas-system.md
 │   ├── canvas-mcp-protocol.md
-│   ├── BISMUTH_ARCHITECTURE_PROPOSAL.md
-│   ├── MODULAR_ARCHITECTURE.md
-│   └── TOLARIA_ARCHITECTURE_ANALYSIS.md
+│   ├── modular-architecture.md
+│   ├── tolaria-architecture-analysis.md
+│   └── wiki-structure.md
 │
-├── development/                        # Development guides
-│   ├── FEATURE_DEVELOPMENT_GUIDE.md
-│   ├── DEMO_PLAN.md
-│   └── DEMO_CHECKLIST.md
+├── development/                        # Development guides & processes
+│   ├── demo-checklist.md
+│   ├── demo-plan.md
+│   ├── development-scripts.md
+│   ├── feature-development-guide.md
+│   ├── mcp-servers.md
+│   └── tailwind-integration.md
 │
-├── implementation/                     # Implementation tracking
+├── implementation/                     # Feature implementation docs
+│   ├── backlinks-implementation.md
+│   ├── graph-view-implementation.md
 │   └── mvp-checklist.md
 │
 ├── milestones/                         # Completion reports
+│   ├── functional-ui-complete.md
 │   ├── phase-1-complete.md
-│   ├── phase-2.1-complete.md
-│   └── functional-ui-complete.md
+│   └── phase-2.1-complete.md
 │
-├── processes/                          # Project processes
-│   ├── GIT_WORKFLOW.md
-│   ├── GIT_SETUP_SUMMARY.md
-│   ├── VERSIONING.md
-│   ├── GIT_IMPLEMENTATION_COMPLETE.md
-│   ├── MODULAR_ARCHITECTURE_COMPLETE.md
-│   └── VERSIONING_SETUP_COMPLETE.md
+├── processes/                          # Project workflows
+│   ├── git-implementation-complete.md
+│   ├── git-setup-summary.md
+│   ├── git-workflow.md
+│   ├── modular-architecture-complete.md
+│   ├── versioning.md
+│   └── versioning-setup-complete.md
 │
-├── standards/                          # Project standards
+├── standards/                          # Coding & design standards
+│   ├── design-principles.md
+│   ├── design-system.md
+│   ├── design-system-quick-reference.md
+│   ├── documentation-standards.md
+│   ├── documentation-template.md
 │   ├── naming-conventions.md
-│   └── documentation-template.md
+│   └── ux-principles.md
 │
-└── status/                             # Project status
-    ├── IMPLEMENTATION_STATUS.md
-    └── ASSETS_TRACKER.md
+└── status/                             # Current project status
+    ├── assets-tracker.md
+    ├── implementation-status.md
+    └── refactoring-summary.md
 ```
 
 ---
@@ -57,33 +69,36 @@ High-level system design and technical decisions:
 
 - **[Bismuth Canvas System](./architecture/bismuth-canvas-system.md)** - Figma-like design tool integration
 - **[Canvas MCP Protocol](./architecture/canvas-mcp-protocol.md)** - MCP server specification for design-to-code
-- **[Bismuth Architecture Proposal](./architecture/BISMUTH_ARCHITECTURE_PROPOSAL.md)** - Initial architecture design
-- **[Modular Architecture](./architecture/MODULAR_ARCHITECTURE.md)** - Component-based design
-- **[Tolaria Architecture Analysis](./architecture/TOLARIA_ARCHITECTURE_ANALYSIS.md)** - Reference architecture study
+- **[Bismuth Architecture Proposal](./architecture/bismuth-architecture-proposal.md)** - Initial architecture design
+- **[Modular Architecture](./architecture/modular-architecture.md)** - Component-based design
+- **[Wiki Structure](./architecture/wiki-structure.md)** - Documentation organization
+- **[Tolaria Architecture Analysis](./architecture/tolaria-architecture-analysis.md)** - Reference architecture study
 
 ### Development Guides
 
 Guides for implementing features and managing development:
 
-- **[Feature Development Guide](./development/FEATURE_DEVELOPMENT_GUIDE.md)** - How to build features
-- **[Demo Plan](./development/DEMO_PLAN.md)** - MVP demo planning
-- **[Demo Checklist](./development/DEMO_CHECKLIST.md)** - Demo validation
+- **[Feature Development Guide](./development/feature-development-guide.md)** - How to build features
+- **[Demo Plan](./development/demo-plan.md)** - MVP demo planning
+- **[Demo Checklist](./development/demo-checklist.md)** - Demo validation
 
 ### Process Documentation
 
 Project management and workflow processes:
 
-- **[Git Workflow](./processes/GIT_WORKFLOW.md)** - Branching and commit strategy
-- **[Git Setup Summary](./processes/GIT_SETUP_SUMMARY.md)** - Git configuration
-- **[Versioning](./processes/VERSIONING.md)** - Semantic versioning guide
-- **[Git Implementation Complete](./processes/GIT_IMPLEMENTATION_COMPLETE.md)** - Git setup completion
-- **[Modular Architecture Complete](./processes/MODULAR_ARCHITECTURE_COMPLETE.md)** - Architecture setup completion
-- **[Versioning Setup Complete](./processes/VERSIONING_SETUP_COMPLETE.md)** - Versioning setup completion
+- **[Git Workflow](./processes/git-workflow.md)** - Branching and commit strategy
+- **[Git Setup Summary](./processes/git-setup-summary.md)** - Git configuration
+- **[Versioning](./processes/versioning.md)** - Semantic versioning guide
+- **[Git Implementation Complete](./processes/git-implementation-complete.md)** - Git setup completion
+- **[Modular Architecture Complete](./processes/modular-architecture-complete.md)** - Architecture setup completion
+- **[Versioning Setup Complete](./processes/versioning-setup-complete.md)** - Versioning setup completion
 
 ### Implementation Tracking
 
-Implementation progress and checklists:
+Feature implementation documentation and progress:
 
+- **[Backlinks Implementation](./implementation/backlinks-implementation.md)** - Backlinks feature details
+- **[Graph View Implementation](./implementation/graph-view-implementation.md)** - Graph visualization details
 - **[MVP Checklist](./implementation/mvp-checklist.md)** - Complete MVP implementation checklist
 
 ### Milestones
@@ -96,17 +111,23 @@ Completed phase reports and achievements:
 
 ### Project Standards
 
-Coding standards and conventions:
+Coding, design, and documentation standards:
 
+- **[Design Principles](./standards/design-principles.md)** - Core design philosophy
+- **[Design System](./standards/design-system.md)** - Complete design system
+- **[Design System Quick Reference](./standards/design-system-quick-reference.md)** - Quick lookup guide
+- **[UX Principles](./standards/ux-principles.md)** - 168 research-backed UX/UI principles (6 parts)
 - **[Naming Conventions](./standards/naming-conventions.md)** - File and code naming standards
 - **[Documentation Template](./standards/documentation-template.md)** - Standard doc format
+- **[Documentation Standards](./standards/documentation-standards.md)** - Documentation guidelines
 
 ### Status Tracking
 
 Current project status and progress:
 
-- **[Implementation Status](./status/IMPLEMENTATION_STATUS.md)** - Detailed progress tracking
-- **[Assets Tracker](./status/ASSETS_TRACKER.md)** - Asset creation and management
+- **[Implementation Status](./status/implementation-status.md)** - Detailed progress tracking
+- **[Refactoring Summary](./status/refactoring-summary.md)** - Code refactoring status
+- **[Assets Tracker](./status/assets-tracker.md)** - Asset creation and management
 
 ---
 
@@ -142,7 +163,7 @@ Current project status and progress:
 
 ### File Naming
 
-**Standard**: Use `kebab-case.md` for all new markdown documentation
+**Standard**: Use `lowercase-with-hyphens.md` (kebab-case) for all markdown documentation
 
 - ✅ `bismuth-canvas-system.md`
 - ✅ `phase-2.1-complete.md`
@@ -152,7 +173,7 @@ Current project status and progress:
 
 **Exceptions**: `README.md`, `CHANGELOG.md`, `LICENSE.md` (standard conventions)
 
-**Legacy**: Existing `SCREAMING_SNAKE_CASE.md` files will be migrated gradually
+**Status**: All documentation files migrated to lowercase naming (2026-05-26)
 
 See **[Naming Conventions](./standards/naming-conventions.md)** for complete standards.
 
@@ -213,12 +234,12 @@ Content...
 | -------------------- | ------------------------------------------------------------------------ |
 | Canvas design system | [Bismuth Canvas System](./architecture/bismuth-canvas-system.md)         |
 | MCP protocol         | [Canvas MCP Protocol](./architecture/canvas-mcp-protocol.md)             |
-| System architecture  | [Architecture Proposal](./architecture/BISMUTH_ARCHITECTURE_PROPOSAL.md) |
-| Build a feature      | [Feature Development Guide](./development/FEATURE_DEVELOPMENT_GUIDE.md)  |
+| System architecture  | [Architecture Proposal](./architecture/bismuth-architecture-proposal.md) |
+| Build a feature      | [Feature Development Guide](./development/feature-development-guide.md)  |
 | MVP checklist        | [MVP Checklist](./implementation/mvp-checklist.md)                       |
 | Naming standards     | [Naming Conventions](./standards/naming-conventions.md)                  |
-| Git workflow         | [Git Workflow](./processes/GIT_WORKFLOW.md)                              |
-| Current progress     | [Implementation Status](./status/IMPLEMENTATION_STATUS.md)               |
+| Git workflow         | [Git Workflow](./processes/git-workflow.md)                              |
+| Current progress     | [Implementation Status](./status/implementation-status.md)               |
 | Latest milestone     | [Phase 2.1 Complete](./milestones/phase-2.1-complete.md)                 |
 
 ---

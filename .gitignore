@@ -53,6 +53,9 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 
+# AI Assistant Configuration (tracked)
+# .claude/ - Project-specific Claude/Windsurf context (DO NOT IGNORE)
+
 # Testing & Coverage
 coverage/
 .nyc_output/

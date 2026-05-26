@@ -1,3 +1,4 @@
+use crate::error::{BismuthError, Result};
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
@@ -37,21 +38,27 @@ impl Vault {
     /// - Path does not exist
     /// - Path is not a directory
     /// - Path cannot be canonicalized
-    pub fn new(root_path: PathBuf) -> Result<Self, String> {
+    pub fn new(root_path: PathBuf) -> Result<Self> {
         // Validate path exists
         if !root_path.exists() {
-            return Err(format!("Path does not exist: {}", root_path.display()));
+            return Err(BismuthError::VaultError(format!(
+                "Path does not exist: {}",
+                root_path.display()
+            )));
         }
 
         // Validate it's a directory
         if !root_path.is_dir() {
-            return Err(format!("Path is not a directory: {}", root_path.display()));
+            return Err(BismuthError::VaultError(format!(
+                "Path is not a directory: {}",
+                root_path.display()
+            )));
         }
 
         // Canonicalize to get absolute path
-        let root_path = root_path
-            .canonicalize()
-            .map_err(|e| format!("Failed to canonicalize path: {}", e))?;
+        let root_path = root_path.canonicalize().map_err(|e| {
+            BismuthError::VaultError(format!("Failed to canonicalize path: {}", e))
+        })?;
 
         // Set up settings path
         let settings_path = root_path.join(".bismuth").join("config.json");
@@ -71,7 +78,7 @@ impl Vault {
     }
 
     /// Creates a new vault with a custom name
-    pub fn with_name(root_path: PathBuf, name: String) -> Result<Self, String> {
+    pub fn with_name(root_path: PathBuf, name: String) -> Result<Self> {
         let mut vault = Self::new(root_path)?;
         vault.name = name;
         Ok(vault)
@@ -148,7 +155,8 @@ mod tests {
         let vault = Vault::new(vault_path);
 
         assert!(vault.is_err());
-        assert!(vault.unwrap_err().contains("does not exist"));
+        let err = vault.unwrap_err();
+        assert!(matches!(err, BismuthError::VaultError(_)));
     }
 
     #[test]
@@ -160,7 +168,8 @@ mod tests {
         let vault = Vault::new(file_path);
 
         assert!(vault.is_err());
-        assert!(vault.unwrap_err().contains("not a directory"));
+        let err = vault.unwrap_err();
+        assert!(matches!(err, BismuthError::VaultError(_)));
     }
 
     #[test]
