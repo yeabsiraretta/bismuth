@@ -5,7 +5,7 @@
  * Used by standard-version to update Rust package version
  */
 
-const fs = require('fs');
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 module.exports.readVersion = function (contents) {
   // Extract version from Cargo.toml
@@ -15,8 +15,5 @@ module.exports.readVersion = function (contents) {
 
 module.exports.writeVersion = function (contents, version) {
   // Replace version in Cargo.toml
-  return contents.replace(
-    /^version\s*=\s*"[^"]+"/m,
-    `version = "${version}"`
-  );
+  return contents.replace(/^version\s*=\s*"[^"]+"/m, `version = "${version}"`);
 };

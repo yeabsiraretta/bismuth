@@ -1,7 +1,24 @@
 <script lang="ts">
+  /**
+   * Main application component for Bismuth PKM Editor
+   *
+   * This is the root component that initializes the application
+   * and manages the overall application state.
+   *
+   * @component
+   */
+
+  /**
+   * Demo counter state
+   * @type {number}
+   */
   let count = 0;
-  
-  function increment() {
+
+  /**
+   * Increments the counter by 1
+   * @returns {void}
+   */
+  function increment(): void {
     count += 1;
   }
 </script>
@@ -10,19 +27,15 @@
   <div class="container">
     <h1>Bismuth PKM Editor</h1>
     <p>Welcome to Bismuth - Your local-first knowledge management system</p>
-    
+
     <div class="card">
       <button on:click={increment}>
         Count is {count}
       </button>
-      <p>
-        Click the button to test Svelte reactivity
-      </p>
+      <p>Click the button to test Svelte reactivity</p>
     </div>
-    
-    <p class="read-the-docs">
-      Development environment ready. Begin implementing features.
-    </p>
+
+    <p class="read-the-docs">Development environment ready. Begin implementing features.</p>
   </div>
 </main>
 
@@ -73,11 +86,11 @@
     cursor: pointer;
     transition: border-color 0.25s;
   }
-  
+
   button:hover {
     border-color: #646cff;
   }
-  
+
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;

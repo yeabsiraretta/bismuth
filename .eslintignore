@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+.output/
+target/
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# Cache
+.cache/
+.temp/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Test coverage
+coverage/
+.nyc_output/
