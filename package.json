@@ -37,19 +37,19 @@
     "release:first": "standard-version --first-release"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0",
-    "@tauri-apps/plugin-shell": "^2.0.0",
-    "@codemirror/view": "^6.0.0",
-    "@codemirror/state": "^6.0.0",
-    "@codemirror/language": "^6.0.0",
     "@codemirror/commands": "^6.0.0",
     "@codemirror/lang-markdown": "^6.0.0",
+    "@codemirror/language": "^6.0.0",
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.0.0",
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-shell": "^2.0.0",
     "konva": "^9.0.0",
     "pdfjs-dist": "^3.0.0",
-    "unified": "^11.0.0",
+    "rehype-stringify": "^10.0.0",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.0.0",
-    "rehype-stringify": "^10.0.0"
+    "unified": "^11.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.0",
@@ -66,6 +66,7 @@
     "eslint": "^8.55.0",
     "eslint-plugin-svelte": "^2.35.0",
     "husky": "^8.0.3",
+    "jsdom": "^29.1.1",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.0",
     "prettier-plugin-svelte": "^3.1.0",
