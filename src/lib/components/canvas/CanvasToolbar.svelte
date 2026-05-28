@@ -33,11 +33,11 @@
 
 <div class="canvas-toolbar">
   <div class="tool-group">
-    {#each tools as tool}
+    {#each tools as tool (tool.id)}
       <button
-        class="tool-button"
+        class="canvas-btn canvas-btn--tool"
         class:active={$activeTool === tool.id}
-        on:click={() => selectTool(tool.id)}
+        onclick={() => selectTool(tool.id)}
         title={tool.label}
         aria-label={tool.label}
       >
@@ -47,13 +47,13 @@
     {/each}
   </div>
 
-  <div class="divider"></div>
+  <div class="canvas-divider canvas-divider--m"></div>
 
   <div class="tool-group">
     <button
-      class="tool-button"
+      class="canvas-btn canvas-btn--tool"
       class:active={$canvasSettings.showGrid}
-      on:click={toggleGrid}
+      onclick={toggleGrid}
       title="Toggle Grid"
       aria-label="Toggle grid"
     >
@@ -62,9 +62,9 @@
     </button>
 
     <button
-      class="tool-button"
+      class="canvas-btn canvas-btn--tool"
       class:active={$canvasSettings.snapToGrid}
-      on:click={toggleSnap}
+      onclick={toggleSnap}
       title="Snap to Grid"
       aria-label="Snap to grid"
     >
@@ -75,6 +75,8 @@
 </div>
 
 <style>
+  @import '$lib/styles/canvas-components.css';
+
   .canvas-toolbar {
     display: flex;
     align-items: center;
@@ -88,38 +90,6 @@
   .tool-group {
     display: flex;
     gap: var(--spacing-xs);
-  }
-
-  .divider {
-    width: 1px;
-    height: 2rem;
-    background: var(--border-color);
-  }
-
-  .tool-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    padding: var(--spacing-s) var(--spacing-s);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--radius-s);
-    color: var(--text-normal);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    min-width: 3.5rem;
-  }
-
-  .tool-button:hover {
-    background: var(--background-modifier-hover);
-    border-color: var(--border-color);
-  }
-
-  .tool-button.active {
-    background: var(--interactive-hover);
-    border-color: var(--interactive-accent);
-    color: var(--interactive-accent);
   }
 
   .tool-label {

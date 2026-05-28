@@ -73,28 +73,26 @@
 <div class="canvas-library">
   <div class="library-header">
     <h2>Canvas Library</h2>
-    <button class="btn-primary" on:click={() => (isCreating = true)}> + New Canvas </button>
+    <button class="canvas-btn canvas-btn--primary" onclick={() => (isCreating = true)}> + New Canvas </button>
   </div>
 
   {#if isCreating}
     <div class="create-form">
-      <!-- svelte-ignore a11y_autofocus -->
       <input
         type="text"
         bind:value={newCanvasName}
         placeholder="Canvas name..."
-        on:keydown={(e) => e.key === 'Enter' && handleCreateCanvas()}
-        autofocus
+        onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleCreateCanvas()}
       />
       <div class="form-actions">
-        <button class="btn-primary" on:click={handleCreateCanvas}>Create</button>
-        <button class="btn-secondary" on:click={() => (isCreating = false)}>Cancel</button>
+        <button class="canvas-btn canvas-btn--primary" onclick={handleCreateCanvas}>Create</button>
+        <button class="canvas-btn canvas-btn--secondary" onclick={() => (isCreating = false)}>Cancel</button>
       </div>
     </div>
   {/if}
 
   <div class="search-bar">
-    <input type="search" bind:value={searchQuery} placeholder="Search canvases..." />
+    <input type="search" bind:value={searchQuery} placeholder="Search canvases..." class="canvas-input" />
   </div>
 
   <div class="canvas-grid">
@@ -119,16 +117,16 @@
           </div>
           <div class="canvas-actions">
             <button
-              class="btn-icon"
-              on:click={() => handleLoadCanvas(canvas.id)}
+              class="canvas-btn canvas-btn--icon"
+              onclick={() => handleLoadCanvas(canvas.id)}
               title="Open"
               aria-label="Open canvas"
             >
               <Icon name="folder-open" size={16} />
             </button>
             <button
-              class="btn-icon btn-danger"
-              on:click={() => handleDeleteCanvas(canvas.id, canvas.name)}
+              class="canvas-btn canvas-btn--icon danger"
+              onclick={() => handleDeleteCanvas(canvas.id, canvas.name)}
               title="Delete"
               aria-label="Delete canvas"
             >
@@ -142,6 +140,8 @@
 </div>
 
 <style>
+  @import '$lib/styles/canvas-components.css';
+
   .canvas-library {
     display: flex;
     flex-direction: column;
@@ -173,15 +173,8 @@
     border: 1px solid var(--border-color);
   }
 
-  .create-form input {
-    width: 100%;
-    padding: var(--spacing-s);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    font-size: var(--font-smaller);
+  .create-form :global(.canvas-input) {
     margin-bottom: var(--spacing-s);
-    background: var(--background-modifier-form-field);
-    color: var(--text-normal);
   }
 
   .form-actions {
@@ -192,16 +185,6 @@
 
   .search-bar {
     margin-bottom: var(--spacing-m);
-  }
-
-  .search-bar input {
-    width: 100%;
-    padding: var(--spacing-s) var(--spacing-m);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-m);
-    font-size: var(--font-smaller);
-    background: var(--background-modifier-form-field);
-    color: var(--text-normal);
   }
 
   .canvas-grid {
@@ -271,57 +254,7 @@
     background: var(--background-primary-alt);
   }
 
-  .btn-primary {
-    padding: var(--spacing-s) var(--spacing-m);
-    background: var(--interactive-accent);
-    color: var(--text-on-accent);
-    border: none;
-    border-radius: var(--radius-s);
-    font-size: var(--font-smaller);
-    font-weight: var(--font-medium);
-    cursor: pointer;
-    transition: background var(--transition-fast);
-  }
-
-  .btn-primary:hover {
-    background: var(--interactive-accent-hover);
-  }
-
-  .btn-secondary {
-    padding: var(--spacing-s) var(--spacing-m);
-    background: var(--background-primary);
-    color: var(--text-normal);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    font-size: var(--font-smaller);
-    font-weight: var(--font-medium);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .btn-secondary:hover {
-    background: var(--background-modifier-hover);
-  }
-
-  .btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-s);
-    background: transparent;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    color: var(--text-normal);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .btn-icon:hover {
-    background: var(--background-modifier-hover);
-    border-color: var(--border-hover);
-  }
-
-  .btn-danger:hover {
+  .canvas-btn--icon.danger:hover {
     background: var(--background-modifier-error);
     border-color: var(--text-error);
     color: var(--text-on-accent);

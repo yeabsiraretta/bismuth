@@ -42,10 +42,10 @@
 </script>
 
 <div class="pages-panel">
-  <div class="panel-header">
+  <div class="canvas-panel-header">
     <Icon name="layers" size={14} />
-    <span class="panel-title">Pages</span>
-    <button class="btn-add" on:click={handleAddPage} title="Add page" aria-label="Add page">
+    <span class="canvas-panel-title">Pages</span>
+    <button class="canvas-btn canvas-btn--icon-sm" onclick={handleAddPage} title="Add page" aria-label="Add page">
       <Icon name="plus" size={14} />
     </button>
   </div>
@@ -58,23 +58,22 @@
           class:active={$activePageId === page.id}
           role="button"
           tabindex="0"
-          on:click={() => switchPage(page.id)}
-          on:keydown={(e) => e.key === 'Enter' && switchPage(page.id)}
+          onclick={() => switchPage(page.id)}
+          onkeydown={(e) => e.key === 'Enter' && switchPage(page.id)}
         >
           {#if editingPageId === page.id}
             <input
               class="page-rename-input"
               bind:value={editName}
-              on:blur={commitRename}
-              on:keydown={handleKeyDown}
-              autofocus
+              onblur={commitRename}
+              onkeydown={handleKeyDown}
             />
           {:else}
             <span class="page-name">{page.name}</span>
             <div class="page-actions">
               <button
-                class="btn-icon-sm"
-                on:click|stopPropagation={() => startRename(page.id, page.name)}
+                class="canvas-btn canvas-btn--icon-sm"
+                onclick={(e) => { e.stopPropagation(); startRename(page.id, page.name); }}
                 title="Rename"
                 aria-label="Rename page"
               >
@@ -82,8 +81,8 @@
               </button>
               {#if ($currentCanvas?.pages?.length || 0) > 1}
                 <button
-                  class="btn-icon-sm danger"
-                  on:click|stopPropagation={() => deletePage(page.id)}
+                  class="canvas-btn canvas-btn--icon-sm danger"
+                  onclick={(e) => { e.stopPropagation(); deletePage(page.id); }}
                   title="Delete"
                   aria-label="Delete page"
                 >
@@ -103,48 +102,13 @@
 </div>
 
 <style>
+  @import '$lib/styles/canvas-components.css';
+
   .pages-panel {
     border-bottom: 1px solid var(--border-color);
     max-height: 200px;
     display: flex;
     flex-direction: column;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-s);
-    padding: var(--spacing-s) var(--spacing-m);
-    border-bottom: 1px solid var(--border-color);
-    background: var(--background-secondary);
-  }
-
-  .panel-title {
-    flex: 1;
-    font-size: var(--font-smaller);
-    font-weight: var(--font-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-  }
-
-  .btn-add {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    background: none;
-    border: 1px solid transparent;
-    border-radius: var(--radius-s);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .btn-add:hover {
-    background: var(--background-modifier-hover);
-    color: var(--text-normal);
-    border-color: var(--border-color);
   }
 
   .pages-list {
@@ -191,30 +155,6 @@
     opacity: 1;
   }
 
-  .btn-icon-sm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    background: none;
-    border: none;
-    border-radius: var(--radius-s);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .btn-icon-sm:hover {
-    background: var(--background-modifier-hover);
-    color: var(--text-normal);
-  }
-
-  .btn-icon-sm.danger:hover {
-    color: var(--text-error);
-  }
-
   .page-rename-input {
     flex: 1;
     padding: 2px var(--spacing-xs);
@@ -224,12 +164,5 @@
     border-radius: var(--radius-s);
     color: var(--text-normal);
     outline: none;
-  }
-
-  .empty-state {
-    padding: var(--spacing-m);
-    text-align: center;
-    color: var(--text-faint);
-    font-size: var(--font-smaller);
   }
 </style>

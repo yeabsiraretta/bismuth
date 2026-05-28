@@ -42,7 +42,7 @@
   },
   "techStack": {
     "frontend": {
-      "framework": "Svelte 4.2+",
+      "framework": "Svelte 5.5",
       "language": "TypeScript",
       "editor": "CodeMirror 6",
       "styling": "Tailwind CSS",

@@ -1,0 +1,199 @@
+/**
+ * Canvas Components - Shared Styles
+ * 
+ * Common button and UI patterns used across canvas components.
+ * Import in Svelte components using: @import '$lib/styles/canvas-components.css';
+ */
+
+/* ========== Button Base ========== */
+.canvas-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-s) var(--spacing-m);
+  border-radius: var(--radius-s);
+  font-size: var(--font-smaller);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.canvas-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========== Button Variants ========== */
+.canvas-btn--primary {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  border: none;
+}
+
+.canvas-btn--primary:hover:not(:disabled) {
+  background: var(--interactive-accent-hover);
+}
+
+.canvas-btn--secondary {
+  background: var(--background-primary);
+  color: var(--text-normal);
+  border: 1px solid var(--border-color);
+}
+
+.canvas-btn--secondary:hover:not(:disabled) {
+  background: var(--background-modifier-hover);
+}
+
+.canvas-btn--icon {
+  padding: var(--spacing-s);
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-s);
+  color: var(--text-normal);
+}
+
+.canvas-btn--icon:hover:not(:disabled) {
+  background: var(--background-modifier-hover);
+  border-color: var(--border-hover);
+}
+
+.canvas-btn--icon-sm {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+}
+
+.canvas-btn--icon-sm:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.canvas-btn--icon-sm.danger:hover {
+  color: var(--text-error);
+}
+
+.canvas-btn--tool {
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-s);
+  min-width: 3.5rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-normal);
+}
+
+.canvas-btn--tool:hover {
+  background: var(--background-modifier-hover);
+  border-color: var(--border-color);
+}
+
+.canvas-btn--tool.active {
+  background: var(--interactive-hover);
+  border-color: var(--interactive-accent);
+  color: var(--interactive-accent);
+}
+
+/* ========== Dividers ========== */
+.canvas-divider {
+  width: 1px;
+  background: var(--border-color);
+}
+
+.canvas-divider--s {
+  height: 1.5rem;
+}
+
+.canvas-divider--m {
+  height: 2rem;
+}
+
+/* ========== Dropdown ========== */
+.canvas-dropdown {
+  position: relative;
+}
+
+.canvas-dropdown__menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--spacing-xs);
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-m);
+  z-index: var(--layer-menu);
+  min-width: 150px;
+}
+
+.canvas-dropdown__menu button {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-s) var(--spacing-m);
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: var(--font-smaller);
+  color: var(--text-normal);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.canvas-dropdown__menu button:hover {
+  background: var(--background-modifier-hover);
+}
+
+.canvas-dropdown__menu button:first-child {
+  border-radius: var(--radius-m) var(--radius-m) 0 0;
+}
+
+.canvas-dropdown__menu button:last-child {
+  border-radius: 0 0 var(--radius-m) var(--radius-m);
+}
+
+/* ========== Panel Header ========== */
+.canvas-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-s) var(--spacing-m);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--background-secondary);
+}
+
+.canvas-panel-title {
+  flex: 1;
+  font-size: var(--font-smaller);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* ========== Empty State ========== */
+.canvas-empty-state {
+  padding: var(--spacing-m);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: var(--font-smaller);
+}
+
+/* ========== Form Inputs ========== */
+.canvas-input {
+  width: 100%;
+  padding: var(--spacing-s) var(--spacing-m);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  font-size: var(--font-smaller);
+  background: var(--background-modifier-form-field);
+  color: var(--text-normal);
+}
+
+.canvas-input:focus {
+  outline: none;
+  border-color: var(--interactive-accent);
+}

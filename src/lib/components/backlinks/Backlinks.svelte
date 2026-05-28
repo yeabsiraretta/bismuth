@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
   import Icon from '@/components/icons/Icon.svelte';
-  import BacklinkMentionItem from './BacklinkMentionItem.svelte';
+  import BacklinkMentionItem from '@/components/backlinks/BacklinkMentionItem.svelte';
 
   export let noteId: string;
   export const noteName: string = '';

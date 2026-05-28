@@ -4,20 +4,8 @@
 
 import { invoke } from '@tauri-apps/api/core';
 
-export interface Vault {
-	root_path: string;
-	settings_path: string;
-	name: string;
-}
+import type { Vault, Note } from '$lib/types/vault';
 
-export interface Note {
-	path: string;
-	title: string;
-	content: string;
-	frontmatter: Record<string, unknown>;
-	created_at: string;
-	modified_at: string;
-}
 
 /**
  * Opens an existing vault
