@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-28
+
 ### Added
 - **Phase 4: Navigator System** (9/13 tasks complete)
   - Navigator store with profiles, pinning, shortcuts (T043)

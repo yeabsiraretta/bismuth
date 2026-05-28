@@ -1,6 +1,6 @@
 [package]
 name = "bismuth"
-version = "0.0.1298"
+version = "0.1.0"
 description = "A local-first PKM editor with Johnny.Decimal, Zettelkasten, and intelligent knowledge management"
 authors = ["Yeabsira Moges <yeabsiraretta@proton.me>"]
 license = "MIT"
