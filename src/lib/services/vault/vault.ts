@@ -60,7 +60,7 @@ export async function deleteNote(path: string): Promise<void> {
 
 export async function renameNote(oldPath: string, newPath: string): Promise<void> {
   try {
-    await invoke('rename_note', { oldPath, newPath });
+    await invoke('rename_note', { old_path: oldPath, new_path: newPath });
   } catch (error) {
     throw new Error(`Failed to rename note: ${error}`);
   }
@@ -70,13 +70,25 @@ export async function listNotes(vaultPath: string, folderPath: string = ''): Pro
   log.debug('Vault service: listing notes', { vaultPath, folderPath });
   try {
     const notes = await invoke<Note[]>('list_notes', {
-      vaultPath: vaultPath,
-      folderPath: folderPath
+      vault_path: vaultPath,
+      folder_path: folderPath
     });
     log.info('Vault service: notes listed successfully', { count: notes.length });
     return notes;
   } catch (error) {
     log.error('Vault service: failed to list notes', error as Error, { vaultPath, folderPath });
     throw new Error(`Failed to list notes: ${error}`);
+  }
+}
+
+export async function scanVault(): Promise<Note[]> {
+  log.debug('Vault service: scanning vault recursively');
+  try {
+    const notes = await invoke<Note[]>('scan_vault');
+    log.info('Vault service: scan complete', { count: notes.length });
+    return notes;
+  } catch (error) {
+    log.error('Vault service: failed to scan vault', error as Error);
+    throw new Error(`Failed to scan vault: ${error}`);
   }
 }

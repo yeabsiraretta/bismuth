@@ -1,15 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  
+
   export let message: string = '';
   export let type: 'info' | 'success' | 'warning' | 'error' = 'info';
   export let duration: number = 3000;
   export let onClose: () => void = () => {};
-  
+
   let visible = true;
   let timer: number;
-  
+
   onMount(() => {
     if (duration > 0) {
       timer = window.setTimeout(() => {
@@ -17,12 +17,12 @@
         setTimeout(onClose, 300);
       }, duration);
     }
-    
+
     return () => {
       if (timer) clearTimeout(timer);
     };
   });
-  
+
   function handleClose() {
     visible = false;
     setTimeout(onClose, 300);
@@ -40,7 +40,7 @@
   >
     <div class="toast-content">
       <span class="toast-message">{message}</span>
-      <button class="toast-close" on:click={handleClose}>
+      <button class="toast-close" on:click={handleClose} aria-label="Dismiss notification">
         <svg width="16" height="16" viewBox="0 0 16 16">
           <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" />
         </svg>

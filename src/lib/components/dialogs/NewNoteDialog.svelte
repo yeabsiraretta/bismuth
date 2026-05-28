@@ -1,21 +1,20 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import Modal from '@/components/ui/Modal.svelte';
   import Button from '@/components/ui/Button.svelte';
 
   export let isOpen: boolean = false;
   export let noteName: string = '';
-
-  const dispatch = createEventDispatcher();
+  export let onCreate: ((detail: { name: string }) => void) | undefined = undefined;
+  export let onClose: (() => void) | undefined = undefined;
 
   function handleCreate() {
     if (noteName.trim()) {
-      dispatch('create', { name: noteName });
+      onCreate?.({ name: noteName });
     }
   }
 
   function handleClose() {
-    dispatch('close');
+    onClose?.();
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -25,7 +24,7 @@
   }
 </script>
 
-<Modal {isOpen} title="Create New Note" ariaLabel="Create new note dialog" on:close={handleClose}>
+<Modal {isOpen} title="Create New Note" ariaLabel="Create new note dialog" onClose={handleClose}>
   <div class="dialog-content">
     <input
       type="text"

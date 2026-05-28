@@ -1,7 +1,10 @@
+export type NodeType = 'note' | 'attachment' | 'tag' | 'unresolved';
+
 export interface GraphNode {
 	id: string;
 	label: string;
-	node_type: string;
+	node_type: NodeType | string;
+	connection_count?: number;
 }
 
 export interface GraphEdge {
@@ -20,6 +23,7 @@ export interface GraphSettings {
 	showAttachments: boolean;
 	showOrphans: boolean;
 	showArrows: boolean;
+	showLabels: boolean;
 	textFadeThreshold: number;
 	nodeSize: number;
 	linkThickness: number;
@@ -28,4 +32,11 @@ export interface GraphSettings {
 	linkForce: number;
 	linkDistance: number;
 	animate: boolean;
+}
+
+export interface NodeColors {
+	note: string;
+	attachment: string;
+	tag: string;
+	unresolved: string;
 }

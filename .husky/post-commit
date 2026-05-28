@@ -1,11 +1,17 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# DISABLED: Auto-version bump was causing infinite loops
+# Use manual version bumping instead:
+#   pnpm run version:commit  # Bump patch
+#   pnpm run version:push    # Bump minor
+#   pnpm run version:release # Bump major
+
 # Auto-bump patch version on every commit
-pnpm run version:commit
+# pnpm run version:commit
 
 # Stage the version files
-git add package.json src-tauri/Cargo.toml
+# git add package.json src-tauri/Cargo.toml
 
 # Amend the commit with version changes
-git commit --amend --no-edit --no-verify
+# git commit --amend --no-edit --no-verify

@@ -58,3 +58,54 @@ export function setRightSidebarWidth(width: number) {
     rightSidebarWidth: clampedWidth,
   }));
 }
+
+const STORAGE_KEY = 'bismuth-layout';
+
+/** Save layout state to localStorage (per-vault via key suffix) */
+export function saveLayout(vaultName?: string) {
+  layoutStore.subscribe(state => {
+    const key = vaultName ? `${STORAGE_KEY}-${vaultName}` : STORAGE_KEY;
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch {
+      // localStorage might be full or unavailable
+    }
+  })();
+}
+
+/** Load layout state from localStorage */
+export function loadLayout(vaultName?: string) {
+  const key = vaultName ? `${STORAGE_KEY}-${vaultName}` : STORAGE_KEY;
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const parsed = JSON.parse(saved) as Partial<LayoutState>;
+      layoutStore.update(state => ({
+        ...state,
+        ...parsed,
+        leftSidebarWidth: Math.max(
+          LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
+          Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, parsed.leftSidebarWidth ?? state.leftSidebarWidth)
+        ),
+        rightSidebarWidth: Math.max(
+          LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
+          Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, parsed.rightSidebarWidth ?? state.rightSidebarWidth)
+        ),
+      }));
+    }
+  } catch {
+    // Ignore parse errors, use defaults
+  }
+}
+
+/** Auto-persist layout changes */
+export function enableAutoSave(vaultName?: string) {
+  return layoutStore.subscribe(state => {
+    const key = vaultName ? `${STORAGE_KEY}-${vaultName}` : STORAGE_KEY;
+    try {
+      localStorage.setItem(key, JSON.stringify(state));
+    } catch {
+      // Ignore
+    }
+  });
+}

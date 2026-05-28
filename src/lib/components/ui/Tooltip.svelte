@@ -1,26 +1,32 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  
+
   export let text: string = '';
   export let position: 'top' | 'bottom' | 'left' | 'right' = 'top';
   export let delay: number = 200;
-  
+
   let visible = false;
   let showTimer: number;
-  
+
   function handleMouseEnter() {
     showTimer = window.setTimeout(() => {
       visible = true;
     }, delay);
   }
-  
+
   function handleMouseLeave() {
     if (showTimer) clearTimeout(showTimer);
     visible = false;
   }
 </script>
 
-<div class="tooltip-wrapper" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+  class="tooltip-wrapper"
+  on:mouseenter={handleMouseEnter}
+  on:mouseleave={handleMouseLeave}
+  role="group"
+>
   <slot />
   {#if visible && text}
     <div

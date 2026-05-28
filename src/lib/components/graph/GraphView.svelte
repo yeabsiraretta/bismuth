@@ -2,9 +2,22 @@
   import { onMount, onDestroy } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
   import type { GraphData, GraphNode, GraphEdge, GraphSettings } from '@/types/graph';
+  import Icon from '@/components/icons/Icon.svelte';
   import GraphSettingsPanel from '@/components/graph/GraphSettings.svelte';
+  import GraphFilter from '@/components/graph/GraphFilter.svelte';
   import GraphContextMenu from '@/components/graph/GraphContextMenu.svelte';
-  import { exportGraphAsPNG, exportGraphAsSVG, exportGraphAsJSON } from '@/utils/graphExport';
+  import GraphHeader from '@/components/graph/GraphHeader.svelte';
+  import GraphLocalInfo from '@/components/graph/GraphLocalInfo.svelte';
+  import {
+    type SimNode,
+    DEFAULT_NODE_COLORS,
+    filterGraphData,
+    initNodes,
+    tickForces,
+    getNodeRadius,
+    getNodeColor,
+    hitTestNode,
+  } from '@/utils/graphSimulation';
 
   export let isLocal = false;
   export let centerNode: string | null = null;
@@ -17,6 +30,15 @@
   let height = 600;
   let searchQuery = '';
   let settingsOpen = false;
+  let filterOpen = false;
+
+  // Filter state
+  let filterTags: string[] = [];
+  let filterTypes: string[] = [];
+  let filterFolder = '';
+  let filterDepth = 3;
+  let availableTags: string[] = [];
+  let availableTypes: string[] = [];
 
   // Context menu state
   let contextMenuVisible = false;
@@ -28,11 +50,12 @@
   let settings: GraphSettings = {
     showTags: true,
     showAttachments: true,
-    showOrphans: false,
-    showArrows: true,
-    textFadeThreshold: 0.5,
+    showOrphans: true,
+    showArrows: false,
+    showLabels: true,
+    textFadeThreshold: 0.3,
     nodeSize: 1.0,
-    linkThickness: 1.0,
+    linkThickness: 0.5,
     centerForce: 0.3,
     repelForce: 100,
     linkForce: 0.5,
@@ -44,7 +67,7 @@
   let colorGroups: Array<{ query: string; color: string }> = [];
 
   // Simulation state
-  let nodes: Array<GraphNode & { x: number; y: number; vx: number; vy: number }> = [];
+  let nodes: SimNode[] = [];
   let edges: GraphEdge[] = [];
   let hoveredNode: string | null = null;
   let selectedNode: string | null = null;
@@ -54,57 +77,6 @@
   let offsetY = 0;
   let scale = 1;
   let animationFrame: number;
-
-  // Filter nodes based on search and settings
-  function filterNodes(data: GraphData): GraphData {
-    let filteredNodes = data.nodes;
-
-    // Filter by search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filteredNodes = filteredNodes.filter((n) => n.label.toLowerCase().includes(query));
-    }
-
-    // Filter orphans
-    if (!settings.showOrphans) {
-      const connectedNodeIds = new Set<string>();
-      data.edges.forEach((e) => {
-        connectedNodeIds.add(e.from);
-        connectedNodeIds.add(e.to);
-      });
-      filteredNodes = filteredNodes.filter((n) => connectedNodeIds.has(n.id));
-    }
-
-    // Local graph mode
-    if (isLocal && centerNode) {
-      const connectedIds = new Set<string>([centerNode]);
-      for (let d = 0; d < depth; d++) {
-        const currentIds = Array.from(connectedIds);
-        data.edges.forEach((e) => {
-          if (currentIds.includes(e.from)) connectedIds.add(e.to);
-          if (currentIds.includes(e.to)) connectedIds.add(e.from);
-        });
-      }
-      filteredNodes = filteredNodes.filter((n) => connectedIds.has(n.id));
-    }
-
-    const filteredNodeIds = new Set(filteredNodes.map((n) => n.id));
-    const filteredEdges = data.edges.filter(
-      (e) => filteredNodeIds.has(e.from) && filteredNodeIds.has(e.to)
-    );
-
-    return { nodes: filteredNodes, edges: filteredEdges };
-  }
-
-  // Get node color based on groups
-  function getNodeColor(node: GraphNode): string {
-    for (const group of colorGroups) {
-      if (node.label.toLowerCase().includes(group.query.toLowerCase())) {
-        return group.color;
-      }
-    }
-    return '#888';
-  }
 
   // Load graph data
   async function loadGraphData() {
@@ -119,101 +91,77 @@
 
   // Initialize force simulation
   function initializeSimulation() {
-    const filtered = filterNodes(graphData);
-    nodes = filtered.nodes.map((node) => ({
-      ...node,
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: 0,
-      vy: 0,
-    }));
+    const filtered = filterGraphData(graphData, {
+      searchQuery,
+      showOrphans: settings.showOrphans,
+      isLocal,
+      centerNode,
+      depth,
+      tags: filterTags,
+      types: filterTypes,
+      folder: filterFolder,
+    });
+    nodes = initNodes(filtered.nodes, filtered.edges, width, height);
     edges = filtered.edges;
+
+    // Extract available tags/types from raw data for filter dropdowns
+    const tagSet = new Set<string>();
+    const typeSet = new Set<string>();
+    graphData.nodes.forEach((n) => {
+      if (n.node_type) typeSet.add(n.node_type);
+    });
+    availableTags = Array.from(tagSet).sort();
+    availableTypes = Array.from(typeSet).sort();
+
     startSimulation();
   }
 
-  // Reactive: Re-filter when settings or search changes
+  // Reactive: Re-filter when settings, search, or filters change
   $: if (graphData.nodes.length > 0) {
-    const filtered = filterNodes(graphData);
-    nodes = filtered.nodes.map((node) => {
-      const existing = nodes.find((n) => n.id === node.id);
-      return (
-        existing || {
-          ...node,
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: 0,
-          vy: 0,
-        }
-      );
+    const filtered = filterGraphData(graphData, {
+      searchQuery,
+      showOrphans: settings.showOrphans,
+      isLocal,
+      centerNode,
+      depth,
+      tags: filterTags,
+      types: filterTypes,
+      folder: filterFolder,
     });
+    nodes = initNodes(filtered.nodes, filtered.edges, width, height, nodes);
     edges = filtered.edges;
     render();
   }
 
-  // Force simulation
-  function applyForces() {
-    const centerX = width / 2;
-    const centerY = height / 2;
-
-    // Apply center force
-    nodes.forEach((node) => {
-      const dx = centerX - node.x;
-      const dy = centerY - node.y;
-      node.vx += dx * settings.centerForce * 0.01;
-      node.vy += dy * settings.centerForce * 0.01;
-    });
-
-    // Apply repel force
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[j].x - nodes[i].x;
-        const dy = nodes[j].y - nodes[i].y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = settings.repelForce / (dist * dist);
-
-        nodes[i].vx -= (dx / dist) * force;
-        nodes[i].vy -= (dy / dist) * force;
-        nodes[j].vx += (dx / dist) * force;
-        nodes[j].vy += (dy / dist) * force;
-      }
-    }
-
-    // Apply link force
-    edges.forEach((edge) => {
-      const source = nodes.find((n) => n.id === edge.from);
-      const target = nodes.find((n) => n.id === edge.to);
-      if (!source || !target) return;
-
-      const dx = target.x - source.x;
-      const dy = target.y - source.y;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const force = (dist - settings.linkDistance) * settings.linkForce * 0.01;
-
-      source.vx += (dx / dist) * force;
-      source.vy += (dy / dist) * force;
-      target.vx -= (dx / dist) * force;
-      target.vy -= (dy / dist) * force;
-    });
-
-    // Update positions
-    nodes.forEach((node) => {
-      node.x += node.vx;
-      node.y += node.vy;
-      node.vx *= 0.9; // Damping
-      node.vy *= 0.9;
-    });
+  function handleFilter(detail: {
+    tags: string[];
+    types: string[];
+    folder: string;
+    depth: number;
+  }) {
+    filterTags = detail.tags;
+    filterTypes = detail.types;
+    filterFolder = detail.folder;
+    filterDepth = detail.depth;
   }
 
-  // Render graph
+  function applyForces() {
+    tickForces(nodes, edges, settings, width, height);
+  }
+
+  // Render graph (Obsidian-inspired)
   function render() {
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, width, height);
+    // Dark background
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(0, 0, width, height);
     ctx.save();
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);
 
-    // Draw edges
+    // Draw edges - subtle thin lines
+    ctx.globalAlpha = 0.4;
     edges.forEach((edge) => {
       const source = nodes.find((n) => n.id === edge.from);
       const target = nodes.find((n) => n.id === edge.to);
@@ -222,14 +170,14 @@
       ctx!.beginPath();
       ctx!.moveTo(source.x, source.y);
       ctx!.lineTo(target.x, target.y);
-      ctx!.strokeStyle = '#666';
+      ctx!.strokeStyle = '#5a5a7a';
       ctx!.lineWidth = settings.linkThickness;
       ctx!.stroke();
 
-      // Draw arrows
+      // Draw arrows (disabled by default, Obsidian-style)
       if (settings.showArrows) {
         const angle = Math.atan2(target.y - source.y, target.x - source.x);
-        const arrowSize = 8;
+        const arrowSize = 6;
         ctx!.save();
         ctx!.translate(target.x, target.y);
         ctx!.rotate(angle);
@@ -237,37 +185,53 @@
         ctx!.moveTo(-arrowSize, -arrowSize / 2);
         ctx!.lineTo(0, 0);
         ctx!.lineTo(-arrowSize, arrowSize / 2);
-        ctx!.fillStyle = '#666';
+        ctx!.fillStyle = '#5a5a7a';
         ctx!.fill();
         ctx!.restore();
       }
     });
+    ctx.globalAlpha = 1.0;
 
-    // Draw nodes
+    // Draw nodes - sized by connection count
     nodes.forEach((node) => {
       const isHovered = hoveredNode === node.id;
       const isSelected = selectedNode === node.id;
-      const radius = 5 * settings.nodeSize * (isHovered || isSelected ? 1.5 : 1);
+      const radius = getNodeRadius(node, settings) * (isHovered || isSelected ? 1.4 : 1);
+      const nodeColor = getNodeColor(node, DEFAULT_NODE_COLORS, colorGroups);
 
-      const nodeColor = getNodeColor(node);
+      // Node glow on hover/select
+      if (isHovered || isSelected) {
+        ctx!.beginPath();
+        ctx!.arc(node.x, node.y, radius + 4, 0, Math.PI * 2);
+        ctx!.fillStyle = isSelected ? 'rgba(74, 158, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
+        ctx!.fill();
+      }
+
+      // Node fill
       ctx!.beginPath();
       ctx!.arc(node.x, node.y, radius, 0, Math.PI * 2);
       ctx!.fillStyle = isSelected ? '#4a9eff' : isHovered ? '#6bb6ff' : nodeColor;
       ctx!.fill();
-      ctx!.strokeStyle = '#fff';
-      ctx!.lineWidth = 2;
-      ctx!.stroke();
 
       // Draw label
-      if (isHovered || isSelected || scale > settings.textFadeThreshold) {
-        ctx!.fillStyle = '#fff';
-        ctx!.font = '12px system-ui';
+      const showLabel =
+        settings.showLabels && (isHovered || isSelected || scale > settings.textFadeThreshold);
+      if (showLabel) {
+        ctx!.fillStyle = isHovered || isSelected ? '#ffffff' : 'rgba(200, 200, 220, 0.8)';
+        ctx!.font = `${isHovered || isSelected ? '12px' : '11px'} system-ui, -apple-system, sans-serif`;
         ctx!.textAlign = 'center';
-        ctx!.fillText(node.label, node.x, node.y - radius - 5);
+        ctx!.textBaseline = 'top';
+        ctx!.fillText(node.label, node.x, node.y + radius + 4);
       }
     });
 
     ctx.restore();
+
+    // Draw node count badge (bottom-left)
+    ctx.fillStyle = 'rgba(200, 200, 220, 0.5)';
+    ctx.font = '11px system-ui';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${nodes.length} nodes · ${edges.length} connections`, 12, height - 12);
   }
 
   // Animation loop
@@ -282,18 +246,17 @@
     animate();
   }
 
-  // Mouse events
-  function handleMouseDown(e: MouseEvent) {
+  function screenToGraph(e: MouseEvent): { x: number; y: number } {
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left - offsetX) / scale;
-    const y = (e.clientY - rect.top - offsetY) / scale;
+    return {
+      x: (e.clientX - rect.left - offsetX) / scale,
+      y: (e.clientY - rect.top - offsetY) / scale,
+    };
+  }
 
-    const node = nodes.find((n) => {
-      const dx = n.x - x;
-      const dy = n.y - y;
-      return Math.sqrt(dx * dx + dy * dy) < 10;
-    });
-
+  function handleMouseDown(e: MouseEvent) {
+    const { x, y } = screenToGraph(e);
+    const node = hitTestNode(nodes, x, y);
     if (node) {
       dragNode = node;
       isDragging = true;
@@ -301,10 +264,7 @@
   }
 
   function handleMouseMove(e: MouseEvent) {
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left - offsetX) / scale;
-    const y = (e.clientY - rect.top - offsetY) / scale;
-
+    const { x, y } = screenToGraph(e);
     if (isDragging && dragNode) {
       dragNode.x = x;
       dragNode.y = y;
@@ -312,11 +272,7 @@
       dragNode.vy = 0;
       render();
     } else {
-      const node = nodes.find((n) => {
-        const dx = n.x - x;
-        const dy = n.y - y;
-        return Math.sqrt(dx * dx + dy * dy) < 10;
-      });
+      const node = hitTestNode(nodes, x, y);
       hoveredNode = node ? node.id : null;
       render();
     }
@@ -329,23 +285,13 @@
 
   function handleWheel(e: WheelEvent) {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    scale *= delta;
-    scale = Math.max(0.1, Math.min(5, scale));
+    scale = Math.max(0.1, Math.min(5, scale * (e.deltaY > 0 ? 0.9 : 1.1)));
     render();
   }
 
   function handleClick(e: MouseEvent) {
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left - offsetX) / scale;
-    const y = (e.clientY - rect.top - offsetY) / scale;
-
-    const node = nodes.find((n) => {
-      const dx = n.x - x;
-      const dy = n.y - y;
-      return Math.sqrt(dx * dx + dy * dy) < 10;
-    });
-
+    const { x, y } = screenToGraph(e);
+    const node = hitTestNode(nodes, x, y);
     if (node) {
       selectedNode = node.id;
       openNote(node.id);
@@ -354,19 +300,9 @@
 
   function handleContextMenu(e: MouseEvent) {
     e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left - offsetX) / scale;
-    const y = (e.clientY - rect.top - offsetY) / scale;
-
-    const node = nodes.find((n) => {
-      const dx = n.x - x;
-      const dy = n.y - y;
-      return Math.sqrt(dx * dx + dy * dy) < 10;
-    });
-
-    if (node) {
-      showContextMenu(node, e.clientX, e.clientY);
-    }
+    const { x, y } = screenToGraph(e);
+    const node = hitTestNode(nodes, x, y);
+    if (node) showContextMenu(node, e.clientX, e.clientY);
   }
 
   function openNote(nodeId: string) {
@@ -381,8 +317,9 @@
     contextMenuVisible = true;
   }
 
-  function handleContextMenuAction(event: CustomEvent<{ action: string; node: GraphNode }>) {
-    const { action, node } = event.detail;
+  function handleContextMenuAction(detail: { action: string; node: GraphNode | null }) {
+    const { action, node } = detail;
+    if (!node) return;
 
     switch (action) {
       case 'open':
@@ -479,52 +416,109 @@
 </script>
 
 <div class="graph-view">
-  <div class="graph-controls">
-    <input
-      type="text"
-      placeholder="Search nodes..."
-      bind:value={searchQuery}
-      class="search-input"
-    />
-    <button on:click={() => (settings.animate = !settings.animate)}>
-      {settings.animate ? 'Pause' : 'Animate'}
-    </button>
-    <button on:click={() => (scale = 1)}>Reset Zoom</button>
-    <button on:click={loadGraphData}>Refresh</button>
-    <button on:click={() => exportGraphAsPNG(canvas)}>Export PNG</button>
-    <button on:click={() => exportGraphAsSVG(graphData)}>Export SVG</button>
-    <button on:click={() => exportGraphAsJSON(graphData)}> Export JSON </button>
-    <GraphSettingsPanel bind:settings bind:isOpen={settingsOpen} />
-  </div>
+  <GraphHeader onRefresh={loadGraphData} />
 
-  <canvas
-    bind:this={canvas}
-    on:mousedown={handleMouseDown}
-    on:mousemove={handleMouseMove}
-    on:mouseup={handleMouseUp}
-    on:wheel={handleWheel}
-    on:click={handleClick}
-    on:contextmenu={handleContextMenu}
-    {width}
-    {height}
-  />
+  <!-- Canvas container -->
+  <div class="graph-canvas-container">
+    <canvas
+      bind:this={canvas}
+      on:mousedown={handleMouseDown}
+      on:mousemove={handleMouseMove}
+      on:mouseup={handleMouseUp}
+      on:wheel={handleWheel}
+      on:click={handleClick}
+      on:contextmenu={handleContextMenu}
+      {width}
+      {height}
+    ></canvas>
 
-  {#if isLocal && centerNode}
-    <div class="local-graph-info">
-      <p>Local graph: {centerNode}</p>
-      <label>
-        Depth: {depth}
-        <input type="range" min="1" max="5" bind:value={depth} />
-      </label>
+    <!-- Floating controls (top-right, Obsidian-style) -->
+    <div class="graph-floating-controls">
+      <button
+        class="floating-btn"
+        on:click={() => (filterOpen = !filterOpen)}
+        title="Graph filters"
+        class:active={filterOpen}
+      >
+        <Icon name="filter" size={16} />
+      </button>
+      <button
+        class="floating-btn"
+        on:click={() => (settingsOpen = !settingsOpen)}
+        title="Graph settings"
+        class:active={settingsOpen}
+      >
+        <Icon name="settings" size={16} />
+      </button>
+      <button
+        class="floating-btn"
+        on:click={() => {
+          settings.animate = !settings.animate;
+          if (settings.animate) startSimulation();
+        }}
+        title={settings.animate ? 'Pause simulation' : 'Start simulation'}
+        class:active={settings.animate}
+      >
+        <Icon name="zap" size={16} />
+      </button>
     </div>
-  {/if}
+
+    <!-- Search overlay (top-left) -->
+    {#if searchQuery || settingsOpen}
+      <div class="graph-search-overlay">
+        <input
+          type="text"
+          placeholder="Filter nodes..."
+          bind:value={searchQuery}
+          class="search-input"
+        />
+      </div>
+    {/if}
+
+    <!-- Settings panel overlay -->
+    {#if settingsOpen}
+      <div class="graph-settings-overlay">
+        <GraphSettingsPanel bind:settings bind:isOpen={settingsOpen} />
+      </div>
+    {/if}
+
+    <!-- Filter panel overlay -->
+    {#if filterOpen}
+      <div class="graph-filter-overlay">
+        <GraphFilter
+          {availableTags}
+          {availableTypes}
+          selectedTags={filterTags}
+          selectedTypes={filterTypes}
+          folderFilter={filterFolder}
+          linkDepth={filterDepth}
+          onFilter={handleFilter}
+        />
+      </div>
+    {/if}
+
+    {#if isLocal && centerNode}
+      <GraphLocalInfo
+        {centerNode}
+        {depth}
+        onDepthChange={(d) => {
+          depth = d;
+        }}
+        onShowGlobal={() => {
+          isLocal = false;
+          centerNode = null;
+          initializeSimulation();
+        }}
+      />
+    {/if}
+  </div>
 
   <GraphContextMenu
     bind:visible={contextMenuVisible}
     bind:node={contextMenuNode}
     bind:x={contextMenuX}
     bind:y={contextMenuY}
-    on:action={handleContextMenuAction}
+    onAction={handleContextMenuAction}
   />
 </div>
 
@@ -534,80 +528,112 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background: var(--color-bg);
+    background: #1a1a2e;
     position: relative;
   }
 
-  .graph-controls {
-    display: flex;
-    gap: var(--space-2);
-    padding: var(--space-3);
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    align-items: center;
-  }
-
-  .search-input {
+  .graph-canvas-container {
     flex: 1;
-    max-width: 300px;
-    padding: var(--space-2) var(--space-3);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    font-size: 0.875rem;
-    color: var(--color-text);
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-  }
-
-  .graph-controls button {
-    padding: var(--space-2) var(--space-4);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--color-text);
-    transition: background 0.2s;
-  }
-
-  .graph-controls button:hover {
-    background: var(--color-surface);
-    border-color: var(--color-primary);
-  }
-
-  .local-graph-info {
-    position: absolute;
-    top: 70px;
-    left: var(--space-3);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: var(--space-3);
-    font-size: 0.875rem;
-    color: var(--color-text);
-  }
-
-  .local-graph-info label {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    margin-top: var(--space-2);
-  }
-
-  .local-graph-info input[type='range'] {
-    flex: 1;
+    position: relative;
+    overflow: hidden;
   }
 
   canvas {
-    flex: 1;
+    display: block;
     cursor: grab;
   }
 
   canvas:active {
     cursor: grabbing;
+  }
+
+  .graph-floating-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .floating-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(30, 30, 50, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: rgba(200, 200, 220, 0.7);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    backdrop-filter: blur(8px);
+  }
+
+  .floating-btn:hover {
+    background: rgba(50, 50, 80, 0.9);
+    color: rgba(200, 200, 220, 1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .floating-btn.active {
+    background: rgba(74, 158, 255, 0.2);
+    border-color: rgba(74, 158, 255, 0.4);
+    color: #4a9eff;
+  }
+
+  .graph-search-overlay {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+  }
+
+  .search-input {
+    width: 200px;
+    padding: 6px 10px;
+    background: rgba(30, 30, 50, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 12px;
+    color: rgba(200, 200, 220, 0.9);
+    backdrop-filter: blur(8px);
+  }
+
+  .search-input::placeholder {
+    color: rgba(200, 200, 220, 0.4);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: rgba(74, 158, 255, 0.5);
+  }
+
+  .graph-settings-overlay {
+    position: absolute;
+    top: 52px;
+    right: 12px;
+    background: rgba(25, 25, 45, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    backdrop-filter: blur(12px);
+    max-width: 280px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .graph-filter-overlay {
+    position: absolute;
+    top: 52px;
+    left: 12px;
+    background: rgba(25, 25, 45, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0;
+    backdrop-filter: blur(12px);
+    max-width: 260px;
+    max-height: 60vh;
+    overflow-y: auto;
   }
 </style>

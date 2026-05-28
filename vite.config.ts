@@ -4,7 +4,13 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [svelte()],
+  plugins: [
+    svelte({
+      compilerOptions: {
+        dev: true,
+      },
+    }),
+  ],
 
   resolve: {
     alias: {
@@ -25,6 +31,7 @@ export default defineConfig(async () => ({
       protocol: 'ws',
       host: 'localhost',
       port: 5183,
+      clientPort: 5183,
     },
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
@@ -34,6 +41,7 @@ export default defineConfig(async () => ({
   // Enable fast refresh for Svelte
   optimizeDeps: {
     include: ['svelte'],
+    exclude: ['@tauri-apps/api', '@tauri-apps/plugin-dialog', '@tauri-apps/plugin-fs'],
   },
   build: {
     // Faster builds in dev

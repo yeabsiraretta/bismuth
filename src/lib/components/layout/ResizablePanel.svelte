@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
   export let position: 'left' | 'right' = 'left';
   export let width: number = 300;
   export let minWidth: number = 200;
@@ -9,8 +7,8 @@
   export let title: string = '';
   export let collapsible: boolean = true;
   export let resizable: boolean = true;
-
-  const dispatch = createEventDispatcher();
+  export let onResize: ((detail: { width: number }) => void) | undefined = undefined;
+  export let onCollapse: ((detail: { collapsed: boolean }) => void) | undefined = undefined;
 
   let isResizing = false;
   let startX = 0;
@@ -18,7 +16,7 @@
 
   function handleResizeStart(event: MouseEvent) {
     if (!resizable) return;
-    
+
     isResizing = true;
     startX = event.clientX;
     startWidth = width;
@@ -28,13 +26,11 @@
   function handleResizeMove(event: MouseEvent) {
     if (!isResizing) return;
 
-    const delta = position === 'left' 
-      ? event.clientX - startX 
-      : startX - event.clientX;
-    
+    const delta = position === 'left' ? event.clientX - startX : startX - event.clientX;
+
     const newWidth = Math.max(minWidth, Math.min(maxWidth, startWidth + delta));
     width = newWidth;
-    dispatch('resize', { width: newWidth });
+    onResize?.({ width: newWidth });
   }
 
   function handleResizeEnd() {
@@ -44,7 +40,7 @@
   function toggleCollapse() {
     if (!collapsible) return;
     collapsed = !collapsed;
-    dispatch('collapse', { collapsed });
+    onCollapse?.({ collapsed });
   }
 
   function handleMouseMove(event: MouseEvent) {
@@ -66,8 +62,8 @@
   }
 </script>
 
-<aside 
-  class="resizable-panel panel-{position}" 
+<aside
+  class="resizable-panel panel-{position}"
   class:collapsed
   style="width: {collapsed ? '0' : width + 'px'};"
 >
@@ -76,8 +72,8 @@
       <h2 class="panel-title">{title}</h2>
       <div class="panel-actions">
         {#if collapsible}
-          <button 
-            class="panel-action-btn" 
+          <button
+            class="panel-action-btn"
             on:click={toggleCollapse}
             aria-label="Collapse panel"
             title="Collapse"
@@ -97,10 +93,12 @@
     </div>
 
     {#if resizable}
-      <div 
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions a11y_no_noninteractive_tabindex -->
+      <div
         class="resize-handle resize-{position}"
         on:mousedown={handleResizeStart}
         role="separator"
+        tabindex="0"
         aria-valuenow={width}
         aria-valuemin={minWidth}
         aria-valuemax={maxWidth}
@@ -110,7 +108,7 @@
       </div>
     {/if}
   {:else}
-    <button 
+    <button
       class="expand-btn expand-{position}"
       on:click={toggleCollapse}
       aria-label="Expand panel"

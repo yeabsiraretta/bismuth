@@ -1,67 +1,29 @@
 /**
- * Design Tokens - Obsidian Theme Compatible
+ * Design Tokens - Light & Dark Theme Support
  * 
- * These CSS custom properties match the Obsidian theme specification
- * to ensure seamless theme compatibility and consistent styling.
+ * Theme-aware CSS custom properties that adapt based on data-theme attribute.
+ * Shared tokens (typography, spacing, z-index, layout) are in :root.
+ * Color tokens are split between light and dark theme selectors.
  */
 
+/* ========== Shared Tokens (both themes) ========== */
 :root {
-  /* ========== Colors ========== */
-  
-  /* Background colors */
-  --background-primary: #1e1e1e;
-  --background-primary-alt: #1a1a1a;
-  --background-secondary: #252525;
-  --background-secondary-alt: #2a2a2a;
-  --background-modifier-border: #333333;
-  --background-modifier-form-field: #1a1a1a;
-  --background-modifier-form-field-highlighted: #252525;
-  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
-  --background-modifier-success: #197300;
-  --background-modifier-error: #990000;
-  --background-modifier-error-hover: #bb0000;
-  --background-modifier-cover: rgba(0, 0, 0, 0.8);
-  
-  /* Text colors */
-  --text-normal: #dcddde;
-  --text-muted: #999999;
-  --text-faint: #666666;
-  --text-error: #ff6b6b;
-  --text-accent: #7f6df2;
-  --text-accent-hover: #8875ff;
-  --text-on-accent: #ffffff;
-  --text-selection: rgba(127, 109, 242, 0.3);
-  
-  /* Interactive colors */
-  --interactive-normal: #2a2a2a;
-  --interactive-hover: #303030;
-  --interactive-accent: #7f6df2;
-  --interactive-accent-hover: #8875ff;
-  --interactive-success: #197300;
-  
-  /* Scrollbar */
-  --scrollbar-bg: transparent;
-  --scrollbar-thumb-bg: rgba(255, 255, 255, 0.1);
-  --scrollbar-active-thumb-bg: rgba(255, 255, 255, 0.2);
-  
-  /* ========== Typography ========== */
-  
-  /* Font families */
-  --font-text: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
-               "Helvetica Neue", Arial, sans-serif;
-  --font-monospace: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", 
-                    "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
+  /* Typography - Font families */
+  --font-text: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-monospace: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono",
+    "Source Code Pro", Menlo, Consolas, "Courier New", monospace;
   --font-interface: var(--font-text);
-  
+
   /* Font sizes */
-  --font-smallest: 0.75rem;    /* 12px */
-  --font-smaller: 0.875rem;    /* 14px */
-  --font-small: 0.9375rem;     /* 15px */
-  --font-ui-small: 0.875rem;   /* 14px */
-  --font-ui-medium: 1rem;      /* 16px */
-  --font-ui-large: 1.125rem;   /* 18px */
-  --font-text-size: 1rem;      /* 16px */
-  
+  --font-smallest: 0.75rem;
+  --font-smaller: 0.875rem;
+  --font-small: 0.9375rem;
+  --font-ui-small: 0.875rem;
+  --font-ui-medium: 1rem;
+  --font-ui-large: 1.125rem;
+  --font-text-size: 1rem;
+
   /* Font weights */
   --font-thin: 100;
   --font-extralight: 200;
@@ -72,20 +34,19 @@
   --font-bold: 700;
   --font-extrabold: 800;
   --font-black: 900;
-  
+
   /* Line heights */
   --line-height-normal: 1.5;
   --line-height-tight: 1.3;
-  
-  /* ========== Spacing ========== */
-  
+
+  /* Spacing */
   --spacing-xs: 4px;
   --spacing-s: 8px;
   --spacing-m: 16px;
   --spacing-l: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
-  
+
   /* Size scale */
   --size-2-1: 2px;
   --size-2-2: 4px;
@@ -100,78 +61,87 @@
   --size-4-9: 36px;
   --size-4-12: 48px;
   --size-4-16: 64px;
-  
-  /* ========== Border Radius ========== */
-  
+
+  /* Border Radius */
   --radius-xs: 2px;
   --radius-s: 4px;
   --radius-m: 8px;
   --radius-l: 12px;
   --radius-xl: 16px;
-  
-  /* ========== Shadows ========== */
-  
+
+  /* Shadows */
   --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-m: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-l: 0 10px 15px rgba(0, 0, 0, 0.15);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
-  
-  /* ========== Z-Index Layers ========== */
-  
+
+  /* Z-Index Layers */
   --layer-base: 0;
   --layer-menu: 100;
   --layer-popover: 200;
   --layer-modal: 300;
   --layer-notification: 400;
-  
-  /* ========== Transitions ========== */
-  
+
+  /* Transitions */
   --transition-fast: 150ms ease;
   --transition-medium: 250ms ease;
   --transition-slow: 350ms ease;
-  
-  /* ========== Layout ========== */
-  
+
+  /* Layout */
   --sidebar-width: 300px;
   --sidebar-width-min: 200px;
   --sidebar-width-max: 500px;
   --ribbon-width: 44px;
   --header-height: 40px;
   --status-bar-height: 24px;
-  
-  /* ========== Editor ========== */
-  
-  --code-background: #1a1a1a;
-  --code-normal: #dcddde;
-  --code-comment: #6a9955;
-  --code-keyword: #569cd6;
-  --code-string: #ce9178;
-  --code-function: #dcdcaa;
-  --code-important: #c586c0;
-  --code-operator: #d4d4d4;
-  --code-property: #9cdcfe;
-  --code-punctuation: #d4d4d4;
-  --code-tag: #569cd6;
-  --code-value: #ce9178;
 }
 
-/* Light theme override (optional - can be toggled) */
-[data-theme="light"] {
+/* ========== Light Theme (Default) ========== */
+:root,
+:root[data-theme="light"] {
+  /* Background colors */
   --background-primary: #ffffff;
-  --background-primary-alt: #f5f5f5;
-  --background-secondary: #f0f0f0;
-  --background-secondary-alt: #e8e8e8;
-  --background-modifier-border: #ddd;
+  --background-primary-alt: #f8f9fa;
+  --background-secondary: #f3f4f6;
+  --background-secondary-alt: #e5e7eb;
+  --background-modifier-border: #d1d5db;
   --background-modifier-form-field: #ffffff;
-  --background-modifier-form-field-highlighted: #f5f5f5;
-  
-  --text-normal: #2e3338;
-  --text-muted: #6c6c6c;
-  --text-faint: #999999;
-  
-  --interactive-normal: #f5f5f5;
-  --interactive-hover: #e8e8e8;
-  
+  --background-modifier-form-field-highlighted: #f9fafb;
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.1);
+  --background-modifier-success: #10b981;
+  --background-modifier-error: #ef4444;
+  --background-modifier-error-hover: #dc2626;
+  --background-modifier-cover: rgba(0, 0, 0, 0.5);
+  --background-modifier-hover: #f3f4f6;
+
+  /* Text colors */
+  --text-normal: #1f2937;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
+  --text-error: #ef4444;
+  --text-accent: #7c3aed;
+  --text-accent-hover: #6d28d9;
+  --text-on-accent: #ffffff;
+  --text-selection: rgba(124, 58, 237, 0.2);
+  --text-primary: #111827;
+
+  /* Interactive colors */
+  --interactive-normal: #f3f4f6;
+  --interactive-hover: #e5e7eb;
+  --interactive-accent: #7c3aed;
+  --interactive-accent-hover: #6d28d9;
+  --interactive-success: #10b981;
+
+  /* Border colors */
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
+
+  /* Scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(0, 0, 0, 0.1);
+  --scrollbar-active-thumb-bg: rgba(0, 0, 0, 0.2);
+
+  /* Editor - Code colors */
   --code-background: #f5f5f5;
   --code-normal: #2e3338;
   --code-comment: #6a9955;
@@ -184,4 +154,63 @@
   --code-punctuation: #2e3338;
   --code-tag: #0000ff;
   --code-value: #a31515;
+}
+
+/* ========== Dark Theme ========== */
+:root[data-theme="dark"] {
+  /* Background colors */
+  --background-primary: #1e1e1e;
+  --background-primary-alt: #1a1a1a;
+  --background-secondary: #252525;
+  --background-secondary-alt: #2a2a2a;
+  --background-modifier-border: #333333;
+  --background-modifier-form-field: #1a1a1a;
+  --background-modifier-form-field-highlighted: #252525;
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+  --background-modifier-success: #197300;
+  --background-modifier-error: #990000;
+  --background-modifier-error-hover: #bb0000;
+  --background-modifier-cover: rgba(0, 0, 0, 0.8);
+  --background-modifier-hover: #2a2a2a;
+
+  /* Text colors */
+  --text-normal: #dcddde;
+  --text-muted: #999999;
+  --text-faint: #666666;
+  --text-error: #ff6b6b;
+  --text-accent: #7f6df2;
+  --text-accent-hover: #8875ff;
+  --text-on-accent: #ffffff;
+  --text-selection: rgba(127, 109, 242, 0.3);
+  --text-primary: #ffffff;
+
+  /* Interactive colors */
+  --interactive-normal: #2a2a2a;
+  --interactive-hover: #303030;
+  --interactive-accent: #7f6df2;
+  --interactive-accent-hover: #8875ff;
+  --interactive-success: #197300;
+
+  /* Border colors */
+  --border-color: #333333;
+  --border-hover: #444444;
+
+  /* Scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(255, 255, 255, 0.1);
+  --scrollbar-active-thumb-bg: rgba(255, 255, 255, 0.2);
+
+  /* Editor - Code colors */
+  --code-background: #1a1a1a;
+  --code-normal: #dcddde;
+  --code-comment: #6a9955;
+  --code-keyword: #569cd6;
+  --code-string: #ce9178;
+  --code-function: #dcdcaa;
+  --code-important: #c586c0;
+  --code-operator: #d4d4d4;
+  --code-property: #9cdcfe;
+  --code-punctuation: #d4d4d4;
+  --code-tag: #569cd6;
+  --code-value: #ce9178;
 }

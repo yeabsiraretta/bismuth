@@ -1,6 +1,7 @@
 <script lang="ts">
   import { activeTool, setActiveTool, canvasSettings } from '@/stores/canvas/canvasStore';
   import type { Tool } from '@/types/canvas';
+  import Icon from '@/components/icons/Icon.svelte';
 
   function selectTool(tool: Tool) {
     setActiveTool(tool);
@@ -14,12 +15,19 @@
     canvasSettings.update((s) => ({ ...s, snapToGrid: !s.snapToGrid }));
   }
 
-  const tools: Array<{ id: Tool; label: string; icon: string }> = [
-    { id: 'select', label: 'Select', icon: '⬚' },
-    { id: 'rectangle', label: 'Rectangle', icon: '▭' },
-    { id: 'circle', label: 'Circle', icon: '○' },
-    { id: 'text', label: 'Text', icon: 'T' },
-    { id: 'pan', label: 'Pan', icon: '✋' },
+  const tools: Array<{ id: Tool; label: string; icon: string; group?: string }> = [
+    { id: 'select', label: 'Select', icon: 'crosshair', group: 'pointer' },
+    { id: 'pan', label: 'Pan', icon: 'move', group: 'pointer' },
+    { id: 'frame', label: 'Frame', icon: 'layout', group: 'shapes' },
+    { id: 'rectangle', label: 'Rect', icon: 'square', group: 'shapes' },
+    { id: 'circle', label: 'Circle', icon: 'circle', group: 'shapes' },
+    { id: 'line', label: 'Line', icon: 'minus', group: 'draw' },
+    { id: 'arrow', label: 'Arrow', icon: 'arrow-right', group: 'draw' },
+    { id: 'pen', label: 'Pen', icon: 'edit-3', group: 'draw' },
+    { id: 'text', label: 'Text', icon: 'type', group: 'content' },
+    { id: 'image', label: 'Image', icon: 'image', group: 'content' },
+    { id: 'screen', label: 'Screen', icon: 'smartphone', group: 'layout' },
+    { id: 'component', label: 'Component', icon: 'box', group: 'layout' },
   ];
 </script>
 
@@ -31,8 +39,9 @@
         class:active={$activeTool === tool.id}
         on:click={() => selectTool(tool.id)}
         title={tool.label}
+        aria-label={tool.label}
       >
-        <span class="tool-icon">{tool.icon}</span>
+        <Icon name={tool.icon} size={18} />
         <span class="tool-label">{tool.label}</span>
       </button>
     {/each}
@@ -46,8 +55,9 @@
       class:active={$canvasSettings.showGrid}
       on:click={toggleGrid}
       title="Toggle Grid"
+      aria-label="Toggle grid"
     >
-      <span class="tool-icon">#</span>
+      <Icon name="grid" size={18} />
       <span class="tool-label">Grid</span>
     </button>
 
@@ -56,8 +66,9 @@
       class:active={$canvasSettings.snapToGrid}
       on:click={toggleSnap}
       title="Snap to Grid"
+      aria-label="Snap to grid"
     >
-      <span class="tool-icon">⊞</span>
+      <Icon name="maximize" size={18} />
       <span class="tool-label">Snap</span>
     </button>
   </div>
@@ -67,57 +78,53 @@
   .canvas-toolbar {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
+    background: var(--background-primary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-s);
   }
 
   .tool-group {
     display: flex;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
   }
 
   .divider {
     width: 1px;
     height: 2rem;
-    background: #e5e7eb;
+    background: var(--border-color);
   }
 
   .tool-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.125rem;
-    padding: 0.5rem 0.75rem;
+    gap: 2px;
+    padding: var(--spacing-s) var(--spacing-s);
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 0.375rem;
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
     cursor: pointer;
-    transition: all 0.15s;
-    min-width: 4rem;
+    transition: all var(--transition-fast);
+    min-width: 3.5rem;
   }
 
   .tool-button:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
+    background: var(--background-modifier-hover);
+    border-color: var(--border-color);
   }
 
   .tool-button.active {
-    background: #dbeafe;
-    border-color: #3b82f6;
-    color: #1e40af;
-  }
-
-  .tool-icon {
-    font-size: 1.25rem;
-    line-height: 1;
+    background: var(--interactive-hover);
+    border-color: var(--interactive-accent);
+    color: var(--interactive-accent);
   }
 
   .tool-label {
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: var(--font-smallest);
+    font-weight: var(--font-medium);
     text-transform: uppercase;
     letter-spacing: 0.025em;
   }

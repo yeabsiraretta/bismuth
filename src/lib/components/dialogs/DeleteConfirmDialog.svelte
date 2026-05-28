@@ -1,19 +1,18 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import Modal from '@/components/ui/Modal.svelte';
   import Button from '@/components/ui/Button.svelte';
 
   export let isOpen: boolean = false;
   export let noteTitle: string = '';
-
-  const dispatch = createEventDispatcher();
+  export let onConfirm: (() => void) | undefined = undefined;
+  export let onClose: (() => void) | undefined = undefined;
 
   function handleConfirm() {
-    dispatch('confirm');
+    onConfirm?.();
   }
 
   function handleClose() {
-    dispatch('close');
+    onClose?.();
   }
 </script>
 
@@ -21,7 +20,7 @@
   {isOpen}
   title="Delete Note?"
   ariaLabel="Delete note confirmation dialog"
-  on:close={handleClose}
+  onClose={handleClose}
 >
   <div class="dialog-content">
     <p class="message">Are you sure you want to delete "{noteTitle}"?</p>

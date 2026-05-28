@@ -13,11 +13,12 @@
     settings = {
       showTags: true,
       showAttachments: true,
-      showOrphans: false,
-      showArrows: true,
-      textFadeThreshold: 0.5,
+      showOrphans: true,
+      showArrows: false,
+      showLabels: true,
+      textFadeThreshold: 0.3,
       nodeSize: 1.0,
-      linkThickness: 1.0,
+      linkThickness: 0.5,
       centerForce: 0.3,
       repelForce: 100,
       linkForce: 0.5,
@@ -57,6 +58,10 @@
 
       <div class="settings-section">
         <h4>Display</h4>
+        <label>
+          <input type="checkbox" bind:checked={settings.showLabels} />
+          <span>Labels</span>
+        </label>
         <label>
           <input type="checkbox" bind:checked={settings.showArrows} />
           <span>Arrows</span>

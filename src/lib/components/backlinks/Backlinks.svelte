@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
   import Icon from '@/components/icons/Icon.svelte';
+  import BacklinkMentionItem from './BacklinkMentionItem.svelte';
 
   export let noteId: string;
   export const noteName: string = '';
@@ -189,18 +190,13 @@
       {:else}
         <div class="mentions-list">
           {#each filteredLinkedMentions as mention}
-            <div class="mention-item">
-              <button class="mention-header" on:click={() => openNote(mention)}>
-                <Icon name="file" size={16} />
-                <span class="mention-name">{mention.noteName}</span>
-                <span class="mention-path">{mention.notePath}</span>
-              </button>
-              {#if !collapseResults}
-                <div class="mention-context">
-                  {getDisplayContext(mention.context)}
-                </div>
-              {/if}
-            </div>
+            <BacklinkMentionItem
+              noteName={mention.noteName}
+              notePath={mention.notePath}
+              context={getDisplayContext(mention.context)}
+              collapsed={collapseResults}
+              onOpen={() => openNote(mention)}
+            />
           {/each}
         </div>
       {/if}
@@ -219,23 +215,15 @@
       {:else}
         <div class="mentions-list">
           {#each filteredUnlinkedMentions as mention}
-            <div class="mention-item">
-              <div class="mention-header-row">
-                <button class="mention-header" on:click={() => openNote(mention)}>
-                  <Icon name="file" size={16} />
-                  <span class="mention-name">{mention.noteName}</span>
-                  <span class="mention-path">{mention.notePath}</span>
-                </button>
-                <button class="link-btn" on:click={() => createLink(mention)} title="Create link">
-                  <Icon name="plus" size={14} />
-                </button>
-              </div>
-              {#if !collapseResults}
-                <div class="mention-context">
-                  {getDisplayContext(mention.context)}
-                </div>
-              {/if}
-            </div>
+            <BacklinkMentionItem
+              noteName={mention.noteName}
+              notePath={mention.notePath}
+              context={getDisplayContext(mention.context)}
+              collapsed={collapseResults}
+              showCreateLink
+              onOpen={() => openNote(mention)}
+              onCreateLink={() => createLink(mention)}
+            />
           {/each}
         </div>
       {/if}
@@ -375,74 +363,5 @@
   .mentions-list {
     overflow-y: auto;
     max-height: 400px;
-  }
-
-  .mention-item {
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .mention-item:last-child {
-    border-bottom: none;
-  }
-
-  .mention-header-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-
-  .mention-header {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-3);
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    color: var(--color-text);
-    transition: background 0.15s;
-  }
-
-  .mention-header:hover {
-    background: var(--color-surface);
-  }
-
-  .mention-name {
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
-
-  .mention-path {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-  }
-
-  .link-btn {
-    padding: var(--space-1);
-    margin-right: var(--space-2);
-    background: var(--color-primary);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.15s;
-  }
-
-  .link-btn:hover {
-    opacity: 0.8;
-  }
-
-  .mention-context {
-    padding: var(--space-2) var(--space-3);
-    padding-left: calc(var(--space-3) + 16px + var(--space-2));
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    white-space: pre-wrap;
-    background: var(--color-surface);
   }
 </style>

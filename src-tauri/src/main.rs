@@ -93,6 +93,9 @@ fn main() {
             create_note,
             update_links_on_rename,
             create_note_from_wikilink,
+            open_in_file_manager,
+            update_frontmatter_field,
+            get_custom_entity_types,
             // Search commands
             search_vault,
             search_in_file,
@@ -109,6 +112,8 @@ fn main() {
             get_notes_by_tag,
             get_tag_stats,
             search_tags,
+            rename_tag,
+            merge_tags,
             // Property commands
             get_all_properties,
             get_property_values,

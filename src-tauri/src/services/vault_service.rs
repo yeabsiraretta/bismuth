@@ -325,6 +325,27 @@ impl VaultService {
         self.create_note(&note_path, &content)
     }
 
+    /// Updates a single frontmatter field on a note.
+    /// Reads the file, parses frontmatter, sets the field, re-serializes, and writes back.
+    pub fn update_frontmatter_field(&self, path: &Path, key: &str, value: serde_json::Value) -> Result<()> {
+        use crate::services::FrontmatterService;
+
+        let vault = self
+            .vault
+            .as_ref()
+            .ok_or_else(|| BismuthError::VaultError("No vault open".to_string()))?;
+
+        let content = std::fs::read_to_string(path).map_err(|e| {
+            BismuthError::NotFound(format!("Note not found: {}", e))
+        })?;
+
+        let (mut frontmatter, body) = FrontmatterService::parse(&content)?;
+        FrontmatterService::set_field(&mut frontmatter, key.to_string(), value);
+        let new_content = FrontmatterService::serialize(&frontmatter, &body)?;
+
+        self.operations.write_note(path, &new_content, vault)
+    }
+
     pub fn update_links_on_rename(&self, old_path: &Path, new_path: &Path) -> Result<Vec<PathBuf>> {
         let vault = self
             .vault

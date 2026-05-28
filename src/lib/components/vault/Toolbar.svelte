@@ -9,8 +9,10 @@
   } from '@/stores/vault/vault';
   import { toggleLeftSidebar, toggleRightSidebar } from '@/stores/layout/layout';
   import Icon from '@/components/icons/Icon.svelte';
+  import ThemeToggle from '@/components/ui/ThemeToggle.svelte';
   import NewNoteDialog from '@/components/dialogs/NewNoteDialog.svelte';
   import DeleteConfirmDialog from '@/components/dialogs/DeleteConfirmDialog.svelte';
+  import SettingsModal from '@/components/modals/SettingsModal.svelte';
   import { log } from '@/utils/logger';
 
   // Callback prop for refresh event (Svelte 5 pattern)
@@ -20,17 +22,16 @@
   let showNewNoteDialog = false;
   let newNoteName = '';
   let showSettingsMenu = false;
+  let showSettingsModal = false;
 
-  async function handleCreateNote(event: CustomEvent<{ name: string }>) {
+  async function handleCreateNote(detail: { name: string }) {
     if (!$currentVault) return;
 
-    log.info('Creating new note', { name: event.detail.name });
+    log.info('Creating new note', { name: detail.name });
     try {
-      const fileName = event.detail.name.endsWith('.md')
-        ? event.detail.name
-        : `${event.detail.name}.md`;
+      const fileName = detail.name.endsWith('.md') ? detail.name : `${detail.name}.md`;
       const notePath = `${$currentVault.root_path}/${fileName}`;
-      const content = `# ${event.detail.name}\n\n`;
+      const content = `# ${detail.name}\n\n`;
 
       await invoke('write_note', { path: notePath, content });
       log.info('Note created successfully', { path: notePath });
@@ -45,7 +46,7 @@
       showNewNoteDialog = false;
       newNoteName = '';
     } catch (error) {
-      log.error('Failed to create note', error as Error, { name: event.detail.name });
+      log.error('Failed to create note', error as Error, { name: detail.name });
     }
   }
 
@@ -102,6 +103,9 @@
 
   <div class="spacer"></div>
 
+  <!-- Theme Toggle -->
+  <ThemeToggle />
+
   <!-- Settings Menu -->
   <div class="settings-menu-container">
     <button
@@ -119,28 +123,11 @@
           class="settings-item"
           on:click={() => {
             showSettingsMenu = false;
+            showSettingsModal = true;
           }}
         >
-          <Icon name="palette" size={16} />
-          <span>Appearance</span>
-        </button>
-        <button
-          class="settings-item"
-          on:click={() => {
-            showSettingsMenu = false;
-          }}
-        >
-          <Icon name="keyboard" size={16} />
-          <span>Keyboard Shortcuts</span>
-        </button>
-        <button
-          class="settings-item"
-          on:click={() => {
-            showSettingsMenu = false;
-          }}
-        >
-          <Icon name="folder" size={16} />
-          <span>Vault Settings</span>
+          <Icon name="settings" size={16} />
+          <span>Settings</span>
         </button>
         <div class="settings-divider"></div>
         <button
@@ -150,7 +137,7 @@
           }}
         >
           <Icon name="info" size={16} />
-          <span>About Bismuth</span>
+          <span>About</span>
         </button>
       </div>
     {/if}
@@ -170,16 +157,18 @@
 <NewNoteDialog
   isOpen={showNewNoteDialog}
   bind:noteName={newNoteName}
-  on:create={handleCreateNote}
-  on:close={() => (showNewNoteDialog = false)}
+  onCreate={handleCreateNote}
+  onClose={() => (showNewNoteDialog = false)}
 />
 
 <DeleteConfirmDialog
   isOpen={showDeleteConfirm}
   noteTitle={$activeNote?.title || ''}
-  on:confirm={handleDeleteNote}
-  on:close={() => (showDeleteConfirm = false)}
+  onConfirm={handleDeleteNote}
+  onClose={() => (showDeleteConfirm = false)}
 />
+
+<SettingsModal isOpen={showSettingsModal} onClose={() => (showSettingsModal = false)} />
 
 <style>
   .toolbar {
@@ -188,6 +177,7 @@
     gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
     background: var(--color-surface);
+    flex: 1;
     border-bottom: 1px solid var(--color-border);
   }
 

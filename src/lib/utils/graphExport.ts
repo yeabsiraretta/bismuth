@@ -89,7 +89,7 @@ export function exportGraphAsSVG(data: GraphData, filename = 'graph.svg'): void 
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
 
   // Draw edges
-  data.edges.forEach(edge => {
+  data.edges.forEach(_edge => {
     svg += `<line x1="100" y1="100" x2="200" y2="200" stroke="#666" />`;
   });
 

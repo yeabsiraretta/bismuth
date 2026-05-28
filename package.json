@@ -1,6 +1,6 @@
 {
   "name": "bismuth",
-  "version": "0.0.1297",
+  "version": "0.0.1298",
   "description": "A local-first PKM editor with Johnny.Decimal, Zettelkasten, and intelligent knowledge management",
   "private": true,
   "type": "module",
@@ -62,6 +62,7 @@
     "@tauri-apps/api": "^2.0.0",
     "@tauri-apps/plugin-dialog": "^2.7.1",
     "@tauri-apps/plugin-shell": "^2.0.0",
+    "date-fns": "^4.3.0",
     "konva": "^9.0.0",
     "marked": "^18.0.4",
     "pdfjs-dist": "^3.0.0",

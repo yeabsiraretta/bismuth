@@ -14,7 +14,7 @@
 
   onMount(() => {
     log.info('CanvasWorkspace mounted');
-    
+
     // Set up canvas
     if (canvas) {
       ctx = canvas.getContext('2d');
@@ -33,13 +33,13 @@
 
   function resizeCanvas() {
     if (!canvasContainer || !canvas) return;
-    
+
     const rect = canvasContainer.getBoundingClientRect();
     width = rect.width;
     height = rect.height;
     canvas.width = width;
     canvas.height = height;
-    
+
     render();
   }
 
@@ -76,8 +76,8 @@
     const gridSize = $canvasSettings.gridSize;
     const startX = Math.floor(-$viewport.x / $viewport.scale / gridSize) * gridSize;
     const startY = Math.floor(-$viewport.y / $viewport.scale / gridSize) * gridSize;
-    const endX = startX + (width / $viewport.scale) + gridSize;
-    const endY = startY + (height / $viewport.scale) + gridSize;
+    const endX = startX + width / $viewport.scale + gridSize;
+    const endY = startY + height / $viewport.scale + gridSize;
 
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1 / $viewport.scale;
@@ -163,7 +163,11 @@
     ctx.font = `${element.properties.fontSize || 16}px ${element.properties.fontFamily || 'Inter, sans-serif'}`;
     ctx.globalAlpha = element.properties.opacity || 1;
 
-    ctx.fillText(element.properties.text || '', element.x, element.y + (element.properties.fontSize || 16));
+    ctx.fillText(
+      element.properties.text || '',
+      element.x,
+      element.y + (element.properties.fontSize || 16)
+    );
   }
 
   function handleMouseDown(e: MouseEvent) {
@@ -253,7 +257,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #f9fafb;
+    background: var(--background-primary-alt);
   }
 
   canvas {
@@ -269,15 +273,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: #6b7280;
+    color: var(--text-muted);
   }
 
   .empty-state p {
-    margin: 0.5rem 0;
+    margin: var(--spacing-s) 0;
   }
 
   .hint {
-    font-size: 0.875rem;
-    color: #9ca3af;
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
   }
 </style>

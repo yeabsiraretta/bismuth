@@ -8,6 +8,7 @@
     deleteCanvasById,
   } from '@/stores/canvas/canvasStore';
   import { log } from '@/utils/logger';
+  import Icon from '@/components/icons/Icon.svelte';
 
   let searchQuery = '';
   let isCreating = false;
@@ -72,13 +73,12 @@
 <div class="canvas-library">
   <div class="library-header">
     <h2>Canvas Library</h2>
-    <button class="btn-primary" on:click={() => (isCreating = true)}>
-      + New Canvas
-    </button>
+    <button class="btn-primary" on:click={() => (isCreating = true)}> + New Canvas </button>
   </div>
 
   {#if isCreating}
     <div class="create-form">
+      <!-- svelte-ignore a11y_autofocus -->
       <input
         type="text"
         bind:value={newCanvasName}
@@ -94,11 +94,7 @@
   {/if}
 
   <div class="search-bar">
-    <input
-      type="search"
-      bind:value={searchQuery}
-      placeholder="Search canvases..."
-    />
+    <input type="search" bind:value={searchQuery} placeholder="Search canvases..." />
   </div>
 
   <div class="canvas-grid">
@@ -126,15 +122,17 @@
               class="btn-icon"
               on:click={() => handleLoadCanvas(canvas.id)}
               title="Open"
+              aria-label="Open canvas"
             >
-              📂
+              <Icon name="folder-open" size={16} />
             </button>
             <button
               class="btn-icon btn-danger"
               on:click={() => handleDeleteCanvas(canvas.id, canvas.name)}
               title="Delete"
+              aria-label="Delete canvas"
             >
-              🗑️
+              <Icon name="trash-2" size={16} />
             </button>
           </div>
         </div>
@@ -148,8 +146,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 1.5rem;
-    background: #f9fafb;
+    padding: var(--spacing-l);
+    background: var(--background-primary-alt);
     overflow: hidden;
   }
 
@@ -157,183 +155,191 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-l);
   }
 
   .library-header h2 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 600;
-    color: #111827;
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
   }
 
   .create-form {
-    background: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid #e5e7eb;
+    background: var(--background-primary);
+    padding: var(--spacing-m);
+    border-radius: var(--radius-m);
+    margin-bottom: var(--spacing-m);
+    border: 1px solid var(--border-color);
   }
 
   .create-form input {
     width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    margin-bottom: 0.75rem;
+    padding: var(--spacing-s);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    margin-bottom: var(--spacing-s);
+    background: var(--background-modifier-form-field);
+    color: var(--text-normal);
   }
 
   .form-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--spacing-s);
     justify-content: flex-end;
   }
 
   .search-bar {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-m);
   }
 
   .search-bar input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    padding: var(--spacing-s) var(--spacing-m);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-m);
+    font-size: var(--font-smaller);
+    background: var(--background-modifier-form-field);
+    color: var(--text-normal);
   }
 
   .canvas-grid {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    gap: var(--spacing-m);
     overflow-y: auto;
-    padding-bottom: 1rem;
+    padding-bottom: var(--spacing-m);
   }
 
   .canvas-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-m);
     overflow: hidden;
-    transition: all 0.2s;
+    transition: all var(--transition-medium);
     cursor: pointer;
   }
 
   .canvas-card:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-color: var(--interactive-accent);
+    box-shadow: var(--shadow-m);
   }
 
   .canvas-preview {
     height: 150px;
-    background: #f3f4f6;
+    background: var(--background-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-color);
   }
 
   .preview-placeholder {
     text-align: center;
-    color: #6b7280;
+    color: var(--text-muted);
   }
 
   .element-count {
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
   }
 
   .canvas-info {
-    padding: 1rem;
+    padding: var(--spacing-m);
   }
 
   .canvas-name {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #111827;
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-ui-medium);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
   }
 
   .canvas-meta {
     margin: 0;
-    font-size: 0.75rem;
-    color: #6b7280;
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
   }
 
   .canvas-actions {
     display: flex;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-top: 1px solid #e5e7eb;
-    background: #f9fafb;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+    border-top: 1px solid var(--border-color);
+    background: var(--background-primary-alt);
   }
 
   .btn-primary {
-    padding: 0.5rem 1rem;
-    background: #3b82f6;
-    color: white;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
     border: none;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background var(--transition-fast);
   }
 
   .btn-primary:hover {
-    background: #2563eb;
+    background: var(--interactive-accent-hover);
   }
 
   .btn-secondary {
-    padding: 0.5rem 1rem;
-    background: white;
-    color: #374151;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
   }
 
   .btn-secondary:hover {
-    background: #f3f4f6;
+    background: var(--background-modifier-hover);
   }
 
   .btn-icon {
-    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-s);
     background: transparent;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
     cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
   }
 
   .btn-icon:hover {
-    background: #f3f4f6;
-    border-color: #9ca3af;
+    background: var(--background-modifier-hover);
+    border-color: var(--border-hover);
   }
 
   .btn-danger:hover {
-    background: #fee2e2;
-    border-color: #ef4444;
+    background: var(--background-modifier-error);
+    border-color: var(--text-error);
+    color: var(--text-on-accent);
   }
 
   .empty-state {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 3rem 1rem;
-    color: #6b7280;
+    padding: var(--spacing-xxl) var(--spacing-m);
+    color: var(--text-muted);
   }
 
   .empty-state p {
-    margin: 0.5rem 0;
+    margin: var(--spacing-s) 0;
   }
 
   .hint {
-    font-size: 0.875rem;
-    color: #9ca3af;
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
   }
 </style>

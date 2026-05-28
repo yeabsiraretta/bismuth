@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import type { GraphNode } from '$lib/types/graph';
   import Icon from '@/components/icons/Icon.svelte';
 
@@ -7,12 +6,12 @@
   export let x = 0;
   export let y = 0;
   export let visible = false;
-
-  const dispatch = createEventDispatcher();
+  export let onAction: ((detail: { action: string; node: GraphNode | null }) => void) | undefined =
+    undefined;
 
   function handleAction(action: string) {
     if (node) {
-      dispatch('action', { action, node });
+      onAction?.({ action, node });
       visible = false;
     }
   }

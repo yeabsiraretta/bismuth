@@ -2,6 +2,11 @@
   import { onMount } from 'svelte';
   import CanvasWorkspaceInteractive from './CanvasWorkspaceInteractive.svelte';
   import CanvasLibrary from './CanvasLibrary.svelte';
+  import PropertyPanel from './PropertyPanel.svelte';
+  import LayerPanel from './LayerPanel.svelte';
+  import PagesPanel from './PagesPanel.svelte';
+  import ComponentsPanel from './ComponentsPanel.svelte';
+  import Icon from '@/components/icons/Icon.svelte';
   import {
     currentCanvas,
     saveCurrentCanvas,
@@ -12,6 +17,7 @@
     ungroupSelectedElements,
     alignSelectedElements,
     selectedElements,
+    createComponentFromSelection,
   } from '@/stores/canvas/canvasStore';
   import { undo, redo, canUndo, canRedo } from '@/stores/canvas/historyStore';
   import {
@@ -76,6 +82,12 @@
         e.preventDefault();
         handleSave();
         break;
+      case 'k':
+        if (e.shiftKey) {
+          e.preventDefault();
+          createComponentFromSelection();
+        }
+        break;
     }
   }
 
@@ -136,16 +148,31 @@
   {:else if view === 'canvas'}
     <div class="canvas-view">
       <div class="canvas-header">
-        <button class="btn-back" on:click={() => (view = 'library')}> ← Back to Library </button>
+        <button class="btn-back" on:click={() => (view = 'library')} aria-label="Back to library">
+          <Icon name="arrow-left" size={16} />
+          Back to Library
+        </button>
 
         <h1 class="canvas-title">{$currentCanvas?.name || 'Untitled'}</h1>
 
         <div class="canvas-actions">
-          <button class="btn-icon" on:click={undo} disabled={!$canUndo} title="Undo (Cmd+Z)">
-            ↶
+          <button
+            class="btn-icon"
+            on:click={undo}
+            disabled={!$canUndo}
+            title="Undo (Cmd+Z)"
+            aria-label="Undo"
+          >
+            <Icon name="corner-up-left" size={16} />
           </button>
-          <button class="btn-icon" on:click={redo} disabled={!$canRedo} title="Redo (Cmd+Shift+Z)">
-            ↷
+          <button
+            class="btn-icon"
+            on:click={redo}
+            disabled={!$canRedo}
+            title="Redo (Cmd+Shift+Z)"
+            aria-label="Redo"
+          >
+            <Icon name="corner-up-right" size={16} />
           </button>
 
           <div class="divider"></div>
@@ -155,17 +182,26 @@
             on:click={copySelectedElements}
             disabled={$selectedElements.length === 0}
             title="Copy (Cmd+C)"
+            aria-label="Copy"
           >
-            📋
+            <Icon name="copy" size={16} />
           </button>
-          <button class="btn-icon" on:click={pasteElements} title="Paste (Cmd+V)"> 📄 </button>
+          <button
+            class="btn-icon"
+            on:click={pasteElements}
+            title="Paste (Cmd+V)"
+            aria-label="Paste"
+          >
+            <Icon name="file-text" size={16} />
+          </button>
           <button
             class="btn-icon"
             on:click={duplicateSelectedElements}
             disabled={$selectedElements.length === 0}
             title="Duplicate (Cmd+D)"
+            aria-label="Duplicate"
           >
-            ⎘
+            <Icon name="copy" size={16} />
           </button>
 
           <div class="divider"></div>
@@ -175,33 +211,44 @@
             on:click={() => alignSelectedElements('left')}
             disabled={$selectedElements.length < 2}
             title="Align Left"
+            aria-label="Align left"
           >
-            ⫷
+            <Icon name="columns" size={16} />
           </button>
           <button
             class="btn-icon"
             on:click={() => alignSelectedElements('center')}
             disabled={$selectedElements.length < 2}
             title="Align Center"
+            aria-label="Align center"
           >
-            ⫸
+            <Icon name="columns" size={16} />
           </button>
           <button
             class="btn-icon"
             on:click={() => alignSelectedElements('right')}
             disabled={$selectedElements.length < 2}
             title="Align Right"
+            aria-label="Align right"
           >
-            ⫹
+            <Icon name="columns" size={16} />
           </button>
 
           <div class="divider"></div>
 
-          <button class="btn-primary" on:click={handleSave}> 💾 Save </button>
+          <button class="btn-primary" on:click={handleSave} aria-label="Save canvas">
+            <Icon name="save" size={16} />
+            Save
+          </button>
 
           <div class="export-dropdown">
-            <button class="btn-secondary" on:click={() => (showExportMenu = !showExportMenu)}>
-              Export ▼
+            <button
+              class="btn-secondary"
+              on:click={() => (showExportMenu = !showExportMenu)}
+              aria-label="Export options"
+            >
+              <Icon name="download" size={16} />
+              Export
             </button>
             {#if showExportMenu}
               <div class="dropdown-menu">
@@ -214,7 +261,15 @@
         </div>
       </div>
 
-      <CanvasWorkspaceInteractive />
+      <div class="canvas-body">
+        <CanvasWorkspaceInteractive />
+        <div class="canvas-sidebar">
+          <PagesPanel />
+          <ComponentsPanel />
+          <PropertyPanel />
+          <LayerPanel />
+        </div>
+      </div>
     </div>
   {/if}
 </div>
@@ -222,10 +277,10 @@
 <style>
   .canvas-app {
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background: #f9fafb;
+    background: var(--background-primary-alt);
   }
 
   .canvas-view {
@@ -234,63 +289,82 @@
     height: 100%;
   }
 
+  .canvas-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .canvas-sidebar {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
   .canvas-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    gap: var(--spacing-m);
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--background-primary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-s);
   }
 
   .btn-back {
-    padding: 0.5rem 1rem;
-    background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    color: var(--text-normal);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
   }
 
   .btn-back:hover {
-    background: #f3f4f6;
+    background: var(--background-modifier-hover);
   }
 
   .canvas-title {
     margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #111827;
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
   }
 
   .canvas-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-s);
   }
 
   .divider {
     width: 1px;
     height: 1.5rem;
-    background: #e5e7eb;
+    background: var(--border-color);
   }
 
   .btn-icon {
-    padding: 0.5rem 0.75rem;
-    background: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-s);
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
   }
 
   .btn-icon:hover:not(:disabled) {
-    background: #f3f4f6;
-    border-color: #9ca3af;
+    background: var(--background-modifier-hover);
+    border-color: var(--border-hover);
   }
 
   .btn-icon:disabled {
@@ -299,35 +373,41 @@
   }
 
   .btn-primary {
-    padding: 0.5rem 1rem;
-    background: #3b82f6;
-    color: white;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
     border: none;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background var(--transition-fast);
   }
 
   .btn-primary:hover {
-    background: #2563eb;
+    background: var(--interactive-accent-hover);
   }
 
   .btn-secondary {
-    padding: 0.5rem 1rem;
-    background: white;
-    color: #374151;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
   }
 
   .btn-secondary:hover {
-    background: #f3f4f6;
+    background: var(--background-modifier-hover);
   }
 
   .export-dropdown {
@@ -338,36 +418,37 @@
     position: absolute;
     top: 100%;
     right: 0;
-    margin-top: 0.25rem;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    margin-top: var(--spacing-xs);
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-m);
+    z-index: var(--layer-menu);
     min-width: 150px;
   }
 
   .dropdown-menu button {
     display: block;
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: var(--spacing-s) var(--spacing-m);
     background: none;
     border: none;
     text-align: left;
-    font-size: 0.875rem;
+    font-size: var(--font-smaller);
+    color: var(--text-normal);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background var(--transition-fast);
   }
 
   .dropdown-menu button:hover {
-    background: #f3f4f6;
+    background: var(--background-modifier-hover);
   }
 
   .dropdown-menu button:first-child {
-    border-radius: 0.375rem 0.375rem 0 0;
+    border-radius: var(--radius-m) var(--radius-m) 0 0;
   }
 
   .dropdown-menu button:last-child {
-    border-radius: 0 0 0.375rem 0.375rem;
+    border-radius: 0 0 var(--radius-m) var(--radius-m);
   }
 </style>

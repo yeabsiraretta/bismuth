@@ -1,6 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import type { CanvasDocument, Viewport, Tool, CanvasSettings } from '@/types/canvas';
 import * as canvasService from '@/services/canvas/canvas';
+import { alignElements, distributeElements } from '@/utils/canvasUtils';
 import { log } from '@/utils/logger';
 
 // Current canvas document
@@ -18,6 +19,8 @@ export const canvasSettings = writable<CanvasSettings>({
   gridSize: 16,
   snapToGrid: true,
   showGrid: true,
+  showRulers: false,
+  showPixelGrid: false,
 });
 
 // Active tool
@@ -438,7 +441,6 @@ export function alignSelectedElements(alignment: import('@/utils/canvasUtils').A
     }
 
     const elementsToAlign = canvasDoc.elements.filter((e) => ids.includes(e.id));
-    const { alignElements } = require('@/utils/canvasUtils');
     const alignedElements = alignElements(elementsToAlign, alignment);
 
     currentCanvas.update((c) => {
@@ -458,6 +460,185 @@ export function alignSelectedElements(alignment: import('@/utils/canvasUtils').A
 
     log.info('Aligned elements', { alignment, count: ids.length });
   });
+}
+
+// ─── Pages ───────────────────────────────────────────────────────────────────
+
+/** Active page ID */
+export const activePageId = writable<string>('');
+
+/** Elements visible on the active page */
+export const activePageElements = derived(
+  [currentCanvas, activePageId],
+  ([$canvas, $pageId]) => {
+    if (!$canvas) return [];
+    const page = $canvas.pages?.find((p) => p.id === $pageId);
+    if (!page) return $canvas.elements;
+    return $canvas.elements.filter((el) => page.elements.includes(el.id));
+  }
+);
+
+export function addPage(name: string) {
+  const id = `page-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+  currentCanvas.update((c) => {
+    if (!c) return c;
+    const newPage: import('@/types/canvas').Page = {
+      id,
+      name,
+      order: (c.pages?.length || 0) + 1,
+      elements: [],
+    };
+    c.pages = [...(c.pages || []), newPage];
+    c.activePageId = id;
+    c.modified_at = Math.floor(Date.now() / 1000);
+    return c;
+  });
+  activePageId.set(id);
+  log.info('Page added', { id, name });
+}
+
+export function renamePage(pageId: string, name: string) {
+  currentCanvas.update((c) => {
+    if (!c) return c;
+    const page = c.pages?.find((p) => p.id === pageId);
+    if (page) page.name = name;
+    return c;
+  });
+}
+
+export function deletePage(pageId: string) {
+  currentCanvas.update((c) => {
+    if (!c) return c;
+    c.pages = (c.pages || []).filter((p) => p.id !== pageId);
+    // Remove orphaned elements
+    c.elements = c.elements.filter(
+      (el) => !c.pages || c.pages.some((p) => p.elements.includes(el.id))
+    );
+    if (c.activePageId === pageId && c.pages.length > 0) {
+      c.activePageId = c.pages[0].id;
+      activePageId.set(c.activePageId);
+    }
+    c.modified_at = Math.floor(Date.now() / 1000);
+    return c;
+  });
+  log.info('Page deleted', { pageId });
+}
+
+export function switchPage(pageId: string) {
+  activePageId.set(pageId);
+  currentCanvas.update((c) => {
+    if (!c) return c;
+    c.activePageId = pageId;
+    return c;
+  });
+  clearSelection();
+  log.debug('Switched to page', { pageId });
+}
+
+// ─── Components (Reusable Symbols) ──────────────────────────────────────────
+
+export function createComponentFromSelection() {
+  const getSync = <T>(store: { subscribe: (fn: (v: T) => void) => () => void }): T => {
+    let val: T;
+    store.subscribe((v: T) => { val = v; })();
+    return val!;
+  };
+
+  const ids = getSync(selectedElements);
+  const canvasDoc = getSync(currentCanvas);
+  if (!canvasDoc || ids.length === 0) return;
+
+  const elements = canvasDoc.elements.filter((e) => ids.includes(e.id));
+  if (elements.length === 0) return;
+
+  const minX = Math.min(...elements.map((e) => e.x));
+  const minY = Math.min(...elements.map((e) => e.y));
+  const maxX = Math.max(...elements.map((e) => e.x + e.width));
+  const maxY = Math.max(...elements.map((e) => e.y + e.height));
+
+  // Normalize positions relative to component origin
+  const normalized = elements.map((e) => ({
+    ...e,
+    x: e.x - minX,
+    y: e.y - minY,
+  }));
+
+  const compId = `comp-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+  const component: import('@/types/canvas').ComponentDefinition = {
+    id: compId,
+    name: `Component ${(canvasDoc.components?.length || 0) + 1}`,
+    elements: normalized,
+    exposedProps: [],
+    width: maxX - minX,
+    height: maxY - minY,
+    created_at: Math.floor(Date.now() / 1000),
+    modified_at: Math.floor(Date.now() / 1000),
+  };
+
+  // Replace selection with a component instance
+  const instanceId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const instance: import('@/types/canvas').CanvasElement = {
+    id: instanceId,
+    element_type: 'component_instance',
+    x: minX,
+    y: minY,
+    width: component.width,
+    height: component.height,
+    rotation: 0,
+    properties: { componentId: compId, overrides: {} },
+    layer_id: elements[0].layer_id,
+    z_index: Math.max(...elements.map((e) => e.z_index)),
+    locked: false,
+    visible: true,
+  };
+
+  currentCanvas.update((c) => {
+    if (!c) return c;
+    c.components = [...(c.components || []), component];
+    c.elements = c.elements.filter((e) => !ids.includes(e.id));
+    c.elements.push(instance);
+    c.modified_at = Math.floor(Date.now() / 1000);
+    return c;
+  });
+
+  clearSelection();
+  selectElement(instanceId);
+  log.info('Component created', { id: compId, name: component.name });
+}
+
+export function insertComponentInstance(componentId: string, x: number, y: number) {
+  const getSync = <T>(store: { subscribe: (fn: (v: T) => void) => () => void }): T => {
+    let val: T;
+    store.subscribe((v: T) => { val = v; })();
+    return val!;
+  };
+
+  const canvasDoc = getSync(currentCanvas);
+  if (!canvasDoc) return;
+
+  const comp = canvasDoc.components?.find((c) => c.id === componentId);
+  if (!comp) return;
+
+  const instanceId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const instance: import('@/types/canvas').CanvasElement = {
+    id: instanceId,
+    element_type: 'component_instance',
+    x,
+    y,
+    width: comp.width,
+    height: comp.height,
+    rotation: 0,
+    properties: { componentId, overrides: {} },
+    layer_id: canvasDoc.layers[0]?.id || 'default',
+    z_index: canvasDoc.elements.length,
+    locked: false,
+    visible: true,
+  };
+
+  addElement(instance);
+  clearSelection();
+  selectElement(instanceId);
+  log.info('Component instance inserted', { componentId, instanceId });
 }
 
 // Distribution actions
@@ -483,7 +664,6 @@ export function distributeSelectedElements(direction: 'horizontal' | 'vertical')
     }
 
     const elementsToDistribute = canvasDoc.elements.filter((e) => ids.includes(e.id));
-    const { distributeElements } = require('@/utils/canvasUtils');
     const distributedElements = distributeElements(elementsToDistribute, direction);
 
     currentCanvas.update((c) => {

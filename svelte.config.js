@@ -17,7 +17,6 @@ export default {
   // Compiler options for faster dev builds
   compilerOptions: {
     dev: true,
-    enableSourcemap: true,
     compatibility: {
       componentApi: 4,
     },

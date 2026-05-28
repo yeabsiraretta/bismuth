@@ -189,3 +189,75 @@ pub async fn create_note_from_wikilink(
     let service = state.vault_service.lock().unwrap();
     service.create_note_from_wikilink(&title)
 }
+
+/// Opens a path in the system file manager
+#[tauri::command]
+pub async fn open_in_file_manager(path: String) -> Result<()> {
+    let path_buf = PathBuf::from(&path);
+    
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(&path_buf)
+            .spawn()?;
+    }
+    
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .arg(&path_buf)
+            .spawn()?;
+    }
+    
+    #[cfg(target_os = "linux")]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(&path_buf)
+            .spawn()?;
+    }
+    
+    Ok(())
+}
+
+/// Updates a single frontmatter field on a note
+#[tauri::command]
+pub async fn update_frontmatter_field(
+    path: String,
+    key: String,
+    value: serde_json::Value,
+    state: State<'_, AppState>,
+) -> Result<()> {
+    let service = state.vault_service.lock().unwrap();
+    service.update_frontmatter_field(&PathBuf::from(path), &key, value)
+}
+
+/// Entity type definition for custom types
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct TypeDefinition {
+    pub name: String,
+    pub icon: String,
+    pub color: String,
+    pub description: Option<String>,
+}
+
+/// Get custom entity types from .bismuth/entity-types.json
+#[tauri::command]
+pub async fn get_custom_entity_types(
+    state: State<'_, AppState>,
+) -> std::result::Result<Vec<TypeDefinition>, String> {
+    let service = state.vault_service.lock().unwrap();
+    let vault = service.get_vault().ok_or("No vault open")?;
+    let config_path = vault.root_path.join(".bismuth").join("entity-types.json");
+
+    if !config_path.exists() {
+        return Ok(vec![]);
+    }
+
+    let content = std::fs::read_to_string(&config_path)
+        .map_err(|e| format!("Failed to read entity types: {}", e))?;
+
+    let types: Vec<TypeDefinition> = serde_json::from_str(&content)
+        .map_err(|e| format!("Failed to parse entity types: {}", e))?;
+
+    Ok(types)
+}

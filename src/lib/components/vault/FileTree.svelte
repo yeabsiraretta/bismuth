@@ -6,6 +6,7 @@
 
   async function handleNoteClick(note: Note) {
     try {
+      // note.path is already an absolute path from the backend
       const fullNote = await invoke<Note>('read_note', { path: note.path });
       setActiveNote(fullNote);
     } catch (error) {
@@ -59,37 +60,37 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--bg-secondary, #f5f5f5);
-    border-right: 1px solid var(--border-color, #ddd);
+    background: var(--background-secondary);
+    color: var(--text-normal);
   }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color, #ddd);
+    padding: var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .header-title {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-s);
   }
 
   .header h2 {
     margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: var(--font-ui-medium);
+    font-weight: var(--font-semibold);
   }
 
   .count {
-    background: var(--accent-color, #007bff);
-    color: white;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    padding: 2px var(--spacing-s);
+    border-radius: var(--radius-l);
+    font-size: var(--font-smallest);
+    font-weight: var(--font-semibold);
   }
 
   .tree-content {
@@ -98,17 +99,18 @@
   }
 
   .empty-state {
-    padding: 2rem 1rem;
+    padding: var(--spacing-xl) var(--spacing-m);
     text-align: center;
-    color: var(--text-muted, #666);
+    color: var(--text-muted);
   }
 
   .empty-state p {
-    margin: 0.5rem 0;
+    margin: var(--spacing-s) 0;
   }
 
   .hint {
-    font-size: 0.875rem;
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
   }
 
   .note-list {
@@ -118,35 +120,36 @@
   }
 
   .note-item {
-    border-bottom: 1px solid var(--border-color, #eee);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .note-item.active {
-    background: var(--bg-active, #e3f2fd);
+    background: var(--interactive-hover);
   }
 
   .note-button {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-s);
     min-height: 40px;
-    padding: 0.75rem 1rem;
+    padding: var(--spacing-s) var(--spacing-m);
     background: none;
     border: none;
+    color: var(--text-normal);
     cursor: pointer;
     text-align: left;
-    transition: all 0.15s ease;
+    transition: all var(--transition-fast);
     user-select: none;
   }
 
   .note-button:focus-visible {
-    outline: 2px solid var(--accent-color, #007bff);
+    outline: 2px solid var(--interactive-accent);
     outline-offset: -2px;
   }
 
   .note-button:hover {
-    background: var(--bg-hover, #f0f0f0);
+    background: var(--background-modifier-hover);
   }
 
   .note-button:active {
@@ -154,8 +157,9 @@
   }
 
   .note-item.active .note-button {
-    background: var(--bg-active, #e3f2fd);
-    font-weight: 500;
+    background: var(--interactive-hover);
+    font-weight: var(--font-medium);
+    color: var(--text-accent);
   }
 
   .note-title {
@@ -163,6 +167,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.9rem;
+    font-size: var(--font-small);
   }
 </style>

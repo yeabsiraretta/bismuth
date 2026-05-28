@@ -12,27 +12,28 @@ import {
   wikilinkToMarkdown,
   resolveWikilink,
 } from '../wikilink';
+import type { Link } from '@/types/vault';
 
 describe('parseWikilink', () => {
   it('should parse simple wikilink', () => {
     const result = parseWikilink('[[Note Title]]');
     expect(result).toEqual({
-      sourcePath: '',
-      targetTitle: 'Note Title',
+      source_path: '',
+      target_title: 'Note Title',
+      target_path: null,
       alias: undefined,
-      isResolved: false,
-      type: 'wikilink',
+      is_resolved: false,
     });
   });
 
   it('should parse wikilink with alias', () => {
     const result = parseWikilink('[[Note Title|Display Text]]');
     expect(result).toEqual({
-      sourcePath: '',
-      targetTitle: 'Note Title',
+      source_path: '',
+      target_title: 'Note Title',
+      target_path: null,
       alias: 'Display Text',
-      isResolved: false,
-      type: 'wikilink',
+      is_resolved: false,
     });
   });
 
@@ -43,7 +44,7 @@ describe('parseWikilink', () => {
 
   it('should trim whitespace', () => {
     const result = parseWikilink('[[  Note Title  |  Alias  ]]');
-    expect(result?.targetTitle).toBe('Note Title');
+    expect(result?.target_title).toBe('Note Title');
     expect(result?.alias).toBe('Alias');
   });
 });
@@ -54,8 +55,8 @@ describe('extractWikilinks', () => {
     const links = extractWikilinks(content, '/vault/test.md');
 
     expect(links).toHaveLength(2);
-    expect(links[0].targetTitle).toBe('Note 1');
-    expect(links[1].targetTitle).toBe('Note 2');
+    expect(links[0].target_title).toBe('Note 1');
+    expect(links[1].target_title).toBe('Note 2');
     expect(links[1].alias).toBe('Link Text');
   });
 
@@ -70,8 +71,8 @@ describe('extractWikilinks', () => {
     const content = '[[Link 1]] and [[Link 2]]';
     const links = extractWikilinks(content, '/vault/source.md');
 
-    expect(links[0].sourcePath).toBe('/vault/source.md');
-    expect(links[1].sourcePath).toBe('/vault/source.md');
+    expect(links[0].source_path).toBe('/vault/source.md');
+    expect(links[1].source_path).toBe('/vault/source.md');
   });
 });
 
@@ -103,11 +104,12 @@ describe('isValidWikilink', () => {
 
 describe('wikilinkToMarkdown', () => {
   it('should convert wikilink to markdown', () => {
-    const link = {
-      sourcePath: '/vault/source.md',
-      targetTitle: 'Target',
-      isResolved: false,
-      type: 'wikilink' as const,
+    const link: Link = {
+      source_path: '/vault/source.md',
+      target_title: 'Target',
+      target_path: null,
+      alias: null,
+      is_resolved: false,
     };
 
     const result = wikilinkToMarkdown(link);
@@ -115,12 +117,12 @@ describe('wikilinkToMarkdown', () => {
   });
 
   it('should use alias if provided', () => {
-    const link = {
-      sourcePath: '/vault/source.md',
-      targetTitle: 'Target',
+    const link: Link = {
+      source_path: '/vault/source.md',
+      target_title: 'Target',
+      target_path: null,
       alias: 'Display Text',
-      isResolved: false,
-      type: 'wikilink' as const,
+      is_resolved: false,
     };
 
     const result = wikilinkToMarkdown(link);
@@ -128,12 +130,12 @@ describe('wikilinkToMarkdown', () => {
   });
 
   it('should use targetPath if resolved', () => {
-    const link = {
-      sourcePath: '/vault/source.md',
-      targetTitle: 'Target',
-      targetPath: '/vault/notes/target.md',
-      isResolved: true,
-      type: 'wikilink' as const,
+    const link: Link = {
+      source_path: '/vault/source.md',
+      target_title: 'Target',
+      target_path: '/vault/notes/target.md',
+      alias: null,
+      is_resolved: true,
     };
 
     const result = wikilinkToMarkdown(link);

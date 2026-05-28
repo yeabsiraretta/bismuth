@@ -16,6 +16,10 @@
     createRectangle,
     createCircle,
     createText,
+    createFrame,
+    createLine,
+    createArrow,
+    createPenPath,
     snapToGrid,
     screenToCanvas,
     getElementAtPoint,
@@ -40,6 +44,8 @@
   let lastX = 0;
   let lastY = 0;
   let previewElement: CanvasElement | null = null;
+  let penPoints: Array<{ x: number; y: number }> = [];
+  let isDrawingPen = false;
 
   onMount(() => {
     log.info('CanvasWorkspace mounted');
@@ -151,6 +157,22 @@
       case 'text':
         drawText(element);
         break;
+      case 'frame':
+      case 'screen':
+        drawFrame(element);
+        break;
+      case 'line':
+        drawLine(element);
+        break;
+      case 'arrow':
+        drawArrow(element);
+        break;
+      case 'pen':
+        drawPen(element);
+        break;
+      case 'component_instance':
+        drawComponentInstance(element);
+        break;
     }
 
     if (isSelected) {
@@ -197,7 +219,130 @@
     ctx.font = `${element.properties.fontSize || 16}px ${element.properties.fontFamily || 'Inter, sans-serif'}`;
     ctx.globalAlpha = element.properties.opacity || 1;
 
-    ctx.fillText(element.properties.text || '', element.x, element.y + (element.properties.fontSize || 16));
+    ctx.fillText(
+      element.properties.text || '',
+      element.x,
+      element.y + (element.properties.fontSize || 16)
+    );
+  }
+
+  function drawFrame(element: CanvasElement) {
+    if (!ctx) return;
+
+    ctx.globalAlpha = element.properties.opacity || 1;
+    ctx.fillStyle = element.properties.fill || '#ffffff';
+    ctx.fillRect(element.x, element.y, element.width, element.height);
+
+    ctx.strokeStyle = element.properties.stroke || '#d4d4d8';
+    ctx.lineWidth = element.properties.strokeWidth || 1;
+    ctx.strokeRect(element.x, element.y, element.width, element.height);
+
+    // Draw frame label
+    ctx.fillStyle = '#71717a';
+    ctx.font = `11px Inter, sans-serif`;
+    ctx.fillText(element.name || 'Frame', element.x, element.y - 6);
+  }
+
+  function drawLine(element: CanvasElement) {
+    if (!ctx) return;
+    const points = element.properties.points;
+    if (!points || points.length < 2) return;
+
+    ctx.strokeStyle = element.properties.stroke || '#71717a';
+    ctx.lineWidth = element.properties.strokeWidth || 2;
+    ctx.globalAlpha = element.properties.opacity || 1;
+
+    if (element.properties.lineStyle === 'dashed') {
+      ctx.setLineDash([8, 4]);
+    } else if (element.properties.lineStyle === 'dotted') {
+      ctx.setLineDash([2, 4]);
+    }
+
+    ctx.beginPath();
+    ctx.moveTo(element.x + points[0].x, element.y + points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(element.x + points[i].x, element.y + points[i].y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawArrow(element: CanvasElement) {
+    if (!ctx) return;
+    const points = element.properties.points;
+    if (!points || points.length < 2) return;
+
+    ctx.strokeStyle = element.properties.stroke || '#71717a';
+    ctx.lineWidth = element.properties.strokeWidth || 2;
+    ctx.globalAlpha = element.properties.opacity || 1;
+
+    // Draw line
+    ctx.beginPath();
+    ctx.moveTo(element.x + points[0].x, element.y + points[0].y);
+    const lastPt = points[points.length - 1];
+    ctx.lineTo(element.x + lastPt.x, element.y + lastPt.y);
+    ctx.stroke();
+
+    // Draw arrowhead
+    if (element.properties.endArrow) {
+      const prevPt = points.length > 1 ? points[points.length - 2] : points[0];
+      const angle = Math.atan2(lastPt.y - prevPt.y, lastPt.x - prevPt.x);
+      const headLen = 12;
+      const tipX = element.x + lastPt.x;
+      const tipY = element.y + lastPt.y;
+
+      ctx.fillStyle = element.properties.stroke || '#71717a';
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(tipX - headLen * Math.cos(angle - 0.4), tipY - headLen * Math.sin(angle - 0.4));
+      ctx.lineTo(tipX - headLen * Math.cos(angle + 0.4), tipY - headLen * Math.sin(angle + 0.4));
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  function drawPen(element: CanvasElement) {
+    if (!ctx) return;
+    const points = element.properties.points;
+    if (!points || points.length < 2) return;
+
+    ctx.strokeStyle = element.properties.stroke || '#18181b';
+    ctx.lineWidth = element.properties.strokeWidth || 2;
+    ctx.globalAlpha = element.properties.opacity || 1;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    ctx.moveTo(element.x + points[0].x, element.y + points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      ctx.lineTo(element.x + points[i].x, element.y + points[i].y);
+    }
+    ctx.stroke();
+  }
+
+  function drawComponentInstance(element: CanvasElement) {
+    if (!ctx) return;
+
+    ctx.globalAlpha = element.properties.opacity || 1;
+    // Draw purple-tinted box to indicate component instance
+    ctx.fillStyle = '#f5f3ff';
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 2;
+    ctx.fillRect(element.x, element.y, element.width, element.height);
+    ctx.strokeRect(element.x, element.y, element.width, element.height);
+
+    // Diamond icon in center
+    const cx = element.x + element.width / 2;
+    const cy = element.y + element.height / 2;
+    const sz = Math.min(element.width, element.height, 24) / 2;
+    ctx.fillStyle = '#7c3aed';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - sz);
+    ctx.lineTo(cx + sz, cy);
+    ctx.lineTo(cx, cy + sz);
+    ctx.lineTo(cx - sz, cy);
+    ctx.closePath();
+    ctx.fill();
   }
 
   function drawSelectionBox(element: CanvasElement) {
@@ -226,7 +371,11 @@
 
     if ($activeTool === 'select') {
       if (!$currentCanvas) return;
-      const clickedElement = getElementAtPoint(canvasCoords.x, canvasCoords.y, $currentCanvas.elements);
+      const clickedElement = getElementAtPoint(
+        canvasCoords.x,
+        canvasCoords.y,
+        $currentCanvas.elements
+      );
 
       if (clickedElement) {
         if (!e.metaKey && !e.ctrlKey) {
@@ -243,19 +392,44 @@
       return;
     }
 
-    if ($activeTool === 'rectangle' || $activeTool === 'circle') {
+    if (
+      $activeTool === 'rectangle' ||
+      $activeTool === 'circle' ||
+      $activeTool === 'frame' ||
+      $activeTool === 'line' ||
+      $activeTool === 'arrow'
+    ) {
       if (!$currentCanvas || !$currentCanvas.layers[0]) return;
 
       isDrawing = true;
-      startX = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize) : canvasCoords.x;
-      startY = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize) : canvasCoords.y;
+      startX = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize)
+        : canvasCoords.x;
+      startY = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize)
+        : canvasCoords.y;
+    }
+
+    if ($activeTool === 'pen') {
+      if (!$currentCanvas || !$currentCanvas.layers[0]) return;
+      if (!isDrawingPen) {
+        isDrawingPen = true;
+        penPoints = [{ x: canvasCoords.x, y: canvasCoords.y }];
+      } else {
+        penPoints.push({ x: canvasCoords.x, y: canvasCoords.y });
+      }
+      render();
     }
 
     if ($activeTool === 'text') {
       if (!$currentCanvas || !$currentCanvas.layers[0]) return;
 
-      const x = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize) : canvasCoords.x;
-      const y = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize) : canvasCoords.y;
+      const x = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize)
+        : canvasCoords.x;
+      const y = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize)
+        : canvasCoords.y;
 
       const textElement = createText(x, y, 'Text', $currentCanvas.layers[0].id);
       addElement(textElement);
@@ -302,8 +476,12 @@
     }
 
     if (isDrawing && $currentCanvas) {
-      const currentX = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize) : canvasCoords.x;
-      const currentY = $canvasSettings.snapToGrid ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize) : canvasCoords.y;
+      const currentX = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.x, $canvasSettings.gridSize)
+        : canvasCoords.x;
+      const currentY = $canvasSettings.snapToGrid
+        ? snapToGrid(canvasCoords.y, $canvasSettings.gridSize)
+        : canvasCoords.y;
 
       const width = Math.abs(currentX - startX);
       const height = Math.abs(currentY - startY);
@@ -315,6 +493,24 @@
       } else if ($activeTool === 'circle') {
         const radius = Math.sqrt(width * width + height * height) / 2;
         previewElement = createCircle(startX, startY, radius, $currentCanvas.layers[0].id);
+      } else if ($activeTool === 'frame') {
+        previewElement = createFrame(x, y, width, height, $currentCanvas.layers[0].id);
+      } else if ($activeTool === 'line') {
+        previewElement = createLine(
+          startX,
+          startY,
+          currentX,
+          currentY,
+          $currentCanvas.layers[0].id
+        );
+      } else if ($activeTool === 'arrow') {
+        previewElement = createArrow(
+          startX,
+          startY,
+          currentX,
+          currentY,
+          $currentCanvas.layers[0].id
+        );
       }
 
       render();
@@ -323,7 +519,9 @@
 
   function handleMouseUp() {
     if (isDrawing && previewElement && $currentCanvas) {
-      if (previewElement.width > 5 && previewElement.height > 5) {
+      // Line/arrow can be thin in one dimension, check diagonal
+      const diag = Math.sqrt(previewElement.width ** 2 + previewElement.height ** 2);
+      if (diag > 5) {
         addElement(previewElement);
       }
       previewElement = null;
@@ -377,6 +575,22 @@
       previewElement = null;
       isDrawing = false;
       isDragging = false;
+      // Finalize pen path on Escape
+      if (isDrawingPen && penPoints.length >= 2 && $currentCanvas) {
+        const penEl = createPenPath(penPoints, $currentCanvas.layers[0].id);
+        addElement(penEl);
+      }
+      isDrawingPen = false;
+      penPoints = [];
+      render();
+    }
+
+    // Double-click Enter to finish pen
+    if (e.key === 'Enter' && isDrawingPen && penPoints.length >= 2 && $currentCanvas) {
+      const penEl = createPenPath(penPoints, $currentCanvas.layers[0].id);
+      addElement(penEl);
+      isDrawingPen = false;
+      penPoints = [];
       render();
     }
   }
@@ -388,7 +602,7 @@
 
 <div class="canvas-container">
   <CanvasToolbar />
-  
+
   <div class="canvas-workspace" bind:this={canvasContainer}>
     <canvas
       bind:this={canvas}
@@ -420,7 +634,7 @@
     position: relative;
     flex: 1;
     overflow: hidden;
-    background: #f9fafb;
+    background: var(--background-primary-alt);
   }
 
   canvas {
@@ -436,16 +650,16 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: #6b7280;
+    color: var(--text-muted);
     pointer-events: none;
   }
 
   .empty-state p {
-    margin: 0.5rem 0;
+    margin: var(--spacing-s) 0;
   }
 
   .hint {
-    font-size: 0.875rem;
-    color: #9ca3af;
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
   }
 </style>

@@ -1,36 +1,35 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
-  
+  import { onMount } from 'svelte';
+
   export let options: Array<{ value: string; label: string }> = [];
   export let value: string = '';
   export let placeholder: string = 'Select an option';
   export let disabled: boolean = false;
-  
-  const dispatch = createEventDispatcher();
+  export let onChange: ((detail: { value: string }) => void) | undefined = undefined;
   let isOpen = false;
   let dropdownElement: HTMLDivElement;
   let selectedIndex = -1;
-  
-  $: selectedLabel = options.find(opt => opt.value === value)?.label || placeholder;
-  
+
+  $: selectedLabel = options.find((opt) => opt.value === value)?.label || placeholder;
+
   function toggleDropdown() {
     if (!disabled) {
       isOpen = !isOpen;
       if (isOpen) {
-        selectedIndex = options.findIndex(opt => opt.value === value);
+        selectedIndex = options.findIndex((opt) => opt.value === value);
       }
     }
   }
-  
+
   function selectOption(option: { value: string; label: string }) {
     value = option.value;
     isOpen = false;
-    dispatch('change', { value: option.value });
+    onChange?.({ value: option.value });
   }
-  
+
   function handleKeydown(event: KeyboardEvent) {
     if (disabled) return;
-    
+
     switch (event.key) {
       case 'Enter':
       case ' ':
@@ -61,13 +60,13 @@
         break;
     }
   }
-  
+
   function handleClickOutside(event: MouseEvent) {
     if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
       isOpen = false;
     }
   }
-  
+
   onMount(() => {
     document.addEventListener('click', handleClickOutside);
     return () => {
@@ -90,7 +89,7 @@
       <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="2" fill="none" />
     </svg>
   </button>
-  
+
   {#if isOpen}
     <div class="dropdown-menu">
       {#each options as option, index}

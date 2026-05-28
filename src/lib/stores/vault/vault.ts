@@ -21,6 +21,9 @@ export const activeNote = writable<Note | null>(null);
 export const isLoadingVault = writable(false);
 export const isLoadingNotes = writable(false);
 
+// Show archived notes toggle
+export const showArchived = writable(false);
+
 // Derived store: vault is open
 export const isVaultOpen = derived(currentVault, ($vault) => $vault !== null);
 
@@ -29,6 +32,12 @@ export const notesByPath = derived(notes, ($notes) => {
 	const map = new Map<string, Note>();
 	$notes.forEach((note) => map.set(note.path, note));
 	return map;
+});
+
+// Derived store: visible notes (excludes archived unless toggled)
+export const visibleNotes = derived([notes, showArchived], ([$notes, $showArchived]) => {
+	if ($showArchived) return $notes;
+	return $notes.filter((n) => n.frontmatter?.archived !== true);
 });
 
 /**
@@ -69,7 +78,8 @@ export async function refreshNotes() {
 			return;
 		}
 
-		const allNotes = await vaultService.listNotes(vault.root_path);
+		// Use scan_vault for recursive enumeration of all notes
+		const allNotes = await vaultService.scanVault();
 		notes.set(allNotes);
 		log.info('Notes refreshed', { count: allNotes.length });
 	} catch (error) {
