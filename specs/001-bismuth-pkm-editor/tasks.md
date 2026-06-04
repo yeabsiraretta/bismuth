@@ -1,3 +1,12 @@
+/speckit.plan mvp upgdrades that are necessary:
+
+- editor-footer vs status items and the difference, some duplication exists there, should be easily extensible
+- alow for the addition of new icons on both left and right sidebar that are buttons wired to
+- left and ridght side sidebars should look and feel the same, but allow for different buttons, content, so on. the general structure should be mirrored.
+- remove the arror that appears in the left sidebar to collapse the sidebar, the existing buttons are enough
+- expand the notes navigator
+-
+
 # Tasks: Bismuth PKM Editor — MVP
 
 **Feature**: `001-bismuth-pkm-editor`
