@@ -1,58 +1,96 @@
+//! Backlink and mention discovery IPC commands (FR-005)
+//!
+//! Scans vault notes for both explicit `[[wikilink]]` references and
+//! unlinked textual mentions, enabling the backlinks panel and
+//! link-suggestion workflows.
+
 use crate::error::{BismuthError, Result};
-use crate::services::vault_service::VaultService;
+use crate::commands::vault_commands::AppState;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use std::sync::Arc;
 use tauri::State;
 
+/// A single mention of one note inside another.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Mention {
+    /// Path to the note containing the mention.
     pub note_path: String,
+    /// Title of the note containing the mention.
     pub note_name: String,
+    /// Surrounding lines providing context for the mention.
     pub context: String,
+    /// 1-indexed line number where the mention occurs.
     pub line_number: usize,
 }
 
+/// Aggregated backlinks data for a single note.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BacklinksData {
+    /// Notes that explicitly link to this note via `[[wikilink]]`.
     pub linked_mentions: Vec<Mention>,
+    /// Notes that contain the note's title as plain text (potential links).
     pub unlinked_mentions: Vec<Mention>,
 }
 
+/// An outgoing link from a note to another.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Link {
+    /// Title of the target note.
     pub target_note_name: String,
+    /// Resolved path of the target note (empty if unresolved).
     pub target_note_path: String,
+    /// 1-indexed line where the link appears.
     pub line_number: usize,
+    /// Whether the target note exists in the vault.
     pub is_resolved: bool,
 }
 
+/// An unlinked mention found in outgoing-link analysis.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnlinkedMention {
+    /// Text that matches an existing note title.
     pub potential_target_name: String,
+    /// Surrounding text context.
     pub context: String,
+    /// 1-indexed line number.
     pub line_number: usize,
+    /// Candidate notes that could be the link target.
     pub matching_notes: Vec<MatchingNote>,
 }
 
+/// A candidate note that matches an unlinked mention.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MatchingNote {
+    /// Note title.
     pub name: String,
+    /// Absolute path to the note file.
     pub path: String,
 }
 
+/// Aggregated outgoing link data for a single note.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OutgoingLinksData {
+    /// Resolved and unresolved wikilinks found in the note.
     pub links: Vec<Link>,
+    /// Plain-text mentions of other notes that could become links.
     pub unlinked_mentions: Vec<UnlinkedMention>,
 }
 
-/// Get all backlinks for a note
+/// Finds all notes that link to or mention the specified note.
+///
+/// Scans every other note in the vault for `[[title]]` wikilinks
+/// (linked mentions) and plain-text occurrences of the title
+/// (unlinked mentions).
+///
+/// # Arguments
+///
+/// * `note_path` — Absolute path of the target note.
 #[tauri::command]
 pub async fn get_backlinks(
     note_path: String,
-    vault_service: State<'_, Arc<VaultService>>,
+    state: State<'_, AppState>,
 ) -> Result<BacklinksData> {
+    let vault_service = state.vault_service.lock().unwrap();
     let _vault = vault_service
         .get_vault()
         .ok_or_else(|| BismuthError::VaultError("No vault is currently open".to_string()))?;
@@ -113,12 +151,21 @@ pub async fn get_backlinks(
     })
 }
 
-/// Get all outgoing links from a note
+/// Extracts all outgoing wikilinks and unlinked mentions from a note.
+///
+/// Parses `[[...]]` syntax with regex and resolves each link against
+/// the vault's note index. Also identifies plain-text occurrences
+/// of other note titles that could be converted to links.
+///
+/// # Arguments
+///
+/// * `note_path` — Absolute path of the source note.
 #[tauri::command]
 pub async fn get_outgoing_links(
     note_path: String,
-    vault_service: State<'_, Arc<VaultService>>,
+    state: State<'_, AppState>,
 ) -> Result<OutgoingLinksData> {
+    let vault_service = state.vault_service.lock().unwrap();
     let _vault = vault_service
         .get_vault()
         .ok_or_else(|| BismuthError::VaultError("No vault is currently open".to_string()))?;
@@ -204,14 +251,24 @@ pub async fn get_outgoing_links(
     })
 }
 
-/// Create a link from an unlinked mention
+/// Converts an unlinked backlink mention into an explicit `[[wikilink]]`.
+///
+/// Reads the source note, finds the target title on the specified line,
+/// and wraps it with `[[...]]` syntax.
+///
+/// # Arguments
+///
+/// * `source_note_path` — Path of the note to modify.
+/// * `target_note_path` — Path of the note being linked to.
+/// * `line_number` — 1-indexed line containing the mention.
 #[tauri::command]
 pub async fn create_link_from_mention(
     source_note_path: String,
     target_note_path: String,
     line_number: usize,
-    vault_service: State<'_, Arc<VaultService>>,
+    state: State<'_, AppState>,
 ) -> Result<()> {
+    let vault_service = state.vault_service.lock().unwrap();
     let _vault = vault_service
         .get_vault()
         .ok_or_else(|| BismuthError::VaultError("No vault is currently open".to_string()))?;
@@ -240,15 +297,25 @@ pub async fn create_link_from_mention(
     Ok(())
 }
 
-/// Create a link from an unlinked mention in outgoing links
+/// Converts an unlinked outgoing mention into an explicit `[[wikilink]]`.
+///
+/// Similar to [`create_link_from_mention`] but operates on forward mentions
+/// discovered during outgoing-link analysis.
+///
+/// # Arguments
+///
+/// * `source_note_path` — Path of the note to modify.
+/// * `line_number` — 1-indexed line containing the text.
+/// * `text` — Exact text to wrap with `[[...]]`.
 #[tauri::command]
 pub async fn create_link_from_unlinked_mention(
     source_note_path: String,
     _target_note_path: String,
     line_number: usize,
     text: String,
-    vault_service: State<'_, Arc<VaultService>>,
+    state: State<'_, AppState>,
 ) -> Result<()> {
+    let vault_service = state.vault_service.lock().unwrap();
     let _vault = vault_service
         .get_vault()
         .ok_or_else(|| BismuthError::VaultError("No vault is currently open".to_string()))?;

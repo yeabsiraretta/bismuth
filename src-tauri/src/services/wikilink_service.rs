@@ -1,4 +1,9 @@
-//! Wikilink resolution and update service
+//! Wikilink resolution, rename propagation, and unlinked-reference discovery.
+//!
+//! Provides the logic for:
+//! - Updating `[[wikilinks]]` across the vault when a note is renamed
+//! - Resolving link targets to filesystem paths
+//! - Finding unlinked textual mentions of note titles
 
 use crate::error::{BismuthError, Result};
 use crate::models::Vault;
@@ -7,21 +12,31 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// A suggestion to link to another note based on unlinked text occurrences.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkSuggestion {
+    /// Title of the note that could be linked.
     pub note_title: String,
+    /// Absolute path to the suggested target note.
     pub note_path: String,
+    /// All unlinked occurrences of this title in the source content.
     pub matches: Vec<LinkMatch>,
 }
 
+/// A specific text span that matches a note title but is not yet linked.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LinkMatch {
+    /// The exact matched text.
     pub text: String,
+    /// Byte offset of match start in the content.
     pub start: usize,
+    /// Byte offset of match end in the content.
     pub end: usize,
+    /// Surrounding text for context display (~50 chars each side).
     pub context: String,
 }
 
+/// Service for wikilink operations: resolution, rename propagation, and suggestions.
 pub struct WikilinkService;
 
 impl WikilinkService {
@@ -61,16 +76,16 @@ impl WikilinkService {
         Ok(updated_files)
     }
 
-    /// Extracts the title from a file path (filename without extension)
-    fn extract_title(&self, path: &Path) -> Result<String> {
+    /// Extracts the note title from a file path (filename without `.md` extension).
+    pub fn extract_title(&self, path: &Path) -> Result<String> {
         path.file_stem()
             .and_then(|s| s.to_str())
             .map(|s| s.to_string())
             .ok_or_else(|| BismuthError::InvalidPath(path.display().to_string()))
     }
 
-    /// Scans vault for all markdown notes
-    fn scan_vault_notes(&self, vault_path: &Path) -> Result<Vec<PathBuf>> {
+    /// Recursively scans the vault for all `.md` files, skipping hidden directories.
+    pub fn scan_vault_notes(&self, vault_path: &Path) -> Result<Vec<PathBuf>> {
         let mut notes = Vec::new();
 
         fn collect_notes(dir: &Path, notes: &mut Vec<PathBuf>) -> Result<()> {
@@ -120,7 +135,7 @@ impl WikilinkService {
         }).to_string()
     }
 
-    /// Finds all wikilinks in content
+    /// Extracts all `[[target]]` link targets from content (ignoring aliases).
     pub fn extract_wikilinks(&self, content: &str) -> Vec<String> {
         let re = Regex::new(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]").unwrap();
         re.captures_iter(content)
@@ -128,7 +143,10 @@ impl WikilinkService {
             .collect()
     }
 
-    /// Resolves a wikilink to a file path
+    /// Resolves a wikilink target string to an absolute file path.
+    ///
+    /// Matches against filenames (without extension) in the vault.
+    /// Returns `None` if no matching note is found.
     pub fn resolve_wikilink(&self, link: &str, vault_path: &Path) -> Option<PathBuf> {
         let notes = self.scan_vault_notes(vault_path).ok()?;
         
@@ -143,8 +161,10 @@ impl WikilinkService {
         None
     }
 
-    /// Finds unlinked references to other notes in the given note content
-    /// Returns suggestions for potential wikilinks
+    /// Finds unlinked references to other notes in the given content.
+    ///
+    /// Scans for note titles appearing as plain text (not inside `[[...]]`)
+    /// and returns them as link suggestions.
     pub fn find_unlinked_references(
         &self,
         note_path: &Path,
@@ -244,6 +264,22 @@ impl WikilinkService {
         
         false
     }
+
+    /// Returns concept suggestions for inline linking (T079/FR-258).
+    ///
+    /// Delegates to [`ConceptService`](crate::services::concept_service::ConceptService)
+    /// for the actual scanning logic.
+    pub fn get_concept_suggestions(
+        &self,
+        content: &str,
+        vault_path: &Path,
+        current_note: &Path,
+    ) -> Result<Vec<crate::services::concept_service::ConceptSuggestion>> {
+        crate::services::concept_service::ConceptService::get_suggestions(
+            self, content, vault_path, current_note,
+        )
+    }
+
 }
 
 #[cfg(test)]

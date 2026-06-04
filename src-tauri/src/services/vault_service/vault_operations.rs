@@ -1,3 +1,8 @@
+//! Low-level note file operations.
+//!
+//! Provides read, write, delete, and rename with vault-boundary validation,
+//! automatic recovery file creation, and history appending.
+
 use super::vault_history::HistoryService;
 use super::vault_recovery::RecoveryService;
 use crate::config::constants::filesystem;
@@ -9,15 +14,18 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
+/// Handles individual note file operations with security and safety guarantees.
 pub struct VaultOperations {
     db: Arc<Database>,
 }
 
 impl VaultOperations {
+    /// Creates a new `VaultOperations` instance.
     pub fn new(db: Arc<Database>) -> Self {
         Self { db }
     }
 
+    /// Reads and parses a note, validating it is within the vault boundary.
     pub fn get_note(&self, path: &Path, vault: &Vault) -> Result<Note> {
         validate_path(path, &vault.root_path)?;
 
@@ -28,6 +36,7 @@ impl VaultOperations {
         Ok(Note::new(path.to_path_buf(), content))
     }
 
+    /// Writes note content to disk with boundary check, recovery file, and history.
     pub fn write_note(&self, path: &Path, content: &str, vault: &Vault) -> Result<()> {
         validate_path(path, &vault.root_path)?;
 

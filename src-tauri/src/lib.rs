@@ -18,4 +18,4 @@ pub use commands::*;
 pub use config::AppSettings;
 pub use db::Database;
 pub use error::{BismuthError, Result};
-pub use services::{CanvasService, VaultService, WikilinkService};
+pub use services::{CanvasService, EmbeddingService, EntityService, PluginService, ThemeService, VaultService, WikilinkService};

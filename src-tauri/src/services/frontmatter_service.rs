@@ -109,6 +109,80 @@ impl FrontmatterService {
     pub fn remove_field(frontmatter: &mut HashMap<String, Value>, key: &str) -> Option<Value> {
         frontmatter.remove(key)
     }
+
+    /// Determines the lifecycle state of a note from its frontmatter.
+    ///
+    /// Convention:
+    /// - `archived: true` → Archived
+    /// - `organized: true` → Organized
+    /// - Neither present or both false → Captured (inbox)
+    pub fn get_lifecycle_state(frontmatter: &HashMap<String, Value>) -> LifecycleState {
+        let archived = frontmatter
+            .get("archived")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+        let organized = frontmatter
+            .get("organized")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+
+        if archived {
+            LifecycleState::Archived
+        } else if organized {
+            LifecycleState::Organized
+        } else {
+            LifecycleState::Captured
+        }
+    }
+
+    /// Returns true if the note is in the "captured" (inbox) state
+    pub fn is_captured(frontmatter: &HashMap<String, Value>) -> bool {
+        matches!(Self::get_lifecycle_state(frontmatter), LifecycleState::Captured)
+    }
+
+    /// Returns true if the note is archived
+    pub fn is_archived(frontmatter: &HashMap<String, Value>) -> bool {
+        matches!(Self::get_lifecycle_state(frontmatter), LifecycleState::Archived)
+    }
+
+    /// Sets the `organized` field on frontmatter
+    pub fn set_organized(frontmatter: &mut HashMap<String, Value>, organized: bool) {
+        frontmatter.insert("organized".to_string(), Value::Bool(organized));
+    }
+
+    /// Sets the `archived` field on frontmatter
+    pub fn set_archived(frontmatter: &mut HashMap<String, Value>, archived: bool) {
+        frontmatter.insert("archived".to_string(), Value::Bool(archived));
+    }
+
+    /// Archives a note by reading its content, setting `archived: true`, and writing back.
+    ///
+    /// Returns the updated full content string.
+    pub fn archive_note_content(content: &str) -> Result<String> {
+        let (mut frontmatter, body) = Self::parse(content)?;
+        Self::set_archived(&mut frontmatter, true);
+        Self::serialize(&frontmatter, &body)
+    }
+
+    /// Marks a note as organized by setting `organized: true` in frontmatter.
+    ///
+    /// Returns the updated full content string.
+    pub fn organize_note_content(content: &str) -> Result<String> {
+        let (mut frontmatter, body) = Self::parse(content)?;
+        Self::set_organized(&mut frontmatter, true);
+        Self::serialize(&frontmatter, &body)
+    }
+}
+
+/// Lifecycle states for notes in the capture pipeline
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum LifecycleState {
+    /// Note has no organization — lives in inbox
+    Captured,
+    /// Note has been classified and organized
+    Organized,
+    /// Note is archived and hidden from default views
+    Archived,
 }
 
 #[cfg(test)]

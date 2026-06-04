@@ -1,3 +1,8 @@
+//! Crash recovery file management.
+//!
+//! Creates `.tmp` recovery files before writes so that interrupted saves
+//! can be detected and offered for restoration on next launch.
+
 use crate::error::Result;
 use crate::models::Vault;
 use sha2::{Digest, Sha256};
@@ -5,9 +10,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
+/// Service for managing crash-recovery temporary files.
 pub struct RecoveryService;
 
 impl RecoveryService {
+    /// Saves a recovery snapshot before a write operation.
     pub fn save_recovery_file(vault: &Vault, path: &Path, content: &str) -> Result<()> {
         let recovery_dir = vault.root_path.join(".bismuth/recovery");
         fs::create_dir_all(&recovery_dir)?;
@@ -19,6 +26,7 @@ impl RecoveryService {
         Ok(())
     }
 
+    /// Scans `.bismuth/recovery` for leftover `.tmp` files from crashed writes.
     pub fn check_recovery_files(vault: &Vault) -> Result<Vec<RecoveryEntry>> {
         let recovery_dir = vault.root_path.join(".bismuth/recovery");
         

@@ -1,25 +1,35 @@
+//! Infinite canvas document persistence service (FR-013)
+//!
+//! Manages CRUD operations for canvas documents, elements, and layers
+//! using the SQLite database as the backing store.
+
 use crate::db::Database;
 use crate::error::Result;
-use crate::models::canvas::{CanvasDocument, CanvasElement, Layer};
+use crate::models::canvas::{CanvasDocument, CanvasElement, ElementType, Layer};
 use std::sync::Arc;
 
+/// Service for persisting and loading infinite canvas documents.
+///
+/// Each canvas consists of layers containing elements (rectangles, circles,
+/// text, images, groups). All state is stored in SQLite with cascading deletes.
 pub struct CanvasService {
     db: Arc<Database>,
 }
 
 impl CanvasService {
+    /// Creates a new `CanvasService` backed by the given database.
     pub fn new(db: Arc<Database>) -> Self {
         Self { db }
     }
 
-    /// Creates a new canvas document
+    /// Creates a new blank canvas document with a default layer.
     pub fn create_canvas(&self, name: String) -> Result<CanvasDocument> {
         let canvas = CanvasDocument::new(name);
         self.save_canvas(&canvas)?;
         Ok(canvas)
     }
 
-    /// Saves a canvas document to the database
+    /// Saves a canvas document (upsert), replacing all elements and layers.
     pub fn save_canvas(&self, canvas: &CanvasDocument) -> Result<()> {
         let conn_arc = self.db.conn();
         let conn = conn_arc.lock().unwrap();
@@ -45,8 +55,14 @@ impl CanvasService {
         )?;
 
         // Delete existing elements and layers for this canvas
-        conn.execute("DELETE FROM canvas_elements WHERE canvas_id = ?1", [&canvas.id])?;
-        conn.execute("DELETE FROM canvas_layers WHERE canvas_id = ?1", [&canvas.id])?;
+        conn.execute(
+            "DELETE FROM canvas_elements WHERE canvas_id = ?1",
+            [&canvas.id],
+        )?;
+        conn.execute(
+            "DELETE FROM canvas_layers WHERE canvas_id = ?1",
+            [&canvas.id],
+        )?;
 
         // Save layers
         for layer in &canvas.layers {
@@ -76,7 +92,7 @@ impl CanvasService {
                 (
                     &element.id,
                     &canvas.id,
-                    format!("{:?}", element.element_type).to_lowercase(),
+                    element.element_type.as_str(),
                     element.x,
                     element.y,
                     element.width,
@@ -91,10 +107,18 @@ impl CanvasService {
             )?;
         }
 
+        // Save pages and components as JSON columns
+        let pages_json = serde_json::to_string(&canvas.pages)?;
+        let components_json = serde_json::to_string(&canvas.components)?;
+        conn.execute(
+            "UPDATE canvas_documents SET pages_json = ?1, active_page_id = ?2, components_json = ?3 WHERE id = ?4",
+            (&pages_json, &canvas.active_page_id, &components_json, &canvas.id),
+        ).ok(); // Silently ignore if columns don't exist yet (pre-migration)
+
         Ok(())
     }
 
-    /// Loads a canvas document from the database
+    /// Loads a complete canvas document including all layers and elements.
     pub fn load_canvas(&self, id: &str) -> Result<CanvasDocument> {
         let conn_arc = self.db.conn();
         let conn = conn_arc.lock().unwrap();
@@ -119,11 +143,36 @@ impl CanvasService {
                     snap_to_grid: row.get::<_, i32>(7)? != 0,
                     elements: Vec::new(),
                     layers: Vec::new(),
+                    pages: Vec::new(),
+                    active_page_id: String::new(),
+                    components: Vec::new(),
                     created_at: row.get(8)?,
                     modified_at: row.get(9)?,
                 })
             },
         )?;
+
+        // Load pages and components JSON (may not exist if pre-migration)
+        if let Ok(row) = conn.query_row(
+            "SELECT pages_json, active_page_id, components_json FROM canvas_documents WHERE id = ?1",
+            [id],
+            |row| {
+                let pages_json: Option<String> = row.get(0)?;
+                let active_page_id: Option<String> = row.get(1)?;
+                let components_json: Option<String> = row.get(2)?;
+                Ok((pages_json, active_page_id, components_json))
+            },
+        ) {
+            if let Some(pages_str) = row.0 {
+                canvas.pages = serde_json::from_str(&pages_str).unwrap_or_default();
+            }
+            if let Some(page_id) = row.1 {
+                canvas.active_page_id = page_id;
+            }
+            if let Some(comp_str) = row.2 {
+                canvas.components = serde_json::from_str(&comp_str).unwrap_or_default();
+            }
+        }
 
         // Load layers
         let mut stmt = conn.prepare(
@@ -152,14 +201,7 @@ impl CanvasService {
 
         let elements = stmt.query_map([id], |row| {
             let element_type_str: String = row.get(1)?;
-            let element_type = match element_type_str.as_str() {
-                "rectangle" => crate::models::canvas::ElementType::Rectangle,
-                "circle" => crate::models::canvas::ElementType::Circle,
-                "text" => crate::models::canvas::ElementType::Text,
-                "image" => crate::models::canvas::ElementType::Image,
-                "group" => crate::models::canvas::ElementType::Group,
-                _ => crate::models::canvas::ElementType::Rectangle,
-            };
+            let element_type = ElementType::from_str(&element_type_str);
 
             let properties_json: String = row.get(7)?;
             let properties = serde_json::from_str(&properties_json)
@@ -178,6 +220,8 @@ impl CanvasService {
                 z_index: row.get(9)?,
                 locked: row.get::<_, i32>(10)? != 0,
                 visible: row.get::<_, i32>(11)? != 0,
+                parent_id: None,
+                name: None,
             })
         })?;
 
@@ -186,7 +230,7 @@ impl CanvasService {
         Ok(canvas)
     }
 
-    /// Lists all canvas documents
+    /// Lists all canvas documents (metadata only, without elements/layers).
     pub fn list_canvases(&self) -> Result<Vec<CanvasDocument>> {
         let conn_arc = self.db.conn();
         let conn = conn_arc.lock().unwrap();
@@ -211,6 +255,9 @@ impl CanvasService {
                 snap_to_grid: row.get::<_, i32>(7)? != 0,
                 elements: Vec::new(), // Don't load elements for list view
                 layers: Vec::new(),   // Don't load layers for list view
+                pages: Vec::new(),
+                active_page_id: String::new(),
+                components: Vec::new(),
                 created_at: row.get(8)?,
                 modified_at: row.get(9)?,
             })
@@ -219,7 +266,7 @@ impl CanvasService {
         Ok(canvases.collect::<std::result::Result<Vec<_>, _>>()?)
     }
 
-    /// Deletes a canvas document
+    /// Deletes a canvas document and all associated elements/layers.
     pub fn delete_canvas(&self, id: &str) -> Result<()> {
         let conn_arc = self.db.conn();
         let conn = conn_arc.lock().unwrap();
@@ -235,7 +282,6 @@ impl CanvasService {
 mod tests {
     use super::*;
     use crate::models::canvas::CanvasElement;
-    use std::path::PathBuf;
 
     #[test]
     fn test_create_and_load_canvas() {
@@ -263,7 +309,7 @@ mod tests {
 
         let mut canvas = CanvasDocument::new("Test".to_string());
         let layer_id = canvas.layers[0].id.clone();
-        
+
         // Add an element
         let element = CanvasElement::new_rectangle(10.0, 20.0, 100.0, 50.0, layer_id);
         canvas.add_element(element);
@@ -302,7 +348,7 @@ mod tests {
         let service = CanvasService::new(db);
 
         let canvas = service.create_canvas("Test".to_string()).unwrap();
-        
+
         // Delete
         service.delete_canvas(&canvas.id).unwrap();
 

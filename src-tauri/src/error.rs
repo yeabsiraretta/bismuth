@@ -51,6 +51,10 @@ pub enum BismuthError {
     /// Vault errors (invalid vault, not initialized)
     #[error("Vault error: {0}")]
     VaultError(String),
+
+    /// Generic errors (catch-all for service-specific errors)
+    #[error("{0}")]
+    Generic(String),
 }
 
 // Implement From for serde_yaml::Error

@@ -3,6 +3,7 @@
  * Supports multiple log levels, structured logging, and persistence
  */
 
+/** Severity levels for structured log messages (ordered least to most severe). */
 export enum LogLevel {
 	DEBUG = 0,
 	INFO = 1,
@@ -11,6 +12,7 @@ export enum LogLevel {
 	FATAL = 4,
 }
 
+/** A single structured log record persisted in the ring buffer. */
 interface LogEntry {
 	timestamp: string;
 	level: LogLevel;
@@ -20,6 +22,10 @@ interface LogEntry {
 	stack?: string;
 }
 
+/**
+ * Core logging class. Maintains a capped ring buffer, persists to localStorage,
+ * and outputs color-coded console messages.
+ */
 class Logger {
 	private level: LogLevel = LogLevel.DEBUG; // Default to DEBUG in dev
 	private logs: LogEntry[] = [];
@@ -56,15 +62,18 @@ class Logger {
 		});
 	}
 
+	/** Updates the minimum severity threshold for log output. */
 	setLevel(level: LogLevel): void {
 		this.level = level;
 		localStorage.setItem('bismuth_log_level', level.toString());
 	}
 
+	/** Returns the current minimum log level. */
 	getLevel(): LogLevel {
 		return this.level;
 	}
 
+	/** Enables or disables browser console output (persists preference). */
 	enableConsoleLogging(enable: boolean): void {
 		this.enableConsole = enable;
 		localStorage.setItem('bismuth_console_logs', enable.toString());
@@ -184,6 +193,7 @@ class Logger {
 		}
 	}
 
+	/** Retrieves buffered log entries, optionally filtered by minimum level. */
 	getLogs(level?: LogLevel): LogEntry[] {
 		if (level !== undefined) {
 			return this.logs.filter((log) => log.level >= level);
@@ -191,15 +201,18 @@ class Logger {
 		return [...this.logs];
 	}
 
+	/** Clears the in-memory buffer and localStorage persistence. */
 	clearLogs(): void {
 		this.logs = [];
 		localStorage.removeItem('bismuth_logs');
 	}
 
+	/** Serializes all buffered logs to a JSON string. */
 	exportLogs(): string {
 		return JSON.stringify(this.logs, null, 2);
 	}
 
+	/** Triggers a browser file download of all buffered logs as JSON. */
 	downloadLogs(): void {
 		const blob = new Blob([this.exportLogs()], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
@@ -211,10 +224,10 @@ class Logger {
 	}
 }
 
-// Singleton instance
+/** Singleton logger instance shared across the application. */
 export const logger = new Logger();
 
-// Convenience exports
+/** Convenience namespace providing short-hand logging methods. */
 export const log = {
 	debug: (msg: string, ctx?: Record<string, unknown>) => logger.debug(msg, ctx),
 	info: (msg: string, ctx?: Record<string, unknown>) => logger.info(msg, ctx),

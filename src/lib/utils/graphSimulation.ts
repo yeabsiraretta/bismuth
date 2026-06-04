@@ -26,9 +26,20 @@ export function filterGraphData(
     tags?: string[];
     types?: string[];
     folder?: string;
+    hiddenTags?: Set<string>;
   }
 ): GraphData {
   let filteredNodes = data.nodes;
+
+  // Exclude hidden tag nodes from graph
+  if (opts.hiddenTags && opts.hiddenTags.size > 0) {
+    filteredNodes = filteredNodes.filter((n) => {
+      if (n.node_type === 'tag') {
+        return !opts.hiddenTags!.has(n.label);
+      }
+      return true;
+    });
+  }
 
   if (opts.searchQuery) {
     const q = opts.searchQuery.toLowerCase();

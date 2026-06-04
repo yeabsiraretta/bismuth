@@ -3,6 +3,11 @@ import type { Vault, Note } from '@/types/vault';
 import { VaultTemplate } from '@/types/vault';
 import { log } from '@/utils/logger';
 
+/**
+ * Opens an existing vault at the given path and initializes the backend state.
+ * @param path - Absolute path to the vault root directory.
+ * @returns The opened vault descriptor.
+ */
 export async function openVault(path: string): Promise<Vault> {
   log.info('Vault service: opening vault', { path });
   try {
@@ -15,6 +20,12 @@ export async function openVault(path: string): Promise<Vault> {
   }
 }
 
+/**
+ * Creates a new vault on disk, optionally using a starter template.
+ * @param path - Absolute path where the vault folder will be created.
+ * @param template - Optional organizational template (defaults to Blank).
+ * @returns The newly created vault descriptor.
+ */
 export async function createVault(path: string, template?: VaultTemplate): Promise<Vault> {
   log.info('Vault service: creating vault', { path, template: template ? VaultTemplate[template] : 'Blank' });
   try {
@@ -34,14 +45,23 @@ export async function createVault(path: string, template?: VaultTemplate): Promi
   }
 }
 
+/**
+ * Reads a single note's content and metadata from the backend.
+ * @param path - Absolute path to the `.md` file.
+ */
 export async function getNote(path: string): Promise<Note> {
   try {
-    return await invoke<Note>('get_note', { path });
+    return await invoke<Note>('read_note', { path });
   } catch (error) {
     throw new Error(`Failed to get note: ${error}`);
   }
 }
 
+/**
+ * Writes markdown content to a note file (creates or overwrites).
+ * @param path - Absolute path to the note file.
+ * @param content - Raw markdown string to write.
+ */
 export async function writeNote(path: string, content: string): Promise<void> {
   try {
     await invoke('write_note', { path, content });
@@ -50,6 +70,10 @@ export async function writeNote(path: string, content: string): Promise<void> {
   }
 }
 
+/**
+ * Permanently deletes a note file from disk.
+ * @param path - Absolute path to the note file.
+ */
 export async function deleteNote(path: string): Promise<void> {
   try {
     await invoke('delete_note', { path });
@@ -58,6 +82,11 @@ export async function deleteNote(path: string): Promise<void> {
   }
 }
 
+/**
+ * Renames/moves a note and updates all inbound wikilinks.
+ * @param oldPath - Current absolute path of the note.
+ * @param newPath - Desired new absolute path.
+ */
 export async function renameNote(oldPath: string, newPath: string): Promise<void> {
   try {
     await invoke('rename_note', { old_path: oldPath, new_path: newPath });
@@ -66,6 +95,11 @@ export async function renameNote(oldPath: string, newPath: string): Promise<void
   }
 }
 
+/**
+ * Lists notes within a specific folder (non-recursive).
+ * @param vaultPath - Vault root path.
+ * @param folderPath - Relative subfolder path (empty string for root).
+ */
 export async function listNotes(vaultPath: string, folderPath: string = ''): Promise<Note[]> {
   log.debug('Vault service: listing notes', { vaultPath, folderPath });
   try {
@@ -81,6 +115,10 @@ export async function listNotes(vaultPath: string, folderPath: string = ''): Pro
   }
 }
 
+/**
+ * Recursively scans the entire vault, returning all discovered notes.
+ * Triggers index rebuild in the backend.
+ */
 export async function scanVault(): Promise<Note[]> {
   log.debug('Vault service: scanning vault recursively');
   try {

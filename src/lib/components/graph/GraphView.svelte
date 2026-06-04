@@ -18,6 +18,7 @@
     getNodeColor,
     hitTestNode,
   } from '@/utils/graphSimulation';
+  import { hiddenTags } from '@/stores/tag/tag';
 
   export let isLocal = false;
   export let centerNode: string | null = null;
@@ -100,6 +101,7 @@
       tags: filterTags,
       types: filterTypes,
       folder: filterFolder,
+      hiddenTags: $hiddenTags,
     });
     nodes = initNodes(filtered.nodes, filtered.edges, width, height);
     edges = filtered.edges;
@@ -127,6 +129,7 @@
       tags: filterTags,
       types: filterTypes,
       folder: filterFolder,
+      hiddenTags: $hiddenTags,
     });
     nodes = initNodes(filtered.nodes, filtered.edges, width, height, nodes);
     edges = filtered.edges;

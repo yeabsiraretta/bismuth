@@ -2,6 +2,11 @@ import { invoke } from '@tauri-apps/api/core';
 import type { CanvasDocument } from '@/types/canvas';
 import { log } from '@/utils/logger';
 
+/**
+ * Creates a new canvas document in the backend database.
+ * @param name - Display name for the canvas.
+ * @returns The newly created canvas with generated ID and timestamps.
+ */
 export async function createCanvas(name: string): Promise<CanvasDocument> {
   log.info('Canvas service: creating canvas', { name });
   try {
@@ -14,6 +19,10 @@ export async function createCanvas(name: string): Promise<CanvasDocument> {
   }
 }
 
+/**
+ * Persists the full canvas document state (elements, layers, pages) to the database.
+ * @param canvas - The complete canvas document to save.
+ */
 export async function saveCanvas(canvas: CanvasDocument): Promise<void> {
   log.debug('Canvas service: saving canvas', { id: canvas.id, name: canvas.name });
   try {
@@ -25,6 +34,11 @@ export async function saveCanvas(canvas: CanvasDocument): Promise<void> {
   }
 }
 
+/**
+ * Loads a canvas document by ID from the backend database.
+ * @param id - Unique canvas document identifier.
+ * @returns The full canvas document with all elements and metadata.
+ */
 export async function loadCanvas(id: string): Promise<CanvasDocument> {
   log.debug('Canvas service: loading canvas', { id });
   try {
@@ -41,6 +55,10 @@ export async function loadCanvas(id: string): Promise<CanvasDocument> {
   }
 }
 
+/**
+ * Retrieves all canvas documents in the current vault.
+ * @returns Array of canvas documents (lightweight — may omit full element data).
+ */
 export async function listCanvases(): Promise<CanvasDocument[]> {
   log.debug('Canvas service: listing canvases');
   try {
@@ -53,6 +71,10 @@ export async function listCanvases(): Promise<CanvasDocument[]> {
   }
 }
 
+/**
+ * Permanently deletes a canvas and all its elements from the database.
+ * @param id - Canvas document ID to delete.
+ */
 export async function deleteCanvas(id: string): Promise<void> {
   log.info('Canvas service: deleting canvas', { id });
   try {

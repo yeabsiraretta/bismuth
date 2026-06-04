@@ -1,26 +1,42 @@
+//! Frontmatter property inspection IPC commands (FR-010)
+//!
+//! Aggregates all frontmatter key-value pairs across vault notes,
+//! enabling the property browser and filter-by-property workflows.
+
 use crate::commands::AppState;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::State;
 
+/// Summary of a single frontmatter property key across the vault.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PropertyInfo {
+    /// Frontmatter key name (e.g., `"status"`, `"priority"`).
     pub key: String,
+    /// Distinct values observed for this key.
     pub values: Vec<String>,
+    /// Total number of notes containing this property.
     pub count: usize,
 }
 
+/// A specific property value with usage information.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PropertyValue {
+    /// The property value (stringified).
     pub value: String,
+    /// Number of notes with this key-value combination.
     pub count: usize,
+    /// Paths of notes that have this value.
     pub notes: Vec<String>,
 }
 
-/// Excluded frontmatter keys that aren't user-meaningful properties
+/// Frontmatter keys excluded from property aggregation (internal metadata).
 const EXCLUDED_KEYS: &[&str] = &["title", "content"];
 
-/// Scan vault and collect all frontmatter properties
+/// Scans all vault notes and collects distinct frontmatter property keys and values.
+///
+/// Excludes internal keys defined in [`EXCLUDED_KEYS`].
+/// Results sorted by usage frequency (descending), then alphabetically.
 fn collect_properties(state: &State<'_, AppState>) -> Result<Vec<PropertyInfo>, String> {
     let service = state.vault_service.lock().unwrap();
     let notes = service.scan().map_err(|e| format!("Failed to scan vault: {}", e))?;
@@ -67,7 +83,7 @@ fn collect_properties(state: &State<'_, AppState>) -> Result<Vec<PropertyInfo>, 
     Ok(properties)
 }
 
-/// Get all frontmatter properties from the vault
+/// Returns all frontmatter properties aggregated across the vault.
 #[tauri::command]
 pub async fn get_all_properties(
     state: State<'_, AppState>,
@@ -76,7 +92,11 @@ pub async fn get_all_properties(
     collect_properties(&state)
 }
 
-/// Get values for a specific property key
+/// Returns all distinct values for a specific frontmatter property key.
+///
+/// # Arguments
+///
+/// * `key` — The property key to inspect (e.g., `"status"`).
 #[tauri::command]
 pub async fn get_property_values(
     state: State<'_, AppState>,
@@ -114,7 +134,12 @@ pub async fn get_property_values(
     Ok(values)
 }
 
-/// Get notes by property filter
+/// Filters notes by an exact property key-value match.
+///
+/// # Arguments
+///
+/// * `key` — Frontmatter key to match.
+/// * `value` — Expected value (compared as string).
 #[tauri::command]
 pub async fn get_notes_by_property(
     state: State<'_, AppState>,
@@ -143,7 +168,11 @@ pub async fn get_notes_by_property(
     Ok(matching)
 }
 
-/// Search properties by key or value
+/// Searches properties by substring match on key or value (case-insensitive).
+///
+/// # Arguments
+///
+/// * `query` — Substring to match against property keys and values.
 #[tauri::command]
 pub async fn search_properties(
     state: State<'_, AppState>,

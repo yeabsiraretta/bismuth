@@ -3,12 +3,14 @@
   import { writeNote } from '@/services/vault/vault';
   import { onMount } from 'svelte';
   import Icon from '@/components/icons/Icon.svelte';
+  import ConceptSuggestionPopover from './ConceptSuggestionPopover.svelte';
+  import Editor from '@/components/editor/Editor.svelte';
 
   let content = '';
   let isSaving = false;
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
-  let textareaElement: HTMLTextAreaElement;
   let mode: 'edit' | 'preview' = 'edit';
+  let editorRef: Editor;
 
   $: if ($activeNote) {
     content = $activeNote.content;
@@ -51,10 +53,27 @@
     }
   }
 
+  function handleContentChange(newContent: string) {
+    content = newContent;
+    handleInput();
+  }
+
+  function handleWikilinkClick(title: string) {
+    // TODO: Navigate to the linked note
+    console.log('Navigate to wikilink:', title);
+  }
+
+  // Handle concept link: wrap matched text in [[...]] syntax
+  function handleConceptLink(offset: number, length: number, title: string) {
+    const before = content.slice(0, offset);
+    const after = content.slice(offset + length);
+    content = `${before}[[${title}]]${after}`;
+    handleInput();
+  }
+
   onMount(() => {
-    // Focus the textarea when component mounts
-    if (textareaElement && mode === 'edit') {
-      textareaElement.focus();
+    if (editorRef && mode === 'edit') {
+      editorRef.focus();
     }
   });
 </script>
@@ -97,13 +116,17 @@
 
     <div class="editor-content">
       {#if mode === 'edit'}
-        <textarea
-          bind:this={textareaElement}
-          bind:value={content}
-          on:input={handleInput}
-          placeholder="Start writing..."
-          spellcheck="true"
-        ></textarea>
+        <Editor
+          bind:this={editorRef}
+          {content}
+          onContentChange={handleContentChange}
+          onWikilinkClick={handleWikilinkClick}
+        />
+        <ConceptSuggestionPopover
+          {content}
+          notePath={$activeNote.path}
+          onLink={handleConceptLink}
+        />
       {:else}
         <div class="preview-content">
           {#each content.split('\n') as line}
@@ -247,28 +270,8 @@
 
   .editor-content {
     flex: 1;
-    overflow-y: auto;
-    padding: 1.5rem 2rem;
-  }
-
-  textarea {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
-    padding: 0;
-    border: none;
-    outline: none;
-    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
-    font-size: 0.9rem;
-    line-height: 1.7;
-    resize: none;
-    background: transparent;
-    color: var(--text-normal, #1f2937);
-    tab-size: 2;
-  }
-
-  textarea::placeholder {
-    color: var(--text-faint, #d1d5db);
+    overflow: hidden;
+    position: relative;
   }
 
   .preview-content {

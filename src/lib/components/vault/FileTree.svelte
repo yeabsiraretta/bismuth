@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invoke } from '@tauri-apps/api/core';
-  import { notes, activeNote, setActiveNote } from '@/stores/vault/vault';
+  import { activeNote, setActiveNote } from '@/stores/vault/vault';
+  import { filteredNotes } from '@/stores/tag/tag';
   import type { Note } from '@/types/vault';
   import Icon from '@/components/icons/Icon.svelte';
 
@@ -30,11 +31,11 @@
       <Icon name="folder-open" size={18} />
       <h2>Notes</h2>
     </div>
-    <span class="count">{$notes.length}</span>
+    <span class="count">{$filteredNotes.length}</span>
   </div>
 
   <div class="tree-content">
-    {#if $notes.length === 0}
+    {#if $filteredNotes.length === 0}
       <div class="empty-state">
         <Icon name="file" size={48} color="var(--text-muted)" strokeWidth={1.5} />
         <p>No notes found</p>
@@ -42,7 +43,7 @@
       </div>
     {:else}
       <ul class="note-list">
-        {#each $notes as note (note.path)}
+        {#each $filteredNotes as note (note.path)}
           <li class="note-item" class:active={isActive(note)}>
             <button class="note-button" on:click={() => handleNoteClick(note)}>
               <Icon name="file" size={16} />

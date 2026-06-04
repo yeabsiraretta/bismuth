@@ -1,3 +1,9 @@
+//! Tantivy full-text search index service (FR-028)
+//!
+//! Provides BM25-ranked full-text search over vault notes.
+//! Uses English stemming, stored fields for title/content/path,
+//! and supports both simple and advanced (fuzzy, phrase, exclusion) queries.
+
 use crate::error::{BismuthError, Result};
 use crate::models::note::Note;
 use serde::{Deserialize, Serialize};
@@ -9,20 +15,32 @@ use tantivy::schema::*;
 use tantivy::tokenizer::*;
 use tantivy::{doc, Index, IndexReader, IndexWriter, TantivyDocument};
 
+/// Parameters for a basic vault search.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SearchQuery {
+    /// Natural-language query string.
     pub query: String,
+    /// Maximum number of results to return.
     pub limit: usize,
 }
 
+/// A single search result with relevance score.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SearchResult {
+    /// Absolute path to the matching note.
     pub path: String,
+    /// Note title.
     pub title: String,
+    /// Content snippet (first 200 chars or less).
     pub snippet: String,
+    /// BM25 relevance score.
     pub score: f32,
 }
 
+/// Tantivy-backed full-text search index over vault notes.
+///
+/// Maintains an on-disk index with English stemming. The writer is
+/// behind an `Arc<Mutex<>>` to allow concurrent reads with exclusive writes.
 pub struct IndexService {
     index: Index,
     reader: IndexReader,
@@ -31,6 +49,9 @@ pub struct IndexService {
 }
 
 impl IndexService {
+    /// Creates or opens a Tantivy index at the given directory.
+    ///
+    /// Registers the English stemmer tokenizer and allocates a 50 MB writer buffer.
     pub fn new(index_dir: &Path) -> Result<Self> {
         let mut schema_builder = Schema::builder();
 
@@ -59,12 +80,14 @@ impl IndexService {
         let index = Index::create_in_dir(index_dir, schema.clone())
             .or_else(|_| Index::open_in_dir(index_dir))?;
 
-        index
-            .tokenizers()
-            .register("en_stem", TextAnalyzer::builder(SimpleTokenizer::default()).filter(Stemmer::default()).build());
+        index.tokenizers().register(
+            "en_stem",
+            TextAnalyzer::builder(SimpleTokenizer::default())
+                .filter(Stemmer::default())
+                .build(),
+        );
 
-        let reader = index
-            .reader()?;
+        let reader = index.reader()?;
 
         let writer = index.writer(50_000_000)?;
 
@@ -76,6 +99,7 @@ impl IndexService {
         })
     }
 
+    /// Indexes a single note (upsert: deletes existing entry first).
     pub fn index_note(&self, note: &Note) -> Result<()> {
         let path_field = self.schema.get_field("path").unwrap();
         let title_field = self.schema.get_field("title").unwrap();
@@ -105,6 +129,7 @@ impl IndexService {
         Ok(())
     }
 
+    /// Indexes all provided notes (full reindex).
     pub fn index_all(&self, notes: Vec<Note>) -> Result<()> {
         for note in notes {
             self.index_note(&note)?;
@@ -112,6 +137,7 @@ impl IndexService {
         Ok(())
     }
 
+    /// Removes a note from the search index by path.
     pub fn delete_entry(&self, path: &Path) -> Result<()> {
         let path_field = self.schema.get_field("path").unwrap();
         let mut writer = self.writer.lock().unwrap();
@@ -123,12 +149,12 @@ impl IndexService {
         Ok(())
     }
 
+    /// Executes a basic BM25 search across title and content fields.
     pub fn search(&self, query: SearchQuery) -> Result<Vec<SearchResult>> {
         let searcher = self.reader.searcher();
 
         let title_field = self.schema.get_field("title").unwrap();
         let content_field = self.schema.get_field("content").unwrap();
-        let path_field = self.schema.get_field("path").unwrap();
 
         let query_parser = QueryParser::for_index(&self.index, vec![title_field, content_field]);
 
@@ -140,11 +166,39 @@ impl IndexService {
             .search(&parsed_query, &TopDocs::with_limit(query.limit))
             .map_err(|e| BismuthError::IndexError(e.to_string()))?;
 
+        self.collect_results(&searcher, &top_docs)
+    }
+
+    /// Advanced search with fuzzy matching, phrase queries, exclusions, and filters
+    pub fn advanced_search(&self, raw_query: &str, limit: usize) -> Result<Vec<SearchResult>> {
+        use crate::services::search_query::AdvancedSearchQuery;
+
+        let advanced = AdvancedSearchQuery::parse(raw_query, limit);
+        let tantivy_query = advanced.to_tantivy_query(&self.schema);
+
+        let searcher = self.reader.searcher();
+        let top_docs = searcher
+            .search(&*tantivy_query, &TopDocs::with_limit(advanced.limit))
+            .map_err(|e| BismuthError::IndexError(e.to_string()))?;
+
+        self.collect_results(&searcher, &top_docs)
+    }
+
+    /// Collect search results from Tantivy doc addresses
+    fn collect_results(
+        &self,
+        searcher: &tantivy::Searcher,
+        top_docs: &[(f32, tantivy::DocAddress)],
+    ) -> Result<Vec<SearchResult>> {
+        let title_field = self.schema.get_field("title").unwrap();
+        let content_field = self.schema.get_field("content").unwrap();
+        let path_field = self.schema.get_field("path").unwrap();
+
         let mut results = Vec::new();
 
         for (score, doc_address) in top_docs {
             let retrieved_doc: TantivyDocument = searcher
-                .doc(doc_address)
+                .doc(*doc_address)
                 .map_err(|e| BismuthError::IndexError(e.to_string()))?;
 
             let path = retrieved_doc
@@ -165,7 +219,13 @@ impl IndexService {
                 .unwrap_or("");
 
             let snippet = if content.len() > 200 {
-                format!("{}...", &content[..200])
+                let end = content
+                    .char_indices()
+                    .take_while(|(i, _)| *i < 200)
+                    .last()
+                    .map(|(i, c)| i + c.len_utf8())
+                    .unwrap_or(0);
+                format!("{}...", &content[..end])
             } else {
                 content.to_string()
             };
@@ -174,7 +234,7 @@ impl IndexService {
                 path,
                 title,
                 snippet,
-                score,
+                score: *score,
             });
         }
 

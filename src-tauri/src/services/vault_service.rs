@@ -24,6 +24,11 @@ pub use vault_recovery::{RecoveryEntry, RecoveryService};
 use vault_scanner::VaultScanner;
 use vault_templates::apply_template;
 
+/// Central service for all vault file operations.
+///
+/// Owns the current vault state and delegates to specialized sub-services
+/// for scanning, CRUD operations, and link management.
+/// All file paths are validated against the vault root to prevent traversal.
 pub struct VaultService {
     #[allow(dead_code)]
     db: Arc<Database>,
@@ -34,6 +39,7 @@ pub struct VaultService {
 }
 
 impl VaultService {
+    /// Creates a new `VaultService` backed by the given database.
     pub fn new(db: Arc<Database>) -> Self {
         let operations = VaultOperations::new(Arc::clone(&db));
         let scanner = VaultScanner::new(Arc::clone(&db));
@@ -47,6 +53,14 @@ impl VaultService {
         }
     }
 
+    /// Opens a vault at the given path.
+    ///
+    /// Validates that the path exists and is a directory, initializes the
+    /// [`Vault`] struct, and performs an initial scan.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`BismuthError::VaultError`] if the path is invalid.
     pub fn open(&mut self, path: PathBuf) -> Result<Vault> {
         if !path.exists() {
             return Err(BismuthError::VaultError(format!(
@@ -68,6 +82,14 @@ impl VaultService {
         Ok(vault)
     }
 
+    /// Creates a new vault directory with standard `.bismuth/` structure.
+    ///
+    /// Creates subdirectories for notes, templates, themes, and plugins,
+    /// plus a default settings file.
+    ///
+    /// # Errors
+    ///
+    /// Returns an IO error if directory creation fails.
     pub fn create(&mut self, path: PathBuf) -> Result<Vault> {
         let depth = path.components().count();
         if depth > filesystem::MAX_DIRECTORY_DEPTH {
@@ -96,12 +118,18 @@ impl VaultService {
         Ok(vault)
     }
 
+    /// Creates a vault and applies a named template to populate it.
     pub fn create_from_template(&mut self, path: PathBuf, template: &str) -> Result<Vault> {
         let vault = self.create(path.clone())?;
         apply_template(&path, template)?;
         Ok(vault)
     }
 
+    /// Scans the vault for all markdown files and returns parsed [`Note`] objects.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if no vault is currently open.
     pub fn scan(&self) -> Result<Vec<Note>> {
         let vault = self
             .vault
@@ -111,6 +139,7 @@ impl VaultService {
         self.scanner.scan(vault)
     }
 
+    /// Reads and parses a single note by path.
     pub fn get_note(&self, path: &Path) -> Result<Note> {
         let vault = self
             .vault
@@ -120,6 +149,7 @@ impl VaultService {
         self.operations.get_note(path, vault)
     }
 
+    /// Writes content to a note file, enforcing vault boundary.
     pub fn write_note(&self, path: &Path, content: &str) -> Result<()> {
         let vault = self
             .vault
@@ -129,6 +159,7 @@ impl VaultService {
         self.operations.write_note(path, content, vault)
     }
 
+    /// Deletes a note file from disk.
     pub fn delete_note(&self, path: &Path) -> Result<()> {
         let vault = self
             .vault
@@ -138,6 +169,7 @@ impl VaultService {
         self.operations.delete_note(path, vault)
     }
 
+    /// Renames a note, moving the file on disk.
     pub fn rename_note(&self, old_path: &Path, new_path: &Path) -> Result<()> {
         let vault = self
             .vault
@@ -147,10 +179,12 @@ impl VaultService {
         self.operations.rename_note(old_path, new_path, vault)
     }
 
+    /// Returns a reference to the currently open vault, if any.
     pub fn get_vault(&self) -> Option<&Vault> {
         self.vault.as_ref()
     }
 
+    /// Recursively lists all subdirectories in the vault (excluding hidden dirs).
     pub fn list_folders(&self, vault_path: &Path) -> Result<Vec<String>> {
         use std::fs;
         
@@ -186,6 +220,7 @@ impl VaultService {
         Ok(folders)
     }
 
+    /// Lists all `.md` notes in a specific folder (non-recursive).
     pub fn list_notes_in_folder(&self, vault_path: &Path, folder_path: &str) -> Result<Vec<Note>> {
         use std::fs;
         
@@ -212,6 +247,7 @@ impl VaultService {
         Ok(notes)
     }
 
+    /// Duplicates a note, creating a copy with " copy" suffix in the same directory.
     pub fn duplicate_note(&self, path: &Path) -> Result<Note> {
         let vault = self
             .vault
@@ -235,6 +271,7 @@ impl VaultService {
         self.operations.get_note(&new_path, vault)
     }
 
+    /// Moves a note to a new directory and updates all inbound wikilinks.
     pub fn move_note(&self, old_path: &Path, new_dir: &Path) -> Result<Note> {
         let vault = self
             .vault
@@ -259,6 +296,9 @@ impl VaultService {
         self.operations.get_note(&new_path, vault)
     }
 
+    /// Merges multiple notes into one, concatenating content with separators.
+    ///
+    /// Source notes (other than the target) are deleted after merging.
     pub fn merge_notes(&self, paths: &[PathBuf], target_path: &Path) -> Result<Note> {
         let vault = self
             .vault
@@ -288,6 +328,7 @@ impl VaultService {
         self.operations.get_note(target_path, vault)
     }
 
+    /// Creates a new note at the given path with initial content.
     pub fn create_note(&self, path: &Path, content: &str) -> Result<Note> {
         let vault = self
             .vault
@@ -346,6 +387,9 @@ impl VaultService {
         self.operations.write_note(path, &new_content, vault)
     }
 
+    /// Updates all `[[wikilinks]]` pointing to a renamed note.
+    ///
+    /// Returns the list of files that were modified.
     pub fn update_links_on_rename(&self, old_path: &Path, new_path: &Path) -> Result<Vec<PathBuf>> {
         let vault = self
             .vault
@@ -355,6 +399,7 @@ impl VaultService {
         self.wikilink_service.update_links_on_rename(old_path, new_path, vault)
     }
 
+    /// Checks for crash-recovery files left from an unexpected shutdown.
     pub fn check_recovery(&self) -> Result<Vec<RecoveryEntry>> {
         let vault = self
             .vault
@@ -364,6 +409,7 @@ impl VaultService {
         RecoveryService::check_recovery_files(vault)
     }
 
+    /// Returns the edit history log for a specific note.
     pub fn get_history(&self, path: &Path) -> Result<Vec<HistoryEntry>> {
         let vault = self
             .vault
@@ -373,6 +419,7 @@ impl VaultService {
         HistoryService::get_history(vault, path)
     }
 
+    /// Restores a note to a previous version identified by timestamp.
     pub fn restore_version(&self, path: &Path, timestamp: chrono::DateTime<chrono::Utc>) -> Result<String> {
         let vault = self
             .vault

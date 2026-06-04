@@ -6,5 +6,6 @@ export * from './search';
 export * from './graph';
 export * from './wikilink';
 export * from './frontmatter';
-export * from './index';
-export * from './watcher';
+export * from './entity';
+export * from './plugins';
+export * from './canvas';

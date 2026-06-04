@@ -1,3 +1,8 @@
+//! Note edit history persistence (FR-014)
+//!
+//! Stores incremental snapshots of note content as JSONL files,
+//! enabling version browsing and point-in-time restoration.
+
 use crate::error::Result;
 use crate::models::Vault;
 use chrono::{DateTime, Utc};
@@ -7,15 +12,20 @@ use std::fs::{self, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 
+/// A timestamped snapshot of a note's content.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HistoryEntry {
+    /// When this version was saved.
     pub timestamp: DateTime<Utc>,
+    /// Full content at this point in time.
     pub content: String,
 }
 
+/// Service for appending, querying, and restoring note history.
 pub struct HistoryService;
 
 impl HistoryService {
+    /// Appends a new history entry for the given note.
     pub fn append_history(vault: &Vault, path: &Path, content: &str) -> Result<()> {
         let history_dir = vault.root_path.join(".bismuth/history");
         fs::create_dir_all(&history_dir)?;

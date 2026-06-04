@@ -84,10 +84,16 @@ export const visibleTags = derived([tagHierarchy, hiddenTags], ([$hierarchy, $hi
   return filterHidden($hierarchy);
 });
 
+export interface RenameResult {
+  notes_modified: number;
+  was_merge: boolean;
+  children_renamed: number;
+}
+
 /** Rename a tag across all notes */
-export async function renameTag(oldName: string, newName: string): Promise<void> {
+export async function renameTag(oldName: string, newName: string): Promise<RenameResult> {
   try {
-    await invoke('rename_tag', { old_name: oldName, new_name: newName });
+    return await invoke<RenameResult>('rename_tag', { old_name: oldName, new_name: newName });
   } catch (error) {
     console.error('Failed to rename tag:', error);
     throw error;
@@ -95,39 +101,98 @@ export async function renameTag(oldName: string, newName: string): Promise<void>
 }
 
 /** Merge one tag into another */
-export async function mergeTags(sourceTag: string, targetTag: string): Promise<void> {
+export async function mergeTags(sourceTag: string, targetTag: string): Promise<RenameResult> {
   try {
-    await invoke('merge_tags', { source_tag: sourceTag, target_tag: targetTag });
+    return await invoke<RenameResult>('merge_tags', { source_tag: sourceTag, target_tag: targetTag });
   } catch (error) {
     console.error('Failed to merge tags:', error);
     throw error;
   }
 }
 
+/** Persist hidden tags to localStorage */
+function persistHiddenTags(tags: Set<string>) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('bismuth-hidden-tags', JSON.stringify(Array.from(tags)));
+  }
+}
+
+/** Load hidden tags from localStorage */
+export function loadHiddenTags() {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('bismuth-hidden-tags');
+    if (saved) {
+      try {
+        const arr = JSON.parse(saved);
+        if (Array.isArray(arr)) {
+          hiddenTags.set(new Set(arr));
+        }
+      } catch (e) {
+        console.error('Failed to load hidden tags:', e);
+      }
+    }
+  }
+}
+
 /** Toggle tag visibility */
 export function toggleTagVisibility(tagName: string) {
-  hiddenTags.update((s) => {
+  hiddenTags.update((s: Set<string>) => {
     const next = new Set(s);
     if (next.has(tagName)) next.delete(tagName);
     else next.add(tagName);
+    persistHiddenTags(next);
     return next;
   });
 }
 
 /** Hide a tag */
 export function hideTag(tagName: string) {
-  hiddenTags.update((s) => {
+  hiddenTags.update((s: Set<string>) => {
     const next = new Set(s);
     next.add(tagName);
+    persistHiddenTags(next);
     return next;
   });
 }
 
 /** Show a hidden tag */
 export function showTag(tagName: string) {
-  hiddenTags.update((s) => {
+  hiddenTags.update((s: Set<string>) => {
     const next = new Set(s);
     next.delete(tagName);
+    persistHiddenTags(next);
     return next;
   });
 }
+
+/**
+ * Notes filtered by tag visibility.
+ * Notes whose ONLY tags are hidden get excluded from the file list.
+ * Notes with at least one visible tag (or no tags at all) remain visible.
+ */
+export const filteredNotes = derived([notes, hiddenTags], ([$notes, $hidden]: [any[], Set<string>]) => {
+  if ($hidden.size === 0) return $notes;
+
+  return $notes.filter((note: any) => {
+    const noteTags: string[] = [];
+
+    // Collect frontmatter tags
+    const fmTags = note.frontmatter?.tags;
+    if (Array.isArray(fmTags)) {
+      noteTags.push(...fmTags);
+    }
+
+    // Collect inline tags
+    const inlineTags = note.content?.match(/#([a-zA-Z0-9_/-]+)/g) || [];
+    inlineTags.forEach((t: string) => noteTags.push(t.slice(1)));
+
+    // If no tags at all, keep visible
+    if (noteTags.length === 0) return true;
+
+    // If ALL tags are hidden, exclude from file list
+    return noteTags.some((t: string) => !$hidden.has(t));
+  });
+});
+
+// Load persisted hidden tags on module init
+loadHiddenTags();

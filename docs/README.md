@@ -6,7 +6,7 @@ This directory contains technical documentation for Bismuth development.
 
 ## 📁 Directory Structure
 
-```
+```text
 docs/
 ├── README.md                           # This file (index)
 │
@@ -19,12 +19,15 @@ docs/
 │   └── wiki-structure.md
 │
 ├── development/                        # Development guides & processes
+│   ├── configuration.md
 │   ├── demo-checklist.md
 │   ├── demo-plan.md
 │   ├── development-scripts.md
 │   ├── feature-development-guide.md
-│   ├── mcp-servers.md
-│   └── tailwind-integration.md
+│   ├── folder-structure.md
+│   ├── logging.md
+│   ├── tailwind-integration.md
+│   └── versioning.md
 │
 ├── implementation/                     # Feature implementation docs
 │   ├── backlinks-implementation.md
@@ -41,7 +44,7 @@ docs/
 │   ├── git-setup-summary.md
 │   ├── git-workflow.md
 │   ├── modular-architecture-complete.md
-│   ├── versioning.md
+│   ├── VERSIONING.md
 │   └── versioning-setup-complete.md
 │
 ├── standards/                          # Coding & design standards
@@ -78,9 +81,15 @@ High-level system design and technical decisions:
 
 Guides for implementing features and managing development:
 
+- **[Configuration](./development/configuration.md)** - App configuration guide
 - **[Feature Development Guide](./development/feature-development-guide.md)** - How to build features
+- **[Development Scripts](./development/development-scripts.md)** - Available scripts and commands
+- **[Folder Structure](./development/folder-structure.md)** - Project directory layout
+- **[Logging](./development/logging.md)** - Logging conventions
 - **[Demo Plan](./development/demo-plan.md)** - MVP demo planning
 - **[Demo Checklist](./development/demo-checklist.md)** - Demo validation
+- **[Tailwind Integration](./development/tailwind-integration.md)** - Tailwind CSS setup
+- **[Versioning](./development/versioning.md)** - Version management
 
 ### Process Documentation
 
@@ -88,7 +97,7 @@ Project management and workflow processes:
 
 - **[Git Workflow](./processes/git-workflow.md)** - Branching and commit strategy
 - **[Git Setup Summary](./processes/git-setup-summary.md)** - Git configuration
-- **[Versioning](./processes/versioning.md)** - Semantic versioning guide
+- **[Versioning](./processes/VERSIONING.md)** - Semantic versioning guide
 - **[Git Implementation Complete](./processes/git-implementation-complete.md)** - Git setup completion
 - **[Modular Architecture Complete](./processes/modular-architecture-complete.md)** - Architecture setup completion
 - **[Versioning Setup Complete](./processes/versioning-setup-complete.md)** - Versioning setup completion

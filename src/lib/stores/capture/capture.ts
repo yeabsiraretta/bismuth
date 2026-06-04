@@ -8,7 +8,7 @@ import { invoke } from '@tauri-apps/api/core';
 import type { Note } from '@/types/vault';
 import type { PortentType, LifecycleState } from '@/types/entity';
 import { deriveLifecycle } from '@/types/entity';
-import { notes, currentVault, refreshNotes } from '@/stores/vault/vault';
+import { notes, refreshNotes } from '@/stores/vault/vault';
 
 /** Captured notes (not yet organized or archived) */
 export const capturedNotes = derived(notes, ($notes) =>
@@ -118,31 +118,12 @@ export async function batchClassify(
 
 /** Quick capture — create a new note in the inbox within 200ms target */
 export async function quickCapture(title?: string): Promise<string> {
-  const vault = get(currentVault);
-  if (!vault) throw new Error('No vault open');
-
-  const now = new Date();
-  const noteTitle = title || `Quick Capture ${now.toISOString().slice(0, 16).replace('T', ' ')}`;
-  const fileName = noteTitle.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-').toLowerCase();
-  const path = `inbox/${fileName}.md`;
-
-  const content = `---
-title: "${noteTitle}"
-type: ""
-organized: false
-archived: false
-created: "${now.toISOString()}"
----
-
-`;
-
   try {
-    await invoke('write_note', {
-      path: `${vault.root_path}/${path}`,
-      content,
+    const note = await invoke<{ path: string }>('quick_capture', {
+      title: title || null,
     });
     await refreshNotes();
-    return path;
+    return note.path;
   } catch (error) {
     console.error('Quick capture failed:', error);
     throw error;

@@ -1,24 +1,39 @@
+//! Tag management IPC commands (FR-004)
+//!
+//! Collects, searches, renames, and merges tags from both YAML frontmatter
+//! (`tags:` array) and inline `#tag` syntax across all vault notes.
+
 use crate::commands::AppState;
 use crate::services::FrontmatterService;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::State;
 
+/// Metadata about a single tag across the vault.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TagInfo {
+    /// Tag name (without `#` prefix).
     pub name: String,
+    /// Number of notes using this tag.
     pub count: usize,
+    /// Paths of notes that contain this tag.
     pub notes: Vec<String>,
 }
 
+/// Aggregate statistics for all tags in the vault.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TagStats {
+    /// Total number of distinct tags.
     pub total_tags: usize,
+    /// Total number of notes that have at least one tag.
     pub total_tagged_notes: usize,
+    /// Full list of tags sorted by frequency (descending).
     pub tags: Vec<TagInfo>,
 }
 
-/// Scan all notes and collect tags from frontmatter and inline #tags
+/// Scans all vault notes and aggregates tags from frontmatter arrays and inline `#tag` syntax.
+///
+/// Results are sorted by frequency (descending), then alphabetically.
 fn collect_tags_from_vault(state: &State<'_, AppState>) -> Result<Vec<TagInfo>, String> {
     let service = state.vault_service.lock().unwrap();
     let notes = service.scan().map_err(|e| format!("Failed to scan vault: {}", e))?;
@@ -60,7 +75,11 @@ fn collect_tags_from_vault(state: &State<'_, AppState>) -> Result<Vec<TagInfo>, 
     Ok(tags)
 }
 
-/// Get all tags from the vault
+/// Returns all tags in the vault, sorted by usage frequency.
+///
+/// # Arguments
+///
+/// * `_vault_path` — Unused; vault is determined from app state.
 #[tauri::command]
 pub async fn get_all_tags(
     state: State<'_, AppState>,
@@ -69,7 +88,11 @@ pub async fn get_all_tags(
     collect_tags_from_vault(&state)
 }
 
-/// Get notes for a specific tag
+/// Returns paths of all notes tagged with the given tag name.
+///
+/// # Arguments
+///
+/// * `tag` — Tag name to filter by (without `#` prefix).
 #[tauri::command]
 pub async fn get_notes_by_tag(
     state: State<'_, AppState>,
@@ -84,7 +107,7 @@ pub async fn get_notes_by_tag(
         .unwrap_or_default())
 }
 
-/// Get tag statistics
+/// Returns aggregate tag statistics: totals and per-tag breakdowns.
 #[tauri::command]
 pub async fn get_tag_stats(
     state: State<'_, AppState>,
@@ -101,7 +124,11 @@ pub async fn get_tag_stats(
     })
 }
 
-/// Search tags by prefix
+/// Searches tags by substring match (case-insensitive).
+///
+/// # Arguments
+///
+/// * `query` — Substring to match against tag names.
 #[tauri::command]
 pub async fn search_tags(
     state: State<'_, AppState>,
@@ -116,38 +143,96 @@ pub async fn search_tags(
         .collect())
 }
 
-/// Rename a tag across all notes in the vault
+/// Result of a rename operation with conflict info.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RenameResult {
+    /// Number of notes modified.
+    pub notes_modified: usize,
+    /// Whether the target tag already existed (merge occurred).
+    pub was_merge: bool,
+    /// Number of child tags that were also renamed.
+    pub children_renamed: usize,
+}
+
+/// Renames a tag across all notes in the vault.
+///
+/// Updates both frontmatter `tags:` arrays and inline `#tag` occurrences.
+/// Also propagates to child tags (e.g. renaming `parent` also renames `parent/child`
+/// to `newparent/child`). Detects when target tag already exists (merge).
+///
+/// # Arguments
+///
+/// * `old_name` — Current tag name.
+/// * `new_name` — Replacement tag name.
 #[tauri::command]
 pub async fn rename_tag(
     state: State<'_, AppState>,
     old_name: String,
     new_name: String,
-) -> Result<(), String> {
+) -> Result<RenameResult, String> {
     let service = state.vault_service.lock().unwrap();
     let notes = service.scan().map_err(|e| format!("Failed to scan: {}", e))?;
+
+    // Detect merge: check if new_name already exists
+    let mut was_merge = false;
+    let mut children_renamed: usize = 0;
+    let old_prefix = format!("{}/", old_name);
+    let new_prefix = format!("{}/", new_name);
+
+    for note in &notes {
+        if let Some(tags_val) = note.frontmatter.get("tags") {
+            if let Some(arr) = tags_val.as_array() {
+                if arr.iter().any(|t| t.as_str() == Some(&new_name)) {
+                    was_merge = true;
+                    break;
+                }
+            }
+        }
+        if note.content.contains(&format!("#{}", new_name)) {
+            was_merge = true;
+            break;
+        }
+    }
+
+    let mut notes_modified: usize = 0;
 
     for note in &notes {
         let mut modified = false;
         let (mut frontmatter, body) = FrontmatterService::parse(&note.content)
             .map_err(|e| format!("Parse error: {}", e))?;
 
-        // Update frontmatter tags array
+        // Update frontmatter tags array (exact match + child tags)
         if let Some(tags_val) = frontmatter.get_mut("tags") {
             if let Some(arr) = tags_val.as_array_mut() {
                 for item in arr.iter_mut() {
-                    if item.as_str() == Some(&old_name) {
-                        *item = serde_json::Value::String(new_name.clone());
-                        modified = true;
+                    if let Some(tag_str) = item.as_str().map(|s| s.to_string()) {
+                        if tag_str == old_name {
+                            *item = serde_json::Value::String(new_name.clone());
+                            modified = true;
+                        } else if tag_str.starts_with(&old_prefix) {
+                            // Child tag: parent/child → newparent/child
+                            let suffix = &tag_str[old_prefix.len()..];
+                            *item = serde_json::Value::String(format!("{}{}", new_prefix, suffix));
+                            modified = true;
+                            children_renamed += 1;
+                        }
                     }
                 }
             }
         }
 
-        // Update inline #tags in body
-        let new_body = body.replace(
+        // Update inline #tags in body (exact + children)
+        let mut new_body = body.replace(
             &format!("#{}", old_name),
             &format!("#{}", new_name),
         );
+        // Also replace child tags: #parent/child → #newparent/child
+        let inline_old_prefix = format!("#{}", old_prefix);
+        let inline_new_prefix = format!("#{}", new_prefix);
+        if new_body.contains(&inline_old_prefix) {
+            new_body = new_body.replace(&inline_old_prefix, &inline_new_prefix);
+            children_renamed += 1;
+        }
         let body_modified = new_body != body;
 
         if modified || body_modified {
@@ -158,19 +243,57 @@ pub async fn rename_tag(
 
             service.write_note(&note.path, &new_content)
                 .map_err(|e| format!("Write error: {}", e))?;
+            notes_modified += 1;
         }
     }
 
-    Ok(())
+    Ok(RenameResult {
+        notes_modified,
+        was_merge,
+        children_renamed,
+    })
 }
 
-/// Merge source tag into target tag (rename source → target)
+/// Merges a source tag into a target tag (equivalent to renaming source → target).
+///
+/// # Arguments
+///
+/// * `source_tag` — Tag to eliminate.
+/// * `target_tag` — Tag to absorb the source's notes.
 #[tauri::command]
 pub async fn merge_tags(
     state: State<'_, AppState>,
     source_tag: String,
     target_tag: String,
-) -> Result<(), String> {
-    // Merging is equivalent to renaming source → target
+) -> Result<RenameResult, String> {
     rename_tag(state, source_tag, target_tag).await
+}
+
+/// Returns a random note path from notes tagged with the given tag.
+///
+/// # Arguments
+///
+/// * `tag` — Tag name to filter by (without `#` prefix).
+#[tauri::command]
+pub async fn get_random_note_with_tag(
+    state: State<'_, AppState>,
+    tag: String,
+) -> Result<String, String> {
+    let tags = collect_tags_from_vault(&state)?;
+    let tag_info = tags
+        .into_iter()
+        .find(|t| t.name == tag)
+        .ok_or_else(|| format!("Tag '{}' not found", tag))?;
+
+    if tag_info.notes.is_empty() {
+        return Err(format!("No notes with tag '{}'", tag));
+    }
+
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let seed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .subsec_nanos() as usize;
+    let idx = seed % tag_info.notes.len();
+    Ok(tag_info.notes[idx].clone())
 }

@@ -16,11 +16,11 @@ export interface Command {
 const commandMap = writable<Map<string, Command>>(new Map());
 
 /** All registered commands as array */
-export const commands = derived(commandMap, ($map) => Array.from($map.values()));
+export const commands = derived(commandMap, ($map: Map<string, Command>) => Array.from($map.values()));
 
 /** Register a command */
 export function registerCommand(command: Command) {
-  commandMap.update((map) => {
+  commandMap.update((map: Map<string, Command>) => {
     map.set(command.id, command);
     return new Map(map);
   });
@@ -28,7 +28,7 @@ export function registerCommand(command: Command) {
 
 /** Unregister a command */
 export function unregisterCommand(id: string) {
-  commandMap.update((map) => {
+  commandMap.update((map: Map<string, Command>) => {
     map.delete(id);
     return new Map(map);
   });
@@ -37,7 +37,7 @@ export function unregisterCommand(id: string) {
 /** Execute a command by ID */
 export async function executeCommand(id: string): Promise<void> {
   let cmd: Command | undefined;
-  commandMap.subscribe((map) => {
+  commandMap.subscribe((map: Map<string, Command>) => {
     cmd = map.get(id);
   })();
   if (cmd) {
@@ -48,7 +48,7 @@ export async function executeCommand(id: string): Promise<void> {
 /** Search commands by fuzzy name match */
 export function searchCommands(query: string): Command[] {
   let allCmds: Command[] = [];
-  commands.subscribe((cmds) => {
+  commands.subscribe((cmds: Command[]) => {
     allCmds = cmds;
   })();
 
@@ -81,6 +81,7 @@ export function registerDefaultCommands(actions: {
   quickCapture?: () => void;
   openGraph?: () => void;
   openCaptureDashboard?: () => void;
+  openAutoLinker?: () => void;
 }) {
   const defaults: Command[] = [
     {
@@ -152,6 +153,13 @@ export function registerDefaultCommands(actions: {
       description: 'Open the capture/inbox dashboard',
       category: 'Views',
       action: actions.openCaptureDashboard ?? (() => {}),
+    },
+    {
+      id: 'links:find-unlinked',
+      name: 'Find Unlinked References',
+      description: 'Scan current note for text matching other note titles that are not yet linked',
+      category: 'Links',
+      action: actions.openAutoLinker ?? (() => {}),
     },
   ];
 

@@ -24,7 +24,7 @@ Thank you for your interest in contributing to Bismuth! This document provides g
 
 ### Prerequisites
 
-- **Rust**: 1.75+ (`rustup install stable`)
+- **Rust**: 1.95+ (`rustup install stable`)
 - **Node.js**: 20+ (`nvm install 20`)
 - **pnpm**: 8+ (`npm install -g pnpm`)
 - **Git**: 2.40+
@@ -91,6 +91,7 @@ We follow **Git Flow** with branch protection:
 ### Branch Types
 
 #### `main`
+
 - **Protected**: ✅ Yes
 - **Purpose**: Production-ready code
 - **Merges from**: `develop` (via release branches)
@@ -99,6 +100,7 @@ We follow **Git Flow** with branch protection:
 - **Status checks**: All CI must pass
 
 #### `develop`
+
 - **Protected**: ✅ Yes
 - **Purpose**: Integration branch for features
 - **Merges from**: `feature/*`, `bugfix/*`
@@ -107,6 +109,7 @@ We follow **Git Flow** with branch protection:
 - **Status checks**: All CI must pass
 
 #### `feature/*`
+
 - **Protected**: ❌ No
 - **Purpose**: New features (e.g., `feature/US1-vault-editor`)
 - **Branches from**: `develop`
@@ -114,6 +117,7 @@ We follow **Git Flow** with branch protection:
 - **Naming**: `feature/<user-story>-<short-description>`
 
 #### `bugfix/*`
+
 - **Protected**: ❌ No
 - **Purpose**: Bug fixes
 - **Branches from**: `develop`
@@ -121,6 +125,7 @@ We follow **Git Flow** with branch protection:
 - **Naming**: `bugfix/<issue-number>-<short-description>`
 
 #### `hotfix/*`
+
 - **Protected**: ❌ No
 - **Purpose**: Critical production fixes
 - **Branches from**: `main`
@@ -128,6 +133,7 @@ We follow **Git Flow** with branch protection:
 - **Naming**: `hotfix/<version>-<description>`
 
 #### `release/*`
+
 - **Protected**: ✅ Yes
 - **Purpose**: Release preparation
 - **Branches from**: `develop`
@@ -136,7 +142,7 @@ We follow **Git Flow** with branch protection:
 
 ### Branch Lifecycle
 
-```
+```text
 develop ──┬─→ feature/US1 ──→ develop
           ├─→ feature/US2 ──→ develop
           └─→ release/v0.1.0 ──→ main ──→ v0.1.0 tag
@@ -152,7 +158,7 @@ We use **Conventional Commits** enforced by `commitlint`.
 
 ### Format
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -176,6 +182,7 @@ We use **Conventional Commits** enforced by `commitlint`.
 ### Scope
 
 Use user story IDs or component names:
+
 - `US1`, `US2`, `US15` (user stories)
 - `vault`, `editor`, `search`, `graph` (components)
 - `deps`, `config`, `docs` (infrastructure)
@@ -213,7 +220,8 @@ Closes #42"
 ### 1. PR Title
 
 Follow commit message format:
-```
+
+```text
 feat(US1): implement vault editor
 ```
 
@@ -331,7 +339,7 @@ async function saveNote(path: string, content: string): Promise<void> {
 
 ### File Organization
 
-```
+```text
 src-tauri/
 ├── src/
 │   ├── main.rs              # Entry point
@@ -370,6 +378,7 @@ src/
 ### Unit Tests
 
 **Rust**: Minimum 80% coverage
+
 ```rust
 #[cfg(test)]
 mod tests {
@@ -385,6 +394,7 @@ mod tests {
 ```
 
 **TypeScript**: Minimum 80% coverage
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 
@@ -400,6 +410,7 @@ describe('VaultStore', () => {
 ### Integration Tests
 
 Test cross-component interactions:
+
 ```rust
 #[tokio::test]
 async fn test_note_save_and_index() {
@@ -416,6 +427,7 @@ async fn test_note_save_and_index() {
 ### E2E Tests
 
 Use Playwright for critical user flows:
+
 ```typescript
 test('create and edit note', async ({ page }) => {
   await page.goto('http://localhost:1420');
@@ -452,6 +464,7 @@ test('create and edit note', async ({ page }) => {
 ## Documentation
 
 Update documentation for:
+
 - New features → `spec.md`, `README.md`
 - API changes → Inline docs + `docs/api.md`
 - Breaking changes → `CHANGELOG.md`

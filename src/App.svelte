@@ -38,6 +38,7 @@
   import { log } from '@/utils/logger';
   import { theme } from '@/stores/theme/theme';
   import CommandPalette from '@/components/modals/CommandPalette.svelte';
+  import AutoLinker from '@/components/modals/AutoLinker.svelte';
   import { registerDefaultCommands } from '@/stores/commands';
   import { quickCapture } from '@/stores/capture/capture';
   import { getNote } from '@/services/vault/vault';
@@ -45,6 +46,7 @@
   let currentView: 'notes' | 'canvas' = 'notes';
   let leftTab = 'files';
   let commandPaletteOpen = false;
+  let autoLinkerOpen = false;
 
   onMount(async () => {
     log.info('App component mounted');
@@ -69,6 +71,9 @@
       },
       openCaptureDashboard: () => {
         leftTab = 'inbox';
+      },
+      openAutoLinker: () => {
+        autoLinkerOpen = true;
       },
     });
 
@@ -248,6 +253,13 @@
   isOpen={commandPaletteOpen}
   onClose={() => {
     commandPaletteOpen = false;
+  }}
+/>
+
+<AutoLinker
+  isOpen={autoLinkerOpen}
+  onClose={() => {
+    autoLinkerOpen = false;
   }}
 />
 

@@ -85,6 +85,12 @@ impl Database {
             tx.commit()?;
         }
 
+        if current_version < 3 {
+            let tx = conn.transaction()?;
+            Self::migrate_v3(&tx)?;
+            tx.commit()?;
+        }
+
         Ok(())
     }
 
@@ -178,8 +184,7 @@ impl Database {
 
     /// Creates performance indexes for v1 schema
     fn create_indexes_v1(tx: &Transaction) -> Result<()> {
-        // Notes indexes
-        tx.execute("CREATE INDEX idx_notes_path ON notes(path)", [])?;
+        // Notes indexes (path is PK, auto-indexed)
         tx.execute("CREATE INDEX idx_notes_modified ON notes(modified_at)", [])?;
 
         // Links indexes
@@ -187,8 +192,7 @@ impl Database {
         tx.execute("CREATE INDEX idx_links_target ON links(target_title)", [])?;
         tx.execute("CREATE INDEX idx_links_resolved ON links(is_resolved)", [])?;
 
-        // Tags index
-        tx.execute("CREATE INDEX idx_tags_name ON tags(name)", [])?;
+        // Tags index (name is PK, auto-indexed)
 
         // JDex indexes
         tx.execute("CREATE INDEX idx_jdex_area ON jdex_entries(area)", [])?;
@@ -198,7 +202,10 @@ impl Database {
         )?;
 
         // Graph indexes
-        tx.execute("CREATE INDEX idx_graph_nodes_type ON graph_nodes(node_type)", [])?;
+        tx.execute(
+            "CREATE INDEX idx_graph_nodes_type ON graph_nodes(node_type)",
+            [],
+        )?;
         tx.execute(
             "CREATE INDEX idx_graph_edges_from ON graph_edges(from_node_id)",
             [],
@@ -318,6 +325,30 @@ impl Database {
         Ok(())
     }
 
+    /// Migration v3: Add pages and components JSON columns to canvas_documents
+    fn migrate_v3(tx: &Transaction) -> Result<()> {
+        tx.execute(
+            "ALTER TABLE canvas_documents ADD COLUMN pages_json TEXT",
+            [],
+        )?;
+        tx.execute(
+            "ALTER TABLE canvas_documents ADD COLUMN active_page_id TEXT",
+            [],
+        )?;
+        tx.execute(
+            "ALTER TABLE canvas_documents ADD COLUMN components_json TEXT",
+            [],
+        )?;
+
+        // Record migration
+        tx.execute(
+            "INSERT INTO schema_version (version, applied_at) VALUES (3, ?)",
+            [chrono::Utc::now().timestamp()],
+        )?;
+
+        Ok(())
+    }
+
     /// Gets a reference to the database connection
     pub fn conn(&self) -> Arc<Mutex<Connection>> {
         Arc::clone(&self.conn)
@@ -330,7 +361,8 @@ impl Database {
         use std::path::PathBuf;
 
         let conn = self.conn.lock().unwrap();
-        let mut stmt = conn.prepare("SELECT path, title, frontmatter_json, created_at, modified_at FROM notes")?;
+        let mut stmt = conn
+            .prepare("SELECT path, title, frontmatter_json, created_at, modified_at FROM notes")?;
 
         let notes = stmt
             .query_map([], |row| {
@@ -349,8 +381,10 @@ impl Database {
                     title,
                     content: String::new(),
                     frontmatter,
-                    created_at: DateTime::from_timestamp(created_at, 0).unwrap_or_else(|| Utc::now()),
-                    modified_at: DateTime::from_timestamp(modified_at, 0).unwrap_or_else(|| Utc::now()),
+                    created_at: DateTime::from_timestamp(created_at, 0)
+                        .unwrap_or_else(|| Utc::now()),
+                    modified_at: DateTime::from_timestamp(modified_at, 0)
+                        .unwrap_or_else(|| Utc::now()),
                 })
             })?
             .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -364,7 +398,8 @@ impl Database {
         use std::path::PathBuf;
 
         let conn = self.conn.lock().unwrap();
-        let mut stmt = conn.prepare("SELECT source_path, target_title, target_path, is_resolved FROM links")?;
+        let mut stmt =
+            conn.prepare("SELECT source_path, target_title, target_path, is_resolved FROM links")?;
 
         let links = stmt
             .query_map([], |row| {
@@ -394,7 +429,7 @@ impl Database {
         let conn = self.conn.lock().unwrap();
         let mut stmt = conn.prepare(
             "SELECT source_path, target_title, target_path, is_resolved 
-             FROM links WHERE target_path = ?"
+             FROM links WHERE target_path = ?",
         )?;
 
         let links = stmt
@@ -428,7 +463,7 @@ mod tests {
         let dir = tempdir().unwrap();
         let db_path = dir.path().join("test.db");
 
-        let db = Database::new(&db_path).unwrap();
+        let _db = Database::new(&db_path).unwrap();
         assert!(db_path.exists());
     }
 
@@ -475,7 +510,7 @@ mod tests {
             .collect::<std::result::Result<Vec<_>, _>>()
             .unwrap();
 
-        assert!(indexes.contains(&"idx_notes_path".to_string()));
+        assert!(indexes.contains(&"idx_notes_modified".to_string()));
         assert!(indexes.contains(&"idx_links_source".to_string()));
         assert!(indexes.contains(&"idx_graph_edges_from".to_string()));
     }
@@ -489,7 +524,7 @@ mod tests {
         let _db1 = Database::new(&db_path).unwrap();
         let db2 = Database::new(&db_path).unwrap();
 
-        // Check version is still 1
+        // Check version is still 2 (both migrations applied)
         let conn = db2.conn.lock().unwrap();
         let version: i64 = conn
             .query_row("SELECT MAX(version) FROM schema_version", [], |row| {
@@ -497,7 +532,7 @@ mod tests {
             })
             .unwrap();
 
-        assert_eq!(version, 1);
+        assert_eq!(version, 2);
     }
 
     #[test]

@@ -1,5 +1,11 @@
 /**
- * Vault store - Manages vault state
+ * Vault Store
+ *
+ * Central state management for the currently open vault, its notes,
+ * and the active editor target. Exposes reactive Svelte stores and
+ * async actions that delegate to the Tauri backend via IPC.
+ *
+ * @module stores/vault
  */
 
 import { writable, derived, get } from 'svelte/store';
@@ -8,40 +14,53 @@ import type { Vault, Note } from '@/types/vault';
 import * as vaultService from '@/services/vault/vault';
 import { log } from '@/utils/logger';
 
-// Current vault
+/** The currently open vault, or `null` if no vault is loaded. */
 export const currentVault = writable<Vault | null>(null);
 
-// All notes in the vault
+/** Flat list of all notes discovered in the vault. */
 export const notes = writable<Note[]>([]);
 
-// Currently active note
+/** The note currently open in the editor, or `null` if none is selected. */
 export const activeNote = writable<Note | null>(null);
 
-// Loading states
+/** `true` while the vault is being opened or initialized. */
 export const isLoadingVault = writable(false);
+
+/** `true` while the note list is being refreshed from disk. */
 export const isLoadingNotes = writable(false);
 
-// Show archived notes toggle
+/** When `true`, archived notes are included in {@link visibleNotes}. */
 export const showArchived = writable(false);
 
-// Derived store: vault is open
-export const isVaultOpen = derived(currentVault, ($vault) => $vault !== null);
+/** Derived boolean indicating whether a vault is currently open. */
+export const isVaultOpen = derived(currentVault, ($vault: Vault | null) => $vault !== null);
 
-// Derived store: notes by path (for quick lookup)
-export const notesByPath = derived(notes, ($notes) => {
+/**
+ * Derived lookup map from absolute note path to its {@link Note} object.
+ * Provides O(1) access when resolving wikilinks or navigating by path.
+ */
+export const notesByPath = derived(notes, ($notes: Note[]) => {
 	const map = new Map<string, Note>();
-	$notes.forEach((note) => map.set(note.path, note));
+	$notes.forEach((note: Note) => map.set(note.path, note));
 	return map;
 });
 
-// Derived store: visible notes (excludes archived unless toggled)
-export const visibleNotes = derived([notes, showArchived], ([$notes, $showArchived]) => {
+/**
+ * Derived list of notes visible in the sidebar/file list.
+ * Excludes notes with `frontmatter.archived === true` unless
+ * {@link showArchived} is toggled on.
+ */
+export const visibleNotes = derived([notes, showArchived], ([$notes, $showArchived]: [Note[], boolean]) => {
 	if ($showArchived) return $notes;
-	return $notes.filter((n) => n.frontmatter?.archived !== true);
+	return $notes.filter((n: Note) => n.frontmatter?.archived !== true);
 });
 
 /**
- * Initializes the vault store and sets up event listeners
+ * Initializes the vault store and registers Tauri event listeners.
+ *
+ * Resets vault state to `null` (the welcome screen will trigger
+ * {@link openVault} once the user selects a directory). Should be
+ * called once at application startup.
  */
 export async function initializeVault() {
 	log.info('Initializing vault store');
@@ -64,7 +83,8 @@ export async function initializeVault() {
 }
 
 /**
- * Refreshes the notes list from the vault
+ * Re-scans the vault directory tree and replaces the {@link notes} store
+ * with the updated list. No-ops silently if no vault is open.
  */
 export async function refreshNotes() {
 	log.debug('Refreshing notes list');
@@ -90,18 +110,26 @@ export async function refreshNotes() {
 }
 
 /**
- * Sets the active note
+ * Sets the currently active note displayed in the editor.
+ *
+ * @param note - The note to activate, or `null` to deselect.
  */
 export function setActiveNote(note: Note | null) {
 	activeNote.set(note);
 }
 
 /**
- * Updates a note in the store
+ * Upserts a note in the {@link notes} store.
+ *
+ * If a note with the same path exists it is replaced in-place;
+ * otherwise the note is appended. Also updates {@link activeNote}
+ * if it references the same path.
+ *
+ * @param updatedNote - The note object with updated content/metadata.
  */
 export function updateNoteInStore(updatedNote: Note) {
-	notes.update(($notes) => {
-		const index = $notes.findIndex((n) => n.path === updatedNote.path);
+	notes.update(($notes: Note[]) => {
+		const index = $notes.findIndex((n: Note) => n.path === updatedNote.path);
 		if (index >= 0) {
 			$notes[index] = updatedNote;
 		} else {
@@ -111,7 +139,7 @@ export function updateNoteInStore(updatedNote: Note) {
 	});
 
 	// Update active note if it's the same
-	activeNote.update(($active) => {
+	activeNote.update(($active: Note | null) => {
 		if ($active && $active.path === updatedNote.path) {
 			return updatedNote;
 		}
@@ -120,13 +148,17 @@ export function updateNoteInStore(updatedNote: Note) {
 }
 
 /**
- * Removes a note from the store
+ * Removes a note from the {@link notes} store by path.
+ *
+ * Clears {@link activeNote} if the removed note was selected.
+ *
+ * @param path - Absolute path of the note to remove.
  */
 export function removeNoteFromStore(path: string) {
-	notes.update(($notes) => $notes.filter((n) => n.path !== path));
+	notes.update(($notes: Note[]) => $notes.filter((n: Note) => n.path !== path));
 
 	// Clear active note if it was deleted
-	activeNote.update(($active) => {
+	activeNote.update(($active: Note | null) => {
 		if ($active && $active.path === path) {
 			return null;
 		}
@@ -135,7 +167,13 @@ export function removeNoteFromStore(path: string) {
 }
 
 /**
- * Opens a vault and loads its notes
+ * Opens a vault at the given directory path.
+ *
+ * Delegates to the Tauri backend `open_vault` IPC command, then
+ * triggers a full note scan via {@link refreshNotes}.
+ *
+ * @param path - Absolute filesystem path to the vault root directory.
+ * @throws Re-throws any backend error after logging.
  */
 export async function openVault(path: string): Promise<void> {
 	log.info('Opening vault', { path });
@@ -160,25 +198,50 @@ export async function openVault(path: string): Promise<void> {
 	}
 }
 
+/** Accumulated Tauri event unlisten handles for teardown. */
+let eventUnlisteners: Array<() => void> = [];
+
 /**
- * Sets up Tauri event listeners for vault changes
+ * Registers Tauri event listeners for filesystem changes.
+ *
+ * Subscribes to `vault://file-created`, `vault://file-modified`, and
+ * `vault://file-deleted` events emitted by the backend file watcher.
+ * Each event triggers a full {@link refreshNotes} call.
  */
 async function setupEventListeners() {
+	// Clean up any existing listeners first
+	eventUnlisteners.forEach((unlisten) => unlisten());
+	eventUnlisteners = [];
+
 	// Listen for file created events
-	await listen('vault://file-created', async (event) => {
-		console.log('File created:', event.payload);
+	const unlistenCreated = await listen('vault://file-created', async (event: { payload: unknown }) => {
+		log.debug('File created', { payload: event.payload });
 		await refreshNotes();
 	});
+	eventUnlisteners.push(unlistenCreated);
 
 	// Listen for file modified events
-	await listen('vault://file-modified', async (event) => {
-		console.log('File modified:', event.payload);
+	const unlistenModified = await listen('vault://file-modified', async (event: { payload: unknown }) => {
+		log.debug('File modified', { payload: event.payload });
 		await refreshNotes();
 	});
+	eventUnlisteners.push(unlistenModified);
 
 	// Listen for file deleted events
-	await listen('vault://file-deleted', async (event) => {
-		console.log('File deleted:', event.payload);
+	const unlistenDeleted = await listen('vault://file-deleted', async (event: { payload: unknown }) => {
+		log.debug('File deleted', { payload: event.payload });
 		await refreshNotes();
 	});
+	eventUnlisteners.push(unlistenDeleted);
+}
+
+/**
+ * Tears down all registered Tauri event listeners.
+ *
+ * Call during application unmount to prevent memory leaks and
+ * stale event handlers.
+ */
+export function cleanupVaultListeners() {
+	eventUnlisteners.forEach((unlisten) => unlisten());
+	eventUnlisteners = [];
 }

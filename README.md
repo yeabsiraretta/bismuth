@@ -39,12 +39,14 @@ Built with modern technologies for native performance and complete data ownershi
 ### For Users
 
 **Download** the latest release:
+
 - [macOS (Apple Silicon)](https://github.com/yeabsiraretta/bismuth/releases)
 - [macOS (Intel)](https://github.com/yeabsiraretta/bismuth/releases)
 - [Windows](https://github.com/yeabsiraretta/bismuth/releases)
 - [Linux](https://github.com/yeabsiraretta/bismuth/releases)
 
 **Install** and launch Bismuth, then:
+
 1. Create a new vault or open an existing one
 2. Start taking notes with Markdown
 3. Link notes with `[[wikilinks]]`
@@ -84,6 +86,7 @@ pnpm tauri dev
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **[Svelte 4](https://svelte.dev)** - Reactive UI framework
 - **[TypeScript 5](https://www.typescriptlang.org)** - Type-safe JavaScript
 - **[Vite 5](https://vitejs.dev)** - Build tool and dev server
@@ -91,6 +94,7 @@ pnpm tauri dev
 - **[Konva](https://konvajs.org)** - Canvas rendering for graphs
 
 ### Backend
+
 - **[Rust 1.95](https://www.rust-lang.org)** - Systems programming language
 - **[Tauri 1.5](https://tauri.app)** - Desktop application framework
 - **[SQLite](https://www.sqlite.org)** - Embedded database
@@ -98,6 +102,7 @@ pnpm tauri dev
 - **[notify](https://github.com/notify-rs/notify)** - File system watcher
 
 ### Development Tools
+
 - **[pnpm](https://pnpm.io)** - Fast, disk space efficient package manager
 - **[ESLint](https://eslint.org)** - JavaScript/TypeScript linting
 - **[Prettier](https://prettier.io)** - Code formatting
@@ -109,6 +114,7 @@ pnpm tauri dev
 ## 🗺️ Roadmap
 
 ### Phase 1: Foundation (Current)
+
 - [x] Project setup and tooling
 - [x] Tauri + Svelte + Rust integration
 - [ ] Basic note editor
@@ -116,6 +122,7 @@ pnpm tauri dev
 - [ ] Markdown parsing
 
 ### Phase 2: Core Features
+
 - [ ] Wikilink support
 - [ ] Graph visualization
 - [ ] Full-text search
@@ -123,6 +130,7 @@ pnpm tauri dev
 - [ ] Theme support
 
 ### Phase 3: Advanced Features
+
 - [ ] Johnny.Decimal organization
 - [ ] Zettelkasten workflow
 - [ ] PDF annotation
@@ -152,7 +160,7 @@ Please read our **[Contributing Guide](./CONTRIBUTING.md)** before submitting a 
 **Phase**: 1 - Project Setup  
 **Progress**: 3/112 tasks complete (2.7%)
 
-See **[Implementation Status](./docs/IMPLEMENTATION_STATUS.md)** for detailed progress.
+See **[Implementation Status](./docs/status/implementation-status.md)** for detailed progress.
 
 ---
 
@@ -160,7 +168,7 @@ See **[Implementation Status](./docs/IMPLEMENTATION_STATUS.md)** for detailed pr
 
 Bismuth is licensed under the [MIT License](./LICENSE).
 
-```
+```text
 Copyright (c) 2026 Yeabsira Moges
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

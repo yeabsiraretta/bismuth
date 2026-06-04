@@ -1,3 +1,8 @@
+//! Directory-tree scanner for markdown notes.
+//!
+//! Recursively walks the vault directory, parses each `.md` file into a
+//! [`Note`], and upserts metadata into the SQLite database.
+
 use crate::db::Database;
 use crate::error::Result;
 use crate::models::{Note, Vault};
@@ -6,15 +11,18 @@ use std::fs;
 use std::path::Path;
 use std::sync::Arc;
 
+/// Scans the vault filesystem and indexes note metadata into the database.
 pub struct VaultScanner {
     db: Arc<Database>,
 }
 
 impl VaultScanner {
+    /// Creates a new scanner with database access.
     pub fn new(db: Arc<Database>) -> Self {
         Self { db }
     }
 
+    /// Performs a full scan of the vault, returning all parsed notes.
     pub fn scan(&self, vault: &Vault) -> Result<Vec<Note>> {
         let mut notes = Vec::new();
         self.scan_directory(&vault.root_path, vault, &mut notes)?;

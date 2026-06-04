@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { invoke } from '@tauri-apps/api/core';
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
 
@@ -81,8 +82,8 @@ function createThemeStore() {
     subscribe,
 
     setTheme: (themeName: string) => {
-      update(state => {
-        const theme = state.availableThemes.find(t => t.name === themeName);
+      update((state: ThemeState) => {
+        const theme = state.availableThemes.find((t: Theme) => t.name === themeName);
         if (theme) {
           applyTheme(theme);
           return {
@@ -96,11 +97,11 @@ function createThemeStore() {
     },
 
     setMode: (mode: ThemeMode) => {
-      update(state => {
+      update((state: ThemeState) => {
         if (mode === 'auto') {
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const autoMode = prefersDark ? 'dark' : 'light';
-          const theme = state.availableThemes.find(t => t.mode === autoMode);
+          const theme = state.availableThemes.find((t: Theme) => t.mode === autoMode);
           if (theme) {
             applyTheme(theme);
             return {
@@ -110,7 +111,7 @@ function createThemeStore() {
             };
           }
         } else {
-          const theme = state.availableThemes.find(t => t.mode === mode);
+          const theme = state.availableThemes.find((t: Theme) => t.mode === mode);
           if (theme) {
             applyTheme(theme);
             return {
@@ -125,16 +126,16 @@ function createThemeStore() {
     },
 
     addTheme: (theme: Theme) => {
-      update(state => ({
+      update((state: ThemeState) => ({
         ...state,
         availableThemes: [...state.availableThemes, theme],
       }));
     },
 
     removeTheme: (themeName: string) => {
-      update(state => ({
+      update((state: ThemeState) => ({
         ...state,
-        availableThemes: state.availableThemes.filter(t => t.name !== themeName),
+        availableThemes: state.availableThemes.filter((t: Theme) => t.name !== themeName),
       }));
     },
 
@@ -143,8 +144,8 @@ function createThemeStore() {
       if (saved) {
         try {
           const { themeName, mode } = JSON.parse(saved);
-          update(state => {
-            const theme = state.availableThemes.find(t => t.name === themeName);
+          update((state: ThemeState) => {
+            const theme = state.availableThemes.find((t: Theme) => t.name === themeName);
             if (theme) {
               applyTheme(theme);
               return {
@@ -162,13 +163,59 @@ function createThemeStore() {
     },
 
     saveToLocalStorage: () => {
-      update(state => {
+      update((state: ThemeState) => {
         localStorage.setItem('bismuth-theme', JSON.stringify({
           themeName: state.currentTheme,
           mode: state.mode,
         }));
         return state;
       });
+    },
+
+    /**
+     * Initializes the theme backend service for the given vault and
+     * loads all available themes from the `.bismuth/themes/` directory.
+     */
+    initializeForVault: async (vaultRoot: string) => {
+      try {
+        await invoke('initialize_theme_service', { vaultRoot });
+        // Inline theme loading to avoid self-reference
+        const themes = await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>('get_available_themes');
+        for (const info of themes) {
+          const css = await invoke<string>('load_theme', { name: info.name });
+          const cssVars = extractCssVariables(css);
+          const mode: ThemeMode = info.name.includes('light') ? 'light' : 'dark';
+          update((state: ThemeState) => ({
+            ...state,
+            availableThemes: [
+              ...state.availableThemes.filter((t: Theme) => t.name !== info.name),
+              { name: info.name, mode, cssVariables: cssVars },
+            ],
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to initialize theme service:', error);
+      }
+    },
+
+    loadVaultThemes: async () => {
+      try {
+        const themes = await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>('get_available_themes');
+        for (const themeInfo of themes) {
+          const css = await invoke<string>('load_theme', { name: themeInfo.name });
+          const cssVars = extractCssVariables(css);
+          const mode: ThemeMode = themeInfo.name.includes('light') ? 'light' : 'dark';
+          update((state: ThemeState) => ({
+            ...state,
+            availableThemes: [
+              ...state.availableThemes.filter((t: Theme) => t.name !== themeInfo.name),
+              { name: themeInfo.name, mode, cssVariables: cssVars },
+            ],
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to load vault themes:', error);
+      }
     },
   };
 }
@@ -185,6 +232,17 @@ function applyTheme(theme: Theme) {
   root.setAttribute('data-theme', theme.mode);
 }
 
+/** Extract CSS custom properties from raw CSS content */
+function extractCssVariables(css: string): Record<string, string> {
+  const vars: Record<string, string> = {};
+  const regex = /--([-\w]+)\s*:\s*([^;]+)/g;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(css)) !== null) {
+    vars[`--${match[1]}`] = match[2].trim();
+  }
+  return vars;
+}
+
 export const themeStore = createThemeStore();
 
 // Initialize theme on load
@@ -193,7 +251,7 @@ if (typeof window !== 'undefined') {
 
   // Listen for system theme changes — only re-apply when in auto mode
   let currentState: ThemeState = initialState;
-  themeStore.subscribe(state => {
+  themeStore.subscribe((state: ThemeState) => {
     currentState = state;
     localStorage.setItem('bismuth-theme-service', JSON.stringify({
       themeName: state.currentTheme,

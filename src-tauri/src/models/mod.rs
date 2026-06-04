@@ -2,16 +2,14 @@
 //!
 //! This module contains the core data structures used throughout the application.
 
-// Allow dead code for models - they're infrastructure not yet integrated
-#![allow(dead_code)]
-#![allow(unused_imports)]
-
 pub mod canvas;
 pub mod link;
 pub mod note;
 pub mod vault;
 
-pub use canvas::{CanvasDocument, CanvasElement, ElementType, Layer, Viewport};
+pub use canvas::{
+    CanvasDocument, CanvasElement, ComponentDefinition, ElementType, Layer, Page, Viewport,
+};
 pub use link::Link;
 pub use note::Note;
 pub use vault::Vault;

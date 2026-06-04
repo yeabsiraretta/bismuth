@@ -1,7 +1,15 @@
+//! Vault template scaffolding.
+//!
+//! Creates pre-populated directory structures and starter notes
+//! based on popular organizational methodologies (PARA, Zettelkasten, Johnny.Decimal).
+
 use crate::error::Result;
 use std::fs;
 use std::path::Path;
 
+/// Applies a named template to the given vault directory.
+///
+/// Supported templates: `"PARA"`, `"JohnnyDecimal"`, `"Zettelkasten"`, or blank.
 pub fn apply_template(path: &Path, template: &str) -> Result<()> {
     match template {
         "PARA" => create_para_template(path),
