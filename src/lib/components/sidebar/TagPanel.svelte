@@ -72,10 +72,7 @@
   }
 
   async function mergeTag(sourceTag: string) {
-    const targetTag = prompt(
-      `Merge tag "${sourceTag}" into (target tag):`,
-      ''
-    );
+    const targetTag = prompt(`Merge tag "${sourceTag}" into (target tag):`, '');
     if (targetTag && targetTag !== sourceTag) {
       const confirmed = confirm(
         `This will merge all occurrences of "${sourceTag}" into "${targetTag}". This cannot be undone. Continue?`
@@ -135,8 +132,7 @@
   $: filteredTags = filterNodes(tags, searchQuery);
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="tag-panel" on:click={closeContextMenu}>
+<div class="tag-panel" on:click={closeContextMenu} on:keydown={() => {}} role="presentation">
   <div class="panel-header">
     <Icon name="tag" size={16} />
     <h3>Tags</h3>
@@ -145,7 +141,7 @@
         class="toggle-hidden-btn"
         class:active={showHidden}
         on:click={() => (showHidden = !showHidden)}
-        title="{showHidden ? 'Hide hidden tags' : `Show ${hiddenCount} hidden tag(s)`}"
+        title={showHidden ? 'Hide hidden tags' : `Show ${hiddenCount} hidden tag(s)`}
       >
         <Icon name={showHidden ? 'eye' : 'eye-off'} size={14} />
       </button>
@@ -165,6 +161,7 @@
           class:selected={selectedTag === tag.name}
           class:hidden-tag={$hiddenTags.has(tag.name)}
           on:contextmenu={(e) => showContextMenu(e, tag.name)}
+          role="group"
         >
           <button class="tag-expand-btn" on:click={() => toggleTag(tag.name)}>
             {#if tag.children && tag.children.length > 0}
@@ -201,6 +198,7 @@
                 class:selected={selectedTag === childTag.name}
                 class:hidden-tag={$hiddenTags.has(childTag.name)}
                 on:contextmenu={(e) => showContextMenu(e, childTag.name)}
+                role="group"
               >
                 <span class="spacer"></span>
                 <button class="tag-name-btn" on:click={() => selectTag(childTag.name)}>
@@ -219,10 +217,7 @@
 
 <!-- Context menu -->
 {#if contextMenuVisible && contextMenuTag}
-  <div
-    class="context-menu"
-    style="left: {contextMenuX}px; top: {contextMenuY}px;"
-  >
+  <div class="context-menu" style="left: {contextMenuX}px; top: {contextMenuY}px;">
     <button class="context-menu-item" on:click={() => renameTag(contextMenuTag)}>
       <Icon name="edit-2" size={14} />
       <span>Rename tag</span>

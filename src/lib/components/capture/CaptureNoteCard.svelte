@@ -32,6 +32,7 @@
 <div
   class="note-card"
   class:selected
+  data-path={path}
   on:click={onSelect}
   on:keydown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -78,11 +79,7 @@
       {/each}
     </select>
 
-    <button
-      class="delete-btn"
-      on:click|stopPropagation={onDelete}
-      title="Delete"
-    >
+    <button class="delete-btn" on:click|stopPropagation={onDelete} title="Delete">
       <Icon name="trash-2" size={14} />
     </button>
   </div>

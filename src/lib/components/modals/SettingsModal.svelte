@@ -171,12 +171,11 @@
 </script>
 
 {#if isOpen}
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div class="settings-overlay" on:click={onClose} on:keydown={handleKeydown} role="presentation">
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions a11y_click_events_have_key_events -->
     <div
       class="settings-modal"
       on:click|stopPropagation
+      on:keydown|stopPropagation
       role="dialog"
       aria-label="Settings"
       tabindex="-1"

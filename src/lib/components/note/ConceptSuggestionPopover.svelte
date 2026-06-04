@@ -1,7 +1,6 @@
 <script lang="ts">
   import { invoke } from '@tauri-apps/api/core';
   import { listen } from '@tauri-apps/api/event';
-  import { activeNote } from '@/stores/vault/vault';
   import { onMount, onDestroy } from 'svelte';
   import Icon from '@/components/icons/Icon.svelte';
 

@@ -46,14 +46,38 @@
   }
 
   const historyActions: HeaderAction[] = $derived([
-    { label: 'Undo', title: 'Undo (Cmd+Z)', icon: 'corner-up-left', action: onUndo, disabled: () => !$canUndo },
-    { label: 'Redo', title: 'Redo (Cmd+Shift+Z)', icon: 'corner-up-right', action: onRedo, disabled: () => !$canRedo },
+    {
+      label: 'Undo',
+      title: 'Undo (Cmd+Z)',
+      icon: 'corner-up-left',
+      action: onUndo,
+      disabled: () => !$canUndo,
+    },
+    {
+      label: 'Redo',
+      title: 'Redo (Cmd+Shift+Z)',
+      icon: 'corner-up-right',
+      action: onRedo,
+      disabled: () => !$canRedo,
+    },
   ]);
 
   const editActions: HeaderAction[] = $derived([
-    { label: 'Copy', title: 'Copy (Cmd+C)', icon: 'copy', action: onCopy, disabled: () => $selectedElements.length === 0 },
+    {
+      label: 'Copy',
+      title: 'Copy (Cmd+C)',
+      icon: 'copy',
+      action: onCopy,
+      disabled: () => $selectedElements.length === 0,
+    },
     { label: 'Paste', title: 'Paste (Cmd+V)', icon: 'file-text', action: onPaste },
-    { label: 'Duplicate', title: 'Duplicate (Cmd+D)', icon: 'copy', action: onDuplicate, disabled: () => $selectedElements.length === 0 },
+    {
+      label: 'Duplicate',
+      title: 'Duplicate (Cmd+D)',
+      icon: 'copy',
+      action: onDuplicate,
+      disabled: () => $selectedElements.length === 0,
+    },
   ]);
 
   const alignActions = $derived([
@@ -62,15 +86,19 @@
     { label: 'Align Right', alignment: 'right' as const },
   ]);
 
-  const exportActions = [
+  const exportActions = $derived([
     { label: 'Export as PNG', action: onExportPNG },
     { label: 'Export as SVG', action: onExportSVG },
     { label: 'Export as JSON', action: onExportJSON },
-  ];
+  ]);
 </script>
 
 <div class="canvas-header">
-  <button class="canvas-btn canvas-btn--secondary" on:click={onBackToLibrary} aria-label="Back to library">
+  <button
+    class="canvas-btn canvas-btn--secondary"
+    onclick={onBackToLibrary}
+    aria-label="Back to library"
+  >
     <Icon name="arrow-left" size={16} />
     Back to Library
   </button>
@@ -81,7 +109,7 @@
     {#each historyActions as action (action.label)}
       <button
         class="canvas-btn canvas-btn--icon"
-        on:click={action.action}
+        onclick={action.action}
         disabled={action.disabled?.()}
         title={action.title}
         aria-label={action.label}
@@ -95,7 +123,7 @@
     {#each editActions as action (action.label)}
       <button
         class="canvas-btn canvas-btn--icon"
-        on:click={action.action}
+        onclick={action.action}
         disabled={action.disabled?.()}
         title={action.title}
         aria-label={action.label}
@@ -109,7 +137,7 @@
     {#each alignActions as action (action.alignment)}
       <button
         class="canvas-btn canvas-btn--icon"
-        on:click={() => onAlign(action.alignment)}
+        onclick={() => onAlign(action.alignment)}
         disabled={$selectedElements.length < 2}
         title={action.label}
         aria-label={action.label.toLowerCase()}
@@ -120,20 +148,24 @@
 
     <div class="canvas-divider canvas-divider--s"></div>
 
-    <button class="canvas-btn canvas-btn--primary" on:click={onSave} aria-label="Save canvas">
+    <button class="canvas-btn canvas-btn--primary" onclick={onSave} aria-label="Save canvas">
       <Icon name="save" size={16} />
       Save
     </button>
 
     <div class="canvas-dropdown">
-      <button class="canvas-btn canvas-btn--secondary" on:click={onToggleExportMenu} aria-label="Export options">
+      <button
+        class="canvas-btn canvas-btn--secondary"
+        onclick={onToggleExportMenu}
+        aria-label="Export options"
+      >
         <Icon name="download" size={16} />
         Export
       </button>
       {#if showExportMenu}
         <div class="canvas-dropdown__menu">
           {#each exportActions as action (action.label)}
-            <button on:click={action.action}>{action.label}</button>
+            <button onclick={action.action}>{action.label}</button>
           {/each}
         </div>
       {/if}

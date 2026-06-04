@@ -150,7 +150,7 @@
       <h4 class="category-title">{category}</h4>
       {#each overrides.filter((o) => o.category === category) as override}
         <div class="override-item">
-          <label class="override-label">{override.label}</label>
+          <span class="override-label">{override.label}</span>
           <div class="override-controls">
             {#if override.type === 'color'}
               <input

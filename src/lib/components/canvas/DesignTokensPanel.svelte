@@ -6,7 +6,6 @@
     resolveToken,
     type TokenCollection,
     type DesignToken,
-    type TokenValue,
     type TypographyValue,
   } from '@/utils/canvasDesignTokens';
 
@@ -116,10 +115,7 @@
       >
         <div class="token-row">
           {#if isColor(token)}
-            <span
-              class="color-swatch"
-              style="background: {getColorValue(token)}"
-            ></span>
+            <span class="color-swatch" style="background: {getColorValue(token)}"></span>
           {/if}
           <span class="token-name">{token.name}</span>
           <span class="token-value">{getDisplayValue(token)}</span>

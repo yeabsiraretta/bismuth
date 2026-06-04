@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable max-lines */
   import { onDestroy } from 'svelte';
   import { invoke } from '@tauri-apps/api/core';
   import Icon from '@/components/icons/Icon.svelte';

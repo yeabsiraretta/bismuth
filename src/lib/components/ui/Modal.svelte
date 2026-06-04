@@ -16,15 +16,12 @@
 </script>
 
 {#if isOpen}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="modal-overlay"
     on:click={handleOverlayClick}
     on:keydown={handleKeydown}
     role="presentation"
   >
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <div
       class="modal"
       on:click|stopPropagation

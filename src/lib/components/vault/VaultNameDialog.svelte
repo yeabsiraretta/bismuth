@@ -7,11 +7,18 @@
   export let onCancel: () => void;
 </script>
 
-<div class="dialog-overlay" on:click={onCancel} role="presentation">
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions a11y_click_events_have_key_events -->
+<div
+  class="dialog-overlay"
+  on:click={onCancel}
+  on:keydown={(e) => {
+    if (e.key === 'Escape') onCancel();
+  }}
+  role="presentation"
+>
   <div
     class="dialog"
     on:click|stopPropagation
+    on:keydown|stopPropagation
     role="dialog"
     aria-labelledby="dialog-title"
     tabindex="-1"

@@ -2,7 +2,9 @@
   import Icon from '@/components/icons/Icon.svelte';
   import { navigatorStore, removeShortcut } from '@/stores/navigator/navigator';
 
-  export let onActivate: ((shortcut: { type: string; path: string; label: string }) => void) | undefined = undefined;
+  export let onActivate:
+    | ((shortcut: { type: string; path: string; label: string }) => void)
+    | undefined = undefined;
 
   $: shortcuts = $navigatorStore.shortcuts;
 
@@ -30,11 +32,16 @@
 
   function getIcon(type: string): string {
     switch (type) {
-      case 'note': return 'file-text';
-      case 'folder': return 'folder';
-      case 'tag': return 'tag';
-      case 'search': return 'search';
-      default: return 'bookmark';
+      case 'note':
+        return 'file-text';
+      case 'folder':
+        return 'folder';
+      case 'tag':
+        return 'tag';
+      case 'search':
+        return 'search';
+      default:
+        return 'bookmark';
     }
   }
 </script>
@@ -48,19 +55,27 @@
         class="shortcut-slot occupied"
         on:click={() => handleActivate(i)}
         title="{shortcuts[i].label} (Cmd+{i + 1})"
-        aria-label="{shortcuts[i].label}"
+        aria-label={shortcuts[i].label}
       >
         <Icon name={getIcon(shortcuts[i].type)} size={14} />
         <span class="shortcut-label">{shortcuts[i].label}</span>
         <span class="shortcut-key">{i + 1}</span>
-        <button
+        <span
           class="remove-btn"
+          role="button"
+          tabindex="0"
           on:click={(e) => handleRemove(i, e)}
+          on:keydown={(e) => {
+            if (e.key === 'Enter') {
+              e.stopPropagation();
+              removeShortcut(i);
+            }
+          }}
           title="Remove shortcut"
           aria-label="Remove shortcut"
         >
           <Icon name="x" size={10} />
-        </button>
+        </span>
       </button>
     {:else}
       <div class="shortcut-slot empty" title="Empty slot (Cmd+{i + 1})">

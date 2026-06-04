@@ -17,7 +17,7 @@ import { RangeSetBuilder } from '@codemirror/state';
 const WIKILINK_RE = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
 
 // Reserved for future inline widget rendering (e.g., unresolved link icons)
-// @ts-ignore - kept for future use
+// @ts-expect-error - kept for future use
 class _WikilinkWidget extends WidgetType {
   constructor(
     readonly title: string,

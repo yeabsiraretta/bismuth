@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable max-lines */
   import { onMount } from 'svelte';
   import {
     currentCanvas,

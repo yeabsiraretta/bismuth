@@ -7,10 +7,7 @@
   $: element = getSelectedFrame($selectedElements, $currentCanvas?.elements ?? []);
   $: autoLayout = element?.properties.autoLayout ?? null;
 
-  function getSelectedFrame(
-    ids: string[],
-    elements: CanvasElement[]
-  ): CanvasElement | null {
+  function getSelectedFrame(ids: string[], elements: CanvasElement[]): CanvasElement | null {
     if (ids.length !== 1) return null;
     const el = elements.find((e) => e.id === ids[0]);
     if (!el || (el.element_type !== 'frame' && el.element_type !== 'group')) return null;
@@ -39,10 +36,6 @@
     const newPadding = { ...autoLayout.padding, [side]: value };
     updateLayout({ padding: newPadding });
   }
-
-  function setUniformPadding(value: number) {
-    updateLayout({ padding: { top: value, right: value, bottom: value, left: value } });
-  }
 </script>
 
 {#if element}
@@ -51,14 +44,28 @@
       <span class="panel-title">Auto Layout</span>
       {#if autoLayout}
         <button class="remove-btn" on:click={disableAutoLayout} title="Remove auto layout">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       {:else}
         <button class="add-btn" on:click={enableAutoLayout} title="Add auto layout">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -70,7 +77,7 @@
       <div class="layout-controls">
         <!-- Direction -->
         <div class="control-row">
-          <label class="control-label">Direction</label>
+          <span class="control-label">Direction</span>
           <div class="direction-toggle">
             <button
               class="dir-btn"
@@ -78,7 +85,14 @@
               on:click={() => updateLayout({ direction: 'horizontal' })}
               title="Horizontal"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <line x1="5" y1="12" x2="19" y2="12" />
                 <polyline points="12 5 19 12 12 19" />
               </svg>
@@ -89,7 +103,14 @@
               on:click={() => updateLayout({ direction: 'vertical' })}
               title="Vertical"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <polyline points="19 12 12 19 5 12" />
               </svg>
@@ -99,8 +120,9 @@
 
         <!-- Gap -->
         <div class="control-row">
-          <label class="control-label">Gap</label>
+          <label class="control-label" for="auto-layout-gap">Gap</label>
           <input
+            id="auto-layout-gap"
             type="number"
             class="control-input"
             value={autoLayout.gap}
@@ -111,7 +133,7 @@
 
         <!-- Padding -->
         <div class="control-row">
-          <label class="control-label">Padding</label>
+          <span class="control-label">Padding</span>
           <div class="padding-grid">
             <input
               type="number"
@@ -150,7 +172,7 @@
 
         <!-- Align Items -->
         <div class="control-row">
-          <label class="control-label">Align</label>
+          <span class="control-label">Align</span>
           <div class="align-buttons">
             {#each ['start', 'center', 'end', 'stretch'] as align}
               <button
@@ -167,7 +189,7 @@
 
         <!-- Justify Content -->
         <div class="control-row">
-          <label class="control-label">Justify</label>
+          <span class="control-label">Justify</span>
           <div class="align-buttons">
             {#each ['start', 'center', 'end', 'space-between'] as justify}
               <button

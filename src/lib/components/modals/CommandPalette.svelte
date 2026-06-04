@@ -127,10 +127,10 @@
 
 {#if isOpen}
   <div class="command-overlay" on:click={onClose} role="presentation">
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions a11y_click_events_have_key_events -->
     <div
       class="command-palette"
       on:click|stopPropagation
+      on:keydown|stopPropagation
       role="dialog"
       aria-label="Command palette"
       tabindex="-1"
@@ -258,15 +258,6 @@
     flex: 1;
     overflow-y: auto;
     padding: 8px;
-  }
-
-  .category-header {
-    padding: 8px 12px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
   }
 
   .command-item {
