@@ -102,7 +102,7 @@
 </div>
 
 <style>
-  @import '$lib/styles/canvas-components.css';
+  @import '@/styles/canvas-components.css';
 
   .pages-panel {
     border-bottom: 1px solid var(--border-color);

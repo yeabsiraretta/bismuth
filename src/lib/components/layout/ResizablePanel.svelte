@@ -71,20 +71,7 @@
     <div class="panel-header">
       <h2 class="panel-title">{title}</h2>
       <div class="panel-actions">
-        {#if collapsible}
-          <button
-            class="panel-action-btn"
-            on:click={toggleCollapse}
-            aria-label="Collapse panel"
-            title="Collapse"
-          >
-            {#if position === 'left'}
-              ←
-            {:else}
-              →
-            {/if}
-          </button>
-        {/if}
+        <slot name="header-actions" />
       </div>
     </div>
 

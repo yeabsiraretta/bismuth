@@ -117,7 +117,7 @@
   /* Text colors */
   --text-normal: #1f2937;
   --text-muted: #6b7280;
-  --text-faint: #9ca3af;
+  --text-faint: #737a85;
   --text-error: #ef4444;
   --text-accent: #7c3aed;
   --text-accent-hover: #6d28d9;
@@ -176,7 +176,7 @@
   /* Text colors */
   --text-normal: #dcddde;
   --text-muted: #999999;
-  --text-faint: #666666;
+  --text-faint: #8a8a8a;
   --text-error: #ff6b6b;
   --text-accent: #7f6df2;
   --text-accent-hover: #8875ff;

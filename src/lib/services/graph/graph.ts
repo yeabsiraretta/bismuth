@@ -33,3 +33,36 @@ export async function getBacklinks(path: string): Promise<Link[]> {
     throw new Error(`Failed to get backlinks: ${error}`);
   }
 }
+
+export interface Mention {
+  noteId: string;
+  notePath: string;
+  noteName: string;
+  context: string;
+  lineNumber: number;
+}
+
+export interface BacklinksData {
+  linkedMentions: Mention[];
+  unlinkedMentions: Mention[];
+}
+
+export interface OutgoingLinksData {
+  links: Array<{ target: string; targetPath: string; context: string }>;
+}
+
+export async function getBacklinksData(noteId: string): Promise<BacklinksData> {
+  try {
+    return await invoke<BacklinksData>('get_backlinks', { noteId });
+  } catch (error) {
+    throw new Error(`Failed to get backlinks data: ${error}`);
+  }
+}
+
+export async function getOutgoingLinks(noteId: string): Promise<OutgoingLinksData> {
+  try {
+    return await invoke<OutgoingLinksData>('get_outgoing_links', { noteId });
+  } catch (error) {
+    throw new Error(`Failed to get outgoing links: ${error}`);
+  }
+}

@@ -6,10 +6,10 @@
   import ComponentsPanel from './ComponentsPanel.svelte';
   import AutoLayoutPanel from './AutoLayoutPanel.svelte';
   import InspectPanel from './InspectPanel.svelte';
-  import DesignTokensPanel from './DesignTokensPanel.svelte';
+  import ComponentBrowser from './ComponentBrowser.svelte';
   import AssetsPanel from './AssetsPanel.svelte';
 
-  type SidebarTab = 'design' | 'inspect' | 'tokens' | 'assets';
+  type SidebarTab = 'design' | 'inspect' | 'components' | 'assets';
   let activeTab: SidebarTab = 'design';
 </script>
 
@@ -31,10 +31,10 @@
     </button>
     <button
       class="sidebar-tab"
-      class:active={activeTab === 'tokens'}
-      on:click={() => (activeTab = 'tokens')}
+      class:active={activeTab === 'components'}
+      on:click={() => (activeTab = 'components')}
     >
-      Tokens
+      Components
     </button>
     <button
       class="sidebar-tab"
@@ -55,8 +55,8 @@
       <ComponentsPanel />
     {:else if activeTab === 'inspect'}
       <InspectPanel />
-    {:else if activeTab === 'tokens'}
-      <DesignTokensPanel />
+    {:else if activeTab === 'components'}
+      <ComponentBrowser />
     {:else if activeTab === 'assets'}
       <AssetsPanel />
     {/if}

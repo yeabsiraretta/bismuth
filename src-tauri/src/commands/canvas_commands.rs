@@ -82,3 +82,83 @@ pub async fn delete_canvas(
         .delete_canvas(&id)
         .map_err(|e| format!("Failed to delete canvas: {}", e))
 }
+
+// ─── Template Commands (T133) ────────────────────────────────────────────────
+
+/// Saves a set of elements as a reusable template.
+#[tauri::command]
+pub async fn save_canvas_template(
+    state: State<'_, CanvasState>,
+    name: String,
+    elements: Vec<crate::models::canvas::CanvasElement>,
+    description: String,
+    category: String,
+) -> Result<serde_json::Value, String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .save_template(&name, &elements, &description, &category)
+        .map_err(|e| format!("Failed to save template: {}", e))
+}
+
+/// Loads a template by ID.
+#[tauri::command]
+pub async fn load_canvas_template(
+    state: State<'_, CanvasState>,
+    id: String,
+) -> Result<serde_json::Value, String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .load_template(&id)
+        .map_err(|e| format!("Failed to load template: {}", e))
+}
+
+/// Lists all available templates, optionally filtered by category.
+#[tauri::command]
+pub async fn list_canvas_templates(
+    state: State<'_, CanvasState>,
+    category: Option<String>,
+) -> Result<Vec<serde_json::Value>, String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .list_templates(category.as_deref())
+        .map_err(|e| format!("Failed to list templates: {}", e))
+}
+
+/// Deletes a template by ID.
+#[tauri::command]
+pub async fn delete_canvas_template(
+    state: State<'_, CanvasState>,
+    id: String,
+) -> Result<(), String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .delete_template(&id)
+        .map_err(|e| format!("Failed to delete template: {}", e))
+}
+
+// ─── Note Linking Commands (T134) ────────────────────────────────────────────
+
+/// Links a canvas to a note by setting the note_id field.
+#[tauri::command]
+pub async fn link_canvas_to_note(
+    state: State<'_, CanvasState>,
+    canvas_id: String,
+    note_path: Option<String>,
+) -> Result<(), String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .link_to_note(&canvas_id, note_path.as_deref())
+        .map_err(|e| format!("Failed to link canvas to note: {}", e))
+}
+
+/// Gets all canvases linked to a specific note.
+#[tauri::command]
+pub async fn get_canvases_for_note(
+    state: State<'_, CanvasState>,
+    note_path: String,
+) -> Result<Vec<CanvasDocument>, String> {
+    let service = state.canvas_service.lock().unwrap();
+    service
+        .get_canvases_for_note(&note_path)
+        .map_err(|e| format!("Failed to get canvases for note: {}", e))
+}

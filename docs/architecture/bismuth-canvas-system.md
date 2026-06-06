@@ -224,21 +224,27 @@ pub enum VariableType {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Component {
+pub struct ComponentDefinition {
     pub id: String,
     pub name: String,
-    pub description: String,
-    pub variants: Vec<ComponentVariant>,
-    pub properties: Vec<ComponentProperty>,
-    pub code_connect: Option<CodeConnect>,
+    pub description: Option<String>,
+    pub category: Option<String>,
+    pub elements: Vec<serde_json::Value>,
+    pub exposed_props: Vec<ComponentProp>,
+    pub width: f64,
+    pub height: f64,
+    pub thumbnail: Option<String>,
+    pub tags: Option<Vec<String>>,
+    pub created_at: i64,
+    pub modified_at: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CodeConnect {
-    pub component_path: String,
-    pub import_statement: String,
-    pub props_mapping: HashMap<String, String>,
-    pub example_code: String,
+pub struct ComponentProp {
+    pub key: String,
+    pub label: String,
+    pub prop_type: String,
+    pub default_value: serde_json::Value,
 }
 ```
 

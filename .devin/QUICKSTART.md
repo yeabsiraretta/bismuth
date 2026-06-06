@@ -1,6 +1,6 @@
-# Windsurf Quick Start for Bismuth
+# Devin Quick Start for Bismuth
 
-All Claude tooling is now integrated into Windsurf! Here's what you get automatically:
+All project tooling and constraints are loaded from this configuration:
 
 ## 🎯 What's Available
 

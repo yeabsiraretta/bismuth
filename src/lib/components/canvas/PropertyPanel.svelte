@@ -19,7 +19,7 @@
     }
   }
 
-  function handlePropertyChange(prop: string, value: any) {
+  function handlePropertyChange(prop: string, value: string | number | boolean) {
     if (!selectedElement) return;
     const updated = {
       ...selectedElement,

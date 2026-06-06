@@ -14,6 +14,9 @@
     ungroupSelectedElements,
     alignSelectedElements,
     createComponentFromSelection,
+    activeTool,
+    setActiveTool,
+    viewMode,
   } from '@/stores/canvas/canvasStore';
   import { undo, redo } from '@/stores/canvas/historyStore';
   import { log } from '@/utils/logger';
@@ -22,6 +25,18 @@
 
   let view: 'library' | 'canvas' = 'library';
   let showExportMenu = false;
+
+  function togglePreview() {
+    if ($activeTool === 'preview') {
+      setActiveTool('select');
+    } else {
+      setActiveTool('preview');
+    }
+  }
+
+  function toggleOverview() {
+    viewMode.update((m) => (m === 'overview' ? 'detail' : 'overview'));
+  }
 
   onMount(() => {
     log.info('CanvasApp mounted');
@@ -43,6 +58,8 @@
       ungroup: ungroupSelectedElements,
       save: handleSave,
       createComponent: createComponentFromSelection,
+      togglePreview,
+      toggleOverview,
     });
   }
 

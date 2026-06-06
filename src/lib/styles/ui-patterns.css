@@ -1,0 +1,436 @@
+/**
+ * UI Patterns — Shared utility classes for common UI elements
+ *
+ * Provides reusable badge, card, button, and form patterns that can be
+ * applied across any component. Uses design tokens from tokens.css.
+ */
+
+/* ========== Badges ========== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-s);
+  font-size: var(--font-smallest);
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge-default {
+  background: var(--background-modifier-hover);
+  color: var(--text-muted);
+}
+
+.badge-primary {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.badge-success {
+  background: var(--background-modifier-success);
+  color: #ffffff;
+}
+
+.badge-warning {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.badge-error {
+  background: var(--background-modifier-error);
+  color: #ffffff;
+}
+
+.badge-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+/* Badge sizes */
+.badge-sm {
+  padding: 1px 6px;
+  font-size: 10px;
+}
+
+.badge-lg {
+  padding: 4px 12px;
+  font-size: var(--font-smaller);
+}
+
+/* ========== Cards ========== */
+.card {
+  background: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  padding: var(--spacing-m);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card-interactive:active {
+  transform: translateY(1px);
+}
+
+.card-selected {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 1px var(--interactive-accent);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-s);
+}
+
+.card-title {
+  font-size: var(--font-ui-small);
+  font-weight: 600;
+  color: var(--text-normal);
+  margin: 0;
+}
+
+.card-meta {
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+}
+
+.card-body {
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  margin-top: var(--spacing-s);
+  padding-top: var(--spacing-s);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ========== Icon Buttons ========== */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-s);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--interactive-hover);
+  color: var(--text-normal);
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.icon-btn.active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.icon-btn-sm {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-btn-lg {
+  width: 32px;
+  height: 32px;
+}
+
+/* ========== Action Buttons ========== */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-s);
+  border: none;
+  border-radius: var(--radius-s);
+  font-size: var(--font-smallest);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.action-btn-primary {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.action-btn-primary:hover {
+  background: var(--interactive-accent-hover);
+}
+
+.action-btn-secondary {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.action-btn-secondary:hover {
+  background: var(--interactive-hover);
+}
+
+.action-btn-danger {
+  background: transparent;
+  color: var(--text-error);
+}
+
+.action-btn-danger:hover {
+  background: var(--background-modifier-error);
+  color: #ffffff;
+}
+
+/* ========== Empty State ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--spacing-m);
+  text-align: center;
+  gap: var(--spacing-s);
+}
+
+.empty-state-icon {
+  color: var(--text-faint);
+  opacity: 0.6;
+}
+
+.empty-state-title {
+  font-size: var(--font-ui-small);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.empty-state-description {
+  font-size: var(--font-smallest);
+  color: var(--text-faint);
+  max-width: 240px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ========== Form Inputs ========== */
+.input {
+  width: 100%;
+  height: 32px;
+  padding: var(--spacing-xs) var(--spacing-s);
+  background: var(--background-modifier-form-field);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 2px rgba(127, 109, 242, 0.15);
+}
+
+.input::placeholder {
+  color: var(--text-faint);
+}
+
+.input-sm {
+  height: 28px;
+  font-size: var(--font-smallest);
+}
+
+/* ========== List Items ========== */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-xs) var(--spacing-s);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.list-item:hover {
+  background: var(--background-modifier-hover);
+}
+
+.list-item.active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.list-item-title {
+  font-size: var(--font-ui-small);
+  font-weight: 500;
+  color: var(--text-normal);
+}
+
+.list-item-subtitle {
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+}
+
+/* ========== Dividers ========== */
+.divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: var(--spacing-s) 0;
+  border: none;
+}
+
+.divider-lg {
+  margin: var(--spacing-m) 0;
+}
+
+/* ========== Chip / Filter ========== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--background-modifier-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--interactive-accent);
+  color: var(--text-normal);
+}
+
+.chip.active {
+  background: var(--interactive-accent);
+  border-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+/* ========== Settings Panels ========== */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-l);
+}
+
+.settings-section > h3 {
+  font-size: var(--font-ui-large);
+  font-weight: 600;
+  color: var(--text-normal);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-s);
+  padding-bottom: var(--spacing-l);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.setting-group:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.setting-group > h4 {
+  font-size: var(--font-ui-small);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.setting-item > label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-ui-small);
+  font-weight: 500;
+  color: var(--text-normal);
+  cursor: pointer;
+}
+
+.setting-item > label > input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--interactive-accent);
+  cursor: pointer;
+}
+
+.setting-item > input,
+.setting-item > select {
+  width: 100%;
+  max-width: 300px;
+  height: 32px;
+  padding: var(--spacing-xs) var(--spacing-s);
+  background: var(--background-modifier-form-field);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-small);
+  color: var(--text-normal);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.setting-item > input:focus,
+.setting-item > select:focus {
+  border-color: var(--interactive-accent);
+}
+
+.setting-item > input[type="range"] {
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  accent-color: var(--interactive-accent);
+}
+
+.setting-hint {
+  font-size: var(--font-smallest);
+  color: var(--text-faint);
+  line-height: 1.4;
+}
+
+.setting-value {
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}

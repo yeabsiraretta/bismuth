@@ -20,10 +20,10 @@
   --grid-cols-6: repeat(6, minmax(0, 1fr));
   --grid-cols-12: repeat(12, minmax(0, 1fr));
 
-  /* Panel standardization */
-  --panel-bg: #ffffff;
-  --panel-border: #e5e7eb;
-  --panel-header-bg: #f9fafb;
+  /* Panel standardization — uses token references for theme awareness */
+  --panel-bg: var(--background-primary);
+  --panel-border: var(--border-color);
+  --panel-header-bg: var(--background-primary-alt);
   --panel-padding: 16px;
   --panel-border-radius: 8px;
 }

@@ -28,6 +28,19 @@ pub struct Note {
     pub modified_at: DateTime<Utc>,
 }
 
+impl Default for Note {
+    fn default() -> Self {
+        Self {
+            path: PathBuf::new(),
+            title: String::new(),
+            content: String::new(),
+            frontmatter: HashMap::new(),
+            created_at: Utc::now(),
+            modified_at: Utc::now(),
+        }
+    }
+}
+
 impl Note {
     /// Creates a new Note from a file path and content
     ///

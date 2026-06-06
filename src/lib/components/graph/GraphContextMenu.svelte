@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { GraphNode } from '$lib/types/graph';
+  import type { GraphNode } from '@/types/graph';
   import Icon from '@/components/icons/Icon.svelte';
 
   export let node: GraphNode | null = null;

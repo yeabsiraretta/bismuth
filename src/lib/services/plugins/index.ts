@@ -9,6 +9,7 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import { writable } from 'svelte/store';
+import { log } from '@/utils/logger';
 
 /** Plugin status as reported by the Rust backend. */
 export type PluginStatus = 'active' | 'error' | 'disabled';
@@ -85,7 +86,7 @@ function createPluginStore() {
         const plugins = await invoke<LoadedPlugin[]>('get_plugins');
         update((s: PluginStoreState) => ({ ...s, plugins }));
       } catch (error) {
-        console.error('Failed to refresh plugins:', error);
+        log.error('Failed to refresh plugins', error as Error);
       }
     },
 
@@ -109,7 +110,7 @@ function createPluginStore() {
           ),
         }));
       } catch (error) {
-        console.error(`Failed to update plugin ${id}:`, error);
+        log.error(`Failed to update plugin ${id}`, error as Error);
       }
     },
 

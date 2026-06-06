@@ -10,7 +10,7 @@
   export let trimTrailingWhitespace: boolean;
 </script>
 
-<div class="settings-section">
+<div class="settings-section stack stack-md">
   <h3>Editor Settings</h3>
 
   <div class="setting-group">

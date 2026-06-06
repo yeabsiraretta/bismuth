@@ -1,54 +1,126 @@
-/* Tailwind directives removed to avoid compilation errors with custom utilities */
-/* Using plain CSS with CSS variables instead */
+@import "tailwindcss";
+@import "./lib/styles/tokens.css";
+@import "./lib/styles/typography.css";
+@import "./lib/styles/responsive.css";
+@import "./lib/styles/grid-system.css";
+@import "./lib/styles/ui-patterns.css";
+@import "./lib/styles/inspector.css";
 
-/* Bismuth Design System - CSS Variables */
+/*
+ * Tailwind v4 Theme Configuration
+ *
+ * Maps Bismuth design tokens (from tokens.css) into Tailwind's utility system.
+ * tokens.css is the single source of truth for color/spacing/typography values.
+ * This @theme block exposes them as Tailwind utilities (e.g., bg-primary, text-muted).
+ */
+@theme {
+	/* Colors — references tokens.css variables */
+	--color-primary: var(--interactive-accent);
+	--color-primary-hover: var(--interactive-accent-hover);
+	--color-bg: var(--background-primary);
+	--color-bg-alt: var(--background-primary-alt);
+	--color-surface: var(--background-secondary);
+	--color-surface-hover: var(--background-modifier-hover);
+	--color-text: var(--text-normal);
+	--color-text-muted: var(--text-muted);
+	--color-text-faint: var(--text-faint);
+	--color-text-accent: var(--text-accent);
+	--color-border: var(--border-color);
+	--color-border-hover: var(--border-hover);
+	--color-error: var(--background-modifier-error);
+	--color-success: var(--background-modifier-success);
+	--color-danger: #dc3545;
+	--color-warning: #f59e0b;
+	--color-info: #3b82f6;
+
+	/* Spacing — numeric scale for Tailwind utilities (p-1, m-2, gap-4, etc.)
+	 * Named --spacing-* tokens (xs/s/m/l) live in tokens.css and are used
+	 * directly via var() in component scoped styles. */
+	--spacing-1: 0.25rem;
+	--spacing-2: 0.5rem;
+	--spacing-3: 0.75rem;
+	--spacing-4: 1rem;
+	--spacing-5: 1.5rem;
+	--spacing-6: 2rem;
+	--spacing-7: 3rem;
+	--spacing-8: 4rem;
+
+	/* Border Radius — concrete values (also defined in tokens.css for var() access) */
+	--radius-xs: 2px;
+	--radius-s: 4px;
+	--radius-m: 8px;
+	--radius-l: 12px;
+	--radius-xl: 16px;
+
+	/* Font Family */
+	--font-family-text: var(--font-text);
+	--font-family-mono: var(--font-monospace);
+	--font-family-interface: var(--font-interface);
+
+	/* Font Size */
+	--font-size-smallest: var(--font-smallest);
+	--font-size-smaller: var(--font-smaller);
+	--font-size-small: var(--font-small);
+	--font-size-ui-small: var(--font-ui-small);
+	--font-size-ui-medium: var(--font-ui-medium);
+	--font-size-ui-large: var(--font-ui-large);
+
+	/* Box Shadow */
+	--shadow-s: 0 1px 2px rgba(0, 0, 0, 0.05);
+	--shadow-m: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--shadow-l: 0 10px 15px rgba(0, 0, 0, 0.15);
+	--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+
+	/* Animations */
+	--animate-spin-slow: spin 3s linear infinite;
+	--animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/*
+ * Dark mode variant selector.
+ * Bismuth uses data-theme="dark" attribute, not a .dark class.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ─── Bismuth Design System - Supplemental CSS Variables ────────────────────
+ * Variables consumed by components directly via var() that don't go through
+ * Tailwind utilities. These supplement tokens.css which is the primary source.
+ */
 :root {
-	/* Colors - Light Mode Default */
+	/* Semantic colors */
 	--color-primary: #0ea5e9;
 	--color-primary-hover: #0284c7;
 	--color-primary-active: #0369a1;
+	--color-danger: #dc3545;
 
+	/* Surface colors (used directly in component styles) */
 	--color-bg: #ffffff;
 	--color-bg-secondary: #f9fafb;
 	--color-surface: #f3f4f6;
 	--color-surface-hover: #e5e7eb;
 	--color-surface-active: #d1d5db;
-
 	--color-text: #18181b;
 	--color-text-muted: #71717a;
 	--color-text-inverse: #ffffff;
-
 	--color-border: #e4e4e7;
 	--color-border-focus: #0ea5e9;
-
 	--color-error: #ef4444;
 	--color-success: #10b981;
 	--color-warning: #f59e0b;
 	--color-info: #3b82f6;
 
-	/* Spacing */
+	/* Spacing scale (supplements tokens.css --spacing-*) */
 	--space-1: 0.25rem;
-	/* 4px */
 	--space-2: 0.5rem;
-	/* 8px */
 	--space-3: 0.75rem;
-	/* 12px */
 	--space-4: 1rem;
-	/* 16px */
 	--space-5: 1.5rem;
-	/* 24px */
 	--space-6: 2rem;
-	/* 32px */
 	--space-7: 3rem;
-	/* 48px */
 	--space-8: 4rem;
-	/* 64px */
 
-	/* Typography */
-	--font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-		Arial, sans-serif;
-	--font-mono: 'SF Mono', Monaco, Inconsolata, 'Fira Code', 'Droid Sans Mono', 'Source Code Pro',
-		monospace;
+	/* Typography aliases — primary definitions in typography.css */
+	/* --font-sans and --font-mono are defined in typography.css */
 
 	/* Transitions */
 	--transition-fast: 150ms ease;
@@ -64,15 +136,9 @@
 	--z-popover: 1060;
 	--z-tooltip: 1070;
 
-	/* Layout aliases (non-color, safe to keep) */
+	/* Layout aliases */
 	--panel-bg: var(--color-surface);
 	--panel-border: var(--color-border);
-
-	/* Note: --spacing-* variables are defined in tokens.css */
-
-	/* Note: font sizes and weights are defined in tokens.css */
-
-	/* Note: border radius, shadows, and transitions are defined in tokens.css */
 }
 
 /* Light theme */
@@ -82,11 +148,9 @@
 	--color-surface: #f3f4f6;
 	--color-surface-hover: #e5e7eb;
 	--color-surface-active: #d1d5db;
-
 	--color-text: #18181b;
 	--color-text-muted: #71717a;
 	--color-text-inverse: #ffffff;
-
 	--color-border: #e4e4e7;
 	--color-border-focus: #0ea5e9;
 }
@@ -98,14 +162,12 @@
 	--color-surface: #2a2a2a;
 	--color-surface-hover: #333333;
 	--color-surface-active: #3f3f3f;
-
 	--color-text: #dcddde;
 	--color-text-muted: #999999;
 	--color-text-inverse: #1e1e1e;
-
 	--color-border: #333333;
 	--color-border-focus: #7f6df2;
-
+	--color-danger: #ff6b6b;
 	--color-error: #ff6b6b;
 	--color-success: #10b981;
 	--color-warning: #f59e0b;
@@ -118,10 +180,13 @@
 }
 
 body {
+	margin: 0;
+	padding: 0;
 	background-color: var(--color-bg);
 	color: var(--color-text);
 	font-family: var(--font-sans);
 	font-feature-settings: 'rlig' 1, 'calt' 1;
+	overflow: hidden;
 }
 
 /* Scrollbar styles */
@@ -154,7 +219,7 @@ body {
 	padding: 0.5rem 1rem;
 	border-radius: 0.375rem;
 	font-weight: 500;
-	transition: colors var(--transition-fast);
+	transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .btn:focus-visible {

@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import type { SearchResult, SearchFilters } from '@/types/search';
+import type { SearchResult, SearchFilters, FileSearchMatch } from '@/types/search';
 
 export async function searchVault(
   query: string,
@@ -12,9 +12,9 @@ export async function searchVault(
   }
 }
 
-export async function searchInFile(path: string, query: string): Promise<any[]> {
+export async function searchInFile(path: string, query: string): Promise<FileSearchMatch[]> {
   try {
-    return await invoke<any[]>('search_in_file', { path, query });
+    return await invoke<FileSearchMatch[]>('search_in_file', { path, query });
   } catch (error) {
     throw new Error(`Failed to search in file: ${error}`);
   }

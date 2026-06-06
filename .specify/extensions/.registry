@@ -18,6 +18,85 @@
       },
       "registered_skills": [],
       "installed_at": "2026-05-25T20:43:55.392854+00:00"
+    },
+    "architecture-guard": {
+      "version": "1.8.9",
+      "source": "local",
+      "manifest_hash": "sha256:9e537d4fbcdb593b1679dda7d0bf44229ff7dc1d264d98ae5cabd5c5d425df85",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "windsurf": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:46:15.592760+00:00"
+    },
+    "memory-loader": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:d1caef45965accd4316d8aede0a4ac67f910017ea3c501814cfc7e2d8177ab0b",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.memory-loader.load"
+        ],
+        "windsurf": [
+          "speckit.memory-loader.load"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:47:12.198488+00:00"
+    },
+    "wireframe": {
+      "version": "0.1.1",
+      "source": "local",
+      "manifest_hash": "sha256:246ce4f535c9149c28fa28d38fb7642034b17c44a62d13a59474a2272b753172",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.wireframe.generate",
+          "speckit.wireframe.prep",
+          "speckit.wireframe.review",
+          "speckit.wireframe.inspect",
+          "speckit.wireframe.screenshots",
+          "speckit.wireframe.view"
+        ],
+        "windsurf": [
+          "speckit.wireframe.generate",
+          "speckit.wireframe.prep",
+          "speckit.wireframe.review",
+          "speckit.wireframe.inspect",
+          "speckit.wireframe.screenshots",
+          "speckit.wireframe.view"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:48:26.469314+00:00"
     }
   }
 }

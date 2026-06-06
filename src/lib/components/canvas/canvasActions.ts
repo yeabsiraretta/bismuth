@@ -1,5 +1,5 @@
 import type { CanvasDocument } from '@/types/canvas';
-import { exportToPNG, exportToSVG, downloadFile, downloadSVG, exportToJSON } from '@/utils/canvasExport';
+import { exportToPNG, exportToSVG, downloadFile, downloadSVG, exportToJSON } from '@/utils/canvas/export';
 import { log } from '@/utils/logger';
 
 export type ExportFormat = 'PNG' | 'SVG' | 'JSON';

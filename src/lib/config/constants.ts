@@ -169,7 +169,7 @@ export const FEATURES = {
 export const validate = {
   /** Check if file extension is allowed */
   isExtensionAllowed(ext: string): boolean {
-    return FILE.ALLOWED_EXTENSIONS.includes(ext as any);
+    return (FILE.ALLOWED_EXTENSIONS as readonly string[]).includes(ext);
   },
   
   /** Check if file size exceeds warning threshold */

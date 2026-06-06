@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { iconPaths, type IconName } from '$lib/assets/icons';
+	import { iconPaths, type IconName } from '@/assets/icons';
 
 	export let name: IconName;
 	export let size: number = 20;

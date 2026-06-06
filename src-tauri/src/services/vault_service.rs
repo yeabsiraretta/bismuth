@@ -222,9 +222,11 @@ impl VaultService {
 
     /// Lists all `.md` notes in a specific folder (non-recursive).
     pub fn list_notes_in_folder(&self, vault_path: &Path, folder_path: &str) -> Result<Vec<Note>> {
+        use crate::utils::path::validate_path;
         use std::fs;
         
         let folder = vault_path.join(folder_path);
+        validate_path(&folder, vault_path)?;
         let mut notes = Vec::new();
         
         if folder.is_dir() {
@@ -248,6 +250,7 @@ impl VaultService {
     }
 
     /// Duplicates a note, creating a copy with " copy" suffix in the same directory.
+    /// Handles filename collisions by appending an incrementing number.
     pub fn duplicate_note(&self, path: &Path) -> Result<Note> {
         let vault = self
             .vault
@@ -262,7 +265,12 @@ impl VaultService {
         let stem = path.file_stem()
             .and_then(|s| s.to_str())
             .ok_or_else(|| BismuthError::InvalidPath(path.display().to_string()))?;
-        let new_path = parent.join(format!("{} copy.md", stem));
+        let mut new_path = parent.join(format!("{} copy.md", stem));
+        let mut counter = 2;
+        while new_path.exists() {
+            new_path = parent.join(format!("{} copy {}.md", stem, counter));
+            counter += 1;
+        }
         
         // Write duplicate
         fs::write(&new_path, &content)?;
@@ -305,21 +313,28 @@ impl VaultService {
             .as_ref()
             .ok_or_else(|| BismuthError::VaultError("No vault open".to_string()))?;
 
+        let target_canonical = target_path.canonicalize().unwrap_or_else(|_| target_path.to_path_buf());
         let mut merged_content = String::new();
         
-        // Collect all content
+        // Collect all content, skipping separator header for target's own content
         for path in paths {
             let content = fs::read_to_string(path)?;
-            merged_content.push_str(&format!("\n\n---\n\n# From: {}\n\n", path.display()));
-            merged_content.push_str(&content);
+            let path_canonical = path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
+            if path_canonical == target_canonical {
+                merged_content.push_str(&content);
+            } else {
+                merged_content.push_str(&format!("\n\n---\n\n# From: {}\n\n", path.display()));
+                merged_content.push_str(&content);
+            }
         }
         
         // Write merged note
         fs::write(target_path, &merged_content)?;
         
-        // Move originals to trash (delete for now)
+        // Delete source notes (not the target)
         for path in paths {
-            if path != target_path {
+            let path_canonical = path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
+            if path_canonical != target_canonical {
                 fs::remove_file(path)?;
             }
         }
@@ -549,6 +564,94 @@ mod tests {
         // Try to write outside vault
         let outside_path = dir.path().join("outside.md");
         let result = service.write_note(&outside_path, "test");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_duplicate_note_collision() {
+        let dir = tempdir().unwrap();
+        let vault_path = dir.path().join("test_vault");
+        let db_path = dir.path().join("test.db");
+
+        let db = Arc::new(Database::new(&db_path).unwrap());
+        let mut service = VaultService::new(db);
+        service.create(vault_path.clone()).unwrap();
+
+        let note_path = vault_path.join("note.md");
+        service.write_note(&note_path, "# Original").unwrap();
+
+        // First duplicate creates "note copy.md"
+        let dup1 = service.duplicate_note(&note_path).unwrap();
+        assert!(dup1.path.to_string_lossy().contains("note copy.md"));
+
+        // Second duplicate creates "note copy 2.md" (collision avoidance)
+        let dup2 = service.duplicate_note(&note_path).unwrap();
+        assert!(dup2.path.to_string_lossy().contains("note copy 2.md"));
+    }
+
+    #[test]
+    fn test_merge_notes_canonicalized_target_preserved() {
+        let dir = tempdir().unwrap();
+        let vault_path = dir.path().join("test_vault");
+        let db_path = dir.path().join("test.db");
+
+        let db = Arc::new(Database::new(&db_path).unwrap());
+        let mut service = VaultService::new(db);
+        service.create(vault_path.clone()).unwrap();
+
+        let target = vault_path.join("target.md");
+        let source = vault_path.join("source.md");
+        service.write_note(&target, "# Target content").unwrap();
+        service.write_note(&source, "# Source content").unwrap();
+
+        let paths = vec![target.clone(), source.clone()];
+        service.merge_notes(&paths, &target).unwrap();
+
+        // Target must still exist after merge
+        assert!(target.exists());
+        // Source must be deleted
+        assert!(!source.exists());
+    }
+
+    #[test]
+    fn test_merge_notes_target_no_header() {
+        let dir = tempdir().unwrap();
+        let vault_path = dir.path().join("test_vault");
+        let db_path = dir.path().join("test.db");
+
+        let db = Arc::new(Database::new(&db_path).unwrap());
+        let mut service = VaultService::new(db);
+        service.create(vault_path.clone()).unwrap();
+
+        let target = vault_path.join("target.md");
+        let source = vault_path.join("source.md");
+        service.write_note(&target, "Target body").unwrap();
+        service.write_note(&source, "Source body").unwrap();
+
+        let paths = vec![target.clone(), source.clone()];
+        service.merge_notes(&paths, &target).unwrap();
+
+        let content = std::fs::read_to_string(&target).unwrap();
+        // Target's own content should NOT be prefixed with "# From:" header
+        assert!(!content.starts_with("\n\n---\n\n# From:"));
+        assert!(content.starts_with("Target body"));
+        // Source content SHOULD have the header
+        assert!(content.contains("# From:"));
+        assert!(content.contains("Source body"));
+    }
+
+    #[test]
+    fn test_list_notes_folder_traversal_blocked() {
+        let dir = tempdir().unwrap();
+        let vault_path = dir.path().join("test_vault");
+        let db_path = dir.path().join("test.db");
+
+        let db = Arc::new(Database::new(&db_path).unwrap());
+        let mut service = VaultService::new(db);
+        service.create(vault_path.clone()).unwrap();
+
+        // Attempt path traversal
+        let result = service.list_notes_in_folder(&vault_path, "../../../etc");
         assert!(result.is_err());
     }
 }

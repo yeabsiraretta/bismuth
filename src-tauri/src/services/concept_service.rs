@@ -5,8 +5,14 @@
 
 use crate::error::Result;
 use crate::services::wikilink_service::WikilinkService;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
+use std::sync::LazyLock;
+
+static WIKILINK_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\[\[([^\]]+)\]\]").unwrap()
+});
 
 /// Concept suggestion for inline linking
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -97,8 +103,7 @@ impl ConceptService {
 
     /// Checks if a position in the text is inside a wikilink
     fn is_inside_wikilink(content: &str, pos: usize) -> bool {
-        let re = regex::Regex::new(r"\[\[([^\]]+)\]\]").unwrap();
-        for cap in re.captures_iter(content) {
+        for cap in WIKILINK_RE.captures_iter(content) {
             if let Some(m) = cap.get(0) {
                 if pos >= m.start() && pos < m.end() {
                     return true;

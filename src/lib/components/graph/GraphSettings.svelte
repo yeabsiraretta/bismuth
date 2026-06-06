@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { GraphSettings } from '$lib/types/graph';
+  import type { GraphSettings } from '@/types/graph';
   import Icon from '@/components/icons/Icon.svelte';
 
   export let settings: GraphSettings;

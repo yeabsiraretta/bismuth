@@ -2,8 +2,9 @@ import { get, derived } from 'svelte/store';
 import type { CanvasElement, CanvasDocument, Page, ComponentDefinition } from '@/types/canvas';
 import { currentCanvas, selectedElements, clearSelection, selectElement, activePageId } from './canvasStore';
 import { addElement } from './canvasElements';
-import { alignElements, distributeElements } from '@/utils/canvasUtils';
-import type { AlignmentType } from '@/utils/canvasUtils';
+import { alignElements, distributeElements } from '@/utils/canvas/utils';
+import type { AlignmentType } from '@/utils/canvas/utils';
+import { generateId } from '@/utils/id';
 import { log } from '@/utils/logger';
 
 // ─── Grouping ────────────────────────────────────────────────────────────────
@@ -25,7 +26,7 @@ export function groupSelectedElements() {
 	const maxY = Math.max(...elementsToGroup.map((e: CanvasElement) => e.y + e.height));
 
 	const groupElement: CanvasElement = {
-		id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+		id: generateId(),
 		element_type: 'group',
 		x: minX,
 		y: minY,
@@ -244,7 +245,7 @@ export function createComponentFromSelection() {
 		modified_at: Math.floor(Date.now() / 1000),
 	};
 
-	const instanceId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+	const instanceId = generateId();
 	const instance: CanvasElement = {
 		id: instanceId,
 		element_type: 'component_instance',
@@ -281,7 +282,7 @@ export function insertComponentInstance(componentId: string, x: number, y: numbe
 	const comp = canvasDoc.components?.find((c: ComponentDefinition) => c.id === componentId);
 	if (!comp) return;
 
-	const instanceId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+	const instanceId = generateId();
 	const instance: CanvasElement = {
 		id: instanceId,
 		element_type: 'component_instance',

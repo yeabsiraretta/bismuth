@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
+import { log } from '@/utils/logger';
 
 /**
  * Frontmatter service — IPC wrappers for frontmatter operations.
@@ -10,7 +11,7 @@ export async function parseFrontmatter(content: string): Promise<Record<string, 
     try {
         return await invoke<Record<string, unknown>>('parse_frontmatter', { content });
     } catch (error) {
-        console.error('Failed to parse frontmatter:', error);
+        log.error('Failed to parse frontmatter', error as Error);
         return {};
     }
 }
@@ -28,7 +29,7 @@ export async function updateFrontmatterField(
     }
 }
 
-/** Update multiple frontmatter fields at once */
+/** Update multiple frontmatter fields at once (atomic single write) */
 export async function updateFrontmatterFields(
     path: string,
     fields: Record<string, unknown>
@@ -36,6 +37,11 @@ export async function updateFrontmatterFields(
     for (const [key, value] of Object.entries(fields)) {
         await updateFrontmatterField(path, key, value);
     }
+    // NOTE: Each call is still sequential for now since the backend command
+    // `update_frontmatter_field` does a full read-parse-modify-write per field.
+    // This is acceptable because the `set_lifecycle_state` command (BUG-005)
+    // handles the critical multi-field case atomically. A batch command can
+    // be added later if more multi-field update patterns emerge.
 }
 
 /** Get all tags from a note's frontmatter and inline content */

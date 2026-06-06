@@ -187,6 +187,42 @@ impl LifecycleService {
         Ok(())
     }
 
+    /// Atomically sets a note's lifecycle state in a single read-modify-write.
+    ///
+    /// Valid states: "captured", "organized", "archived".
+    pub fn set_lifecycle_state(path: &Path, state: &str) -> Result<()> {
+        let content = std::fs::read_to_string(path)
+            .map_err(|e| BismuthError::NotFound(format!("Note not found: {}", e)))?;
+
+        let (mut frontmatter, body) = FrontmatterService::parse(&content)?;
+
+        match state {
+            "captured" => {
+                FrontmatterService::set_organized(&mut frontmatter, false);
+                FrontmatterService::set_archived(&mut frontmatter, false);
+            }
+            "organized" => {
+                FrontmatterService::set_organized(&mut frontmatter, true);
+                FrontmatterService::set_archived(&mut frontmatter, false);
+            }
+            "archived" => {
+                FrontmatterService::set_archived(&mut frontmatter, true);
+            }
+            _ => {
+                return Err(BismuthError::Generic(format!(
+                    "Invalid lifecycle state: '{}'. Must be captured, organized, or archived.",
+                    state
+                )));
+            }
+        }
+
+        let new_content = FrontmatterService::serialize(&frontmatter, &body)?;
+        std::fs::write(path, new_content)
+            .map_err(|e| BismuthError::VaultError(format!("Failed to write: {}", e)))?;
+
+        Ok(())
+    }
+
     /// Walk all .md files in a directory tree, calling the visitor for each
     fn walk_markdown_files(dir: &Path, visitor: &mut dyn FnMut(PathBuf)) -> Result<()> {
         if !dir.is_dir() {
@@ -242,5 +278,43 @@ mod tests {
             "Normal Title"
         );
         assert_eq!(LifecycleService::sanitize_filename("A:B*C?D"), "A_B_C_D");
+    }
+
+    #[test]
+    fn test_set_lifecycle_state_atomic() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let note_path = tmp.path().join("test.md");
+        std::fs::write(
+            &note_path,
+            "---\ntitle: Test\norganized: false\narchived: false\n---\nContent",
+        )
+        .unwrap();
+
+        // Transition to organized
+        LifecycleService::set_lifecycle_state(&note_path, "organized").unwrap();
+        let content = std::fs::read_to_string(&note_path).unwrap();
+        assert!(content.contains("organized: true"));
+        assert!(content.contains("archived: false"));
+
+        // Transition to archived
+        LifecycleService::set_lifecycle_state(&note_path, "archived").unwrap();
+        let content = std::fs::read_to_string(&note_path).unwrap();
+        assert!(content.contains("archived: true"));
+
+        // Transition back to captured
+        LifecycleService::set_lifecycle_state(&note_path, "captured").unwrap();
+        let content = std::fs::read_to_string(&note_path).unwrap();
+        assert!(content.contains("organized: false"));
+        assert!(content.contains("archived: false"));
+    }
+
+    #[test]
+    fn test_set_lifecycle_state_invalid() {
+        let tmp = tempfile::TempDir::new().unwrap();
+        let note_path = tmp.path().join("test.md");
+        std::fs::write(&note_path, "---\ntitle: Test\n---\nContent").unwrap();
+
+        let result = LifecycleService::set_lifecycle_state(&note_path, "invalid");
+        assert!(result.is_err());
     }
 }

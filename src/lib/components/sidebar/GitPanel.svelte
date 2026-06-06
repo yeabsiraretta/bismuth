@@ -112,35 +112,36 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 12px;
-    gap: 16px;
+    padding: var(--spacing-s);
+    gap: var(--spacing-m);
   }
 
   .commit-section {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-xs);
   }
 
   .commit-input {
     flex: 1;
-    padding: 6px 10px;
+    padding: var(--spacing-xs) var(--spacing-s);
     background-color: var(--background-modifier-form-field);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-s);
     color: var(--text-normal);
-    font-size: 12px;
+    font-size: var(--font-smallest);
   }
 
   .commit-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
     background-color: var(--interactive-accent);
     color: var(--text-on-accent);
     border: none;
     border-radius: var(--radius-s);
-    font-size: 12px;
+    font-size: var(--font-smallest);
+    font-weight: 500;
     cursor: pointer;
     transition: opacity 0.15s ease;
   }
@@ -153,18 +154,19 @@
   .changes-section {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--spacing-xxs, 4px);
   }
 
   .section-header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 11px;
+    gap: var(--spacing-xs);
+    font-size: var(--font-smallest);
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--spacing-xxs, 4px);
   }
 
   .count {
@@ -178,10 +180,10 @@
   .file-change {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xxs, 4px) var(--spacing-xs);
     border-radius: var(--radius-s);
-    font-size: 12px;
+    font-size: var(--font-smallest);
     font-family: var(--font-monospace);
     transition: background-color 0.15s ease;
   }

@@ -8,6 +8,7 @@ import { invoke } from '@tauri-apps/api/core';
 import type { Note } from '@/types/vault';
 import type { PortentType, LifecycleState } from '@/types/entity';
 import { deriveLifecycle } from '@/types/entity';
+import { log } from '@/utils/logger';
 import { notes, refreshNotes } from '@/stores/vault/vault';
 
 /** Captured notes (not yet organized or archived) */
@@ -66,7 +67,7 @@ export async function assignType(path: string, type: PortentType): Promise<void>
     });
     await refreshNotes();
   } catch (error) {
-    console.error('Failed to assign type:', error);
+    log.error('Failed to assign type', error as Error);
     throw error;
   }
 }
@@ -87,7 +88,7 @@ export async function setLifecycleState(path: string, state: LifecycleState): Pr
     });
     await refreshNotes();
   } catch (error) {
-    console.error('Failed to set lifecycle:', error);
+    log.error('Failed to set lifecycle', error as Error);
     throw error;
   }
 }
@@ -109,7 +110,7 @@ export async function batchClassify(
     }
     clearCaptureSelection();
   } catch (error) {
-    console.error('Batch classify failed:', error);
+    log.error('Batch classify failed', error as Error);
     throw error;
   } finally {
     isCaptureLoading.set(false);
@@ -125,7 +126,7 @@ export async function quickCapture(title?: string): Promise<string> {
     await refreshNotes();
     return note.path;
   } catch (error) {
-    console.error('Quick capture failed:', error);
+    log.error('Quick capture failed', error as Error);
     throw error;
   }
 }

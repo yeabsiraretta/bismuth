@@ -19,3 +19,9 @@ export interface SearchQuery {
   filters?: SearchFilters;
   fuzzy?: boolean;
 }
+
+export interface FileSearchMatch {
+  line: number;
+  text: string;
+  column?: number;
+}

@@ -7,21 +7,22 @@
   export let timeFormat: string;
 </script>
 
-<div class="settings-section">
+<div class="settings-section stack stack-md">
   <h3>General Settings</h3>
 
   <div class="setting-group">
     <h4>File Management</h4>
 
-    <div class="setting-item">
-      <label for="default-location">Default Note Location</label>
+    <div class="setting-item grid grid-cols-12 gap-sm items-center">
+      <label class="col-span-4" for="default-location">Default Note Location</label>
       <input
+        class="col-span-8"
         id="default-location"
         type="text"
         bind:value={defaultNoteLocation}
         placeholder="/"
       />
-      <span class="setting-hint">Folder path where new notes are created (relative to vault root)</span>
+      <span class="setting-hint col-span-full">Folder path where new notes are created (relative to vault root)</span>
     </div>
 
     <div class="setting-item">
@@ -70,20 +71,20 @@
   <div class="setting-group">
     <h4>Date & Time</h4>
 
-    <div class="setting-item">
-      <label for="date-format">Date Format</label>
-      <select id="date-format" bind:value={dateFormat}>
+    <div class="setting-item grid grid-cols-12 gap-sm items-center">
+      <label class="col-span-4" for="date-format">Date Format</label>
+      <select class="col-span-8" id="date-format" bind:value={dateFormat}>
         <option value="YYYY-MM-DD">YYYY-MM-DD (2026-05-27)</option>
         <option value="MM/DD/YYYY">MM/DD/YYYY (05/27/2026)</option>
         <option value="DD/MM/YYYY">DD/MM/YYYY (27/05/2026)</option>
         <option value="MMMM D, YYYY">MMMM D, YYYY (May 27, 2026)</option>
       </select>
-      <span class="setting-hint">Format for displaying dates</span>
+      <span class="setting-hint col-span-full">Format for displaying dates</span>
     </div>
 
-    <div class="setting-item">
-      <label for="time-format">Time Format</label>
-      <select id="time-format" bind:value={timeFormat}>
+    <div class="setting-item grid grid-cols-12 gap-sm items-center">
+      <label class="col-span-4" for="time-format">Time Format</label>
+      <select class="col-span-8" id="time-format" bind:value={timeFormat}>
         <option value="24h">24-hour (13:30)</option>
         <option value="12h">12-hour (1:30 PM)</option>
       </select>

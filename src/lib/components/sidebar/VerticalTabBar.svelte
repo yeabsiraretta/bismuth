@@ -1,57 +1,132 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
+  import type { SidebarTab } from '@/types/layout';
 
   export let activeTab: string = 'files';
   export let onTabChange: ((detail: { tabId: string }) => void) | undefined = undefined;
   export let position: 'left' | 'right' = 'left';
+  /** Main tabs — passed in by parent (SidebarShell or App) */
+  export let tabs: SidebarTab[] = [];
+  /** Bottom action tabs (settings, help) */
+  export let bottomTabs: SidebarTab[] = [];
+  /** Fires when the settings button is clicked (instead of treating it as a tab) */
+  export let onSettingsClick: (() => void) | undefined = undefined;
+  /** Fires when tabs are reordered via drag-and-drop */
+  export let onReorder: ((reorderedTabs: SidebarTab[]) => void) | undefined = undefined;
 
-  interface Tab {
-    id: string;
-    icon: string;
-    label: string;
-    tooltip: string;
-  }
-
-  const leftTabs: Tab[] = [
-    { id: 'files', icon: 'folder', label: 'Files', tooltip: 'File Explorer' },
-    { id: 'search', icon: 'search', label: 'Search', tooltip: 'Search in vault' },
-    { id: 'inbox', icon: 'inbox', label: 'Inbox', tooltip: 'Capture Dashboard' },
-    { id: 'graph', icon: 'share-2', label: 'Graph', tooltip: 'Graph view' },
-    { id: 'tags', icon: 'tag', label: 'Tags', tooltip: 'Tag management' },
-    { id: 'entities', icon: 'layers', label: 'Entities', tooltip: 'Entity browser' },
-  ];
-
-  const rightTabs: Tab[] = [
-    { id: 'backlinks', icon: 'link-2', label: 'Backlinks', tooltip: 'Backlinks' },
-    { id: 'outline', icon: 'list', label: 'Outline', tooltip: 'Document outline' },
-    { id: 'properties', icon: 'sliders', label: 'Properties', tooltip: 'Note properties' },
-    { id: 'calendar', icon: 'calendar', label: 'Calendar', tooltip: 'Daily notes calendar' },
-  ];
-
-  const bottomTabs: Tab[] = [
-    { id: 'settings', icon: 'settings', label: 'Settings', tooltip: 'Settings' },
-    { id: 'help', icon: 'help-circle', label: 'Help', tooltip: 'Help & support' },
-  ];
-
-  $: tabs = position === 'left' ? leftTabs : rightTabs;
+  let draggedTabId: string | null = null;
+  let dropTargetId: string | null = null;
 
   function selectTab(tabId: string) {
+    if (tabId === 'settings' && onSettingsClick) {
+      onSettingsClick();
+      return;
+    }
     activeTab = tabId;
     onTabChange?.({ tabId });
   }
+
+  function handleDragStart(e: DragEvent, tabId: string) {
+    if (!e.dataTransfer) return;
+    draggedTabId = tabId;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', tabId);
+  }
+
+  function handleDragOver(e: DragEvent, tabId: string) {
+    e.preventDefault();
+    if (!draggedTabId || draggedTabId === tabId) return;
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    dropTargetId = tabId;
+  }
+
+  function handleDragLeave() {
+    dropTargetId = null;
+  }
+
+  function handleDrop(e: DragEvent, tabId: string) {
+    e.preventDefault();
+    if (!draggedTabId || draggedTabId === tabId) {
+      draggedTabId = null;
+      dropTargetId = null;
+      return;
+    }
+
+    const fromIdx = tabs.findIndex(t => t.id === draggedTabId);
+    const toIdx = tabs.findIndex(t => t.id === tabId);
+
+    if (fromIdx !== -1 && toIdx !== -1) {
+      const reordered = [...tabs];
+      const [moved] = reordered.splice(fromIdx, 1);
+      reordered.splice(toIdx, 0, moved);
+      tabs = reordered;
+      onReorder?.(reordered);
+    }
+
+    draggedTabId = null;
+    dropTargetId = null;
+  }
+
+  function handleDragEnd() {
+    draggedTabId = null;
+    dropTargetId = null;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    const allTabs = [...tabs, ...bottomTabs];
+    const currentIndex = allTabs.findIndex(t => t.id === activeTab);
+    if (currentIndex === -1) return;
+
+    let nextIndex = currentIndex;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextIndex = (currentIndex + 1) % allTabs.length;
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      nextIndex = (currentIndex - 1 + allTabs.length) % allTabs.length;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      nextIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      nextIndex = allTabs.length - 1;
+    } else {
+      return;
+    }
+
+    selectTab(allTabs[nextIndex].id);
+    const buttons = (e.currentTarget as HTMLElement)?.closest('.vertical-tab-bar')?.querySelectorAll('.tab-button');
+    if (buttons && buttons[nextIndex]) {
+      (buttons[nextIndex] as HTMLElement).focus();
+    }
+  }
 </script>
 
-<div class="vertical-tab-bar" class:left={position === 'left'} class:right={position === 'right'}>
+<div class="vertical-tab-bar" class:left={position === 'left'} class:right={position === 'right'} role="tablist" aria-orientation="vertical">
   <div class="tabs-top">
-    {#each tabs as tab}
+    {#each tabs as tab (tab.id)}
       <button
         class="tab-button"
         class:active={activeTab === tab.id}
+        class:drag-over={dropTargetId === tab.id}
         on:click={() => selectTab(tab.id)}
+        on:keydown={handleKeydown}
+        draggable="true"
+        on:dragstart={(e) => handleDragStart(e, tab.id)}
+        on:dragover={(e) => handleDragOver(e, tab.id)}
+        on:dragleave={handleDragLeave}
+        on:drop={(e) => handleDrop(e, tab.id)}
+        on:dragend={handleDragEnd}
         title={tab.tooltip}
         aria-label={tab.label}
+        aria-selected={activeTab === tab.id}
+        role="tab"
+        tabindex={activeTab === tab.id ? 0 : -1}
       >
         <Icon name={tab.icon} size={20} />
+        {#if tab.badge && tab.badge > 0}
+          <span class="tab-badge">{tab.badge > 99 ? '99+' : tab.badge}</span>
+        {/if}
       </button>
     {/each}
   </div>
@@ -62,8 +137,10 @@
         class="tab-button"
         class:active={activeTab === tab.id}
         on:click={() => selectTab(tab.id)}
+        on:keydown={handleKeydown}
         title={tab.tooltip}
         aria-label={tab.label}
+        role="tab"
       >
         <Icon name={tab.icon} size={20} />
       </button>
@@ -116,6 +193,11 @@
     color: var(--text-normal);
   }
 
+  .tab-button.drag-over {
+    outline: 2px dashed var(--interactive-accent);
+    outline-offset: -2px;
+  }
+
   .tab-button.active {
     background-color: var(--interactive-accent);
     color: var(--text-on-accent);
@@ -137,5 +219,21 @@
     left: auto;
     right: 0;
     border-radius: 2px 0 0 2px;
+  }
+
+  .tab-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-radius: 7px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 14px;
+    text-align: center;
   }
 </style>

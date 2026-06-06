@@ -82,3 +82,19 @@ pub async fn organize_note(
     LifecycleService::organize_note(&PathBuf::from(path))
         .map_err(|e| format!("Organize failed: {}", e))
 }
+
+/// Atomically sets a note's lifecycle state by updating both organized and
+/// archived fields in a single read-modify-write operation.
+///
+/// # Arguments
+///
+/// * `path` — Absolute path to the note.
+/// * `state` — Target state: "captured", "organized", or "archived".
+#[tauri::command]
+pub async fn set_lifecycle_state(
+    path: String,
+    state: String,
+) -> Result<()> {
+    LifecycleService::set_lifecycle_state(&PathBuf::from(path), &state)
+        .map_err(|e| format!("Set lifecycle state failed: {}", e))
+}

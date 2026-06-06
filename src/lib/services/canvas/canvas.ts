@@ -85,3 +85,36 @@ export async function deleteCanvas(id: string): Promise<void> {
     throw new Error(`Failed to delete canvas: ${error}`);
   }
 }
+
+/**
+ * Links a canvas to a specific note by setting the note_id field.
+ * @param canvasId - Canvas document ID.
+ * @param notePath - Note file path to link (or null to unlink).
+ */
+export async function linkCanvasToNote(canvasId: string, notePath: string | null): Promise<void> {
+  log.info('Canvas service: linking canvas to note', { canvasId, notePath });
+  try {
+    await invoke('link_canvas_to_note', { canvasId, notePath });
+    log.info('Canvas service: canvas linked to note', { canvasId, notePath });
+  } catch (error) {
+    log.error('Canvas service: failed to link canvas to note', error as Error, { canvasId, notePath });
+    throw new Error(`Failed to link canvas to note: ${error}`);
+  }
+}
+
+/**
+ * Retrieves all canvases linked to a specific note.
+ * @param notePath - Note file path to search for linked canvases.
+ * @returns Array of canvas documents linked to the note.
+ */
+export async function getCanvasesForNote(notePath: string): Promise<CanvasDocument[]> {
+  log.debug('Canvas service: getting canvases for note', { notePath });
+  try {
+    const canvases = await invoke<CanvasDocument[]>('get_canvases_for_note', { notePath });
+    log.info('Canvas service: found canvases for note', { notePath, count: canvases.length });
+    return canvases;
+  } catch (error) {
+    log.error('Canvas service: failed to get canvases for note', error as Error, { notePath });
+    throw new Error(`Failed to get canvases for note: ${error}`);
+  }
+}

@@ -25,30 +25,30 @@
   .hotkeys-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--spacing-s);
   }
 
   .hotkey-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: var(--spacing-s) var(--spacing-m);
     background: var(--background-secondary);
     border-radius: var(--radius-s);
   }
 
   .hotkey-action {
-    font-size: 14px;
+    font-size: var(--font-ui-small);
     color: var(--text-normal);
   }
 
   .hotkey-key {
     font-family: var(--font-monospace);
-    font-size: 13px;
-    padding: 4px 8px;
+    font-size: var(--font-smallest);
+    padding: var(--spacing-xs) var(--spacing-s);
     background: var(--background-primary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-s);
     color: var(--text-muted);
   }
 </style>

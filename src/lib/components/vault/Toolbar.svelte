@@ -12,7 +12,7 @@
   import ThemeToggle from '@/components/ui/ThemeToggle.svelte';
   import NewNoteDialog from '@/components/dialogs/NewNoteDialog.svelte';
   import DeleteConfirmDialog from '@/components/dialogs/DeleteConfirmDialog.svelte';
-  import SettingsModal from '@/components/modals/SettingsModal.svelte';
+  import SettingsModal from '@/components/overlays/settings/SettingsModal.svelte';
   import { log } from '@/utils/logger';
 
   // Callback prop for refresh event (Svelte 5 pattern)

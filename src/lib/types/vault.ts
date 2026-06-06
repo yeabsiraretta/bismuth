@@ -17,6 +17,7 @@ export interface Note {
   /** Raw markdown content of the note. */
   content: string;
   /** Parsed YAML frontmatter key-value pairs. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   frontmatter: Record<string, any>;
   /** ISO 8601 creation timestamp. */
   created_at: string;

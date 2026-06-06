@@ -43,149 +43,199 @@
   role="button"
   tabindex="0"
 >
-  <div class="note-header">
-    <div class="note-title-row">
-      <Icon name="file-text" size={14} />
-      <span class="note-title">{title}</span>
-      <span class="note-date">{formatDate(created)}</span>
+  <div class="card-top">
+    <div class="card-meta">
+      {#if type}
+        <span class="type-badge badge-{type.toLowerCase()}">{type}</span>
+      {:else}
+        <span class="type-badge badge-untyped">Unclassified</span>
+      {/if}
+      <span class="card-date">{formatDate(created)}</span>
     </div>
-    {#if type}
-      <span class="type-badge">{type}</span>
-    {/if}
+    <div class="quick-actions">
+      <select
+        class="quick-select"
+        on:change={(e) => onAssignType(e.currentTarget.value)}
+        on:click|stopPropagation
+        title="Classify"
+        aria-label="Assign type"
+      >
+        <option value="">Classify</option>
+        {#each portentTypes as t}
+          <option value={t}>{t}</option>
+        {/each}
+      </select>
+      <button
+        class="quick-btn"
+        on:click|stopPropagation={() => onSetLifecycle('archived')}
+        title="Archive"
+        aria-label="Archive"
+      >
+        <Icon name="archive" size={14} />
+      </button>
+      <button
+        class="quick-btn quick-btn-danger"
+        on:click|stopPropagation={onDelete}
+        title="Delete"
+        aria-label="Delete"
+      >
+        <Icon name="trash-2" size={14} />
+      </button>
+    </div>
   </div>
 
-  <div class="note-snippet">{snippet}</div>
+  <h3 class="card-title">{title}</h3>
 
-  <div class="note-actions">
-    <select
-      class="action-select"
-      on:change={(e) => onAssignType(e.currentTarget.value)}
-      on:click|stopPropagation
-    >
-      <option value="">Type...</option>
-      {#each portentTypes as t}
-        <option value={t}>{t}</option>
-      {/each}
-    </select>
-
-    <select
-      class="action-select"
-      on:change={(e) => onSetLifecycle(e.currentTarget.value)}
-      on:click|stopPropagation
-    >
-      <option value="">Lifecycle...</option>
-      {#each lifecycleStates as state}
-        <option value={state}>{state}</option>
-      {/each}
-    </select>
-
-    <button class="delete-btn" on:click|stopPropagation={onDelete} title="Delete">
-      <Icon name="trash-2" size={14} />
-    </button>
-  </div>
+  {#if snippet}
+    <p class="card-snippet">{snippet}</p>
+  {/if}
 </div>
 
 <style>
   .note-card {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background-color: var(--background-secondary);
-    border: 2px solid transparent;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-m);
+    background-color: var(--background-primary);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-m);
-    margin-bottom: 12px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
 
   .note-card:hover {
-    border-color: var(--border-color);
+    border-color: var(--border-hover);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .note-card.selected {
     border-color: var(--interactive-accent);
-    background-color: var(--background-modifier-form-field-highlighted);
+    box-shadow: 0 0 0 1px var(--interactive-accent);
   }
 
-  .note-header {
+  .card-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--spacing-s);
   }
 
-  .note-title-row {
+  .card-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
+    gap: var(--spacing-xs);
   }
 
-  .note-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-normal);
-  }
-
-  .note-date {
-    font-size: 11px;
+  .card-date {
+    font-size: 10px;
     color: var(--text-faint);
-    margin-left: auto;
   }
 
   .type-badge {
+    display: inline-flex;
+    align-items: center;
     padding: 2px 8px;
-    background-color: var(--background-modifier-border);
-    color: var(--text-muted);
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
+    border-radius: var(--radius-s);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  .note-snippet {
-    font-size: 13px;
+  .badge-untyped {
+    background: var(--background-modifier-hover);
+    color: var(--text-faint);
+  }
+
+  .badge-idea {
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+  }
+
+  .badge-task {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+  }
+
+  .badge-reference {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+  }
+
+  .badge-question {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+  }
+
+  .badge-note {
+    background: rgba(156, 163, 175, 0.12);
+    color: var(--text-muted);
+  }
+
+  /* Quick actions — visible on hover */
+  .quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .note-card:hover .quick-actions {
+    opacity: 1;
+  }
+
+  .quick-select {
+    padding: 3px 6px;
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .quick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+
+  .quick-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+
+  .quick-btn-danger:hover {
+    background: var(--background-modifier-error);
+    color: #ffffff;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    line-height: 1.3;
+  }
+
+  .card-snippet {
+    margin: 0;
+    font-size: var(--font-smallest);
     color: var(--text-muted);
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    line-clamp: 2;
     overflow: hidden;
-  }
-
-  .note-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .action-select {
-    flex: 1;
-    padding: 6px 10px;
-    background-color: var(--background-modifier-form-field);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    color: var(--text-normal);
-    font-size: 12px;
-    cursor: pointer;
-  }
-
-  .delete-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: none;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .delete-btn:hover {
-    background-color: var(--background-modifier-error);
-    border-color: var(--text-error);
-    color: var(--text-error);
   }
 </style>

@@ -17,6 +17,7 @@ import {
   deriveLifecycle,
   getPortentIcon,
 } from '@/types/entity';
+import { log } from '@/utils/logger';
 import { notes, activeNote } from '@/stores/vault/vault';
 
 /** Custom entity type definitions (loaded from .bismuth/entity-types.json) */
@@ -104,7 +105,7 @@ export async function setEntityType(path: string, type: PortentType): Promise<vo
   try {
     await invoke('update_frontmatter_field', { path, key: 'type', value: type });
   } catch (error) {
-    console.error('Failed to set entity type:', error);
+    log.error('Failed to set entity type', error as Error);
     throw error;
   }
 }
@@ -118,7 +119,7 @@ export async function addBelongsTo(path: string, targetPath: string): Promise<vo
       value: targetPath,
     });
   } catch (error) {
-    console.error('Failed to add belongs_to:', error);
+    log.error('Failed to add belongs_to', error as Error);
     throw error;
   }
 }
@@ -132,7 +133,7 @@ export async function addRelatedTo(path: string, targetPath: string): Promise<vo
       value: targetPath,
     });
   } catch (error) {
-    console.error('Failed to add related_to:', error);
+    log.error('Failed to add related_to', error as Error);
     throw error;
   }
 }

@@ -140,7 +140,7 @@
 </div>
 
 <style>
-  @import '$lib/styles/canvas-components.css';
+  @import '@/styles/canvas-components.css';
 
   .canvas-library {
     display: flex;

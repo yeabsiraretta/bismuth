@@ -1,7 +1,7 @@
 <script lang="ts">
   import { selectedElements, currentCanvas } from '@/stores/canvas/canvasStore';
   import { updateElement } from '@/stores/canvas/canvasElements';
-  import { createAutoLayout } from '@/utils/canvasAutoLayout';
+  import { createAutoLayout } from '@/utils/canvas/autoLayout';
   import type { CanvasElement, AutoLayout } from '@/types/canvas';
 
   $: element = getSelectedFrame($selectedElements, $currentCanvas?.elements ?? []);
@@ -17,18 +17,19 @@
   function enableAutoLayout() {
     if (!element) return;
     const layout = createAutoLayout('vertical', 8, 16);
-    updateElement(element.id, { autoLayout: layout });
+    updateElement({ ...element, properties: { ...element.properties, autoLayout: layout } });
   }
 
   function disableAutoLayout() {
     if (!element) return;
-    updateElement(element.id, { autoLayout: undefined });
+    const { autoLayout: _, ...rest } = element.properties;
+    updateElement({ ...element, properties: rest });
   }
 
   function updateLayout(updates: Partial<AutoLayout>) {
     if (!element || !autoLayout) return;
     const newLayout = { ...autoLayout, ...updates };
-    updateElement(element.id, { autoLayout: newLayout });
+    updateElement({ ...element, properties: { ...element.properties, autoLayout: newLayout } });
   }
 
   function updatePadding(side: 'top' | 'right' | 'bottom' | 'left', value: number) {
@@ -178,7 +179,7 @@
               <button
                 class="align-btn"
                 class:active={autoLayout.alignItems === align}
-                on:click={() => updateLayout({ alignItems: align })}
+                on:click={() => updateLayout({ alignItems: align as AutoLayout['alignItems'] })}
                 title={align}
               >
                 {align[0].toUpperCase()}
@@ -195,7 +196,7 @@
               <button
                 class="align-btn"
                 class:active={autoLayout.justifyContent === justify}
-                on:click={() => updateLayout({ justifyContent: justify })}
+                on:click={() => updateLayout({ justifyContent: justify as AutoLayout['justifyContent'] })}
                 title={justify}
               >
                 {justify === 'space-between' ? '⇔' : justify[0].toUpperCase()}

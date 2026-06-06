@@ -247,26 +247,31 @@ fn parse_search_params(query_string: &str) -> (String, usize) {
     (query, limit)
 }
 
-/// Minimal URL decoding (+ → space, %XX → char)
+/// URL decoding with proper multi-byte UTF-8 support (+ → space, %XX → byte)
 fn urldecode(s: &str) -> String {
-    let mut result = String::with_capacity(s.len());
-    let mut chars = s.chars();
-    while let Some(c) = chars.next() {
-        match c {
-            '+' => result.push(' '),
-            '%' => {
-                let hex: String = chars.by_ref().take(2).collect();
-                if let Ok(byte) = u8::from_str_radix(&hex, 16) {
-                    result.push(byte as char);
+    let mut bytes: Vec<u8> = Vec::with_capacity(s.len());
+    let mut iter = s.bytes().peekable();
+    while let Some(b) = iter.next() {
+        match b {
+            b'+' => bytes.push(b' '),
+            b'%' => {
+                let hi = iter.next().unwrap_or(b'0');
+                let lo = iter.next().unwrap_or(b'0');
+                let hex = [hi, lo];
+                if let Ok(byte) = u8::from_str_radix(
+                    std::str::from_utf8(&hex).unwrap_or("00"), 16
+                ) {
+                    bytes.push(byte);
                 } else {
-                    result.push('%');
-                    result.push_str(&hex);
+                    bytes.push(b'%');
+                    bytes.push(hi);
+                    bytes.push(lo);
                 }
-            },
-            _ => result.push(c),
+            }
+            _ => bytes.push(b),
         }
     }
-    result
+    String::from_utf8(bytes).unwrap_or_else(|_| s.to_string())
 }
 
 /// Send an HTTP response
@@ -330,5 +335,22 @@ mod tests {
         assert_eq!(urldecode("hello+world"), "hello world");
         assert_eq!(urldecode("a%20b%21c"), "a b!c");
         assert_eq!(urldecode("normal"), "normal");
+    }
+
+    #[test]
+    fn test_urldecode_multibyte_utf8() {
+        // "中" = U+4E2D = 0xE4 0xB8 0xAD in UTF-8
+        assert_eq!(urldecode("%E4%B8%AD"), "中");
+    }
+
+    #[test]
+    fn test_urldecode_mixed_ascii_utf8() {
+        // "hello中world" mixed ASCII + CJK
+        assert_eq!(urldecode("hello%E4%B8%ADworld"), "hello中world");
+        // Japanese "日本語" = E6 97 A5 E6 9C AC E8 AA 9E
+        assert_eq!(
+            urldecode("%E6%97%A5%E6%9C%AC%E8%AA%9E"),
+            "日本語"
+        );
     }
 }

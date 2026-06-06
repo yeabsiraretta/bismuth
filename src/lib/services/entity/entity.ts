@@ -24,18 +24,10 @@ export async function setEntityType(path: string, type: string): Promise<void> {
 	return invoke<void>('update_frontmatter_field', { path, key: 'type', value: type });
 }
 
-/** Set lifecycle state on a note's frontmatter */
+/** Set lifecycle state on a note atomically via a single backend command */
 export async function setLifecycleState(
 	path: string,
 	state: 'captured' | 'organized' | 'archived'
 ): Promise<void> {
-	if (state === 'archived') {
-		await invoke<void>('update_frontmatter_field', { path, key: 'archived', value: true });
-	} else if (state === 'organized') {
-		await invoke<void>('update_frontmatter_field', { path, key: 'organized', value: true });
-		await invoke<void>('update_frontmatter_field', { path, key: 'archived', value: false });
-	} else {
-		await invoke<void>('update_frontmatter_field', { path, key: 'organized', value: false });
-		await invoke<void>('update_frontmatter_field', { path, key: 'archived', value: false });
-	}
+	await invoke<void>('set_lifecycle_state', { path, state });
 }

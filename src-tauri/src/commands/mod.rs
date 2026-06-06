@@ -8,6 +8,7 @@
 
 pub mod backlinks_commands;
 pub mod canvas_commands;
+pub mod component_commands;
 pub mod embedding_commands;
 pub mod entity_commands;
 pub mod graph_commands;
@@ -22,6 +23,7 @@ pub mod wikilink_commands;
 
 pub use backlinks_commands::*;
 pub use canvas_commands::*;
+pub use component_commands::*;
 pub use embedding_commands::*;
 pub use entity_commands::*;
 pub use graph_commands::*;

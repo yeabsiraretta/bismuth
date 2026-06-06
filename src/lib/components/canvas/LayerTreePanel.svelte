@@ -1,7 +1,7 @@
 <script lang="ts">
   import { currentCanvas, selectedElements, selectElement, clearSelection } from '@/stores/canvas/canvasStore';
   import { updateElement } from '@/stores/canvas/canvasElements';
-  import { buildLayerTree, flattenTree, elementLabel, elementIcon, type LayerNode } from '@/utils/canvasLayerTree';
+  import { buildLayerTree, flattenTree, elementLabel, elementIcon, type LayerNode } from '@/utils/canvas/layerTree';
 
   let collapsedIds: Set<string> = new Set();
   let editingId: string | null = null;
@@ -23,7 +23,7 @@
 
   function flipVisibility(id: string) {
     const el = $currentCanvas?.elements.find((e) => e.id === id);
-    if (el) updateElement(id, { visible: !el.visible } as any);
+    if (el) updateElement({ ...el, visible: !el.visible });
   }
 
   function beginEdit(node: LayerNode) {
@@ -32,7 +32,10 @@
   }
 
   function commitEdit() {
-    if (editingId && editValue.trim()) updateElement(editingId, { name: editValue.trim() } as any);
+    if (editingId && editValue.trim()) {
+      const el = $currentCanvas?.elements.find((e) => e.id === editingId);
+      if (el) updateElement({ ...el, name: editValue.trim() });
+    }
     editingId = null;
   }
 </script>

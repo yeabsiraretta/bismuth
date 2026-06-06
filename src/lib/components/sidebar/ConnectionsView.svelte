@@ -1,18 +1,18 @@
 <script lang="ts">
-  /* eslint-disable max-lines */
   import { onDestroy } from 'svelte';
-  import { invoke } from '@tauri-apps/api/core';
   import Icon from '@/components/icons/Icon.svelte';
+  import ConnectionItem from './ConnectionItem.svelte';
   import { activeNote } from '@/stores/vault/vault';
-
-  interface Connection {
-    path: string;
-    title: string;
-    score: number;
-    pinned?: boolean;
-  }
-
-  type ViewTab = 'connections' | 'lookup';
+  import {
+    type Connection,
+    type ViewTab,
+    fetchSimilarNotes,
+    lookupByText,
+    togglePin,
+    copyAsWikilinks as doCopyWikilinks,
+    pickRandomConnection,
+    buildDragData,
+  } from './connectionsLogic';
 
   export let onOpenNote: ((path: string) => void) | undefined = undefined;
 
@@ -22,16 +22,13 @@
   let isPaused = false;
   let activeTab: ViewTab = 'connections';
 
-  // Lookup state
   let lookupQuery = '';
   let lookupResults: Connection[] = [];
   let isSearching = false;
 
-  // Debounce timer for auto-update
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let lastNotePath: string | null = null;
 
-  // React to active note changes (debounced 300ms)
   $: if ($activeNote && !isPaused && activeTab === 'connections') {
     const currentPath = $activeNote.path;
     if (currentPath !== lastNotePath) {
@@ -47,116 +44,62 @@
 
   async function fetchConnections(path: string) {
     isLoading = true;
-    try {
-      const results = await invoke<Array<{ path: string; score: number }>>('get_similar_notes', {
-        path,
-        topK: 8,
-      });
-      connections = results.map((r) => ({
-        path: r.path,
-        title: getFileName(r.path),
-        score: r.score,
-        pinned: pinnedConnections.some((p) => p.path === r.path),
-      }));
-    } catch (error) {
-      console.error('Failed to fetch connections:', error);
-      connections = [];
-    }
+    connections = await fetchSimilarNotes(path, pinnedConnections);
     isLoading = false;
   }
 
   async function handleLookup() {
-    if (!lookupQuery.trim()) return;
     isSearching = true;
-    try {
-      const results = await invoke<Array<{ path: string; score: number }>>('lookup_by_text', {
-        query: lookupQuery,
-        topK: 10,
-      });
-      lookupResults = results.map((r) => ({
-        path: r.path,
-        title: getFileName(r.path),
-        score: r.score,
-      }));
-    } catch (error) {
-      console.error('Failed to lookup:', error);
-      lookupResults = [];
-    }
+    lookupResults = await lookupByText(lookupQuery);
     isSearching = false;
   }
 
-  function openNote(path: string) {
-    onOpenNote?.(path);
-  }
+  function openNote(path: string) { onOpenNote?.(path); }
 
   function togglePause() {
     isPaused = !isPaused;
-    if (!isPaused && $activeNote) {
-      fetchConnections($activeNote.path);
-    }
+    if (!isPaused && $activeNote) fetchConnections($activeNote.path);
   }
 
   function refreshConnections() {
-    if ($activeNote) {
-      fetchConnections($activeNote.path);
-    }
+    if ($activeNote) fetchConnections($activeNote.path);
   }
 
   function pinConnection(connection: Connection) {
-    if (pinnedConnections.some((p) => p.path === connection.path)) {
-      pinnedConnections = pinnedConnections.filter((p) => p.path !== connection.path);
-    } else {
-      pinnedConnections = [...pinnedConnections, { ...connection, pinned: true }];
-    }
-    // Update pin status in connections list
-    connections = connections.map((c) => ({
-      ...c,
-      pinned: pinnedConnections.some((p) => p.path === c.path),
-    }));
+    const result = togglePin(connection, pinnedConnections, connections);
+    pinnedConnections = result.pinned;
+    connections = result.connections;
   }
 
-  function copyAsWikilinks() {
-    const allConnections = [...pinnedConnections, ...connections.filter((c) => !c.pinned)];
-    const wikilinks = allConnections.map((c) => `[[${c.title.replace('.md', '')}]]`).join('\n');
-    navigator.clipboard.writeText(wikilinks).catch(console.error);
-  }
+  function copyAsWikilinks() { doCopyWikilinks(pinnedConnections, connections); }
 
   function openRandomConnection() {
-    const pool = connections.length > 0 ? connections : pinnedConnections;
-    if (pool.length === 0) return;
-    const idx = Math.floor(Math.random() * pool.length);
-    openNote(pool[idx].path);
+    const path = pickRandomConnection(connections, pinnedConnections);
+    if (path) openNote(path);
   }
 
   function handleDragStart(e: DragEvent, connection: Connection) {
-    const wikilink = `[[${connection.title.replace('.md', '')}]]`;
-    e.dataTransfer?.setData('text/plain', wikilink);
-    e.dataTransfer?.setData('application/bismuth-wikilink', connection.path);
-  }
-
-  function getFileName(path: string): string {
-    const parts = path.split('/');
-    return parts[parts.length - 1] || path;
+    const data = buildDragData(connection);
+    e.dataTransfer?.setData('text/plain', data.text);
+    e.dataTransfer?.setData('application/bismuth-wikilink', data.wikilinkPath);
   }
 
   function handleLookupKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter') handleLookup();
   }
 
-  onDestroy(() => {
-    if (debounceTimer) clearTimeout(debounceTimer);
-  });
+  onDestroy(() => { if (debounceTimer) clearTimeout(debounceTimer); });
 </script>
 
 <div class="connections-view">
-  <div class="panel-header">
-    <Icon name="share-2" size={16} />
-    <h3>Connections</h3>
+  <div class="inspector-section-header">
+    <Icon name="share-2" size={14} />
+    <h3 class="inspector-section-title">Connections</h3>
     <div class="header-actions">
-      <button class="icon-btn" on:click={openRandomConnection} title="Random connection">
+      <button class="icon-btn" on:click={openRandomConnection} title="Random connection" aria-label="Random connection">
         <Icon name="shuffle" size={14} />
       </button>
-      <button class="icon-btn" on:click={copyAsWikilinks} title="Copy as wikilinks">
+      <button class="icon-btn" on:click={copyAsWikilinks} title="Copy as wikilinks" aria-label="Copy as wikilinks">
         <Icon name="copy" size={14} />
       </button>
       <button
@@ -164,10 +107,11 @@
         class:active={isPaused}
         on:click={togglePause}
         title={isPaused ? 'Resume' : 'Pause'}
+        aria-label={isPaused ? 'Resume connections' : 'Pause connections'}
       >
         <Icon name={isPaused ? 'play' : 'pause'} size={14} />
       </button>
-      <button class="icon-btn" on:click={refreshConnections} title="Refresh">
+      <button class="icon-btn" on:click={refreshConnections} title="Refresh" aria-label="Refresh connections">
         <Icon name="refresh-cw" size={14} />
       </button>
     </div>
@@ -198,41 +142,24 @@
         <p>Finding connections...</p>
       </div>
     {:else if connections.length === 0 && pinnedConnections.length === 0}
-      <div class="empty-state">
-        <Icon name="share-2" size={32} />
-        <p>No connections found</p>
-        <span class="hint">Semantically related notes will appear here</span>
+      <div class="inspector-empty">
+        <div class="inspector-empty-icon"><Icon name="share-2" size={32} /></div>
+        <p class="inspector-empty-title">No connections found</p>
+        <p class="inspector-empty-description">Semantically related notes will appear here</p>
       </div>
     {:else}
       <div class="connections-list">
         {#if pinnedConnections.length > 0}
           <div class="section-label">Pinned</div>
           {#each pinnedConnections as connection (connection.path)}
-            <div
-              class="connection-item pinned"
-              role="button"
-              tabindex="0"
-              draggable="true"
+            <ConnectionItem
+              title={connection.title}
+              score={connection.score}
+              pinned={true}
               on:click={() => openNote(connection.path)}
-              on:keydown={(e) => e.key === 'Enter' && openNote(connection.path)}
-              on:dragstart={(e) => handleDragStart(e, connection)}
-            >
-              <div class="connection-header">
-                <Icon name="pin" size={12} />
-                <span class="connection-title">{connection.title}</span>
-                <button
-                  class="pin-btn"
-                  on:click|stopPropagation={() => pinConnection(connection)}
-                  title="Unpin"
-                >
-                  <Icon name="x" size={10} />
-                </button>
-              </div>
-              <div class="connection-score">
-                <div class="score-bar" style:width="{connection.score * 100}%"></div>
-                <span class="score-text">{Math.round(connection.score * 100)}%</span>
-              </div>
-            </div>
+              on:pin={() => pinConnection(connection)}
+              on:dragstart={(e) => handleDragStart(e.detail, connection)}
+            />
           {/each}
         {/if}
 
@@ -241,31 +168,13 @@
             <div class="section-label">Similar</div>
           {/if}
           {#each connections.filter((c) => !c.pinned) as connection (connection.path)}
-            <div
-              class="connection-item"
-              role="button"
-              tabindex="0"
-              draggable="true"
+            <ConnectionItem
+              title={connection.title}
+              score={connection.score}
               on:click={() => openNote(connection.path)}
-              on:keydown={(e) => e.key === 'Enter' && openNote(connection.path)}
-              on:dragstart={(e) => handleDragStart(e, connection)}
-            >
-              <div class="connection-header">
-                <Icon name="file-text" size={14} />
-                <span class="connection-title">{connection.title}</span>
-                <button
-                  class="pin-btn"
-                  on:click|stopPropagation={() => pinConnection(connection)}
-                  title="Pin"
-                >
-                  <Icon name="pin" size={10} />
-                </button>
-              </div>
-              <div class="connection-score">
-                <div class="score-bar" style:width="{connection.score * 100}%"></div>
-                <span class="score-text">{Math.round(connection.score * 100)}%</span>
-              </div>
-            </div>
+              on:pin={() => pinConnection(connection)}
+              on:dragstart={(e) => handleDragStart(e.detail, connection)}
+            />
           {/each}
         {/if}
       </div>
@@ -292,36 +201,28 @@
           <p>Searching...</p>
         </div>
       {:else if lookupResults.length === 0 && lookupQuery}
-        <div class="empty-state">
-          <Icon name="search" size={32} />
-          <p>No results</p>
-          <span class="hint">Try a different query</span>
+        <div class="inspector-empty">
+          <div class="inspector-empty-icon"><Icon name="search" size={32} /></div>
+          <p class="inspector-empty-title">No results</p>
+          <p class="inspector-empty-description">Try a different query</p>
         </div>
       {:else if lookupResults.length > 0}
         <div class="connections-list">
           {#each lookupResults as result (result.path)}
-            <button
-              class="connection-item"
-              draggable="true"
+            <ConnectionItem
+              title={result.title}
+              score={result.score}
+              showPin={false}
               on:click={() => openNote(result.path)}
-              on:dragstart={(e) => handleDragStart(e, result)}
-            >
-              <div class="connection-header">
-                <Icon name="file-text" size={14} />
-                <span class="connection-title">{result.title}</span>
-              </div>
-              <div class="connection-score">
-                <div class="score-bar" style:width="{result.score * 100}%"></div>
-                <span class="score-text">{Math.round(result.score * 100)}%</span>
-              </div>
-            </button>
+              on:dragstart={(e) => handleDragStart(e.detail, result)}
+            />
           {/each}
         </div>
       {:else}
-        <div class="empty-state">
-          <Icon name="search" size={32} />
-          <p>Lookup</p>
-          <span class="hint">Enter a natural language query to find related notes</span>
+        <div class="inspector-empty">
+          <div class="inspector-empty-icon"><Icon name="search" size={32} /></div>
+          <p class="inspector-empty-title">Lookup</p>
+          <p class="inspector-empty-description">Enter a natural language query to find related notes</p>
         </div>
       {/if}
     </div>
@@ -329,32 +230,8 @@
 </div>
 
 <style>
-  .connections-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 12px;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .panel-header h3 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-normal);
-    margin: 0;
-    flex: 1;
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 4px;
-  }
+  .connections-view { display: flex; flex-direction: column; height: 100%; padding: var(--spacing-s); }
+  .header-actions { display: flex; gap: 4px; }
 
   .icon-btn {
     display: flex;
@@ -370,230 +247,37 @@
     transition: all 0.15s ease;
   }
 
-  .icon-btn:hover {
-    background-color: var(--interactive-hover);
-    color: var(--text-normal);
-  }
+  .icon-btn:hover { background-color: var(--interactive-hover); color: var(--text-normal); }
+  .icon-btn.active { background-color: var(--interactive-accent); color: var(--text-on-accent); }
 
-  .icon-btn.active {
-    background-color: var(--interactive-accent);
-    color: var(--text-on-accent);
-  }
+  .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: var(--spacing-s); color: var(--text-muted); text-align: center; padding: var(--spacing-xl) var(--spacing-m); }
+  .loading-state p { font-size: var(--font-ui-small); font-weight: 500; margin: 0; }
+  .connections-list { display: flex; flex-direction: column; gap: var(--spacing-s); }
 
-  .loading-state,
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    gap: 12px;
-    color: var(--text-muted);
-    text-align: center;
-    padding: 32px 16px;
-  }
-
-  .loading-state p,
-  .empty-state p {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-  }
-
-  .hint {
-    font-size: 12px;
-    color: var(--text-faint);
-  }
-
-  .connections-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .connection-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-    background: none;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-align: left;
-  }
-
-  .connection-item:hover {
-    background-color: var(--interactive-hover);
-    border-color: var(--interactive-accent);
-  }
-
-  .connection-header {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .connection-title {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-normal);
-  }
-
-  .connection-score {
-    position: relative;
-    height: 4px;
-    background-color: var(--background-secondary);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .score-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: var(--interactive-accent);
-    transition: width 0.3s ease;
-  }
-
-  .score-text {
-    position: absolute;
-    top: -18px;
-    right: 0;
-    font-size: 10px;
-    color: var(--text-faint);
-  }
-
-  .connection-item.pinned {
-    border-color: var(--interactive-accent);
-    background-color: var(--background-secondary-alt, var(--background-secondary));
-  }
-
-  .connection-item[draggable='true'] {
-    cursor: grab;
-  }
-
-  .connection-item[draggable='true']:active {
-    cursor: grabbing;
-  }
-
-  .pin-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    background: none;
-    border: none;
-    border-radius: var(--radius-s);
-    color: var(--text-muted);
-    cursor: pointer;
-    opacity: 0;
-    transition: all 0.15s ease;
-    margin-left: auto;
-  }
-
-  .connection-item:hover .pin-btn {
-    opacity: 1;
-  }
-
-  .pin-btn:hover {
-    color: var(--interactive-accent);
-    background-color: var(--interactive-hover);
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-faint);
-    padding: 4px 0;
-  }
-
-  .tab-bar {
-    display: flex;
-    gap: 0;
-    margin-bottom: 12px;
-    border-bottom: 1px solid var(--border-color);
-  }
+  .section-label { font-size: var(--font-smallest); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-faint); padding: 4px 0; }
+  .tab-bar { display: flex; gap: 0; margin-bottom: var(--spacing-m); border-bottom: 1px solid var(--border-color); }
 
   .tab-btn {
     flex: 1;
-    padding: 8px 12px;
+    padding: var(--spacing-xs) var(--spacing-s);
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: var(--font-smallest);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
-  .tab-btn:hover {
-    color: var(--text-normal);
-  }
+  .tab-btn:hover { color: var(--text-normal); }
+  .tab-btn.active { color: var(--interactive-accent); border-bottom-color: var(--interactive-accent); }
 
-  .tab-btn.active {
-    color: var(--interactive-accent);
-    border-bottom-color: var(--interactive-accent);
-  }
-
-  .lookup-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 12px;
-  }
-
-  .lookup-input {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background-color: var(--background-modifier-form-field);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-  }
-
-  .lookup-input input {
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--text-normal);
-    font-size: 13px;
-    outline: none;
-  }
-
-  .lookup-input input::placeholder {
-    color: var(--text-faint);
-  }
-
-  .lookup-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: none;
-    border: none;
-    border-radius: var(--radius-s);
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .lookup-btn:hover {
-    background-color: var(--interactive-hover);
-    color: var(--interactive-accent);
-  }
-
-  .lookup-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  .lookup-container { display: flex; flex-direction: column; flex: 1; gap: var(--spacing-m); }
+  .lookup-input { display: flex; align-items: center; gap: var(--spacing-s); padding: var(--spacing-xs) var(--spacing-s); background-color: var(--background-modifier-form-field); border: 1px solid var(--border-color); border-radius: var(--radius-s); }
+  .lookup-input input { flex: 1; background: none; border: none; color: var(--text-normal); font-size: var(--font-ui-small); outline: none; }
+  .lookup-input input::placeholder { color: var(--text-faint); }
+  .lookup-btn { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: none; border: none; border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; transition: all 0.15s ease; }
+  .lookup-btn:hover { background-color: var(--interactive-hover); color: var(--interactive-accent); }
+  .lookup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>

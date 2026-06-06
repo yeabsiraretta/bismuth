@@ -36,6 +36,9 @@ export const canvasList = writable<CanvasDocument[]>([]);
 /** ID of the currently visible page in a multi-page canvas. */
 export const activePageId = writable<string>('');
 
+/** Canvas view mode: 'detail' (normal editing) or 'overview' (zoomed out frame map). */
+export const viewMode = writable<'detail' | 'overview'>('detail');
+
 /** Epoch seconds of the last save/load — used to derive `isModified`. */
 export const lastSavedAt = writable<number>(0);
 

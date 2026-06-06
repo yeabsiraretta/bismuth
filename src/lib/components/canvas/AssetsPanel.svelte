@@ -1,7 +1,7 @@
 <script lang="ts">
   import { addElement } from '@/stores/canvas/canvasElements';
   import { currentCanvas } from '@/stores/canvas/canvasStore';
-  import { createFrame, createRectangle } from '@/utils/canvasElementFactory';
+  import { createFrame, createRectangle } from '@/utils/canvas/elementFactory';
   import { DEVICE_PRESETS, type DeviceType } from '@/types/canvas';
   import { get } from 'svelte/store';
 

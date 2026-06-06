@@ -1,5 +1,8 @@
 installed:
+- architecture-guard
 - git
+- memory-loader
+- wireframe
 settings:
   auto_execute_hooks: true
 hooks:
@@ -19,6 +22,13 @@ hooks:
     prompt: Execute speckit.git.feature?
     description: Create feature branch before specification
     condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before specification
+    condition: null
   before_clarify:
   - extension: git
     command: speckit.git.commit
@@ -26,6 +36,13 @@ hooks:
     optional: true
     prompt: Commit outstanding changes before clarification?
     description: Auto-commit before spec clarification
+    condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before clarification
     condition: null
   before_plan:
   - extension: git
@@ -35,6 +52,21 @@ hooks:
     prompt: Commit outstanding changes before planning?
     description: Auto-commit before implementation planning
     condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before planning
+    condition: null
+  - extension: wireframe
+    command: speckit.wireframe.review
+    enabled: true
+    optional: true
+    prompt: Review and sign off wireframes before planning? (signed-off wireframes
+      become spec constraints)
+    description: Ensure wireframes are reviewed and signed off before plan is written
+    condition: null
   before_tasks:
   - extension: git
     command: speckit.git.commit
@@ -42,6 +74,13 @@ hooks:
     optional: true
     prompt: Commit outstanding changes before task generation?
     description: Auto-commit before task generation
+    condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before task generation
     condition: null
   before_implement:
   - extension: git
@@ -51,6 +90,13 @@ hooks:
     prompt: Commit outstanding changes before implementation?
     description: Auto-commit before implementation
     condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before implementation
+    condition: null
   before_checklist:
   - extension: git
     command: speckit.git.commit
@@ -59,6 +105,13 @@ hooks:
     prompt: Commit outstanding changes before checklist?
     description: Auto-commit before checklist generation
     condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before checklist generation
+    condition: null
   before_analyze:
   - extension: git
     command: speckit.git.commit
@@ -66,6 +119,13 @@ hooks:
     optional: true
     prompt: Commit outstanding changes before analysis?
     description: Auto-commit before analysis
+    condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before analysis
     condition: null
   before_taskstoissues:
   - extension: git
@@ -91,6 +151,13 @@ hooks:
     prompt: Commit specification changes?
     description: Auto-commit after specification
     condition: null
+  - extension: wireframe
+    command: speckit.wireframe.generate
+    enabled: true
+    optional: true
+    prompt: Generate wireframes for this feature now?
+    description: Offer wireframe generation after spec creation
+    condition: null
   after_clarify:
   - extension: git
     command: speckit.git.commit
@@ -107,6 +174,14 @@ hooks:
     prompt: Commit plan changes?
     description: Auto-commit after implementation planning
     condition: null
+  - extension: architecture-guard
+    command: speckit.architecture-guard.violation-detection
+    enabled: true
+    optional: true
+    prompt: Would you like to scan the technical plan for architectural drift and
+      Constitution violations?
+    description: ''
+    condition: null
   after_tasks:
   - extension: git
     command: speckit.git.commit
@@ -115,6 +190,13 @@ hooks:
     prompt: Commit task changes?
     description: Auto-commit after task generation
     condition: null
+  - extension: architecture-guard
+    command: speckit.architecture-guard.refactor-generator
+    enabled: true
+    optional: true
+    prompt: Would you like to generate architectural refactor tasks before implementation?
+    description: ''
+    condition: null
   after_implement:
   - extension: git
     command: speckit.git.commit
@@ -122,6 +204,20 @@ hooks:
     optional: true
     prompt: Commit implementation changes?
     description: Auto-commit after implementation
+    condition: null
+  - extension: architecture-guard
+    command: speckit.architecture-guard.architecture-review
+    enabled: true
+    optional: true
+    prompt: Would you like to run a post-implementation architecture review?
+    description: ''
+    condition: null
+  - extension: wireframe
+    command: speckit.wireframe.screenshots
+    enabled: true
+    optional: true
+    prompt: Capture implementation screenshots and compare to signed-off wireframes?
+    description: 'Regression check: compare implementation to approved wireframes'
     condition: null
   after_checklist:
   - extension: git

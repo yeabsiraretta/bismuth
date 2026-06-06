@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { themeStore } from '$lib/services/theme';
+  import { themeStore } from '@/services/theme';
 
   let showDropdown = false;
 

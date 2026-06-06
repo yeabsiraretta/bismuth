@@ -8,6 +8,8 @@ interface CanvasShortcutHandlers {
   ungroup: () => void;
   save: () => void;
   createComponent: () => void;
+  togglePreview: () => void;
+  toggleOverview: () => void;
 }
 
 export function handleCanvasShortcut(e: KeyboardEvent, handlers: CanvasShortcutHandlers) {
@@ -48,6 +50,18 @@ export function handleCanvasShortcut(e: KeyboardEvent, handlers: CanvasShortcutH
   if (key === 'k' && e.shiftKey) {
     e.preventDefault();
     handlers.createComponent();
+    return;
+  }
+
+  if (key === 'enter') {
+    e.preventDefault();
+    handlers.togglePreview();
+    return;
+  }
+
+  if (key === '0') {
+    e.preventDefault();
+    handlers.toggleOverview();
     return;
   }
 

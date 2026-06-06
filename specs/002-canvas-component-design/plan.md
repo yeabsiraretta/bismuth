@@ -291,11 +291,15 @@ CREATE INDEX idx_canvas_layers_canvas_id ON canvas_layers(canvas_id);
 
 ## Future Enhancements (Post-MVP)
 
-- Real-time collaboration (multiple cursors)
-- Import from Figma/Sketch
-- Animation timeline
-- Component variants and states
-- Auto-layout (flexbox/grid)
-- Design tokens integration
-- Comments and annotations
-- Version history
+Bismuth's canvas IS the design tool — a Figma-equivalent for rapid UI iteration with MCP connectivity. The post-MVP enhancements expand its design capabilities:
+
+- **Component variants & states** — GDS-inspired 3-tier system: variant axes (rank, size), state overrides (hover, disabled), token bindings for deterministic design-to-code mapping
+- **MCP design server** — Expose Bismuth canvas data to AI agents and code generators via MCP protocol; deterministic extraction → translation → token resolution pipeline (same architecture as GDS's Figma MCP → context-to-vue.py → gravity-components.md)
+- **Auto-layout (flexbox + CSS Grid)** — Full layout engine: flex direction/gap/alignment + grid columns/rows/auto-fill/span placement
+- **Arrow connectors** — Directional connectors between elements with anchor detection, orthogonal/curved routing, and arrow heads
+- **Measurement guides & rulers** — Distance indicators, alignment snap guides, ruler ticks, and token-aware spacing suggestions
+- **Sticky notes & annotations** — Colored sticky notes, numbered pins, freehand marks, and highlight overlays for design review
+- **Comment threads** — Threaded discussions anchored to canvas elements with @mentions and resolution status
+- **Real-time collaboration** — Multi-cursor presence with CRDT-compatible operations (architecture only)
+- **Animation timeline** — Transition definitions between component states
+- **Version history** — Canvas snapshots with diff visualization

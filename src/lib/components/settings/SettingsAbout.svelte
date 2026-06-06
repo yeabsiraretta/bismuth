@@ -25,30 +25,30 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 40px 20px;
+    padding: var(--spacing-xxl) var(--spacing-l);
   }
 
   .app-icon {
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-l);
     color: var(--interactive-accent);
   }
 
   .about-content h4 {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0 0 8px 0;
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--spacing-s) 0;
     color: var(--text-normal);
   }
 
   .version {
-    font-size: 14px;
+    font-size: var(--font-ui-small);
     color: var(--text-muted);
     margin: 0;
   }
 
   .build-date {
-    font-size: 13px;
+    font-size: var(--font-smallest);
     color: var(--text-faint);
-    margin: 4px 0 0 0;
+    margin: var(--spacing-xs) 0 0 0;
   }
 </style>

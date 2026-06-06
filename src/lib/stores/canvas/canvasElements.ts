@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 import type { CanvasElement, CanvasDocument } from '@/types/canvas';
 import { currentCanvas, selectedElements, clearSelection, selectElement } from './canvasStore';
+import { generateId } from '@/utils/id';
 import { log } from '@/utils/logger';
 
 /**
@@ -95,7 +96,7 @@ export function pasteElements() {
 
 	const newElements = clipboard.map((e: CanvasElement) => ({
 		...e,
-		id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+		id: generateId(),
 		x: e.x + 20,
 		y: e.y + 20,
 	}));

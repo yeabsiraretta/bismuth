@@ -1,16 +1,13 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import '@/styles/tokens.css';
-  import '@/styles/typography.css';
-  import '@/styles/responsive.css';
-  import '@/styles/grid-system.css';
   import WelcomeScreen from '@/components/vault/WelcomeScreen.svelte';
   import FileTree from '@/components/vault/FileTree.svelte';
   import NoteEditor from '@/components/note/NoteEditor.svelte';
   import Toolbar from '@/components/vault/Toolbar.svelte';
-  import ResizablePanel from '@/components/layout/ResizablePanel.svelte';
-  import VerticalTabBar from '@/components/sidebar/VerticalTabBar.svelte';
+  import SidebarShell from '@/components/sidebar/SidebarShell.svelte';
   import TabbedPanel from '@/components/sidebar/TabbedPanel.svelte';
+  import SearchPanel from '@/components/sidebar/SearchPanel.svelte';
+  import SettingsModal from '@/components/overlays/settings/SettingsModal.svelte';
   import TagPanel from '@/components/sidebar/TagPanel.svelte';
   import EntityBrowser from '@/components/sidebar/EntityBrowser.svelte';
   import CanvasApp from '@/components/canvas/CanvasApp.svelte';
@@ -19,34 +16,33 @@
   import StatusBar from '@/components/layout/StatusBar.svelte';
   import ToastContainer from '@/components/layout/ToastContainer.svelte';
   import Icon from '@/components/icons/Icon.svelte';
-  import {
-    initializeVault,
-    isVaultOpen,
-    isLoadingVault,
-    refreshNotes,
-    setActiveNote,
-  } from '@/stores/vault/vault';
-  import {
-    layoutStore,
-    setLeftSidebarWidth,
-    setRightSidebarWidth,
-    toggleLeftSidebar,
-    toggleRightSidebar,
-    loadLayout,
-    enableAutoSave,
-  } from '@/stores/layout/layout';
+  import CommandPalette from '@/components/overlays/command-palette/CommandPalette.svelte';
+  import AutoLinker from '@/components/overlays/auto-linker/AutoLinker.svelte';
+  import { initializeVault, isVaultOpen, isLoadingVault, currentVault, notes } from '@/stores/vault/vault';
+  import { layoutStore, loadLayout, enableAutoSave } from '@/stores/layout/layout';
   import { log } from '@/utils/logger';
   import { theme } from '@/stores/theme/theme';
-  import CommandPalette from '@/components/modals/CommandPalette.svelte';
-  import AutoLinker from '@/components/modals/AutoLinker.svelte';
-  import { registerDefaultCommands } from '@/stores/commands';
-  import { quickCapture } from '@/stores/capture/capture';
-  import { getNote } from '@/services/vault/vault';
+  import { registerStatusItem } from '@/stores/status';
+  import {
+    registerAppCommands,
+    handleGlobalKeydown as onKeydown,
+    openNote,
+    doRefresh,
+    changeTab,
+  } from '@/appNavigation';
 
   let currentView: 'notes' | 'canvas' = 'notes';
-  let leftTab = 'files';
   let commandPaletteOpen = false;
   let autoLinkerOpen = false;
+  let settingsOpen = false;
+
+  $: leftTab = $layoutStore.leftActiveTab;
+  $: rightTab = $layoutStore.rightActiveTab;
+
+  $: if ($currentVault) {
+    registerStatusItem({ id: 'vault-name', position: 'left', icon: 'hard-drive', label: $currentVault.name, tooltip: 'Current vault', priority: 10 });
+  }
+  $: registerStatusItem({ id: 'note-count', position: 'left', icon: 'file-text', label: `${$notes.length} notes`, tooltip: 'Total notes in vault', priority: 20 });
 
   onMount(async () => {
     log.info('App component mounted');
@@ -55,87 +51,35 @@
     await initializeVault();
     log.info('Vault initialization complete');
 
-    // Register commands
-    registerDefaultCommands({
-      openSearch: () => {
-        commandPaletteOpen = true;
-      },
-      openCommandPalette: () => {
-        commandPaletteOpen = true;
-      },
-      toggleLeftSidebar,
-      toggleRightSidebar,
-      quickCapture: () => quickCapture(),
-      openGraph: () => {
-        leftTab = 'graph';
-      },
-      openCaptureDashboard: () => {
-        leftTab = 'inbox';
-      },
-      openAutoLinker: () => {
-        autoLinkerOpen = true;
-      },
+    registerAppCommands({
+      openCommandPalette: () => { commandPaletteOpen = true; },
+      openAutoLinker: () => { autoLinkerOpen = true; },
+      setLeftTab: (tab) => { leftTab = tab; },
     });
 
-    // Global keyboard shortcut for Cmd+P
     window.addEventListener('keydown', handleGlobalKeydown);
   });
 
   onDestroy(() => {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('keydown', handleGlobalKeydown);
-    }
+    if (typeof window !== 'undefined') window.removeEventListener('keydown', handleGlobalKeydown);
   });
 
   function handleGlobalKeydown(e: KeyboardEvent) {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
-      e.preventDefault();
-      commandPaletteOpen = true;
-    }
-    // Cmd+Shift+N for quick capture
-    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'N') {
-      e.preventDefault();
-      quickCapture();
-    }
+    onKeydown(e, () => { commandPaletteOpen = true; });
   }
 
-  async function handleOpenNote(path: string) {
-    try {
-      const note = await getNote(path);
-      setActiveNote(note);
-    } catch (error) {
-      console.error('Failed to open note:', error);
-    }
-  }
+  async function handleOpenNote(path: string) { await openNote(path); }
+  async function handleRefresh() { await doRefresh(); }
+  function handleLeftTabChange(detail: { tabId: string }) { changeTab('left', detail.tabId); }
+  function handleRightTabChange(detail: { tabId: string }) { changeTab('right', detail.tabId); }
+  function handleOpenSettings() { settingsOpen = true; }
 
   $: if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', $theme);
   }
-
-  async function handleRefresh() {
-    await refreshNotes();
-  }
-
-  function handleLeftResize(detail: { width: number }) {
-    setLeftSidebarWidth(detail.width);
-  }
-
-  function handleRightResize(detail: { width: number }) {
-    setRightSidebarWidth(detail.width);
-  }
-
-  function handleLeftCollapse() {
-    toggleLeftSidebar();
-  }
-
-  function handleRightCollapse() {
-    toggleRightSidebar();
-  }
-
-  function handleLeftTabChange(detail: { tabId: string }) {
-    leftTab = detail.tabId;
-  }
 </script>
+
+<a href="#editor-main" class="skip-to-content">Skip to content</a>
 
 <main class="app">
   {#if $isLoadingVault}
@@ -159,46 +103,21 @@
   {:else}
     <!-- Main layout: 3-column content + bottom status bar -->
     <div class="app-columns">
-      <!-- Left vertical tab bar -->
-      <VerticalTabBar position="left" activeTab={leftTab} onTabChange={handleLeftTabChange} />
-
-      <!-- Left sidebar content panel -->
-      <ResizablePanel
+      <!-- Left sidebar -->
+      <SidebarShell
         position="left"
-        title={leftTab === 'files'
-          ? 'Files'
-          : leftTab === 'search'
-            ? 'Search'
-            : leftTab === 'inbox'
-              ? 'Capture Inbox'
-              : leftTab === 'graph'
-                ? 'Graph'
-                : leftTab === 'tags'
-                  ? 'Tags'
-                  : leftTab === 'entities'
-                    ? 'Entities'
-                    : 'Files'}
+        tabs={$layoutStore.leftTabs}
+        bottomTabs={$layoutStore.bottomTabs}
+        activeTab={leftTab}
         width={$layoutStore.leftSidebarWidth}
         collapsed={!$layoutStore.leftSidebarVisible}
-        onResize={handleLeftResize}
-        onCollapse={handleLeftCollapse}
+        onTabChange={handleLeftTabChange}
+        onSettingsClick={handleOpenSettings}
       >
         {#if leftTab === 'files'}
           <FileTree />
         {:else if leftTab === 'search'}
-          <div
-            class="sidebar-placeholder"
-            role="button"
-            tabindex="0"
-            on:click={() => (commandPaletteOpen = true)}
-            on:keydown={(e) => {
-              if (e.key === 'Enter') commandPaletteOpen = true;
-            }}
-          >
-            <Icon name="search" size={32} color="var(--text-muted)" />
-            <p>Search</p>
-            <span class="hint">Click here or use Cmd+P to search notes</span>
-          </div>
+          <SearchPanel />
         {:else if leftTab === 'inbox'}
           <CaptureDashboard />
         {:else if leftTab === 'graph'}
@@ -208,10 +127,10 @@
         {:else if leftTab === 'entities'}
           <EntityBrowser onOpenNote={handleOpenNote} />
         {/if}
-      </ResizablePanel>
+      </SidebarShell>
 
       <!-- Center editor pane -->
-      <main class="editor-pane panel">
+      <main id="editor-main" class="editor-pane panel">
         <div class="panel-header">
           <Toolbar onRefresh={handleRefresh} />
           <button
@@ -229,17 +148,19 @@
         </div>
       </main>
 
-      <!-- Right sidebar with tabbed panel -->
-      <ResizablePanel
+      <!-- Right sidebar -->
+      <SidebarShell
         position="right"
-        title="Inspector"
+        tabs={$layoutStore.rightTabs}
+        bottomTabs={$layoutStore.bottomTabs}
+        activeTab={rightTab}
         width={$layoutStore.rightSidebarWidth}
         collapsed={!$layoutStore.rightSidebarVisible}
-        onResize={handleRightResize}
-        onCollapse={handleRightCollapse}
+        onTabChange={handleRightTabChange}
+        onSettingsClick={handleOpenSettings}
       >
         <TabbedPanel />
-      </ResizablePanel>
+      </SidebarShell>
     </div>
 
     <!-- Status bar -->
@@ -263,33 +184,14 @@
   }}
 />
 
+<SettingsModal
+  isOpen={settingsOpen}
+  onClose={() => {
+    settingsOpen = false;
+  }}
+/>
+
 <style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    font-family: var(--font-text);
-    background-color: var(--background-primary);
-    color: var(--text-normal);
-    overflow: hidden;
-  }
-
-  :global(*) {
-    box-sizing: border-box;
-  }
-
-  :global(:root) {
-    /* Spacing Scale (8px base) — supplemental to tokens.css */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-
-    /* Semantic (Minimal) */
-    --color-danger: #dc3545;
-  }
-
   .app {
     display: flex;
     flex-direction: column;
@@ -299,6 +201,31 @@
     min-height: 480px;
     overflow: hidden;
     background-color: var(--background-primary);
+  }
+
+  :global(.skip-to-content) {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 9999;
+    padding: 8px 16px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    font-size: var(--font-ui-small);
+    border-radius: var(--radius-s);
+    text-decoration: none;
+  }
+
+  :global(.skip-to-content:focus) {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    width: auto;
+    height: auto;
+    overflow: visible;
   }
 
   .app-columns {

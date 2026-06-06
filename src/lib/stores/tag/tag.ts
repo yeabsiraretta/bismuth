@@ -5,6 +5,8 @@
 import { writable, derived } from 'svelte/store';
 import { invoke } from '@tauri-apps/api/core';
 import { notes } from '@/stores/vault/vault';
+import type { Note } from '@/types/vault';
+import { log } from '@/utils/logger';
 
 export interface TagNode {
   name: string;
@@ -95,7 +97,7 @@ export async function renameTag(oldName: string, newName: string): Promise<Renam
   try {
     return await invoke<RenameResult>('rename_tag', { old_name: oldName, new_name: newName });
   } catch (error) {
-    console.error('Failed to rename tag:', error);
+    log.error('Failed to rename tag', error as Error);
     throw error;
   }
 }
@@ -105,7 +107,7 @@ export async function mergeTags(sourceTag: string, targetTag: string): Promise<R
   try {
     return await invoke<RenameResult>('merge_tags', { source_tag: sourceTag, target_tag: targetTag });
   } catch (error) {
-    console.error('Failed to merge tags:', error);
+    log.error('Failed to merge tags', error as Error);
     throw error;
   }
 }
@@ -128,7 +130,7 @@ export function loadHiddenTags() {
           hiddenTags.set(new Set(arr));
         }
       } catch (e) {
-        console.error('Failed to load hidden tags:', e);
+        log.error('Failed to load hidden tags', e as Error);
       }
     }
   }
@@ -170,10 +172,10 @@ export function showTag(tagName: string) {
  * Notes whose ONLY tags are hidden get excluded from the file list.
  * Notes with at least one visible tag (or no tags at all) remain visible.
  */
-export const filteredNotes = derived([notes, hiddenTags], ([$notes, $hidden]: [any[], Set<string>]) => {
+export const filteredNotes = derived([notes, hiddenTags], ([$notes, $hidden]: [Note[], Set<string>]) => {
   if ($hidden.size === 0) return $notes;
 
-  return $notes.filter((note: any) => {
+  return $notes.filter((note: Note) => {
     const noteTags: string[] = [];
 
     // Collect frontmatter tags

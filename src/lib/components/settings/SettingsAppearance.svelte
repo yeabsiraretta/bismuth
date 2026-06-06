@@ -86,13 +86,13 @@
   .theme-toggle-wrapper {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-s);
   }
 
   .color-picker {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--spacing-s);
   }
 
   .color-picker input[type='color'] {
@@ -105,7 +105,7 @@
 
   .color-value {
     font-family: var(--font-monospace);
-    font-size: 13px;
+    font-size: var(--font-ui-small);
     color: var(--text-muted);
   }
 </style>

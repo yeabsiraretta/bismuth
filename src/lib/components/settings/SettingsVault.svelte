@@ -125,7 +125,7 @@
 <style>
   .path-display {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-s);
     align-items: center;
   }
 
@@ -136,15 +136,15 @@
   .btn-secondary {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-s);
     background: var(--background-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-s);
     color: var(--text-normal);
-    font-size: 13px;
+    font-size: var(--font-ui-small);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--transition-fast);
   }
 
   .btn-secondary:hover {
@@ -154,11 +154,11 @@
   .vault-stats {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
     background: var(--background-secondary);
     border-radius: var(--radius-s);
-    margin-top: 8px;
+    margin-top: var(--spacing-s);
   }
 
   .stat-item {
@@ -168,29 +168,29 @@
   }
 
   .stat-label {
-    font-size: 13px;
+    font-size: var(--font-ui-small);
     color: var(--text-muted);
   }
 
   .stat-value {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-medium);
     color: var(--text-normal);
   }
 
   .btn-danger {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
     background: var(--color-error, #ef4444);
     border: none;
     border-radius: var(--radius-s);
     color: white;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--transition-fast);
   }
 
   .btn-danger:hover:not(:disabled) {

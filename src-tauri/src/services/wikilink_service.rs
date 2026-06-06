@@ -11,6 +11,11 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
+
+static WIKILINK_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\[\[([^\]]+)\]\]").unwrap()
+});
 
 /// A suggestion to link to another note based on unlinked text occurrences.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -252,9 +257,7 @@ impl WikilinkService {
 
     /// Checks if a position in the text is inside a wikilink
     fn is_inside_wikilink(&self, content: &str, pos: usize) -> bool {
-        let re = Regex::new(r"\[\[([^\]]+)\]\]").unwrap();
-        
-        for cap in re.captures_iter(content) {
+        for cap in WIKILINK_RE.captures_iter(content) {
             if let Some(m) = cap.get(0) {
                 if pos >= m.start() && pos < m.end() {
                     return true;
@@ -300,5 +303,22 @@ mod tests {
         let content = "Links: [[Note 1]], [[Note 2|Alias]], [[Note 3]]";
         let links = service.extract_wikilinks(content);
         assert_eq!(links, vec!["Note 1", "Note 2", "Note 3"]);
+    }
+
+    #[test]
+    fn test_wikilink_regex_is_static() {
+        // Verify WIKILINK_RE is a LazyLock static — calling it multiple times
+        // returns the same compiled regex (pointer equality via Arc internals).
+        let content = "Test [[link1]] and [[link2]]";
+        let service = WikilinkService::new();
+
+        // Multiple calls should use the same static regex
+        let result1 = service.is_inside_wikilink(content, 6);
+        let result2 = service.is_inside_wikilink(content, 20);
+        assert!(result1); // inside [[link1]]
+        assert!(result2); // inside [[link2]]
+
+        // Outside wikilinks
+        assert!(!service.is_inside_wikilink(content, 0));
     }
 }

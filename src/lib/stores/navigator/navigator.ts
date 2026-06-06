@@ -3,8 +3,10 @@
  * Manages state for the two-pane Navigator component
  */
 
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
+import { invoke } from '@tauri-apps/api/core';
 import type { Note } from '@/types/vault';
+import { log } from '@/utils/logger';
 
 export interface NavigatorProfile {
   id: string;
@@ -195,26 +197,56 @@ export function removeShortcut(index: number) {
 // Persistence
 export async function loadNavigatorState() {
   try {
-    // TODO: Implement state persistence via backend IPC
-    // const content = await invoke('read_navigator_state');
-    // const saved = JSON.parse(content);
-    // navigatorStore.set({ ...defaultState, ...saved });
-    console.log('Navigator state persistence not yet implemented');
-  } catch (error) {
-    // File doesn't exist yet, use defaults
-    console.log('Navigator state not found, using defaults');
+    const result = await invoke<unknown>('read_navigator_state');
+    if (result && typeof result === 'object') {
+      const saved = result as Partial<NavigatorState>;
+      navigatorStore.set({ ...defaultState, ...saved });
+      log.info('Navigator state loaded from disk');
+    } else {
+      log.debug('No saved navigator state found, using defaults');
+    }
+  } catch (_error) {
+    log.debug('Navigator state not found, using defaults');
   }
 }
 
 export async function saveNavigatorState() {
   try {
-    // TODO: Implement state persistence via backend IPC
-    // const state = await new Promise<NavigatorState>(resolve => {
-    //   navigatorStore.subscribe(s => resolve(s))();
-    // });
-    // await invoke('write_navigator_state', { content: JSON.stringify(state, null, 2) });
-    console.log('Navigator state persistence not yet implemented');
+    const state = get(navigatorStore);
+    await invoke('write_navigator_state', { content: state });
+    log.debug('Navigator state saved to disk');
   } catch (error) {
-    console.error('Failed to save navigator state:', error);
+    log.error('Failed to save navigator state', error as Error);
   }
+}
+
+/** Save profiles list to disk alongside navigator state */
+export async function saveProfiles() {
+  try {
+    const currentProfiles = get(profiles);
+    const state = get(navigatorStore);
+    await invoke('write_navigator_state', {
+      content: { ...state, _profiles: currentProfiles },
+    });
+    log.debug('Navigator profiles saved');
+  } catch (error) {
+    log.error('Failed to save profiles', error as Error);
+  }
+}
+
+/** Add a new navigator profile */
+export function addProfile(profile: NavigatorProfile) {
+  profiles.update((p: NavigatorProfile[]) => [...p, profile]);
+  saveProfiles();
+}
+
+/** Remove a profile by ID (cannot remove 'default') */
+export function removeProfile(profileId: string) {
+  if (profileId === 'default') return;
+  profiles.update((p: NavigatorProfile[]) => p.filter((pr: NavigatorProfile) => pr.id !== profileId));
+  navigatorStore.update((state: NavigatorState) => ({
+    ...state,
+    activeProfile: state.activeProfile === profileId ? 'default' : state.activeProfile,
+  }));
+  saveProfiles();
 }

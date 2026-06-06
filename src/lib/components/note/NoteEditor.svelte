@@ -1,10 +1,11 @@
 <script lang="ts">
   import { activeNote, updateNoteInStore, currentVault } from '@/stores/vault/vault';
   import { writeNote } from '@/services/vault/vault';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Icon from '@/components/icons/Icon.svelte';
   import ConceptSuggestionPopover from './ConceptSuggestionPopover.svelte';
   import Editor from '@/components/editor/Editor.svelte';
+  import { registerStatusItem, removeStatusItem } from '@/stores/status';
 
   let content = '';
   let isSaving = false;
@@ -19,6 +20,21 @@
   $: wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   $: charCount = content.length;
   $: lineCount = content.split('\n').length;
+
+  // Push editor stats to status bar
+  $: if ($activeNote) {
+    registerStatusItem({ id: 'editor-words', position: 'right', icon: 'type', label: `${wordCount} words`, priority: 10 });
+    registerStatusItem({ id: 'editor-lines', position: 'right', label: `${lineCount} lines`, priority: 20 });
+    registerStatusItem({ id: 'editor-chars', position: 'right', label: `${charCount} chars`, priority: 30 });
+  }
+  $: registerStatusItem({
+    id: 'editor-save',
+    position: 'right',
+    icon: isSaving ? undefined : 'check',
+    label: isSaving ? 'Saving...' : 'Saved',
+    priority: 5,
+    visible: !!$activeNote,
+  });
 
   // Auto-save with debouncing
   async function handleInput() {
@@ -75,6 +91,13 @@
     if (editorRef && mode === 'edit') {
       editorRef.focus();
     }
+  });
+
+  onDestroy(() => {
+    removeStatusItem('editor-words');
+    removeStatusItem('editor-lines');
+    removeStatusItem('editor-chars');
+    removeStatusItem('editor-save');
   });
 </script>
 
@@ -150,13 +173,6 @@
       {/if}
     </div>
 
-    <div class="editor-footer">
-      <span class="stat">{wordCount} words</span>
-      <span class="stat-sep">&middot;</span>
-      <span class="stat">{charCount} chars</span>
-      <span class="stat-sep">&middot;</span>
-      <span class="stat">{lineCount} lines</span>
-    </div>
   {:else}
     <div class="empty-editor">
       <div class="empty-content">
@@ -323,25 +339,6 @@
     font-style: italic;
   }
 
-  .editor-footer {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 1.5rem;
-    border-top: 1px solid var(--border-color, #e5e7eb);
-    background: var(--background-secondary, #f9fafb);
-    min-height: 28px;
-  }
-
-  .stat {
-    font-size: 0.6875rem;
-    color: var(--text-faint, #9ca3af);
-  }
-
-  .stat-sep {
-    color: var(--text-faint, #d1d5db);
-    font-size: 0.6875rem;
-  }
 
   .empty-editor {
     display: flex;

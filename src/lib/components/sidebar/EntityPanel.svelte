@@ -28,14 +28,19 @@
   }
 </script>
 
-<div class="entity-panel">
-  <div class="panel-header">
-    <Icon name="box" size={16} />
-    <h3>Entity Info</h3>
+<div class="inspector-panel">
+  <div class="inspector-panel-header">
+    <h3 class="inspector-panel-title">
+      <Icon name="box" size={14} />
+      Entity Info
+    </h3>
   </div>
 
+  <div class="inspector-content">
   {#if !note}
-    <div class="empty-hint" style="padding: 16px;">No note selected</div>
+    <div class="inspector-empty">
+      <p class="inspector-empty-title">No note selected</p>
+    </div>
   {:else if entity}
     <div class="entity-content">
       <div class="entity-field">
@@ -88,60 +93,35 @@
       </div>
     </div>
   {/if}
+  </div>
 </div>
 
 <style>
-  .entity-panel {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 12px;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .panel-header h3 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-normal);
-    margin: 0;
-  }
-
   .entity-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-m);
   }
 
   .entity-field .field-label {
     display: block;
-    font-size: 11px;
+    font-size: var(--font-smallest);
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    margin-bottom: var(--spacing-xs);
   }
 
   .field-value {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
     background-color: var(--background-secondary);
     border-radius: var(--radius-s);
-    font-size: 13px;
+    font-size: var(--font-ui-small);
     color: var(--text-normal);
-  }
-
-  .empty-hint {
-    font-size: 12px;
-    color: var(--text-faint);
-    font-style: italic;
   }
 
   .entity-list {
@@ -153,12 +133,12 @@
   .entity-link {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
     background: none;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-s);
-    font-size: 12px;
+    font-size: var(--font-smallest);
     color: var(--interactive-accent);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -166,7 +146,7 @@
   }
 
   .entity-link:hover {
-    background-color: var(--interactive-hover);
+    background-color: var(--background-modifier-hover);
     border-color: var(--interactive-accent);
   }
 

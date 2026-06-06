@@ -1,4 +1,6 @@
 import { writable } from 'svelte/store';
+import { DEFAULT_LEFT_TABS, DEFAULT_RIGHT_TABS, DEFAULT_BOTTOM_TABS } from '@/types/layout';
+import type { SidebarTab } from '@/types/layout';
 
 // Layout constants
 export const LAYOUT_CONSTANTS = {
@@ -12,6 +14,16 @@ export interface LayoutState {
   rightSidebarVisible: boolean;
   leftSidebarWidth: number;
   rightSidebarWidth: number;
+  /** Ordered tab IDs for the left sidebar */
+  leftTabs: SidebarTab[];
+  /** Ordered tab IDs for the right sidebar */
+  rightTabs: SidebarTab[];
+  /** Bottom tabs (shared config) */
+  bottomTabs: SidebarTab[];
+  /** Active tab in the left sidebar */
+  leftActiveTab: string;
+  /** Active tab in the right sidebar */
+  rightActiveTab: string;
 }
 
 const defaultLayout: LayoutState = {
@@ -19,6 +31,11 @@ const defaultLayout: LayoutState = {
   rightSidebarVisible: true,
   leftSidebarWidth: LAYOUT_CONSTANTS.SIDEBAR_DEFAULT_WIDTH,
   rightSidebarWidth: LAYOUT_CONSTANTS.SIDEBAR_DEFAULT_WIDTH,
+  leftTabs: DEFAULT_LEFT_TABS,
+  rightTabs: DEFAULT_RIGHT_TABS,
+  bottomTabs: DEFAULT_BOTTOM_TABS,
+  leftActiveTab: 'files',
+  rightActiveTab: 'backlinks',
 };
 
 export const layoutStore = writable<LayoutState>(defaultLayout);
@@ -56,6 +73,37 @@ export function setRightSidebarWidth(width: number) {
   layoutStore.update(state => ({
     ...state,
     rightSidebarWidth: clampedWidth,
+  }));
+}
+
+/** Move a tab between left and right sidebars */
+export function moveTabToSidebar(tabId: string, target: 'left' | 'right') {
+  layoutStore.update(state => {
+    const sourceKey = target === 'left' ? 'rightTabs' : 'leftTabs';
+    const destKey = target === 'left' ? 'leftTabs' : 'rightTabs';
+    const tab = state[sourceKey].find(t => t.id === tabId);
+    if (!tab || tab.pinned) return state;
+    return {
+      ...state,
+      [sourceKey]: state[sourceKey].filter(t => t.id !== tabId),
+      [destKey]: [...state[destKey], tab],
+    };
+  });
+}
+
+/** Set the active tab for a sidebar */
+export function setActiveTab(side: 'left' | 'right', tabId: string) {
+  layoutStore.update(state => ({
+    ...state,
+    [side === 'left' ? 'leftActiveTab' : 'rightActiveTab']: tabId,
+  }));
+}
+
+/** Reorder tabs within a sidebar */
+export function reorderTabs(side: 'left' | 'right', tabs: SidebarTab[]) {
+  layoutStore.update(state => ({
+    ...state,
+    [side === 'left' ? 'leftTabs' : 'rightTabs']: tabs,
   }));
 }
 

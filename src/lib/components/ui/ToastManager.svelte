@@ -28,9 +28,9 @@
   }
 
   onMount(async () => {
-    unlisten = await listen('vault://warning', (event: any) => {
+    unlisten = await listen('vault://warning', (event: { payload: { message: string; severity?: string } }) => {
       const { message, severity } = event.payload;
-      addToast(message, severity || 'warning');
+      addToast(message, (severity as Toast['severity']) || 'warning');
     });
   });
 

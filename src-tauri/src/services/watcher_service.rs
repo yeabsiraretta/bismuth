@@ -72,23 +72,22 @@ impl WatcherService {
     ///
     /// The next file system event, or None if no events
     pub fn next_event(&self) -> Option<Event> {
+        let event = {
+            let rx = self.event_rx.lock().unwrap();
+            rx.try_recv().ok()
+        }?;
+
+        // Debounce outside the lock so concurrent callers aren't blocked
+        std::thread::sleep(Duration::from_millis(DEBOUNCE_MS));
+
+        // Re-acquire to drain duplicates
         let rx = self.event_rx.lock().unwrap();
-        
-        // Try to receive an event (non-blocking)
-        if let Ok(event) = rx.try_recv() {
-            // Debounce: wait a bit and drain any duplicate events
-            std::thread::sleep(Duration::from_millis(DEBOUNCE_MS));
-            
-            // Drain any additional events for the same paths
-            let mut last_event = event;
-            while let Ok(new_event) = rx.try_recv() {
-                last_event = new_event;
-            }
-            
-            Some(last_event)
-        } else {
-            None
+        let mut last_event = event;
+        while let Ok(new_event) = rx.try_recv() {
+            last_event = new_event;
         }
+
+        Some(last_event)
     }
 
     /// Polls for events with a timeout
@@ -101,19 +100,24 @@ impl WatcherService {
     ///
     /// The next event, or None if timeout expires
     pub fn poll_event(&self, timeout: Duration) -> Option<Event> {
-        let rx = self.event_rx.lock().unwrap();
         let start = Instant::now();
 
         loop {
-            if let Ok(event) = rx.try_recv() {
-                // Debounce
+            let event = {
+                let rx = self.event_rx.lock().unwrap();
+                rx.try_recv().ok()
+            };
+
+            if let Some(event) = event {
+                // Debounce outside the lock
                 std::thread::sleep(Duration::from_millis(DEBOUNCE_MS));
-                
+
+                let rx = self.event_rx.lock().unwrap();
                 let mut last_event = event;
                 while let Ok(new_event) = rx.try_recv() {
                     last_event = new_event;
                 }
-                
+
                 return Some(last_event);
             }
 

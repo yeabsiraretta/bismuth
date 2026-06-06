@@ -20,14 +20,7 @@
   --fluid-l: clamp(1.5rem, 3vw, 2.5rem);
   --fluid-xl: clamp(2rem, 4vw, 4rem);
 
-  /* Fluid typography */
-  --text-xs: clamp(0.75rem, 0.8rem + 0.1vw, 0.875rem);
-  --text-sm: clamp(0.875rem, 0.9rem + 0.15vw, 1rem);
-  --text-base: clamp(1rem, 1rem + 0.2vw, 1.125rem);
-  --text-lg: clamp(1.125rem, 1.15rem + 0.25vw, 1.25rem);
-  --text-xl: clamp(1.25rem, 1.3rem + 0.3vw, 1.5rem);
-  --text-2xl: clamp(1.5rem, 1.6rem + 0.4vw, 2rem);
-  --text-3xl: clamp(1.875rem, 2rem + 0.5vw, 2.5rem);
+  /* Fluid typography: defined in typography.css (--text-xs through --text-5xl) */
 
   /* Adaptive component sizing */
   --button-height-sm: clamp(32px, 8vw, 36px);

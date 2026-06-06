@@ -2,70 +2,41 @@
 
 Automated quality control and helper scripts enforcing Constitution principles.
 
-## Quality Control
-
-### check-file-sizes.sh
-
-**Purpose**: Enforces 300-line file limit (Constitution Principle VI)
-
-**Usage**:
-```bash
-pnpm check:file-sizes
-bash scripts/check-file-sizes.sh
+```
+scripts/
+├── quality/          # Validation & linting
+│   ├── check-file-sizes.sh
+│   ├── validate-file-sizes.sh
+│   └── validate-workflows.sh
+├── git/              # Git workflow helpers
+│   ├── committer.sh
+│   └── setup-git.sh
+├── build/            # Build, versioning & docs tooling
+│   ├── cargo-version-updater.js
+│   ├── version-bump.js
+│   └── docs-list.ts
+└── README.md
 ```
 
-**Checks**: All `.ts`, `.js`, `.svelte`, `.rs` files (excludes node_modules, dist, build artifacts)
+## quality/
 
-**Integration**: Pre-commit hook, CI/CD, `pnpm check`
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `check-file-sizes.sh` | Enforces 300-line file limit (Constitution Principle VI) | `pnpm check:file-sizes` |
+| `validate-file-sizes.sh` | Alternative file-size validator | `bash scripts/quality/validate-file-sizes.sh` |
+| `validate-workflows.sh` | Validates `.specify/workflows/` YAML frontmatter | `pnpm validate:workflows` |
 
-**On Failure**: Split files into focused modules. See Constitution Principle VI.
+## git/
 
-### validate-workflows.sh
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `committer.sh` | Safe commit helper — stages only specified files | `./scripts/git/committer.sh "msg" file.ts` |
+| `setup-git.sh` | Initialize git hooks and config | `bash scripts/git/setup-git.sh` |
 
-**Purpose**: Validates Windsurf workflow files in `.specify/workflows/`
+## build/
 
-**Usage**:
-```bash
-pnpm validate:workflows
-bash scripts/validate-workflows.sh
-```
-
-**Checks**: YAML frontmatter, required `description` field
-
-**Integration**: `pnpm check`
-
-## Documentation
-
-### docs-list.ts
-
-**Purpose**: List all markdown files in `docs/` with frontmatter metadata
-
-**Usage**:
-```bash
-pnpm docs:list
-tsx scripts/docs-list.ts
-```
-
-**Output**: File paths with summaries and "read when" hints
-
-**Use case**: Discover relevant docs before coding
-
-## Git Helpers
-
-### committer.sh
-
-**Purpose**: Safe commit helper - stages specific files, enforces non-empty message
-
-**Usage**:
-```bash
-./scripts/committer.sh "commit message" file1.ts file2.svelte
-./scripts/committer.sh --force "message" file.ts  # Remove stale lock if needed
-```
-
-**Safety**:
-- Stages only specified files (prevents accidental `git add .`)
-- Validates commit message is non-empty
-- Prevents staging "." (entire repo)
-- Supports `--force` to remove stale git locks
-
-**Integration**: Can be used by AI assistants for safe commits
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `cargo-version-updater.js` | Sync Cargo.toml version with package.json | `node scripts/build/cargo-version-updater.js` |
+| `version-bump.js` | Bump version across the monorepo | `node scripts/build/version-bump.js` |
+| `docs-list.ts` | List docs/ markdown files with metadata | `pnpm docs:list` |

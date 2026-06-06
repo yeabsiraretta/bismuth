@@ -3,7 +3,7 @@
 > A local-first Personal Knowledge Management editor combining Johnny.Decimal, Zettelkasten, and intelligent knowledge organization.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Built with Tauri](https://img.shields.io/badge/Built%20with-Tauri-24C8DB?logo=tauri)](https://tauri.app)
+[![Built with Tauri](https://img.shields.io/badge/Built%20with-Tauri%202-24C8DB?logo=tauri)](https://v2.tauri.app)
 [![Svelte](https://img.shields.io/badge/Svelte-4-FF3E00?logo=svelte)](https://svelte.dev)
 [![Rust](https://img.shields.io/badge/Rust-1.95-orange?logo=rust)](https://www.rust-lang.org)
 
@@ -52,7 +52,7 @@ Built with modern technologies for native performance and complete data ownershi
 3. Link notes with `[[wikilinks]]`
 4. Organize with Johnny.Decimal folders
 
-📖 **[User Guide](https://github.com/yeabsiraretta/bismuth/wiki)** - Complete documentation
+📖 **[Documentation](./docs/Home.md)** — Complete wiki
 
 ### For Developers
 
@@ -68,18 +68,17 @@ pnpm install
 pnpm tauri dev
 ```
 
-📐 **[Developer Guide](https://github.com/yeabsiraretta/bismuth/wiki/Developer-Guide)** - Setup and contribution guide
+📐 **[Developer Guide](./docs/guides/getting-started.md)** — Setup and contribution guide
 
 ---
 
 ## 📚 Documentation
 
-- **[Wiki](https://github.com/yeabsiraretta/bismuth/wiki)** - Complete user and developer documentation
-- **[User Guide](https://github.com/yeabsiraretta/bismuth/wiki/User-Guide)** - How to use Bismuth
-- **[Developer Guide](https://github.com/yeabsiraretta/bismuth/wiki/Developer-Guide)** - Contributing to Bismuth
-- **[Architecture](https://github.com/yeabsiraretta/bismuth/wiki/Architecture)** - System design
-- **[API Reference](https://github.com/yeabsiraretta/bismuth/wiki/API-Reference)** - Tauri commands and events
-- **[Changelog](./CHANGELOG.md)** - Version history
+- **[Wiki Home](./docs/Home.md)** — Documentation landing page
+- **[Getting Started](./docs/guides/getting-started.md)** — Development setup
+- **[Architecture](./docs/architecture/overview.md)** — System design
+- **[Standards](./docs/standards/design-system.md)** — Design system & conventions
+- **[Changelog](./CHANGELOG.md)** — Version history
 
 ---
 
@@ -87,57 +86,56 @@ pnpm tauri dev
 
 ### Frontend
 
-- **[Svelte 4](https://svelte.dev)** - Reactive UI framework
-- **[TypeScript 5](https://www.typescriptlang.org)** - Type-safe JavaScript
-- **[Vite 5](https://vitejs.dev)** - Build tool and dev server
-- **[CodeMirror 6](https://codemirror.net)** - Code editor component
-- **[Konva](https://konvajs.org)** - Canvas rendering for graphs
+- **[Svelte 4](https://svelte.dev)** — Reactive UI framework
+- **[TypeScript 5](https://www.typescriptlang.org)** — Type-safe JavaScript
+- **[Vite 6](https://vitejs.dev)** — Build tool and dev server
+- **[Tailwind CSS 4](https://tailwindcss.com)** — Utility CSS (CSS-based config)
+- **[CodeMirror 6](https://codemirror.net)** — Markdown editor
 
 ### Backend
 
-- **[Rust 1.95](https://www.rust-lang.org)** - Systems programming language
-- **[Tauri 1.5](https://tauri.app)** - Desktop application framework
-- **[SQLite](https://www.sqlite.org)** - Embedded database
-- **[Tantivy](https://github.com/quickwit-oss/tantivy)** - Full-text search engine (planned)
-- **[notify](https://github.com/notify-rs/notify)** - File system watcher
+- **[Rust 1.95](https://www.rust-lang.org)** — Systems programming language
+- **[Tauri 2](https://tauri.app)** — Desktop application framework
+- **[notify](https://github.com/notify-rs/notify)** — File system watcher
 
 ### Development Tools
 
-- **[pnpm](https://pnpm.io)** - Fast, disk space efficient package manager
-- **[ESLint](https://eslint.org)** - JavaScript/TypeScript linting
-- **[Prettier](https://prettier.io)** - Code formatting
-- **[Vitest](https://vitest.dev)** - Unit testing framework
-- **[Playwright](https://playwright.dev)** - End-to-end testing
+- **[pnpm](https://pnpm.io)** — Package manager
+- **[Vitest](https://vitest.dev)** — Unit testing
+- **[Playwright](https://playwright.dev)** — End-to-end testing
+- **[ESLint](https://eslint.org)** / **[Prettier](https://prettier.io)** — Linting & formatting
 
 ---
 
 ## 🗺️ Roadmap
 
-### Phase 1: Foundation (Current)
+### Completed
 
-- [x] Project setup and tooling
-- [x] Tauri + Svelte + Rust integration
-- [ ] Basic note editor
-- [ ] File system operations
-- [ ] Markdown parsing
+- [x] Project setup (Tauri 2 + Svelte + Rust)
+- [x] Vault management (create, open, file tree)
+- [x] Note editor with Markdown support
+- [x] Wikilink system with bidirectional linking
+- [x] Graph visualization (global + local)
+- [x] Navigator sidebar (profiles, shortcuts, tags)
+- [x] Canvas system (infinite canvas, elements, layers)
+- [x] Theme system (light/dark)
+- [x] Command palette + hotkeys
+- [x] Settings modal
+- [x] Toast notifications
+- [x] Capture inbox
 
-### Phase 2: Core Features
+### In Progress
 
-- [ ] Wikilink support
-- [ ] Graph visualization
-- [ ] Full-text search
-- [ ] Tag system
-- [ ] Theme support
+- [ ] Canvas component system (reusable composites, component libraries)
+- [ ] Multi-page flows with preview mode
+- [ ] UI/UX overhaul (responsive layout, accessibility)
 
-### Phase 3: Advanced Features
+### Planned
 
-- [ ] Johnny.Decimal organization
-- [ ] Zettelkasten workflow
-- [ ] PDF annotation
-- [ ] Template system
+- [ ] Full-text search (Tantivy)
 - [ ] Plugin API
-
-See the **[full roadmap](https://github.com/yeabsiraretta/bismuth/wiki/Roadmap)** for details.
+- [ ] Template system
+- [ ] PDF annotation
 
 ---
 
@@ -156,11 +154,11 @@ Please read our **[Contributing Guide](./CONTRIBUTING.md)** before submitting a 
 
 ## 📊 Project Status
 
-**Current Version**: v0.0.1 (MVP in development)  
-**Phase**: 1 - Project Setup  
-**Progress**: 3/112 tasks complete (2.7%)
+**Current Version**: 0.2.0  
+**Stage**: Active development  
+**Focus**: Canvas component system + UI/UX overhaul
 
-See **[Implementation Status](./docs/status/implementation-status.md)** for detailed progress.
+See **[Feature Specs](./specs/)** for detailed planning.
 
 ---
 

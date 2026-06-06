@@ -2,7 +2,7 @@
  * Canvas Components - Shared Styles
  * 
  * Common button and UI patterns used across canvas components.
- * Import in Svelte components using: @import '$lib/styles/canvas-components.css';
+ * Import in Svelte components using: @import '@/styles/canvas-components.css';
  */
 
 /* ========== Button Base ========== */

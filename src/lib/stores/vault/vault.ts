@@ -188,6 +188,14 @@ export async function openVault(path: string): Promise<void> {
 		log.debug('currentVault set, refreshing notes');
 		await refreshNotes();
 		log.debug('Notes refreshed');
+		// Load component library for this vault
+		try {
+			const { loadLibrary } = await import('../canvas/componentLibrary');
+			await loadLibrary();
+			log.debug('Component library loaded');
+		} catch (compError) {
+			log.warn('Component library load failed (non-fatal)', { error: compError });
+		}
 	} catch (error) {
 		log.error('Failed to open vault', error as Error, { path });
 		throw error;

@@ -129,11 +129,35 @@ impl IndexService {
         Ok(())
     }
 
-    /// Indexes all provided notes (full reindex).
+    /// Indexes all provided notes (full reindex) with a single commit at end.
     pub fn index_all(&self, notes: Vec<Note>) -> Result<()> {
-        for note in notes {
-            self.index_note(&note)?;
+        let path_field = self.schema.get_field("path").unwrap();
+        let title_field = self.schema.get_field("title").unwrap();
+        let content_field = self.schema.get_field("content").unwrap();
+        let created_field = self.schema.get_field("created").unwrap();
+        let modified_field = self.schema.get_field("modified").unwrap();
+
+        let mut writer = self.writer.lock().unwrap();
+
+        for note in &notes {
+            let term = Term::from_field_text(path_field, &note.path.to_string_lossy());
+            writer.delete_term(term);
+
+            let created_ts = note.created_at.timestamp();
+            let modified_ts = note.modified_at.timestamp();
+
+            let doc = doc!(
+                path_field => note.path.to_string_lossy().to_string(),
+                title_field => note.title.clone(),
+                content_field => note.content.clone(),
+                created_field => tantivy::DateTime::from_timestamp_secs(created_ts),
+                modified_field => tantivy::DateTime::from_timestamp_secs(modified_ts),
+            );
+
+            writer.add_document(doc)?;
         }
+
+        writer.commit()?;
         Ok(())
     }
 
@@ -239,5 +263,59 @@ impl IndexService {
         }
 
         Ok(results)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::note::Note;
+    use chrono::Utc;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_index_all_single_commit() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let index_path = temp_dir.path().join("search_index");
+
+        let service = IndexService::new(&index_path).unwrap();
+
+        let notes = vec![
+            Note {
+                path: PathBuf::from("/vault/note1.md"),
+                title: "Note 1".to_string(),
+                content: "First note content".to_string(),
+                created_at: Utc::now(),
+                modified_at: Utc::now(),
+                ..Default::default()
+            },
+            Note {
+                path: PathBuf::from("/vault/note2.md"),
+                title: "Note 2".to_string(),
+                content: "Second note content".to_string(),
+                created_at: Utc::now(),
+                modified_at: Utc::now(),
+                ..Default::default()
+            },
+            Note {
+                path: PathBuf::from("/vault/note3.md"),
+                title: "Note 3".to_string(),
+                content: "Third note content".to_string(),
+                created_at: Utc::now(),
+                modified_at: Utc::now(),
+                ..Default::default()
+            },
+        ];
+
+        // index_all with multiple notes should succeed (single commit)
+        let result = service.index_all(notes);
+        assert!(result.is_ok());
+
+        // Verify all notes are searchable
+        let results = service.search(SearchQuery {
+            query: "note content".to_string(),
+            limit: 10,
+        }).unwrap();
+        assert_eq!(results.len(), 3);
     }
 }
