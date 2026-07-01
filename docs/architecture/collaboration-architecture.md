@@ -12,12 +12,12 @@ This document defines the planned architecture for real-time multi-user collabor
 
 All mutations to a canvas document are expressed as typed operations:
 
-| Operation | Semantics | Conflict Resolution |
-|-----------|-----------|-------------------|
-| `insert_element` | RGA-ordered insertion into element list | Concurrent inserts get deterministic ordering via author ID + clock |
-| `delete_element` | Tombstone-based deletion | No conflict — concurrent deletes are idempotent |
-| `update_property` | LWW (Last-Writer-Wins) register per property | Higher clock wins; ties broken by author ID |
-| `move_element` | Position update with parent tracking | LWW on position; structural conflicts resolved by tree-flattening |
+| Operation         | Semantics                                    | Conflict Resolution                                                 |
+| ----------------- | -------------------------------------------- | ------------------------------------------------------------------- |
+| `insert_element`  | RGA-ordered insertion into element list      | Concurrent inserts get deterministic ordering via author ID + clock |
+| `delete_element`  | Tombstone-based deletion                     | No conflict — concurrent deletes are idempotent                     |
+| `update_property` | LWW (Last-Writer-Wins) register per property | Higher clock wins; ties broken by author ID                         |
+| `move_element`    | Position update with parent tracking         | LWW on position; structural conflicts resolved by tree-flattening   |
 
 ### Clock Model
 
@@ -30,6 +30,7 @@ All mutations to a canvas document are expressed as typed operations:
 ### Data Model
 
 Each connected peer broadcasts:
+
 - Cursor position (canvas coordinates)
 - Element selection set
 - Assigned color (server-assigned, distinct per session)
@@ -47,6 +48,7 @@ Each connected peer broadcasts:
 ### Property Conflicts (LWW)
 
 When two peers update the same property on the same element:
+
 1. Compare operation clocks
 2. Higher clock wins
 3. Equal clocks: lexicographic comparison of author IDs
@@ -54,6 +56,7 @@ When two peers update the same property on the same element:
 ### Structural Conflicts (Tree)
 
 When operations create cycles or invalid parent chains:
+
 1. Detect cycle in parent resolution
 2. Break cycle by reverting the later (by clock) move operation
 3. Flatten to root if unresolvable

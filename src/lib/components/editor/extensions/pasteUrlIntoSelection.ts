@@ -26,7 +26,7 @@ export function isUrl(text: string): boolean {
  */
 export function buildMarkdownLink(
   selected: string,
-  clipboard: string,
+  clipboard: string
 ): { replacement: string; cursorOffset: number } | null {
   const clipTrimmed = clipboard.trim();
   const selTrimmed = selected.trim();

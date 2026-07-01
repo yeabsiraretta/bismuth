@@ -26,7 +26,8 @@ const RULES: DetectionRule[] = [
   },
   {
     type: 'youtube-channel',
-    test: (url) => /youtube\.com\/(?:channel|c|@)[/]?[a-zA-Z0-9_-]/.test(url) && !/\/watch\?/.test(url),
+    test: (url) =>
+      /youtube\.com\/(?:channel|c|@)[/]?[a-zA-Z0-9_-]/.test(url) && !/\/watch\?/.test(url),
     extractId: (url) => {
       const m = url.match(/youtube\.com\/(?:channel\/|c\/|@)([^/?&]+)/);
       return m?.[1] ?? null;
@@ -46,7 +47,10 @@ const RULES: DetectionRule[] = [
   },
   {
     type: 'stackexchange',
-    test: (url) => /(?:stackoverflow\.com|stackexchange\.com|serverfault\.com|superuser\.com|askubuntu\.com)\/questions\//.test(url),
+    test: (url) =>
+      /(?:stackoverflow\.com|stackexchange\.com|serverfault\.com|superuser\.com|askubuntu\.com)\/questions\//.test(
+        url
+      ),
     extractId: (url) => {
       const m = url.match(/\/questions\/(\d+)/);
       return m?.[1] ?? null;
@@ -126,8 +130,8 @@ export function isUrl(text: string): boolean {
 export function splitBatch(input: string, delimiter: string): string[] {
   return input
     .split(delimiter)
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
 }
 
 /** Generate an embed player iframe for video content types. */

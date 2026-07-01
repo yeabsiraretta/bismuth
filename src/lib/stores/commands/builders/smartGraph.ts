@@ -48,7 +48,9 @@ export function buildSmartGraphCommands(): Command[] {
           const data = await getGraphData();
           runAnalysis(data.nodes, data.edges);
           showToast('Graph analysis complete', 'info');
-        } catch { showToast('Failed to analyze graph', 'error'); }
+        } catch {
+          showToast('Failed to analyze graph', 'error');
+        }
       },
     },
     {
@@ -93,7 +95,10 @@ export function buildSmartGraphCommands(): Command[] {
         const { get } = await import('svelte/store');
         const { activeNote } = await import('@/stores/vault/vault');
         const note = get(activeNote);
-        if (!note?.content) { showToast('No active note', 'warning'); return; }
+        if (!note?.content) {
+          showToast('No active note', 'warning');
+          return;
+        }
         const { buildConceptGraph, runAnalysis } = await import('@/features/graph');
         const { nodes, edges } = buildConceptGraph(note.content);
         runAnalysis(nodes, edges);

@@ -1,9 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('@tauri-apps/api/core', () => ({ invoke: vi.fn() }));
-vi.mock('@/utils/logger', () => ({ log: { info: vi.fn(), debug: vi.fn(), error: vi.fn(), warn: vi.fn() } }));
+vi.mock('@/utils/logger', () => ({
+  log: { info: vi.fn(), debug: vi.fn(), error: vi.fn(), warn: vi.fn() },
+}));
 vi.mock('@/stores/vault/vault', () => ({
-  currentVault: { subscribe: vi.fn((cb: (v: unknown) => void) => { cb({ root_path: '/vault' }); return () => {}; }) },
+  currentVault: {
+    subscribe: vi.fn((cb: (v: unknown) => void) => {
+      cb({ root_path: '/vault' });
+      return () => {};
+    }),
+  },
 }));
 
 import {
@@ -14,7 +21,11 @@ import {
   navigatePeriod,
 } from '../services/journalService';
 import type { JournalConfig } from '../types';
-import { DEFAULT_DAILY_JOURNAL, DEFAULT_WEEKLY_JOURNAL, DEFAULT_MONTHLY_JOURNAL } from '../types/defaults';
+import {
+  DEFAULT_DAILY_JOURNAL,
+  DEFAULT_WEEKLY_JOURNAL,
+  DEFAULT_MONTHLY_JOURNAL,
+} from '../types/defaults';
 
 function makeJournal(overrides?: Partial<JournalConfig>): JournalConfig {
   return { ...DEFAULT_DAILY_JOURNAL, ...overrides };

@@ -24,13 +24,13 @@ let _rafId = 0;
 const _store = writable<AudioPlayerState>({ ...INITIAL_PLAYER_STATE });
 export const audioPlayerState = { subscribe: _store.subscribe };
 
-export const playerStatus = derived(_store, s => s.status);
-export const playerPosition = derived(_store, s => s.positionSec);
-export const playerDuration = derived(_store, s => s.durationSec);
-export const playerVolume = derived(_store, s => s.volume);
-export const playerBookmarks = derived(_store, s => s.bookmarks);
-export const playerFile = derived(_store, s => s.currentFile);
-export const playerWaveform = derived(_store, s => s.waveformPeaks);
+export const playerStatus = derived(_store, (s) => s.status);
+export const playerPosition = derived(_store, (s) => s.positionSec);
+export const playerDuration = derived(_store, (s) => s.durationSec);
+export const playerVolume = derived(_store, (s) => s.volume);
+export const playerBookmarks = derived(_store, (s) => s.bookmarks);
+export const playerFile = derived(_store, (s) => s.currentFile);
+export const playerWaveform = derived(_store, (s) => s.waveformPeaks);
 
 // ─── Bookmark persistence ────────────────────────────────────────────────────
 
@@ -42,13 +42,15 @@ function loadBookmarks(filePath: string): AudioBookmark[] {
     if (!raw) return [];
     const all = JSON.parse(raw) as Record<string, AudioBookmark[]>;
     return all[filePath] ?? [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveBookmarks(filePath: string, bookmarks: AudioBookmark[]): void {
   try {
     const raw = localStorage.getItem(BM_KEY);
-    const all = raw ? JSON.parse(raw) as Record<string, AudioBookmark[]> : {};
+    const all = raw ? (JSON.parse(raw) as Record<string, AudioBookmark[]>) : {};
     all[filePath] = bookmarks;
     localStorage.setItem(BM_KEY, JSON.stringify(all));
   } catch (e) {
@@ -74,7 +76,7 @@ function extractPeaks(buffer: AudioBuffer, barCount: number): number[] {
   }
   // Normalize
   const peakMax = Math.max(...peaks, 0.01);
-  return peaks.map(p => p / peakMax);
+  return peaks.map((p) => p / peakMax);
 }
 
 // ─── Position tracking ───────────────────────────────────────────────────────
@@ -87,7 +89,7 @@ function startPositionTracking(): void {
     const ctx = getAudioContext();
     const elapsed = ctx.currentTime - _startTime + _startOffset;
     const pos = Math.min(elapsed, state.durationSec);
-    _store.update(s => ({ ...s, positionSec: pos }));
+    _store.update((s) => ({ ...s, positionSec: pos }));
     if (pos >= state.durationSec) {
       stopAudio();
       return;
@@ -98,7 +100,10 @@ function startPositionTracking(): void {
 }
 
 function stopPositionTracking(): void {
-  if (_rafId) { cancelAnimationFrame(_rafId); _rafId = 0; }
+  if (_rafId) {
+    cancelAnimationFrame(_rafId);
+    _rafId = 0;
+  }
 }
 
 // ─── Core actions ────────────────────────────────────────────────────────────
@@ -106,7 +111,7 @@ function stopPositionTracking(): void {
 /** Load an audio file into the singleton player */
 export async function loadAudio(filePath: string, audioUrl: string, barCount = 120): Promise<void> {
   stopAudio();
-  _store.update(s => ({ ...s, status: 'loading', currentFile: filePath, error: null }));
+  _store.update((s) => ({ ...s, status: 'loading', currentFile: filePath, error: null }));
 
   try {
     const ctx = getAudioContext();
@@ -125,7 +130,7 @@ export async function loadAudio(filePath: string, audioUrl: string, barCount = 1
     const bookmarks = loadBookmarks(filePath);
     _startOffset = 0;
 
-    _store.update(s => ({
+    _store.update((s) => ({
       ...s,
       status: 'paused',
       durationSec: _buffer!.duration,
@@ -137,7 +142,7 @@ export async function loadAudio(filePath: string, audioUrl: string, barCount = 1
     log.info('[audioPlayer] loaded', { filePath, duration: _buffer.duration });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    _store.update(s => ({ ...s, status: 'error', error: msg }));
+    _store.update((s) => ({ ...s, status: 'error', error: msg }));
     log.error('[audioPlayer] load error', { filePath, error: msg });
   }
 }
@@ -164,7 +169,7 @@ export function playAudio(): void {
     if (cur.status === 'playing') stopAudio();
   };
 
-  _store.update(s => ({ ...s, status: 'playing' }));
+  _store.update((s) => ({ ...s, status: 'playing' }));
   startPositionTracking();
   log.debug('[audioPlayer] play', { offset: _startOffset });
 }
@@ -181,7 +186,7 @@ export function pauseAudio(): void {
   _source = null;
   stopPositionTracking();
 
-  _store.update(s => ({ ...s, status: 'paused' }));
+  _store.update((s) => ({ ...s, status: 'paused' }));
   log.debug('[audioPlayer] pause', { position: _startOffset });
 }
 
@@ -193,7 +198,7 @@ export function stopAudio(): void {
   _startOffset = 0;
   stopPositionTracking();
 
-  _store.update(s => ({ ...s, status: s.currentFile ? 'paused' : 'idle', positionSec: 0 }));
+  _store.update((s) => ({ ...s, status: s.currentFile ? 'paused' : 'idle', positionSec: 0 }));
   log.debug('[audioPlayer] stop');
 }
 
@@ -211,7 +216,7 @@ export function seekAudio(sec: number): void {
   }
 
   _startOffset = clamped;
-  _store.update(s => ({ ...s, positionSec: clamped }));
+  _store.update((s) => ({ ...s, positionSec: clamped }));
 
   if (wasPlaying) playAudio();
   log.debug('[audioPlayer] seek', { sec: clamped });
@@ -221,14 +226,14 @@ export function seekAudio(sec: number): void {
 export function setPlayerVolume(vol: number): void {
   const v = Math.max(0, Math.min(1, vol));
   if (_gainNode) _gainNode.gain.value = v;
-  _store.update(s => ({ ...s, volume: v }));
+  _store.update((s) => ({ ...s, volume: v }));
 }
 
 /** Set playback rate (0.5–2) */
 export function setPlaybackRate(rate: number): void {
   const r = Math.max(0.5, Math.min(2, rate));
   if (_source) _source.playbackRate.value = r;
-  _store.update(s => ({ ...s, playbackRate: r }));
+  _store.update((s) => ({ ...s, playbackRate: r }));
 }
 
 /** Toggle play/pause */
@@ -246,7 +251,7 @@ export function addBookmark(timeSec: number, label: string): void {
   if (!state.currentFile) return;
   const bm: AudioBookmark = { id: generatePrefixedId('bm'), timeSec, label };
   const updated = [...state.bookmarks, bm].sort((a, b) => a.timeSec - b.timeSec);
-  _store.update(s => ({ ...s, bookmarks: updated }));
+  _store.update((s) => ({ ...s, bookmarks: updated }));
   saveBookmarks(state.currentFile, updated);
   log.debug('[audioPlayer] addBookmark', { timeSec, label });
 }
@@ -255,8 +260,8 @@ export function addBookmark(timeSec: number, label: string): void {
 export function removeBookmark(id: string): void {
   const state = get(_store);
   if (!state.currentFile) return;
-  const updated = state.bookmarks.filter(b => b.id !== id);
-  _store.update(s => ({ ...s, bookmarks: updated }));
+  const updated = state.bookmarks.filter((b) => b.id !== id);
+  _store.update((s) => ({ ...s, bookmarks: updated }));
   saveBookmarks(state.currentFile, updated);
 }
 
@@ -265,9 +270,10 @@ export function setBlockBookmarks(bookmarks: AudioBookmark[]): void {
   const state = get(_store);
   if (!state.currentFile) return;
   const persisted = loadBookmarks(state.currentFile);
-  const ids = new Set(persisted.map(b => b.id));
-  const merged = [...persisted, ...bookmarks.filter(b => !ids.has(b.id))]
-    .sort((a, b) => a.timeSec - b.timeSec);
-  _store.update(s => ({ ...s, bookmarks: merged }));
+  const ids = new Set(persisted.map((b) => b.id));
+  const merged = [...persisted, ...bookmarks.filter((b) => !ids.has(b.id))].sort(
+    (a, b) => a.timeSec - b.timeSec
+  );
+  _store.update((s) => ({ ...s, bookmarks: merged }));
   saveBookmarks(state.currentFile, merged);
 }

@@ -6,8 +6,12 @@
 
   let allExpanded = true;
 
-  function expandAll() { allExpanded = true; }
-  function collapseAll() { allExpanded = false; }
+  function expandAll() {
+    allExpanded = true;
+  }
+  function collapseAll() {
+    allExpanded = false;
+  }
 
   function scrollToHeading(line: number) {
     window.dispatchEvent(new CustomEvent('editor-scroll-to-line', { detail: { line } }));
@@ -20,7 +24,7 @@
   }
 
   $: allHeadings = extractHeadings($activeNote?.content || '');
-  $: headings = allExpanded ? allHeadings : allHeadings.filter(h => h.level === 1);
+  $: headings = allExpanded ? allHeadings : allHeadings.filter((h) => h.level === 1);
 
   function extractHeadings(content: string): HeadingItem[] {
     const lines = content.split('\n');
@@ -44,23 +48,35 @@
   </PanelHeader>
 
   <div class="panel-body">
-  {#if !$activeNote}
-    <EmptyState icon="file-text" title="No note open" description="Open a note to see its outline" />
-  {:else if headings.length === 0}
-    <EmptyState icon="list" title="No headings" description="Add headings with # to build an outline" />
-  {:else}
-    <ul class="heading-list">
-      {#each headings as heading}
-        <li class="heading-item level-{heading.level}">
-          <div class="guide-line"></div>
-          <button class="heading-btn" title="Jump to heading" on:click={() => scrollToHeading(heading.line)}>
-            <span class="level-indicator">H{heading.level}</span>
-            <span class="heading-text">{heading.text}</span>
-          </button>
-        </li>
-      {/each}
-    </ul>
-  {/if}
+    {#if !$activeNote}
+      <EmptyState
+        icon="file-text"
+        title="No note open"
+        description="Open a note to see its outline"
+      />
+    {:else if headings.length === 0}
+      <EmptyState
+        icon="list"
+        title="No headings"
+        description="Add headings with # to build an outline"
+      />
+    {:else}
+      <ul class="heading-list">
+        {#each headings as heading}
+          <li class="heading-item level-{heading.level}">
+            <div class="guide-line"></div>
+            <button
+              class="heading-btn"
+              title="Jump to heading"
+              on:click={() => scrollToHeading(heading.line)}
+            >
+              <span class="level-indicator">H{heading.level}</span>
+              <span class="heading-text">{heading.text}</span>
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </div>
 
@@ -91,12 +107,24 @@
     align-items: stretch;
   }
 
-  .heading-item.level-1 { padding-left: 0; }
-  .heading-item.level-2 { padding-left: 12px; }
-  .heading-item.level-3 { padding-left: 24px; }
-  .heading-item.level-4 { padding-left: 36px; }
-  .heading-item.level-5 { padding-left: 48px; }
-  .heading-item.level-6 { padding-left: 60px; }
+  .heading-item.level-1 {
+    padding-left: 0;
+  }
+  .heading-item.level-2 {
+    padding-left: 12px;
+  }
+  .heading-item.level-3 {
+    padding-left: 24px;
+  }
+  .heading-item.level-4 {
+    padding-left: 36px;
+  }
+  .heading-item.level-5 {
+    padding-left: 48px;
+  }
+  .heading-item.level-6 {
+    padding-left: 60px;
+  }
 
   .guide-line {
     position: absolute;
@@ -108,12 +136,24 @@
     opacity: 0.5;
   }
 
-  .heading-item.level-1 .guide-line { display: none; }
-  .heading-item.level-2 .guide-line { left: 6px; }
-  .heading-item.level-3 .guide-line { left: 18px; }
-  .heading-item.level-4 .guide-line { left: 30px; }
-  .heading-item.level-5 .guide-line { left: 42px; }
-  .heading-item.level-6 .guide-line { left: 54px; }
+  .heading-item.level-1 .guide-line {
+    display: none;
+  }
+  .heading-item.level-2 .guide-line {
+    left: 6px;
+  }
+  .heading-item.level-3 .guide-line {
+    left: 18px;
+  }
+  .heading-item.level-4 .guide-line {
+    left: 30px;
+  }
+  .heading-item.level-5 .guide-line {
+    left: 42px;
+  }
+  .heading-item.level-6 .guide-line {
+    left: 54px;
+  }
 
   .level-indicator {
     display: inline-flex;

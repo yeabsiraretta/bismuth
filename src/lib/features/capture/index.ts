@@ -23,4 +23,3 @@ export { archiveNoteCmd, organizeNoteCmd, mergeNotesCmd } from './services/captu
 // Components
 export { default as CaptureDashboard } from './components/CaptureDashboard.svelte';
 export { default as MergeNotesModal } from './components/MergeNotesModal.svelte';
-

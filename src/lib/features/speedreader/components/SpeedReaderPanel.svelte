@@ -2,11 +2,7 @@
   import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
   import Icon from '@/components/icons/Icon.svelte';
   import { activeNote } from '@/stores/vault/vault';
-  import {
-    speedReaderStore,
-    startSpeedReader,
-    setWpm,
-  } from '../stores/speedReader';
+  import { speedReaderStore, startSpeedReader, setWpm } from '../stores/speedReader';
 
   let wpmInput = 300;
 
@@ -52,8 +48,9 @@
           <div class="preview-label">Active note</div>
           <div class="preview-title">{$activeNote.title || 'Untitled'}</div>
           <div class="preview-stats">
-            {$activeNote.content?.split(/\s+/).filter(Boolean).length || 0} words
-            · ~{Math.ceil(($activeNote.content?.split(/\s+/).filter(Boolean).length || 0) / wpmInput)} min
+            {$activeNote.content?.split(/\s+/).filter(Boolean).length || 0} words · ~{Math.ceil(
+              ($activeNote.content?.split(/\s+/).filter(Boolean).length || 0) / wpmInput
+            )} min
           </div>
         </div>
 
@@ -125,7 +122,7 @@
     gap: var(--space-2, 4px);
   }
 
-  .wpm-control input[type="range"] {
+  .wpm-control input[type='range'] {
     flex: 1;
     height: 4px;
     accent-color: var(--interactive-accent);

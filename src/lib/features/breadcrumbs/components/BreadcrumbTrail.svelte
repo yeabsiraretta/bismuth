@@ -9,7 +9,7 @@
   $: hasPrev = !!ctx.prev;
   $: hasNext = !!ctx.next;
 
-  function handleSegmentClick(segment: typeof trail[0]) {
+  function handleSegmentClick(segment: (typeof trail)[0]) {
     if (segment.isActive) return;
     onNavigate?.(segment.path);
   }
@@ -26,7 +26,12 @@
 {#if trail.length > 0}
   <nav class="bc-trail" aria-label="Breadcrumb navigation">
     {#if hasPrev}
-      <button class="bc-nav" on:click={handlePrev} title="Previous: {ctx.prev}" aria-label="Go to previous note">
+      <button
+        class="bc-nav"
+        on:click={handlePrev}
+        title="Previous: {ctx.prev}"
+        aria-label="Go to previous note"
+      >
         <Icon name="chevron-left" size={12} />
       </button>
     {/if}
@@ -59,7 +64,12 @@
     {/if}
 
     {#if hasNext}
-      <button class="bc-nav" on:click={handleNext} title="Next: {ctx.next}" aria-label="Go to next note">
+      <button
+        class="bc-nav"
+        on:click={handleNext}
+        title="Next: {ctx.next}"
+        aria-label="Go to next note"
+      >
         <Icon name="chevron-right" size={12} />
       </button>
     {/if}
@@ -90,8 +100,20 @@
     min-width: 0;
     overflow-x: auto;
     scrollbar-width: none;
-    mask-image: linear-gradient(to right, transparent 0, black 4px, black calc(100% - 12px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 4px, black calc(100% - 12px), transparent 100%);
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 4px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      black 4px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
     padding: 0 4px;
   }
 
@@ -123,7 +145,9 @@
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.12s ease, background 0.12s ease;
+    transition:
+      color 0.12s ease,
+      background 0.12s ease;
   }
 
   .bc-link:hover {
@@ -149,7 +173,9 @@
     color: var(--text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: color 0.12s ease, background 0.12s ease;
+    transition:
+      color 0.12s ease,
+      background 0.12s ease;
   }
 
   .bc-nav:hover {

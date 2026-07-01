@@ -63,14 +63,14 @@ export function resolveStyleBindings(element: CanvasElement): Record<string, unk
   const resolved: Record<string, unknown> = { ...props };
 
   if (fillStyleId) {
-    const style = styles.find(s => s.id === fillStyleId);
+    const style = styles.find((s) => s.id === fillStyleId);
     if (style?.properties?.['color']) {
       resolved['fill'] = style.properties['color'];
     }
   }
 
   if (strokeStyleId) {
-    const style = styles.find(s => s.id === strokeStyleId);
+    const style = styles.find((s) => s.id === strokeStyleId);
     if (style?.properties?.['color']) {
       resolved['stroke'] = style.properties['color'];
     }
@@ -92,8 +92,9 @@ export function isDarkTheme(): boolean {
   const now = Date.now();
   if (_isDarkTheme !== null && now - _lastThemeCheck < 500) return _isDarkTheme;
   _lastThemeCheck = now;
-  _isDarkTheme = typeof document !== 'undefined'
-    && document.documentElement.getAttribute('data-theme') === 'dark';
+  _isDarkTheme =
+    typeof document !== 'undefined' &&
+    document.documentElement.getAttribute('data-theme') === 'dark';
   return _isDarkTheme;
 }
 
@@ -132,10 +133,16 @@ export function drawGrid(
   ctx.strokeStyle = lineColor;
   ctx.lineWidth = 1 / viewport.scale;
   for (let x = majorStartX; x < endX; x += majorSize) {
-    ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, endY); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, startY);
+    ctx.lineTo(x, endY);
+    ctx.stroke();
   }
   for (let y = majorStartY; y < endY; y += majorSize) {
-    ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(endX, y); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(startX, y);
+    ctx.lineTo(endX, y);
+    ctx.stroke();
   }
 }
 
@@ -240,4 +247,3 @@ export function drawElement(
 
   ctx.restore();
 }
-

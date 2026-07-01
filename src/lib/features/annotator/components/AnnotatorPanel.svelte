@@ -117,10 +117,16 @@
     color: var(--text-secondary);
     cursor: pointer;
     border-radius: var(--radius-sm);
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
-  .header-btn:hover { background: var(--bg-hover); }
-  .header-btn.active { color: var(--text-accent); }
+  .header-btn:hover {
+    background: var(--bg-hover);
+  }
+  .header-btn.active {
+    color: var(--text-accent);
+  }
   .annotator-body {
     display: flex;
     flex: 1;
@@ -139,5 +145,8 @@
     color: var(--text-secondary);
     gap: 8px;
   }
-  .hint { font-size: var(--font-size-xs); color: var(--text-muted); }
+  .hint {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
 </style>

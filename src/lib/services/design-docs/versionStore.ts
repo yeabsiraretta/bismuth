@@ -65,7 +65,11 @@ export async function listVersions(type: DocumentType, id: string): Promise<Vers
 }
 
 /** Get a specific version's payload. */
-export async function getVersion(type: DocumentType, id: string, version: number): Promise<unknown | null> {
+export async function getVersion(
+  type: DocumentType,
+  id: string,
+  version: number
+): Promise<unknown | null> {
   const versions = await listVersions(type, id);
   const entry = versions.find((v) => v.version === version);
   return entry?.payload || null;

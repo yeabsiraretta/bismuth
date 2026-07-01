@@ -18,7 +18,7 @@ export function parseRewardLine(
   lineIndex: number,
   metaStart: string,
   metaEnd: string,
-  occurrenceLabels: Record<RewarderOccurrence, string>,
+  occurrenceLabels: Record<RewarderOccurrence, string>
 ): RewarderReward | null {
   const trimmed = line.replace(/^[-*]\s+/, '').trim();
   if (!trimmed) return null;
@@ -61,7 +61,7 @@ export function parseRewardLine(
 /** Parse the full rewards file content. */
 export function parseRewardsFile(
   content: string,
-  config: Pick<RewarderConfig, 'metaStart' | 'metaEnd' | 'occurrenceLabels'>,
+  config: Pick<RewarderConfig, 'metaStart' | 'metaEnd' | 'occurrenceLabels'>
 ): RewarderReward[] {
   const lines = content.split('\n');
   const rewards: RewarderReward[] = [];
@@ -70,7 +70,13 @@ export function parseRewardsFile(
     const line = lines[i].trim();
     if (!line || line.startsWith('#') || line.startsWith('---')) continue;
 
-    const reward = parseRewardLine(line, i, config.metaStart, config.metaEnd, config.occurrenceLabels);
+    const reward = parseRewardLine(
+      line,
+      i,
+      config.metaStart,
+      config.metaEnd,
+      config.occurrenceLabels
+    );
     if (reward) rewards.push(reward);
   }
 
@@ -80,10 +86,10 @@ export function parseRewardsFile(
 /** Roll for a reward based on occurrence chances. Returns the chosen reward or null. */
 export function rollForReward(
   rewards: RewarderReward[],
-  chances: Record<RewarderOccurrence, number>,
+  chances: Record<RewarderOccurrence, number>
 ): RewarderReward | null {
   // Filter out rewards with zero inventory
-  const available = rewards.filter(r => r.inventory === null || r.inventory > 0);
+  const available = rewards.filter((r) => r.inventory === null || r.inventory > 0);
   if (available.length === 0) return null;
 
   // Total chance = sum of all occurrence chances
@@ -104,7 +110,7 @@ export function rollForReward(
   }
 
   // Pick from available rewards of that tier
-  const tierRewards = available.filter(r => r.occurrence === occurrence);
+  const tierRewards = available.filter((r) => r.occurrence === occurrence);
   if (tierRewards.length === 0) {
     // Fall back to any available reward
     const fallback = available[Math.floor(Math.random() * available.length)];
@@ -122,7 +128,7 @@ export function decrementInventory(
   fileContent: string,
   reward: RewarderReward,
   metaStart: string,
-  metaEnd: string,
+  metaEnd: string
 ): string | null {
   if (reward.inventory === null) return null;
 
@@ -162,7 +168,7 @@ export function generateSampleRewards(): string {
 
 /** Build a reverse lookup from label string to occurrence key. */
 function buildLabelMap(
-  labels: Record<RewarderOccurrence, string>,
+  labels: Record<RewarderOccurrence, string>
 ): Map<string, RewarderOccurrence> {
   const map = new Map<string, RewarderOccurrence>();
   for (const [key, label] of Object.entries(labels)) {

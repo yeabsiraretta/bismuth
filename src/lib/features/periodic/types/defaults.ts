@@ -33,7 +33,13 @@ export const DEFAULT_DAILY_JOURNAL: JournalConfig = {
   endCondition: { mode: 'never' },
   indexConfig: null,
   frontmatter: { ...DEFAULT_FRONTMATTER },
-  decorations: [{ id: 'default-dot', condition: { type: 'has-note' }, style: { dotColor: 'var(--interactive-accent)' } }],
+  decorations: [
+    {
+      id: 'default-dot',
+      condition: { type: 'has-note' },
+      style: { dotColor: 'var(--interactive-accent)' },
+    },
+  ],
 };
 
 /** Built-in weekly journal. */
@@ -81,11 +87,36 @@ export const DEFAULT_CALENDAR_SETTINGS: CalendarJournalSettings = {
 };
 
 const defaultLegacyConfigs: Record<PeriodType, PeriodicNoteConfig> = {
-  daily: { periodType: 'daily', folder: 'journal/daily', dateFormat: 'YYYY-MM-DD', templatePath: null },
-  weekly: { periodType: 'weekly', folder: 'journal/weekly', dateFormat: 'YYYY-[W]MM-DD', templatePath: null },
-  monthly: { periodType: 'monthly', folder: 'journal/monthly', dateFormat: 'YYYY-MM', templatePath: null },
-  quarterly: { periodType: 'quarterly', folder: 'journal/quarterly', dateFormat: 'YYYY-[Q]MM', templatePath: null },
-  yearly: { periodType: 'yearly', folder: 'journal/yearly', dateFormat: 'YYYY', templatePath: null },
+  daily: {
+    periodType: 'daily',
+    folder: 'journal/daily',
+    dateFormat: 'YYYY-MM-DD',
+    templatePath: null,
+  },
+  weekly: {
+    periodType: 'weekly',
+    folder: 'journal/weekly',
+    dateFormat: 'YYYY-[W]MM-DD',
+    templatePath: null,
+  },
+  monthly: {
+    periodType: 'monthly',
+    folder: 'journal/monthly',
+    dateFormat: 'YYYY-MM',
+    templatePath: null,
+  },
+  quarterly: {
+    periodType: 'quarterly',
+    folder: 'journal/quarterly',
+    dateFormat: 'YYYY-[Q]MM',
+    templatePath: null,
+  },
+  yearly: {
+    periodType: 'yearly',
+    folder: 'journal/yearly',
+    dateFormat: 'YYYY',
+    templatePath: null,
+  },
 };
 
 export const DEFAULT_PERIODIC_SETTINGS: PeriodicSettings = {

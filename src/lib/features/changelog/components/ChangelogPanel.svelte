@@ -1,7 +1,12 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
   import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
-  import { changelogEntries, changelogLoading, refreshChangelog, writeChangelogFile } from '../stores/changelog';
+  import {
+    changelogEntries,
+    changelogLoading,
+    refreshChangelog,
+    writeChangelogFile,
+  } from '../stores/changelog';
   import { openNote } from '@/appNavigation';
   import { onMount } from 'svelte';
   import { groupByDate, getActionIcon, formatTime } from '../services/changelogLogic';
@@ -16,7 +21,11 @@
 <div class="changelog-panel">
   <PanelHeader icon="history" title="Changelog" count={$changelogEntries.length || undefined}>
     <svelte:fragment slot="actions">
-      <button class="icon-btn" on:click={() => writeChangelogFile()} title="Write changelog to file">
+      <button
+        class="icon-btn"
+        on:click={() => writeChangelogFile()}
+        title="Write changelog to file"
+      >
         <Icon name="file-output" size={14} />
       </button>
       <button class="icon-btn" on:click={() => refreshChangelog()} title="Refresh">
@@ -39,11 +48,7 @@
         <div class="date-group">
           <div class="date-label">{date}</div>
           {#each entries as entry}
-            <button
-              class="changelog-item"
-              on:click={() => openNote(entry.path)}
-              title={entry.path}
-            >
+            <button class="changelog-item" on:click={() => openNote(entry.path)} title={entry.path}>
               <Icon name={getActionIcon(entry.action)} size={12} />
               <span class="entry-path">{entry.path.split('/').pop()}</span>
               <span class="entry-time">{formatTime(entry.timestamp)}</span>
@@ -85,8 +90,14 @@
     font-size: var(--font-size-sm, 12px);
   }
 
-  .empty-title { margin: 0; font-weight: 600; }
-  .empty-desc { margin: 0; opacity: 0.7; }
+  .empty-title {
+    margin: 0;
+    font-weight: 600;
+  }
+  .empty-desc {
+    margin: 0;
+    opacity: 0.7;
+  }
 
   .date-group {
     margin-bottom: var(--spacing-sm, 8px);

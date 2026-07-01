@@ -96,9 +96,10 @@
 
   async function handleInsertTrigger(kind: 'waypoint' | 'landmark') {
     if (!note) return;
-    const trigger = kind === 'waypoint'
-      ? triggerComment(config.waypointTrigger)
-      : triggerComment(config.landmarkTrigger);
+    const trigger =
+      kind === 'waypoint'
+        ? triggerComment(config.waypointTrigger)
+        : triggerComment(config.landmarkTrigger);
     const newContent = note.content + '\n\n' + trigger + '\n';
     try {
       await writeNote(note.path, newContent);
@@ -146,8 +147,13 @@
       <button class="wp-btn" on:click={handleScan} disabled={$isProcessing || !config.enabled}>
         <Icon name="scan" size={14} /> Scan Vault
       </button>
-      <button class="wp-btn wp-btn-primary" on:click={handleUpdateAll} disabled={$isProcessing || !config.enabled}>
-        <Icon name="refresh-cw" size={14} /> {$isProcessing ? 'Updating...' : 'Update All'}
+      <button
+        class="wp-btn wp-btn-primary"
+        on:click={handleUpdateAll}
+        disabled={$isProcessing || !config.enabled}
+      >
+        <Icon name="refresh-cw" size={14} />
+        {$isProcessing ? 'Updating...' : 'Update All'}
       </button>
     </div>
 
@@ -215,9 +221,19 @@
           {#each $folderNoteIndex as fn (fn.notePath)}
             <button
               class="wp-fn-item"
-              on:click={async () => { const n = await getNote(fn.notePath); openNoteTab(n); }}
+              on:click={async () => {
+                const n = await getNote(fn.notePath);
+                openNoteTab(n);
+              }}
             >
-              <Icon name={fn.marker === 'waypoint' ? 'compass' : fn.marker === 'landmark' ? 'flag' : 'file'} size={12} />
+              <Icon
+                name={fn.marker === 'waypoint'
+                  ? 'compass'
+                  : fn.marker === 'landmark'
+                    ? 'flag'
+                    : 'file'}
+                size={12}
+              />
               <span class="wp-fn-name">{fn.folderName}</span>
               {#if fn.marker}
                 <span class="wp-badge wp-badge-{fn.marker}">{fn.marker}</span>
@@ -227,7 +243,11 @@
         </div>
       </div>
     {:else if config.enabled}
-      <EmptyState icon="compass" title="No folder notes" description="Scan the vault or create a folder note to get started" />
+      <EmptyState
+        icon="compass"
+        title="No folder notes"
+        description="Scan the vault or create a folder note to get started"
+      />
     {/if}
 
     <!-- Settings panel -->
@@ -235,15 +255,27 @@
       <div class="wp-section wp-settings">
         <h4 class="wp-section-title">Settings</h4>
         <label class="wp-toggle">
-          <input type="checkbox" checked={config.stopAtFolderNotes} on:change={toggleStopAtFolderNotes} />
+          <input
+            type="checkbox"
+            checked={config.stopAtFolderNotes}
+            on:change={toggleStopAtFolderNotes}
+          />
           Stop at folder notes
         </label>
         <label class="wp-toggle">
-          <input type="checkbox" checked={config.autoCreateFolderNotes} on:change={toggleAutoCreateFolderNotes} />
+          <input
+            type="checkbox"
+            checked={config.autoCreateFolderNotes}
+            on:change={toggleAutoCreateFolderNotes}
+          />
           Auto-create folder notes
         </label>
         <label class="wp-toggle">
-          <input type="checkbox" checked={config.includeExtension} on:change={toggleIncludeExtension} />
+          <input
+            type="checkbox"
+            checked={config.includeExtension}
+            on:change={toggleIncludeExtension}
+          />
           Include .md in links
         </label>
       </div>
@@ -252,35 +284,193 @@
 </div>
 
 <style>
-  .wp-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .wp-body { flex: 1; overflow-y: auto; padding: 8px 12px; display: flex; flex-direction: column; gap: 10px; }
-  .wp-stats { display: flex; gap: 12px; flex-wrap: wrap; padding: 6px 0; }
-  .wp-stat { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); }
-  .wp-actions { display: flex; gap: 6px; }
-  .wp-btn { display: flex; align-items: center; gap: 5px; padding: 5px 10px; font-size: var(--font-ui-smaller); border: 1px solid var(--border-color); border-radius: 4px; background: var(--background-secondary); color: var(--text-normal); cursor: pointer; flex: 1; justify-content: center; }
-  .wp-btn:hover:not(:disabled) { background: var(--background-modifier-hover); }
-  .wp-btn:disabled { opacity: 0.5; cursor: default; }
-  .wp-btn-primary { background: var(--interactive-accent); color: var(--text-on-accent, #fff); border-color: var(--interactive-accent); }
-  .wp-btn-primary:hover:not(:disabled) { opacity: 0.9; }
-  .wp-section { display: flex; flex-direction: column; gap: 6px; }
-  .wp-section-title { font-size: 11px; font-weight: var(--font-semibold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 0; }
-  .wp-note-info { display: flex; align-items: center; gap: 5px; font-size: var(--font-ui-small); color: var(--text-normal); margin: 0; }
-  .wp-badge { font-size: 10px; padding: 1px 5px; border-radius: 8px; background: var(--background-modifier-hover); color: var(--text-muted); }
-  .wp-badge-waypoint { background: var(--interactive-accent); color: var(--text-on-accent, #fff); }
-  .wp-badge-landmark { background: var(--text-accent); color: #fff; }
-  .wp-insert-actions { display: flex; gap: 4px; }
-  .wp-btn-sm { display: flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 11px; border: 1px solid var(--border-color); border-radius: 3px; background: var(--background-primary); color: var(--text-normal); cursor: pointer; }
-  .wp-btn-sm:hover:not(:disabled) { background: var(--background-modifier-hover); }
-  .wp-btn-sm:disabled { opacity: 0.5; }
-  .wp-create-options { display: flex; gap: 8px; }
-  .wp-radio { display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--text-muted); cursor: pointer; }
-  .wp-create-folder { display: flex; gap: 4px; }
-  .wp-input { flex: 1; padding: 4px 8px; font-size: var(--font-ui-smaller); border: 1px solid var(--border-color); border-radius: 3px; background: var(--background-primary); color: var(--text-normal); outline: none; }
-  .wp-input:focus { border-color: var(--interactive-accent); }
-  .wp-fn-list { display: flex; flex-direction: column; gap: 2px; max-height: 200px; overflow-y: auto; }
-  .wp-fn-item { display: flex; align-items: center; gap: 5px; padding: 4px 8px; font-size: var(--font-ui-small); border: none; border-radius: 3px; background: transparent; color: var(--text-normal); cursor: pointer; text-align: left; }
-  .wp-fn-item:hover { background: var(--background-modifier-hover); }
-  .wp-fn-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .wp-settings { padding: 8px; background: var(--background-secondary); border-radius: 4px; }
-  .wp-toggle { display: flex; align-items: center; gap: 6px; font-size: var(--font-ui-smaller); color: var(--text-normal); cursor: pointer; }
+  .wp-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .wp-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wp-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 6px 0;
+  }
+  .wp-stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .wp-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .wp-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-size: var(--font-ui-smaller);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--background-secondary);
+    color: var(--text-normal);
+    cursor: pointer;
+    flex: 1;
+    justify-content: center;
+  }
+  .wp-btn:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
+  .wp-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .wp-btn-primary {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+    border-color: var(--interactive-accent);
+  }
+  .wp-btn-primary:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  .wp-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .wp-section-title {
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+  .wp-note-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
+    margin: 0;
+  }
+  .wp-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    background: var(--background-modifier-hover);
+    color: var(--text-muted);
+  }
+  .wp-badge-waypoint {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+  }
+  .wp-badge-landmark {
+    background: var(--text-accent);
+    color: #fff;
+  }
+  .wp-insert-actions {
+    display: flex;
+    gap: 4px;
+  }
+  .wp-btn-sm {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    cursor: pointer;
+  }
+  .wp-btn-sm:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
+  .wp-btn-sm:disabled {
+    opacity: 0.5;
+  }
+  .wp-create-options {
+    display: flex;
+    gap: 8px;
+  }
+  .wp-radio {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .wp-create-folder {
+    display: flex;
+    gap: 4px;
+  }
+  .wp-input {
+    flex: 1;
+    padding: 4px 8px;
+    font-size: var(--font-ui-smaller);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    outline: none;
+  }
+  .wp-input:focus {
+    border-color: var(--interactive-accent);
+  }
+  .wp-fn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .wp-fn-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    font-size: var(--font-ui-small);
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--text-normal);
+    cursor: pointer;
+    text-align: left;
+  }
+  .wp-fn-item:hover {
+    background: var(--background-modifier-hover);
+  }
+  .wp-fn-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wp-settings {
+    padding: 8px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+  }
+  .wp-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-ui-smaller);
+    color: var(--text-normal);
+    cursor: pointer;
+  }
 </style>

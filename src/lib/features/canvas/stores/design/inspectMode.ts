@@ -37,7 +37,7 @@ export const spacing = derived(
 
 /** Toggle inspect mode on/off. */
 export function toggleInspect(): void {
-  inspectEnabled.update(v => !v);
+  inspectEnabled.update((v) => !v);
   if (!inspectEnabled) {
     measureFrom.set(null);
     measureTo.set(null);
@@ -46,7 +46,7 @@ export function toggleInspect(): void {
 
 /** Register element bounds for measurement. */
 export function registerBounds(elementId: string, bounds: ElementBounds): void {
-  elementBoundsCache.update(map => {
+  elementBoundsCache.update((map) => {
     const next = new Map(map);
     next.set(elementId, bounds);
     return next;

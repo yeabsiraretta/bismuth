@@ -13,13 +13,12 @@
     toggleRevealAll,
     toggleEnabled,
   } from '../stores/propertyStore';
-  import {
-    resolveCoverSrc,
-    getCoverDimensions,
-    resolveIcon,
-  } from '../services/propertyDisplay';
+  import { resolveCoverSrc, getCoverDimensions, resolveIcon } from '../services/propertyDisplay';
 
-  interface NoteProperty { key: string; value: unknown; }
+  interface NoteProperty {
+    key: string;
+    value: unknown;
+  }
 
   let properties: NoteProperty[] = [];
   let frontmatter: Record<string, unknown> = {};
@@ -45,7 +44,10 @@
   $: coverDims = getCoverDimensions(config.cover.defaultShape, config.cover.shapeWidths);
   $: resolvedIcon = iconValue ? resolveIcon(iconValue) : null;
 
-  function extractProperties(content: string): { props: NoteProperty[]; fm: Record<string, unknown> } {
+  function extractProperties(content: string): {
+    props: NoteProperty[];
+    fm: Record<string, unknown>;
+  } {
     if (!content.startsWith('---')) return { props: [], fm: {} };
     const end = content.indexOf('---', 3);
     if (end === -1) return { props: [], fm: {} };
@@ -63,7 +65,10 @@
         else if (/^-?\d+$/.test(raw)) value = parseInt(raw, 10);
         else if (/^-?\d+\.\d+$/.test(raw)) value = parseFloat(raw);
         else if (raw.startsWith('[') && raw.endsWith(']')) {
-          value = raw.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+          value = raw
+            .slice(1, -1)
+            .split(',')
+            .map((s) => s.trim().replace(/^['"]|['"]$/g, ''));
         } else {
           value = raw.replace(/^['"]|['"]$/g, '');
         }
@@ -77,8 +82,10 @@
   function buildContent(props: NoteProperty[], origContent: string): string {
     const body = getBody(origContent);
     if (props.length === 0) return body;
-    const fmLines = props.map(p => {
-      const v = Array.isArray(p.value) ? `[${(p.value as string[]).join(', ')}]` : String(p.value ?? '');
+    const fmLines = props.map((p) => {
+      const v = Array.isArray(p.value)
+        ? `[${(p.value as string[]).join(', ')}]`
+        : String(p.value ?? '');
       return `${p.key}: ${v}`;
     });
     return `---\n${fmLines.join('\n')}\n---\n${body}`;
@@ -94,7 +101,7 @@
   async function saveProperties(updated: NoteProperty[]) {
     if (!$activeNote) return;
     properties = updated;
-    frontmatter = Object.fromEntries(updated.map(p => [p.key, p.value]));
+    frontmatter = Object.fromEntries(updated.map((p) => [p.key, p.value]));
     const newContent = buildContent(updated, $activeNote.content);
     try {
       await writeNote($activeNote.path, newContent);
@@ -105,12 +112,12 @@
   }
 
   function handleValueChange(key: string, newVal: string) {
-    const updated = properties.map(p => p.key === key ? { ...p, value: newVal } : p);
+    const updated = properties.map((p) => (p.key === key ? { ...p, value: newVal } : p));
     saveProperties(updated);
   }
 
   function handleDelete(key: string) {
-    saveProperties(properties.filter(p => p.key !== key));
+    saveProperties(properties.filter((p) => p.key !== key));
   }
 </script>
 
@@ -131,7 +138,11 @@
   </PanelHeader>
 
   {#if !$activeNote}
-    <EmptyState icon="file-text" title="No note open" description="Open a note to see its properties" />
+    <EmptyState
+      icon="file-text"
+      title="No note open"
+      description="Open a note to see its properties"
+    />
   {:else}
     <div class="pp-body">
       <!-- Banner -->
@@ -173,7 +184,12 @@
             style:height={coverDims.height === 'auto' ? 'auto' : `${coverDims.height}px`}
             style:border-radius={coverDims.borderRadius}
           >
-            <img src={coverSrc} alt="cover" class="pp-cover-img" style:border-radius={coverDims.borderRadius} />
+            <img
+              src={coverSrc}
+              alt="cover"
+              class="pp-cover-img"
+              style:border-radius={coverDims.borderRadius}
+            />
           </div>
         {/if}
 
@@ -194,18 +210,79 @@
 </div>
 
 <style>
-  .pp-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .pp-body { flex: 1; overflow-y: auto; }
-  .pp-banner { position: relative; width: 100%; overflow: hidden; }
-  .pp-banner-img { width: 100%; height: 100%; object-fit: cover; }
-  .pp-icon-on-banner { position: absolute; bottom: -16px; left: 16px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--background-primary); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-  .pp-icon-standalone { padding: 12px 16px 4px; display: flex; align-items: center; }
-  .pp-icon-lg { width: 32px; height: 32px; object-fit: cover; border-radius: 6px; }
-  .pp-icon-emoji-lg { font-size: 28px; line-height: 1; }
-  .pp-content { display: flex; gap: 12px; padding: 12px; }
-  .pp-content.pp-has-cover { flex-direction: row; }
-  .pp-content:not(.pp-has-cover) { flex-direction: column; }
-  .pp-cover { flex-shrink: 0; overflow: hidden; }
-  .pp-cover-img { width: 100%; height: 100%; object-fit: cover; }
-  .pp-props-list { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .pp-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .pp-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .pp-banner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .pp-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pp-icon-on-banner {
+    position: absolute;
+    bottom: -16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-primary);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  .pp-icon-standalone {
+    padding: 12px 16px 4px;
+    display: flex;
+    align-items: center;
+  }
+  .pp-icon-lg {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .pp-icon-emoji-lg {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .pp-content {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+  }
+  .pp-content.pp-has-cover {
+    flex-direction: row;
+  }
+  .pp-content:not(.pp-has-cover) {
+    flex-direction: column;
+  }
+  .pp-cover {
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .pp-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pp-props-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
 </style>

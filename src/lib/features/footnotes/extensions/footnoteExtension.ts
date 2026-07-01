@@ -39,8 +39,8 @@ function footnoteCompletions(context: CompletionContext): CompletionResult | nul
   const ids = getFootnoteIds(doc);
 
   const options = ids
-    .filter(id => id.toLowerCase().startsWith(prefix.toLowerCase()))
-    .map(id => ({
+    .filter((id) => id.toLowerCase().startsWith(prefix.toLowerCase()))
+    .map((id) => ({
       label: `[^${id}]`,
       apply: `[^${id}]`,
       type: 'text' as const,
@@ -81,7 +81,9 @@ const footnoteClickPlugin = ViewPlugin.fromClass(
         jumpToDetail(this.view, id);
       }
     }
-    update(_update: ViewUpdate) { /* no-op */ }
+    update(_update: ViewUpdate) {
+      /* no-op */
+    }
     destroy() {
       this.view.dom.removeEventListener('click', this.handleClick);
     }

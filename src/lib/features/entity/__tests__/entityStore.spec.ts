@@ -57,7 +57,7 @@ describe('entityStore — service layer (CRUD operations)', () => {
 
   describe('getTypeDefinition', () => {
     it('retrieves a specific type definition by name', async () => {
-      const typeDef = DEFAULT_PORTENT_TYPES.find(t => t.name === 'Project')!;
+      const typeDef = DEFAULT_PORTENT_TYPES.find((t) => t.name === 'Project')!;
       vi.mocked(invoke).mockResolvedValue(typeDef);
 
       const result = await entityService.getTypeDefinition('Project');
@@ -84,12 +84,20 @@ describe('entityStore — service layer (CRUD operations)', () => {
 
       const result = await entityService.getEntityRelationships('/vault/project.md');
 
-      expect(invoke).toHaveBeenCalledWith('get_entity_relationships', { notePath: '/vault/project.md' });
+      expect(invoke).toHaveBeenCalledWith('get_entity_relationships', {
+        notePath: '/vault/project.md',
+      });
       expect(result.relatedTo).toHaveLength(1);
     });
 
     it('returns empty relationship arrays for an unlinked note', async () => {
-      vi.mocked(invoke).mockResolvedValue({ type: null, lifecycle: 'captured', belongsTo: [], relatedTo: [], backlinks: [] });
+      vi.mocked(invoke).mockResolvedValue({
+        type: null,
+        lifecycle: 'captured',
+        belongsTo: [],
+        relatedTo: [],
+        backlinks: [],
+      });
 
       const result = await entityService.getEntityRelationships('/vault/new.md');
 
@@ -132,7 +140,10 @@ describe('entityStore — service layer (CRUD operations)', () => {
 
       await entityService.setLifecycleState('/vault/n.md', 'captured');
 
-      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', { path: '/vault/n.md', state: 'captured' });
+      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', {
+        path: '/vault/n.md',
+        state: 'captured',
+      });
     });
 
     it('sets lifecycle state to organized', async () => {
@@ -140,7 +151,10 @@ describe('entityStore — service layer (CRUD operations)', () => {
 
       await entityService.setLifecycleState('/vault/n.md', 'organized');
 
-      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', { path: '/vault/n.md', state: 'organized' });
+      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', {
+        path: '/vault/n.md',
+        state: 'organized',
+      });
     });
 
     it('sets lifecycle state to archived', async () => {
@@ -148,7 +162,10 @@ describe('entityStore — service layer (CRUD operations)', () => {
 
       await entityService.setLifecycleState('/vault/n.md', 'archived');
 
-      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', { path: '/vault/n.md', state: 'archived' });
+      expect(invoke).toHaveBeenCalledWith('set_lifecycle_state', {
+        path: '/vault/n.md',
+        state: 'archived',
+      });
     });
   });
 });
@@ -163,7 +180,7 @@ describe('entityStore — derived type logic', () => {
   // ---------------------------------------------------------------------------
 
   it('DEFAULT_PORTENT_TYPES contains all 8 expected types', () => {
-    const names = DEFAULT_PORTENT_TYPES.map(t => t.name);
+    const names = DEFAULT_PORTENT_TYPES.map((t) => t.name);
     expect(names).toContain('Project');
     expect(names).toContain('Area');
     expect(names).toContain('Resource');
@@ -176,7 +193,7 @@ describe('entityStore — derived type logic', () => {
   });
 
   it('each default type has a non-empty icon and color', () => {
-    DEFAULT_PORTENT_TYPES.forEach(t => {
+    DEFAULT_PORTENT_TYPES.forEach((t) => {
       expect(t.icon.length).toBeGreaterThan(0);
       expect(t.color.length).toBeGreaterThan(0);
     });

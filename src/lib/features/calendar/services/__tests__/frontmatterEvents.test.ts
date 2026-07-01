@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseFrontmatterDate, computeDuration,
-  extractFrontmatterEvent, extractAllFrontmatterEvents,
+  parseFrontmatterDate,
+  computeDuration,
+  extractFrontmatterEvent,
+  extractAllFrontmatterEvents,
   applySmartCategories,
 } from '../frontmatterEvents';
 import type { NoteWithFrontmatter } from '../frontmatterEvents';
@@ -123,7 +125,10 @@ describe('extractAllFrontmatterEvents', () => {
       { path: 'cal/a.md', title: 'A', frontmatter: { Date: '2025-06-10' } },
       { path: 'other/b.md', title: 'B', frontmatter: { Date: '2025-06-11' } },
     ];
-    const events = extractAllFrontmatterEvents(notes, { ...DEFAULT_FM_EVENT_CONFIG, folder: 'cal/' });
+    const events = extractAllFrontmatterEvents(notes, {
+      ...DEFAULT_FM_EVENT_CONFIG,
+      folder: 'cal/',
+    });
     expect(events).toHaveLength(1);
     expect(events[0].notePath).toBe('cal/a.md');
   });
@@ -132,8 +137,24 @@ describe('extractAllFrontmatterEvents', () => {
 describe('applySmartCategories', () => {
   it('auto-assigns categories based on title patterns', () => {
     const events: CalendarEvent[] = [
-      { id: '1', title: 'Team standup', type: 'event', date: '2025-06-10', startMinute: 540, durationMinutes: 30, completed: false },
-      { id: '2', title: 'Gym session', type: 'event', date: '2025-06-10', startMinute: 700, durationMinutes: 60, completed: false },
+      {
+        id: '1',
+        title: 'Team standup',
+        type: 'event',
+        date: '2025-06-10',
+        startMinute: 540,
+        durationMinutes: 30,
+        completed: false,
+      },
+      {
+        id: '2',
+        title: 'Gym session',
+        type: 'event',
+        date: '2025-06-10',
+        startMinute: 700,
+        durationMinutes: 60,
+        completed: false,
+      },
     ];
     const rules = [
       { pattern: 'standup', categoryId: 'work' },
@@ -146,7 +167,16 @@ describe('applySmartCategories', () => {
 
   it('does not override existing category', () => {
     const events: CalendarEvent[] = [
-      { id: '1', title: 'Team standup', type: 'event', date: '2025-06-10', startMinute: 540, durationMinutes: 30, completed: false, categoryId: 'personal' },
+      {
+        id: '1',
+        title: 'Team standup',
+        type: 'event',
+        date: '2025-06-10',
+        startMinute: 540,
+        durationMinutes: 30,
+        completed: false,
+        categoryId: 'personal',
+      },
     ];
     const result = applySmartCategories(events, [{ pattern: 'standup', categoryId: 'work' }]);
     expect(result[0].categoryId).toBe('personal');
@@ -154,7 +184,15 @@ describe('applySmartCategories', () => {
 
   it('returns unchanged with no rules', () => {
     const events: CalendarEvent[] = [
-      { id: '1', title: 'Hello', type: 'event', date: '2025-06-10', startMinute: null, durationMinutes: null, completed: false },
+      {
+        id: '1',
+        title: 'Hello',
+        type: 'event',
+        date: '2025-06-10',
+        startMinute: null,
+        durationMinutes: null,
+        completed: false,
+      },
     ];
     expect(applySmartCategories(events, [])).toEqual(events);
   });

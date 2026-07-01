@@ -17,15 +17,12 @@ import type { EnhancedCopyConfig, RegexRule } from '../types';
 export function transformLinks(text: string, mode: EnhancedCopyConfig['linkMode']): string {
   if (mode === 'keep') return text;
 
-  return text.replace(
-    /\[([^\]]*)\]\(([^)]*)\)/g,
-    (_match, linkText: string, url: string) => {
-      if (mode === 'remove-all') return linkText;
-      // remove-internal: keep external links, strip internal
-      if (/^https?:\/\//i.test(url)) return _match;
-      return linkText;
-    },
-  );
+  return text.replace(/\[([^\]]*)\]\(([^)]*)\)/g, (_match, linkText: string, url: string) => {
+    if (mode === 'remove-all') return linkText;
+    // remove-internal: keep external links, strip internal
+    if (/^https?:\/\//i.test(url)) return _match;
+    return linkText;
+  });
 }
 
 /**
@@ -59,7 +56,7 @@ export function transformFootnotes(text: string, mode: EnhancedCopyConfig['footn
         footnoteMap.set(fnId, counter);
       }
       return `[^${footnoteMap.get(fnId)}]`;
-    },
+    }
   );
 
   // Also fix footnote definition lines at the end
@@ -68,7 +65,7 @@ export function transformFootnotes(text: string, mode: EnhancedCopyConfig['footn
     (_match, _num: string, fnId: string, content: string) => {
       const idx = footnoteMap.get(fnId) ?? parseInt(_num, 10);
       return `[^${idx}]: ${content.trim()}`;
-    },
+    }
   );
 
   return result;
@@ -92,7 +89,7 @@ export function transformCallouts(text: string, mode: EnhancedCopyConfig['callou
       }
       // blockquote: just keep the title as a blockquote
       return title ? `${prefix}${title}` : prefix.trimEnd();
-    },
+    }
   );
 }
 
@@ -113,7 +110,7 @@ export function convertWikilinks(text: string): string {
     (_match, target: string, alias?: string) => {
       const display = alias || target;
       return `[${display}](${target})`;
-    },
+    }
   );
 }
 

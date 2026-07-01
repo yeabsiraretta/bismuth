@@ -2,7 +2,14 @@
   import Icon from '@/components/icons/Icon.svelte';
   import EmptyState from '@/components/ui/feedback/EmptyState.svelte';
   import { onMount } from 'svelte';
-  import { loadTags, loadTagStats, handleRename, handleMerge, handleCreatePage, filterTags } from './tagSettingsLogic';
+  import {
+    loadTags,
+    loadTagStats,
+    handleRename,
+    handleMerge,
+    handleCreatePage,
+    filterTags,
+  } from './tagSettingsLogic';
   import type { TagInfo, TagStats } from './tagSettingsLogic';
 
   let tags: TagInfo[] = [];
@@ -22,9 +29,7 @@
     loading = false;
   });
 
-  $: statsSorted = stats
-    ? [...stats.tags].sort((a, b) => b.count - a.count)
-    : [];
+  $: statsSorted = stats ? [...stats.tags].sort((a, b) => b.count - a.count) : [];
 
   $: filteredTags = filterTags(tags, filter);
 
@@ -68,7 +73,11 @@
   {#if loading}
     <p class="loading">Loading tags...</p>
   {:else if filteredTags.length === 0}
-    <EmptyState icon="tag" title="No tags found" description="Tags from your notes will appear here." />
+    <EmptyState
+      icon="tag"
+      title="No tags found"
+      description="Tags from your notes will appear here."
+    />
   {:else}
     <div class="tag-list">
       {#each filteredTags as tag}
@@ -78,7 +87,10 @@
               class="rename-input"
               type="text"
               bind:value={editValue}
-              on:keydown={(e) => { if (e.key === 'Enter') confirmRename(tag.name); if (e.key === 'Escape') editingTag = null; }}
+              on:keydown={(e) => {
+                if (e.key === 'Enter') confirmRename(tag.name);
+                if (e.key === 'Escape') editingTag = null;
+              }}
               use:focusOnMount
             />
           {:else}
@@ -106,7 +118,8 @@
       <button class="stats-toggle" on:click={() => (showStats = !showStats)}>
         <Icon name={showStats ? 'chevron-down' : 'chevron-right'} size={12} />
         <span>Stats</span>
-        <span class="stats-summary">{stats.total_tags} tags · {stats.total_tagged_notes} notes</span>
+        <span class="stats-summary">{stats.total_tags} tags · {stats.total_tagged_notes} notes</span
+        >
       </button>
 
       {#if showStats}
@@ -140,8 +153,16 @@
     justify-content: space-between;
   }
 
-  .tag-header h3 { font-size: var(--font-ui-large); font-weight: var(--font-semibold); color: var(--text-normal); margin: 0; }
-  .tag-count { font-size: var(--font-ui-small); color: var(--text-muted); }
+  .tag-header h3 {
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+    margin: 0;
+  }
+  .tag-count {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+  }
 
   .search-bar {
     display: flex;
@@ -185,7 +206,9 @@
     transition: background 0.1s;
   }
 
-  .tag-row:hover { background: var(--background-modifier-hover); }
+  .tag-row:hover {
+    background: var(--background-modifier-hover);
+  }
 
   .tag-name {
     flex: 1;
@@ -218,7 +241,9 @@
     transition: opacity 0.15s;
   }
 
-  .tag-row:hover .tag-actions { opacity: 1; }
+  .tag-row:hover .tag-actions {
+    opacity: 1;
+  }
 
   .tag-actions button {
     display: flex;
@@ -257,7 +282,9 @@
     text-align: left;
   }
 
-  .stats-toggle:hover { color: var(--text-normal); }
+  .stats-toggle:hover {
+    color: var(--text-normal);
+  }
 
   .stats-summary {
     margin-left: auto;
@@ -283,9 +310,13 @@
     font-size: var(--font-ui-smaller);
   }
 
-  .stats-row:hover { background: var(--background-modifier-hover); }
+  .stats-row:hover {
+    background: var(--background-modifier-hover);
+  }
 
-  .stats-name { color: var(--text-normal); }
+  .stats-name {
+    color: var(--text-normal);
+  }
   .stats-count {
     font-size: var(--font-ui-badge);
     color: var(--text-faint);
@@ -293,6 +324,10 @@
     text-align: right;
   }
 
-  .stats-row.orphaned .stats-name { color: var(--text-faint); }
-  .stats-row.orphaned .stats-count { opacity: 0.5; }
+  .stats-row.orphaned .stats-name {
+    color: var(--text-faint);
+  }
+  .stats-row.orphaned .stats-count {
+    opacity: 0.5;
+  }
 </style>

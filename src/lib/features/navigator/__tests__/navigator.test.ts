@@ -54,14 +54,16 @@ const defaultState = {
 describe('navigator store', () => {
   beforeEach(() => {
     navigatorStore.set({ ...defaultState });
-    profiles.set([{
-      id: 'default',
-      name: 'Default',
-      hiddenFolderGlobs: ['.git', 'node_modules', '.bismuth'],
-      hiddenTagPatterns: [],
-      sortPreference: 'name',
-      sortDirection: 'asc',
-    }]);
+    profiles.set([
+      {
+        id: 'default',
+        name: 'Default',
+        hiddenFolderGlobs: ['.git', 'node_modules', '.bismuth'],
+        hiddenTagPatterns: [],
+        sortPreference: 'name',
+        sortDirection: 'asc',
+      },
+    ]);
     vi.clearAllMocks();
   });
 

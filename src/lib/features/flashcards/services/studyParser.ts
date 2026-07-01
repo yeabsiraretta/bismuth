@@ -97,8 +97,8 @@ export function parseAllCards(notePath: string, content: string): Flashcard[] {
   const standard = parseFlashcards(notePath, content).cards;
   const studyVault = parseStudyVaultCards(notePath, content);
   // Deduplicate by card id
-  const seen = new Set(standard.map(c => c.id));
-  const unique = studyVault.filter(c => !seen.has(c.id));
+  const seen = new Set(standard.map((c) => c.id));
+  const unique = studyVault.filter((c) => !seen.has(c.id));
   return [...standard, ...unique];
 }
 

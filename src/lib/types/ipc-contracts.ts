@@ -19,8 +19,7 @@ export type { TemplateCommands } from './ipc/template-commands';
 export type { ThemeCommands } from './ipc/theme-commands';
 
 /** Union of all IPC command maps */
-export type IpcCommandMap =
-  import('./ipc/vault-commands').VaultCommands &
+export type IpcCommandMap = import('./ipc/vault-commands').VaultCommands &
   import('./ipc/canvas-commands').CanvasCommands &
   import('./ipc/content-commands').ContentCommands &
   import('./ipc/git-commands').GitCommands &

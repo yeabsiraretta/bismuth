@@ -28,7 +28,7 @@ export const isLoading: Writable<boolean> = writable(false);
  */
 export const currentVersion = derived(
   activeVersionHistory,
-  ($h) => ($h?.entries[0]?.version ?? $h?.currentVersion ?? null),
+  ($h) => $h?.entries[0]?.version ?? $h?.currentVersion ?? null
 );
 
 /**

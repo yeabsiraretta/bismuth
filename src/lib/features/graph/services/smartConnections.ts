@@ -5,7 +5,13 @@
  */
 
 import { getSimilarNotes } from './graph';
-import type { GraphNode, GraphEdge, SmartConnection, SmartGraphSettings, ConnectionMode } from '../types';
+import type {
+  GraphNode,
+  GraphEdge,
+  SmartConnection,
+  SmartGraphSettings,
+  ConnectionMode,
+} from '../types';
 import { log } from '@/utils/logger';
 import { notes } from '@/stores/vault/vault';
 import { get } from 'svelte/store';
@@ -30,7 +36,7 @@ export const DEFAULT_SMART_SETTINGS: SmartGraphSettings = {
 export async function getSmartConnections(
   notePath: string,
   topK: number = 20,
-  mode: ConnectionMode = 'note',
+  mode: ConnectionMode = 'note'
 ): Promise<SmartConnection[]> {
   try {
     const results = await getSimilarNotes(notePath, topK);
@@ -66,7 +72,7 @@ export function buildSmartGraph(
   centerPath: string,
   centerLabel: string,
   connections: SmartConnection[],
-  settings: SmartGraphSettings,
+  settings: SmartGraphSettings
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const filtered = connections.filter((c) => c.score >= settings.minRelevance);
 
@@ -89,7 +95,7 @@ export function buildSmartGraph(
 function buildGraphFromConnections(
   centerPath: string,
   centerLabel: string,
-  connections: SmartConnection[],
+  connections: SmartConnection[]
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const nodes: GraphNode[] = [
     {
@@ -125,17 +131,14 @@ function buildGraphFromConnections(
 export function getRelevanceThickness(
   relevance: number,
   minThickness: number,
-  maxThickness: number,
+  maxThickness: number
 ): number {
   const clamped = Math.max(0, Math.min(1, relevance));
   return minThickness + clamped * (maxThickness - minThickness);
 }
 
 /** Compute ideal link distance inversely proportional to relevance. */
-export function getRelevanceDistance(
-  relevance: number,
-  baseLinkDistance: number,
-): number {
+export function getRelevanceDistance(relevance: number, baseLinkDistance: number): number {
   const clamped = Math.max(0.1, Math.min(1, relevance));
   return baseLinkDistance * (1.2 - clamped);
 }

@@ -73,7 +73,10 @@ describe('tag services', () => {
       const paths = ['/vault/note1.md', '/vault/note2.md'];
       vi.mocked(invoke).mockResolvedValue(paths);
       const result = await getNotesByTag('project', '/vault');
-      expect(invoke).toHaveBeenCalledWith('get_notes_by_tag', { tag: 'project', vaultPath: '/vault' });
+      expect(invoke).toHaveBeenCalledWith('get_notes_by_tag', {
+        tag: 'project',
+        vaultPath: '/vault',
+      });
       expect(result).toEqual(paths);
     });
 
@@ -130,7 +133,11 @@ describe('tag services', () => {
     });
 
     it('reports merge=false for plain rename', async () => {
-      vi.mocked(invoke).mockResolvedValue({ notes_modified: 1, was_merge: false, children_renamed: 0 });
+      vi.mocked(invoke).mockResolvedValue({
+        notes_modified: 1,
+        was_merge: false,
+        children_renamed: 0,
+      });
       const result = await renameTag('a', 'b');
       expect(result.was_merge).toBe(false);
     });
@@ -146,7 +153,10 @@ describe('tag services', () => {
       const expected: RenameResult = { notes_modified: 7, was_merge: true, children_renamed: 0 };
       vi.mocked(invoke).mockResolvedValue(expected);
       const result = await mergeTags('source-tag', 'target-tag');
-      expect(invoke).toHaveBeenCalledWith('merge_tags', { sourceTag: 'source-tag', targetTag: 'target-tag' });
+      expect(invoke).toHaveBeenCalledWith('merge_tags', {
+        sourceTag: 'source-tag',
+        targetTag: 'target-tag',
+      });
       expect(result.was_merge).toBe(true);
       expect(result.notes_modified).toBe(7);
     });
@@ -167,7 +177,9 @@ describe('tag services', () => {
 
     it('throws on failure', async () => {
       vi.mocked(invoke).mockRejectedValue(new Error('no notes'));
-      await expect(getRandomNoteWithTag('empty-tag')).rejects.toThrow('Failed to get random note with tag');
+      await expect(getRandomNoteWithTag('empty-tag')).rejects.toThrow(
+        'Failed to get random note with tag'
+      );
     });
   });
 });

@@ -51,10 +51,25 @@ Minimal scaffold:
 </div>
 
 <style>
-  .my-panel { display: flex; flex-direction: column; height: 100%; }
-  .panel-header { padding: var(--spacing-s) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .panel-title { margin: 0; font-size: var(--font-ui-small); font-weight: 600; }
-  .panel-body { flex: 1; overflow: auto; padding: var(--spacing-m); }
+  .my-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .panel-header {
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .panel-title {
+    margin: 0;
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+  }
+  .panel-body {
+    flex: 1;
+    overflow: auto;
+    padding: var(--spacing-m);
+  }
 </style>
 ```
 
@@ -79,10 +94,10 @@ Open `src/lib/stores/layout/layout.ts`. Add an entry to `DEFAULT_LEFT_TABS` (or 
 import type { SidebarTab } from '@/types/layout';
 
 export const DEFAULT_LEFT_TABS: SidebarTab[] = [
-  { id: 'files',      icon: 'folder',  label: 'Files',      order: 10 },
-  { id: 'search',     icon: 'search',  label: 'Search',     order: 20 },
-  { id: 'graph',      icon: 'graph',   label: 'Graph',      order: 30 },
-  { id: 'my-panel',   icon: 'puzzle',  label: 'My Panel',   order: 40 }, // add this
+  { id: 'files', icon: 'folder', label: 'Files', order: 10 },
+  { id: 'search', icon: 'search', label: 'Search', order: 20 },
+  { id: 'graph', icon: 'graph', label: 'Graph', order: 30 },
+  { id: 'my-panel', icon: 'puzzle', label: 'My Panel', order: 40 }, // add this
 ];
 ```
 
@@ -109,7 +124,7 @@ Open `src/lib/components/sidebar/LeftSidebarContent.svelte`. Find the tab-conten
 {/if}
 ```
 
-The async import pattern (`{#await import(...)}`  ) keeps the sidebar JS bundle lean — the panel module is only fetched when the user first opens that tab.
+The async import pattern (`{#await import(...)}` ) keeps the sidebar JS bundle lean — the panel module is only fetched when the user first opens that tab.
 
 ---
 

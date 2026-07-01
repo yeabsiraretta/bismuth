@@ -7,18 +7,18 @@
    * Does NOT import 'tone'.
    */
   import { activeMusicDoc, updateTrack } from '../stores/musicStore';
-  import {
-    connectTrackToOutput,
-    setTrackPan,
-    muteTrack,
-  } from '../services/audioContext';
+  import { connectTrackToOutput, setTrackPan, muteTrack } from '../services/audioContext';
   import type { Track } from '../types/music';
   import { log } from '@/utils/logger';
 
-  export let onVolumeChange: ((detail: { trackId: string; volume: number }) => void) | undefined = undefined;
-  export let onPanChange: ((detail: { trackId: string; pan: number }) => void) | undefined = undefined;
-  export let onMuteChange: ((detail: { trackId: string; muted: boolean }) => void) | undefined = undefined;
-  export let onSoloChange: ((detail: { trackId: string; soloed: boolean }) => void) | undefined = undefined;
+  export let onVolumeChange: ((detail: { trackId: string; volume: number }) => void) | undefined =
+    undefined;
+  export let onPanChange: ((detail: { trackId: string; pan: number }) => void) | undefined =
+    undefined;
+  export let onMuteChange: ((detail: { trackId: string; muted: boolean }) => void) | undefined =
+    undefined;
+  export let onSoloChange: ((detail: { trackId: string; soloed: boolean }) => void) | undefined =
+    undefined;
 
   $: tracks = $activeMusicDoc?.tracks ?? [];
 
@@ -135,8 +135,8 @@
               <span
                 class="name-label"
                 on:dblclick={() => startEdit(track)}
-                title="Double-click to rename"
-              >{track.name}</span>
+                title="Double-click to rename">{track.name}</span
+              >
             {/if}
           </div>
 
@@ -184,16 +184,16 @@
               on:click={() => toggleMute(track)}
               aria-pressed={track.muted}
               aria-label="Mute {track.name}"
-              title="Mute"
-            >M</button>
+              title="Mute">M</button
+            >
             <button
               class="ms-btn solo-btn"
               class:active={track.soloed}
               on:click={() => toggleSolo(track)}
               aria-pressed={track.soloed}
               aria-label="Solo {track.name}"
-              title="Solo"
-            >S</button>
+              title="Solo">S</button
+            >
           </div>
         </div>
       {/each}
@@ -210,68 +210,153 @@
     max-height: 220px;
   }
   .mixer-empty {
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
     color: var(--text-muted);
     font-size: var(--font-ui-small);
     padding: var(--spacing-m);
   }
   .mixer-scroll {
-    display: flex; flex-direction: row; align-items: stretch;
-    gap: 1px; height: 100%;
-    overflow-x: auto; overflow-y: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 1px;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     padding: var(--spacing-xs);
   }
   .track-channel {
-    display: flex; flex-direction: column; align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: var(--spacing-xs);
-    min-width: 72px; max-width: 80px;
+    min-width: 72px;
+    max-width: 80px;
     padding: var(--spacing-xs);
     background: var(--background-primary);
     border-radius: var(--radius-s);
     border: 1px solid var(--background-modifier-border);
     transition: opacity 0.15s;
   }
-  .track-channel.muted { opacity: 0.45; }
-  .track-channel.soloed { border-color: var(--interactive-accent); }
-  .color-row { display: flex; justify-content: center; }
-  .color-swatch { width: 24px; height: 16px; border: none; border-radius: 2px; padding: 0; cursor: pointer; background: none; }
-  .name-row { width: 100%; text-align: center; overflow: hidden; }
+  .track-channel.muted {
+    opacity: 0.45;
+  }
+  .track-channel.soloed {
+    border-color: var(--interactive-accent);
+  }
+  .color-row {
+    display: flex;
+    justify-content: center;
+  }
+  .color-swatch {
+    width: 24px;
+    height: 16px;
+    border: none;
+    border-radius: 2px;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+  }
+  .name-row {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+  }
   .name-label {
     font-size: var(--font-ui-small);
     color: var(--text-normal);
-    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    cursor: text; user-select: none;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: text;
+    user-select: none;
   }
   .name-input {
-    width: 100%; font-size: var(--font-ui-small);
+    width: 100%;
+    font-size: var(--font-ui-small);
     background: var(--background-modifier-hover);
     border: 1px solid var(--interactive-accent);
-    border-radius: 2px; color: var(--text-normal);
-    padding: 1px 4px; text-align: center;
+    border-radius: 2px;
+    color: var(--text-normal);
+    padding: 1px 4px;
+    text-align: center;
   }
-  .fader-row { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+  .fader-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+  }
   .volume-fader {
-    appearance: slider-vertical; -webkit-appearance: slider-vertical;
-    width: 20px; height: 80px; cursor: pointer;
+    appearance: slider-vertical;
+    -webkit-appearance: slider-vertical;
+    width: 20px;
+    height: 80px;
+    cursor: pointer;
     accent-color: var(--interactive-accent);
   }
-  .fader-value { font-size: 10px; color: var(--text-muted); }
-  .pan-row { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-  .pan-label { font-size: 10px; color: var(--text-muted); }
-  .pan-knob { width: 60px; cursor: pointer; accent-color: var(--interactive-accent); }
-  .pan-value { font-size: 10px; color: var(--text-muted); min-width: 28px; text-align: center; }
-  .ms-row { display: flex; gap: 4px; }
+  .fader-value {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .pan-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .pan-label {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .pan-knob {
+    width: 60px;
+    cursor: pointer;
+    accent-color: var(--interactive-accent);
+  }
+  .pan-value {
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 28px;
+    text-align: center;
+  }
+  .ms-row {
+    display: flex;
+    gap: 4px;
+  }
   .ms-btn {
-    width: 24px; height: 24px; font-size: 11px; font-weight: 700;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+    font-weight: 700;
     border: 1px solid var(--background-modifier-border);
-    border-radius: var(--radius-s); cursor: pointer;
+    border-radius: var(--radius-s);
+    cursor: pointer;
     background: var(--background-modifier-hover);
     color: var(--text-muted);
-    transition: background 0.1s, color 0.1s;
-    padding: 0; line-height: 1;
+    transition:
+      background 0.1s,
+      color 0.1s;
+    padding: 0;
+    line-height: 1;
   }
-  .ms-btn:hover { background: var(--background-modifier-active-hover); color: var(--text-normal); }
-  .mute-btn.active { background: #f59e0b; color: #000; border-color: #f59e0b; }
-  .solo-btn.active { background: var(--interactive-accent); color: #fff; border-color: var(--interactive-accent); }
+  .ms-btn:hover {
+    background: var(--background-modifier-active-hover);
+    color: var(--text-normal);
+  }
+  .mute-btn.active {
+    background: #f59e0b;
+    color: #000;
+    border-color: #f59e0b;
+  }
+  .solo-btn.active {
+    background: var(--interactive-accent);
+    color: #fff;
+    border-color: var(--interactive-accent);
+  }
 </style>

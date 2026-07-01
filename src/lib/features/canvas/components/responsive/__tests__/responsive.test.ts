@@ -2,13 +2,17 @@
  * T076: Responsive preview tests — breakpoint validation, constraint application.
  */
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_BREAKPOINTS, type Breakpoint, type ResponsiveConstraint } from '@/features/canvas/types/design/responsive';
+import {
+  DEFAULT_BREAKPOINTS,
+  type Breakpoint,
+  type ResponsiveConstraint,
+} from '@/features/canvas/types/design/responsive';
 
 describe('Responsive Preview', () => {
   describe('breakpoint definitions', () => {
     it('default breakpoints cover mobile, tablet, desktop', () => {
       expect(DEFAULT_BREAKPOINTS.length).toBeGreaterThanOrEqual(3);
-      const names = DEFAULT_BREAKPOINTS.map(bp => bp.name.toLowerCase());
+      const names = DEFAULT_BREAKPOINTS.map((bp) => bp.name.toLowerCase());
       expect(names).toContain('mobile');
       expect(names).toContain('tablet');
       expect(names).toContain('desktop');
@@ -60,7 +64,9 @@ describe('Responsive Preview', () => {
 
   describe('breakpoint matching', () => {
     function findBreakpoint(width: number, breakpoints: Breakpoint[]): Breakpoint | null {
-      return breakpoints.find(bp => width >= bp.minWidth && width <= (bp.maxWidth ?? Infinity)) ?? null;
+      return (
+        breakpoints.find((bp) => width >= bp.minWidth && width <= (bp.maxWidth ?? Infinity)) ?? null
+      );
     }
 
     it('finds mobile breakpoint for narrow width', () => {

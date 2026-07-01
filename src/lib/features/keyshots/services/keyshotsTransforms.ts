@@ -12,54 +12,52 @@ import type { EditorView } from '@codemirror/view';
 // ─── Case transforms ──────────────────────────────────────────────────────────
 
 export function transformUppercase(view: EditorView): boolean {
-  return transformSelection(view, t => t.toUpperCase());
+  return transformSelection(view, (t) => t.toUpperCase());
 }
 
 export function transformLowercase(view: EditorView): boolean {
-  return transformSelection(view, t => t.toLowerCase());
+  return transformSelection(view, (t) => t.toLowerCase());
 }
 
 export function transformTitlecase(view: EditorView): boolean {
-  return transformSelection(view, t =>
-    t.replace(/\b\w/g, c => c.toUpperCase()),
-  );
+  return transformSelection(view, (t) => t.replace(/\b\w/g, (c) => c.toUpperCase()));
 }
 
 export function toggleCase(view: EditorView): boolean {
-  return transformSelection(view, t => {
+  return transformSelection(view, (t) => {
     if (t === t.toUpperCase()) return t.toLowerCase();
     return t.toUpperCase();
   });
 }
 
 export function toggleSnakecase(view: EditorView): boolean {
-  return transformSelection(view, t => {
+  return transformSelection(view, (t) => {
     if (t.includes('_')) {
       return t.replace(/_(.)/g, (_, c: string) => c.toUpperCase());
     }
-    return t.replace(/[A-Z]/g, c => '_' + c.toLowerCase())
-            .replace(/^_/, '');
+    return t.replace(/[A-Z]/g, (c) => '_' + c.toLowerCase()).replace(/^_/, '');
   });
 }
 
 export function toggleKebabcase(view: EditorView): boolean {
-  return transformSelection(view, t => {
+  return transformSelection(view, (t) => {
     if (t.includes('-')) {
       return t.replace(/-(.)/g, (_, c: string) => c.toUpperCase());
     }
-    return t.replace(/[A-Z]/g, c => '-' + c.toLowerCase())
-            .replace(/^-/, '');
+    return t.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()).replace(/^-/, '');
   });
 }
 
 // ─── URI encode/decode ─────────────────────────────────────────────────────────
 
 export function encodeUri(view: EditorView): boolean {
-  return transformSelection(view, t => {
+  return transformSelection(view, (t) => {
     try {
       const decoded = decodeURIComponent(t);
       if (decoded !== t) return decoded;
-    } catch { /* not encoded */ }
+    } catch {
+      /* not encoded */
+    }
     return encodeURIComponent(t);
   });
 }
@@ -67,7 +65,7 @@ export function encodeUri(view: EditorView): boolean {
 // ─── Trim / split ──────────────────────────────────────────────────────────────
 
 export function trimSelection(view: EditorView): boolean {
-  return transformSelection(view, t => t.trim());
+  return transformSelection(view, (t) => t.trim());
 }
 
 export function splitByLines(view: EditorView): boolean {
@@ -150,7 +148,9 @@ function addCaret(view: EditorView, direction: -1 | 1): boolean {
 export function selectAllInstances(view: EditorView): boolean {
   const { state } = view;
   const sel = state.selection.main;
-  const word = sel.empty ? wordAt(state.doc.toString(), sel.from) : state.sliceDoc(sel.from, sel.to);
+  const word = sel.empty
+    ? wordAt(state.doc.toString(), sel.from)
+    : state.sliceDoc(sel.from, sel.to);
   if (!word) return false;
   const doc = state.doc.toString();
   const ranges: Array<{ from: number; to: number }> = [];
@@ -161,9 +161,7 @@ export function selectAllInstances(view: EditorView): boolean {
   }
   if (ranges.length === 0) return false;
   view.dispatch({
-    selection: EditorSelection.create(
-      ranges.map(r => EditorSelection.range(r.from, r.to)),
-    ),
+    selection: EditorSelection.create(ranges.map((r) => EditorSelection.range(r.from, r.to))),
   });
   return true;
 }
@@ -225,10 +223,7 @@ function indentLines(view: EditorView, add: boolean): boolean {
 
 // ─── Helper ────────────────────────────────────────────────────────────────────
 
-function transformSelection(
-  view: EditorView,
-  fn: (text: string) => string,
-): boolean {
+function transformSelection(view: EditorView, fn: (text: string) => string): boolean {
   const { state } = view;
   const sel = state.selection.main;
   if (sel.empty) return false;

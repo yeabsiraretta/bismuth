@@ -4,11 +4,14 @@
   import type { TaskQueryResult } from '@/types/data/task';
 
   export let result: TaskQueryResult;
-  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined = undefined;
+  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined =
+    undefined;
   export let onNavigate: ((sourcePath: string, line: number) => void) | undefined = undefined;
 
-  $: hasGroups = result.groups.length > 1 || (result.groups.length === 1 && result.groups[0].name !== '');
-  $: flatTasks = result.groups.length === 1 && result.groups[0].name === '' ? result.groups[0].tasks : [];
+  $: hasGroups =
+    result.groups.length > 1 || (result.groups.length === 1 && result.groups[0].name !== '');
+  $: flatTasks =
+    result.groups.length === 1 && result.groups[0].name === '' ? result.groups[0].tasks : [];
 </script>
 
 <div class="task-query-result">

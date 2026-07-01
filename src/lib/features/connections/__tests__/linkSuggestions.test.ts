@@ -14,7 +14,11 @@ vi.mock('@/utils/logger', () => ({
   log: { info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-import { computeLinkSuggestions, extractTags, extractLinkedPaths } from '../services/connectionsLogic';
+import {
+  computeLinkSuggestions,
+  extractTags,
+  extractLinkedPaths,
+} from '../services/connectionsLogic';
 import type { Note } from '@/types/data/vault';
 
 function note(path: string, title: string, content = ''): Note {
@@ -71,7 +75,7 @@ describe('computeLinkSuggestions', () => {
       const suggestions = computeLinkSuggestions(active, all);
       for (const s of suggestions) {
         const noteTags = extractTags(s.content);
-        expect(noteTags.some(t => activeTags.includes(t))).toBe(true);
+        expect(noteTags.some((t) => activeTags.includes(t))).toBe(true);
       }
     });
   });
@@ -90,7 +94,7 @@ describe('computeLinkSuggestions', () => {
         content: '[[Alpha]] some content #ref',
       };
       const suggestions = computeLinkSuggestions(active, all);
-      expect(suggestions.every(n => n.path !== '/vault/alpha.md')).toBe(true);
+      expect(suggestions.every((n) => n.path !== '/vault/alpha.md')).toBe(true);
     });
 
     it('can still suggest notes not yet linked', () => {
@@ -100,8 +104,8 @@ describe('computeLinkSuggestions', () => {
         content: '[[Alpha]] #ref',
       };
       const suggestions = computeLinkSuggestions(active, all);
-      const paths = suggestions.map(n => n.path);
-      expect(paths.some(p => p.includes('beta') || p.includes('gamma'))).toBe(true);
+      const paths = suggestions.map((n) => n.path);
+      expect(paths.some((p) => p.includes('beta') || p.includes('gamma'))).toBe(true);
     });
   });
 
@@ -110,14 +114,14 @@ describe('computeLinkSuggestions', () => {
       const active = { path: '/vault/project.md', title: 'project', content: '' };
       const all = [note('/vault/project-alpha.md', 'Project Alpha', '')];
       const suggestions = computeLinkSuggestions(active, all);
-      expect(suggestions.some(n => n.path === '/vault/project-alpha.md')).toBe(true);
+      expect(suggestions.some((n) => n.path === '/vault/project-alpha.md')).toBe(true);
     });
 
     it('matches when candidate title is substring of active title', () => {
       const active = { path: '/vault/project-alpha.md', title: 'Project Alpha', content: '' };
       const all = [note('/vault/project.md', 'project', '')];
       const suggestions = computeLinkSuggestions(active, all);
-      expect(suggestions.some(n => n.path === '/vault/project.md')).toBe(true);
+      expect(suggestions.some((n) => n.path === '/vault/project.md')).toBe(true);
     });
   });
 });
@@ -133,7 +137,7 @@ describe('extractTags edge cases', () => {
 
   it('deduplicates tags in return value when same tag appears twice', () => {
     const tags = extractTags('#dev and #dev again');
-    const devCount = tags.filter(t => t === 'dev').length;
+    const devCount = tags.filter((t) => t === 'dev').length;
     expect(devCount).toBe(2); // extractTags does NOT deduplicate — each match returned
   });
 

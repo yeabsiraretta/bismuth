@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-  flattenFrontmatterValues, parseMarkdownLinks, extractFrontmatterLinks,
+  flattenFrontmatterValues,
+  parseMarkdownLinks,
+  extractFrontmatterLinks,
 } from '../services/frontmatterLinks';
 
 describe('flattenFrontmatterValues', () => {
@@ -45,10 +47,7 @@ describe('parseMarkdownLinks', () => {
   });
 
   it('extracts multiple links', () => {
-    const links = parseMarkdownLinks(
-      '[A](a.md) and [B](b.md)',
-      'refs',
-    );
+    const links = parseMarkdownLinks('[A](a.md) and [B](b.md)', 'refs');
     expect(links).toHaveLength(2);
   });
 

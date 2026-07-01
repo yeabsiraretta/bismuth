@@ -66,7 +66,9 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-m);
   padding: var(--spacing-m);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .card:hover {
@@ -387,7 +389,7 @@
   cursor: pointer;
 }
 
-.setting-item > label > input[type="checkbox"] {
+.setting-item > label > input[type='checkbox'] {
   width: 16px;
   height: 16px;
   accent-color: var(--interactive-accent);
@@ -414,7 +416,7 @@
   border-color: var(--interactive-accent);
 }
 
-.setting-item > input[type="range"] {
+.setting-item > input[type='range'] {
   height: auto;
   padding: 0;
   border: none;

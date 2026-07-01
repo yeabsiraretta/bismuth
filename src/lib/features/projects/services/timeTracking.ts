@@ -65,7 +65,7 @@ export function daysUntilDue(task: PMTask): number | null {
 
 /** Aggregate progress from subtasks */
 export function subtaskProgress(tasks: PMTask[], parentId: string): number {
-  const children = tasks.filter(t => t.parentId === parentId);
+  const children = tasks.filter((t) => t.parentId === parentId);
   if (children.length === 0) return 0;
   const total = children.reduce((sum, t) => sum + t.progress, 0);
   return Math.round(total / children.length);
@@ -73,7 +73,7 @@ export function subtaskProgress(tasks: PMTask[], parentId: string): number {
 
 /** Count subtasks by status */
 export function subtaskCounts(tasks: PMTask[], parentId: string): Record<string, number> {
-  const children = tasks.filter(t => t.parentId === parentId);
+  const children = tasks.filter((t) => t.parentId === parentId);
   const counts: Record<string, number> = {};
   for (const child of children) {
     counts[child.status] = (counts[child.status] ?? 0) + 1;

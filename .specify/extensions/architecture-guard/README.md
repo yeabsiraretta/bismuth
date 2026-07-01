@@ -15,11 +15,11 @@
 
 Architecture Guard uses a layered, reviewable workflow to keep architecture decisions explicit:
 
-| Layer | Focus | What It Prevents |
-| :--- | :--- | :--- |
-| **Governance** | High-level engineering rules | Loose, inconsistent project standards |
-| **Architecture** | Boundaries, ownership, and contracts | Drift between modules and layers |
-| **Workflow** | Reviews and refactor generation | Hidden architecture debt |
+| Layer            | Focus                                | What It Prevents                      |
+| :--------------- | :----------------------------------- | :------------------------------------ |
+| **Governance**   | High-level engineering rules         | Loose, inconsistent project standards |
+| **Architecture** | Boundaries, ownership, and contracts | Drift between modules and layers      |
+| **Workflow**     | Reviews and refactor generation      | Hidden architecture debt              |
 
 ### Why Developers and Teams Use It:
 
@@ -36,16 +36,19 @@ Architecture Guard uses a layered, reviewable workflow to keep architecture deci
 ### 1. Install the Extension
 
 **From the Registry (Recommended):**
+
 ```text
 specify extension add architecture-guard
 ```
 
 **From a Release Artifact (ZIP):**
+
 ```text
 specify extension add architecture-guard --from https://github.com/DyanGalih/spec-kit-architecture-guard/archive/refs/tags/v1.8.9.zip
 ```
 
 **From a Local Developer Artifact:**
+
 ```text
 specify extension add architecture-guard --dev /path/to/spec-kit-architecture-guard
 ```
@@ -72,14 +75,14 @@ If violations appear, apply approved refactors:
 
 ## Command Directory
 
-| Command | When To Use | What It Does |
-| :--- | :--- | :--- |
-| **`/speckit.architecture-guard.init`** | At project setup or when standards change | Creates or refines governance and architecture constitutions. |
-| **`/speckit.architecture-guard.architecture-workflow`** | For an end-to-end review | Reviews specs, plans, tasks, and implementations for drift and refactors. |
-| **`/speckit.architecture-guard.architecture-review`** | After `/specify`, `/plan`, or `/implement` | Checks a spec, plan, or implementation against architecture rules. |
-| **`/speckit.architecture-guard.refactor-generator`** | After violations are found | Converts violations into structured refactor tasks. |
-| **`/speckit.architecture-guard.architecture-apply`** | When refactors are approved | Injects approved architecture work into plans and tasks. |
-| **`/speckit.architecture-guard.architecture-verify`** | Final validation step | Checks whether the final work matches the approved tasks. |
+| Command                                                 | When To Use                                | What It Does                                                              |
+| :------------------------------------------------------ | :----------------------------------------- | :------------------------------------------------------------------------ |
+| **`/speckit.architecture-guard.init`**                  | At project setup or when standards change  | Creates or refines governance and architecture constitutions.             |
+| **`/speckit.architecture-guard.architecture-workflow`** | For an end-to-end review                   | Reviews specs, plans, tasks, and implementations for drift and refactors. |
+| **`/speckit.architecture-guard.architecture-review`**   | After `/specify`, `/plan`, or `/implement` | Checks a spec, plan, or implementation against architecture rules.        |
+| **`/speckit.architecture-guard.refactor-generator`**    | After violations are found                 | Converts violations into structured refactor tasks.                       |
+| **`/speckit.architecture-guard.architecture-apply`**    | When refactors are approved                | Injects approved architecture work into plans and tasks.                  |
+| **`/speckit.architecture-guard.architecture-verify`**   | Final validation step                      | Checks whether the final work matches the approved tasks.                 |
 
 ---
 

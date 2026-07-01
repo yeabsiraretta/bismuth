@@ -14,51 +14,51 @@ When reviewing a Spring Boot project, map generic architecture boundaries to Spr
 
 ### Entry Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Controllers (`@RestController` or `@Controller`) |
-| Entry point for Async Messages | Listeners (`@KafkaListener`, `@RabbitListener`, `@JmsListener`) |
-| Entry point for CLI / Tasks | `CommandLineRunner` or `@Scheduled` tasks |
-| Request/Response filtering | Filters (`implements Filter`) or Interceptors (`implements HandlerInterceptor`) |
-| Authentication / Authorization | Spring Security Filters and `@PreAuthorize` |
+| Generic Concept                | Spring Equivalent                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| Entry point for HTTP requests  | Controllers (`@RestController` or `@Controller`)                                |
+| Entry point for Async Messages | Listeners (`@KafkaListener`, `@RabbitListener`, `@JmsListener`)                 |
+| Entry point for CLI / Tasks    | `CommandLineRunner` or `@Scheduled` tasks                                       |
+| Request/Response filtering     | Filters (`implements Filter`) or Interceptors (`implements HandlerInterceptor`) |
+| Authentication / Authorization | Spring Security Filters and `@PreAuthorize`                                     |
 
 ### Validation Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
-| Input validation | Bean Validation (`@Valid`, `@Validated`) with JSR-303/JSR-380 |
-| Custom validation | `ConstraintValidator` implementations |
+| Generic Concept   | Spring Equivalent                                             |
+| ----------------- | ------------------------------------------------------------- |
+| Input validation  | Bean Validation (`@Valid`, `@Validated`) with JSR-303/JSR-380 |
+| Custom validation | `ConstraintValidator` implementations                         |
 
 ### Contract Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
-| Stable request shapes | DTOs (Data Transfer Objects - `class` or `record`) |
-| Stable response shapes | DTOs or Records |
-| API Specification | OpenAPI / Swagger (`springdoc-openapi`) |
+| Generic Concept        | Spring Equivalent                                  |
+| ---------------------- | -------------------------------------------------- |
+| Stable request shapes  | DTOs (Data Transfer Objects - `class` or `record`) |
+| Stable response shapes | DTOs or Records                                    |
+| API Specification      | OpenAPI / Swagger (`springdoc-openapi`)            |
 
 ### Application Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
-| Use case coordination | Services (`@Service`) |
-| Shared logic coordination | Components (`@Component`) |
+| Generic Concept           | Spring Equivalent                           |
+| ------------------------- | ------------------------------------------- |
+| Use case coordination     | Services (`@Service`)                       |
+| Shared logic coordination | Components (`@Component`)                   |
 | Transaction orchestration | `@Transactional` (usually on Service layer) |
 
 ### Domain Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
+| Generic Concept              | Spring Equivalent                       |
+| ---------------------------- | --------------------------------------- |
 | Business rules and decisions | Pure Domain Entities or Domain Services |
-| Domain models | JPA Entities (`@Entity`) or POJOs |
+| Domain models                | JPA Entities (`@Entity`) or POJOs       |
 
 ### Data Boundary
 
-| Generic Concept | Spring Equivalent |
-| --- | --- |
+| Generic Concept         | Spring Equivalent                                      |
+| ----------------------- | ------------------------------------------------------ |
 | Persistence abstraction | Repositories (`@Repository` / `extends JpaRepository`) |
-| Query building | QueryDSL, Specification API, or JPQL/Native queries |
-| Database Migration | Flyway or Liquibase |
+| Query building          | QueryDSL, Specification API, or JPQL/Native queries    |
+| Database Migration      | Flyway or Liquibase                                    |
 
 ---
 
@@ -67,12 +67,14 @@ When reviewing a Spring Boot project, map generic architecture boundaries to Spr
 ### Field Injection vs. Constructor Injection
 
 Detect when:
+
 - A class uses `@Autowired` on private fields (Field Injection).
 - **Recommendation**: Use **Constructor Injection** (or `@RequiredArgsConstructor` with Lombok) to improve testability and ensure immutability.
 
 ### Entity Leakage (Boundary Violation) [Focus: api]
 
 Detect when:
+
 - A Controller method returns a class marked with `@Entity` directly.
 - A Controller method accepts an `@Entity` as a `@RequestBody`.
 - **Recommendation**: Map to a specialized **DTO** or **Record** using MapStruct or manual mapping.
@@ -80,11 +82,13 @@ Detect when:
 ### Fat Controllers
 
 Detect when a controller:
+
 - Directly calls a Repository (e.g., `userRepository.save(user)`).
 - Contains business logic calculations or complex conditional routing.
 - Directly handles `EntityNotFoundException` instead of using an `@ExceptionHandler`.
 
 **Acceptable in controllers:**
+
 - Calling a single Service method.
 - Mapping DTOs to internal objects (though mapping logic is better in a Mapper).
 - Returning `ResponseEntity`.
@@ -92,6 +96,7 @@ Detect when a controller:
 ### Transaction Boundary Discipline [Focus: db]
 
 Detect when:
+
 - `@Transactional` is used on a Repository (it should be on the Service/Application layer).
 - A Service method calls another method in the same class marked with `@Transactional` (Self-invocation bypasses the proxy).
 - Heavy external calls (HTTP/Third-party) are performed inside a `@Transactional` block.
@@ -99,6 +104,7 @@ Detect when:
 ### Bean Scoping and Global State
 
 Detect when:
+
 - A `@Service` or `@Component` maintains mutable instance variables (Beans are singletons by default and must be stateless).
 - Static utility classes are used for business logic that should be a Bean.
 

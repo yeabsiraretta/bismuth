@@ -15,26 +15,51 @@
   <button class="action-btn" on:click={() => onFormat('bold')} title="Bold (⌘B)" aria-label="Bold">
     <Icon name="bold" size={14} />
   </button>
-  <button class="action-btn" on:click={() => onFormat('italic')} title="Italic (⌘I)" aria-label="Italic">
+  <button
+    class="action-btn"
+    on:click={() => onFormat('italic')}
+    title="Italic (⌘I)"
+    aria-label="Italic"
+  >
     <Icon name="italic" size={14} />
   </button>
-  <button class="action-btn" on:click={() => onFormat('strikethrough')} title="Strikethrough (⌘⇧S)" aria-label="Strikethrough">
+  <button
+    class="action-btn"
+    on:click={() => onFormat('strikethrough')}
+    title="Strikethrough (⌘⇧S)"
+    aria-label="Strikethrough"
+  >
     <Icon name="strikethrough" size={14} />
   </button>
   <button class="action-btn" on:click={() => onFormat('code')} title="Code (⌘E)" aria-label="Code">
     <Icon name="code" size={14} />
   </button>
   <span class="action-divider"></span>
-  <button class="action-btn" on:click={() => onFormat('heading')} title="Heading" aria-label="Heading">
+  <button
+    class="action-btn"
+    on:click={() => onFormat('heading')}
+    title="Heading"
+    aria-label="Heading"
+  >
     <Icon name="type" size={14} />
   </button>
   <button class="action-btn" on:click={() => onFormat('quote')} title="Quote" aria-label="Quote">
     <Icon name="quote" size={14} />
   </button>
-  <button class="action-btn" on:click={() => onFormat('list')} title="Bullet list" aria-label="Bullet list">
+  <button
+    class="action-btn"
+    on:click={() => onFormat('list')}
+    title="Bullet list"
+    aria-label="Bullet list"
+  >
     <Icon name="list" size={14} />
   </button>
-  <button class="action-btn" on:click={() => onFormat('list-ordered')} title="Numbered list" aria-label="Numbered list">
+  <button
+    class="action-btn"
+    on:click={() => onFormat('list-ordered')}
+    title="Numbered list"
+    aria-label="Numbered list"
+  >
     <Icon name="list-ordered" size={14} />
   </button>
   <span class="action-divider"></span>
@@ -98,11 +123,49 @@
 </button>
 
 <style>
-  .editor-formatting { display: flex; align-items: center; gap: 2px; }
-  .action-divider { width: 1px; height: 16px; background: var(--border-color); margin: 0 var(--spacing-xs); flex-shrink: 0; }
-  .view-mode-group { display: flex; align-items: center; gap: 1px; background: var(--background-primary); border-radius: var(--radius-s); padding: 1px; }
-  .action-btn { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; background: none; border: none; border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
-  .action-btn :global(svg) { pointer-events: none; }
-  .action-btn.active { background: var(--interactive-accent); color: var(--text-on-accent); }
-  .action-btn:hover:not(.active) { background: var(--background-modifier-hover); color: var(--text-normal); }
+  .editor-formatting {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .action-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-color);
+    margin: 0 var(--spacing-xs);
+    flex-shrink: 0;
+  }
+  .view-mode-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    background: var(--background-primary);
+    border-radius: var(--radius-s);
+    padding: 1px;
+  }
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .action-btn :global(svg) {
+    pointer-events: none;
+  }
+  .action-btn.active {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+  }
+  .action-btn:hover:not(.active) {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
 </style>

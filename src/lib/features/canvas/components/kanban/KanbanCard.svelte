@@ -39,7 +39,9 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-s);
     cursor: grab;
-    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    transition:
+      box-shadow var(--transition-fast),
+      transform var(--transition-fast);
   }
 
   .kanban-card:hover {
@@ -80,7 +82,8 @@
     margin-top: var(--spacing-xs);
   }
 
-  .due-date, .project {
+  .due-date,
+  .project {
     font-size: var(--font-ui-badge);
     color: var(--text-muted);
   }

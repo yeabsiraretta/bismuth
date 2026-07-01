@@ -63,7 +63,11 @@ export { fsrsGrade, getRetrievability } from './services/fsrs';
 export type { FSRSState } from './services/fsrs';
 
 export { parseFlashcards } from './services/parser';
-export { parseAllCards, parseStudyVaultCards, parsePracticeQuestions } from './services/studyParser';
+export {
+  parseAllCards,
+  parseStudyVaultCards,
+  parsePracticeQuestions,
+} from './services/studyParser';
 export type { AnkiImportedNote } from './services/ankiConnect';
 
 export type {
@@ -92,12 +96,7 @@ export type {
 export type { ReviewRecord, ReviewGrade } from './services/scheduler';
 
 // Cloze
-export type {
-  ClozeConfig,
-  ClozeAutoConvert,
-  ClozeHintConfig,
-  ClozeHintMode,
-} from './types/cloze';
+export type { ClozeConfig, ClozeAutoConvert, ClozeHintConfig, ClozeHintMode } from './types/cloze';
 export { DEFAULT_CLOZE_CONFIG } from './types/cloze';
 
 export {

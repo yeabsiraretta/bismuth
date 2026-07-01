@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  searchSettings,
-  matchingTabs,
-  groupByTab,
-  SETTINGS_INDEX,
-} from '../settingsSearchIndex';
+import { searchSettings, matchingTabs, groupByTab, SETTINGS_INDEX } from '../settingsSearchIndex';
 
 describe('SETTINGS_INDEX', () => {
   it('has unique IDs', () => {

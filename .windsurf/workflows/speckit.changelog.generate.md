@@ -1,5 +1,5 @@
 ---
-description: "Generate a changelog entry from spec history showing requirement changes over time"
+description: 'Generate a changelog entry from spec history showing requirement changes over time'
 ---
 
 # Changelog Generate
@@ -11,9 +11,11 @@ Generate a comprehensive changelog entry from the git history of spec artifacts 
 1. **Read current CHANGELOG.md** at project root. If it doesn't exist, create it with Keep-a-Changelog format header.
 
 2. **Identify scope**: Check which specs have been generated or completed since the last changelog entry.
+
    ```bash
    git log --oneline --since="$(head -20 CHANGELOG.md | grep -m1 '##' | grep -oP '\d{4}-\d{2}-\d{2}')" -- specs/ .specify/
    ```
+
    If no date found, use `git log --oneline -- specs/` for full history.
 
 3. **Categorize changes** by reading each spec's `spec.md`, `plan.md`, and `tasks.md`:
@@ -24,13 +26,16 @@ Generate a comprehensive changelog entry from the git history of spec artifacts 
    - **Security**: Security-related changes
 
 4. **Generate entry** in Keep-a-Changelog format:
+
    ```markdown
    ## [Unreleased] — YYYY-MM-DD
 
    ### Added
+
    - Feature description (spec NNN)
 
    ### Changed
+
    - Change description (spec NNN)
    ```
 

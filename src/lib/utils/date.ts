@@ -3,7 +3,14 @@
  * Central helper for consistent date display throughout the UI.
  */
 
-import { format, parseISO, isValid, differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
+import {
+  format,
+  parseISO,
+  isValid,
+  differenceInMinutes,
+  differenceInHours,
+  differenceInDays,
+} from 'date-fns';
 
 /**
  * Format a date string using the given format pattern.

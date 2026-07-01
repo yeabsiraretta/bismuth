@@ -82,13 +82,17 @@
   {/if}
 
   <p class="update-hint">
-    No network calls occur until you click the button above.
-    Future releases will include an auto-update option.
+    No network calls occur until you click the button above. Future releases will include an
+    auto-update option.
   </p>
 </div>
 
 <style>
-  .update-section { display: flex; flex-direction: column; gap: var(--spacing-s); }
+  .update-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
 
   .channel-row {
     display: flex;
@@ -122,7 +126,11 @@
     font-weight: var(--font-medium);
   }
 
-  .version-row { display: flex; align-items: center; gap: var(--spacing-s); }
+  .version-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
 
   .version-badge {
     font-size: var(--font-ui-small);
@@ -144,14 +152,25 @@
     min-height: 32px;
   }
 
-  .check-btn:hover { background: var(--interactive-accent); color: var(--text-on-accent); }
-  .check-btn:disabled { opacity: 0.5; cursor: default; }
+  .check-btn:hover {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+  }
+  .check-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 
-  .last-checked, .update-hint {
+  .last-checked,
+  .update-hint {
     font-size: var(--font-smallest);
     color: var(--text-muted);
     margin: 0;
   }
 
-  .error-msg { color: var(--color-danger, #dc2626); font-size: var(--font-ui-small); margin: 0; }
+  .error-msg {
+    color: var(--color-danger, #dc2626);
+    font-size: var(--font-ui-small);
+    margin: 0;
+  }
 </style>

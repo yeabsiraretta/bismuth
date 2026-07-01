@@ -34,17 +34,14 @@ async function requireApiKey(): Promise<string> {
  * Sends a non-streaming chat request to the Anthropic Messages API.
  * Returns the full text of the first content block.
  */
-export async function sendClaudeMessage(
-  messages: AgentMessage[],
-  model: string,
-): Promise<string> {
+export async function sendClaudeMessage(messages: AgentMessage[], model: string): Promise<string> {
   const apiKey = await requireApiKey();
 
   const maxTokens = get(llmConfig).maxTokens;
   const body = {
     model,
     max_tokens: maxTokens,
-    messages: messages.map(m => ({
+    messages: messages.map((m) => ({
       role: toAnthropicRole(m.role),
       content: m.content,
     })),
@@ -81,7 +78,7 @@ export async function sendClaudeMessage(
 export async function sendClaudeMessageStream(
   messages: AgentMessage[],
   model: string,
-  onChunk: (text: string) => void,
+  onChunk: (text: string) => void
 ): Promise<string> {
   const apiKey = await requireApiKey();
 
@@ -90,7 +87,7 @@ export async function sendClaudeMessageStream(
     model,
     max_tokens: maxTokens,
     stream: true,
-    messages: messages.map(m => ({
+    messages: messages.map((m) => ({
       role: toAnthropicRole(m.role),
       content: m.content,
     })),

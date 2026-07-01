@@ -3,7 +3,16 @@
  */
 import { refreshNotes } from '@/stores/vault/vault';
 import { openNoteTab } from '@/stores/editor/tabs';
-import { createFolder as createFolderService, moveNote as moveNoteService, moveFolder as moveFolderService, updateLinksOnRename, getNote, writeNote, renameNote as renameNoteService, deleteNote as deleteNoteService } from '@/services/vault/vault';
+import {
+  createFolder as createFolderService,
+  moveNote as moveNoteService,
+  moveFolder as moveFolderService,
+  updateLinksOnRename,
+  getNote,
+  writeNote,
+  renameNote as renameNoteService,
+  deleteNote as deleteNoteService,
+} from '@/services/vault/vault';
 import type { Note } from '@/types/data/vault';
 import { log } from '@/utils/logger';
 
@@ -26,7 +35,9 @@ export function loadExpandedFolders(): Set<string> {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) return new Set(JSON.parse(saved));
-  } catch (e) { log.warn('Failed to load expanded folders from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load expanded folders from localStorage', { error: String(e) });
+  }
   return new Set();
 }
 
@@ -142,8 +153,14 @@ export async function openNote(note: Note) {
 }
 
 /** Expands all parent folders of the given note path so it becomes visible in the tree. */
-export function revealNote(notePath: string, vaultRoot: string, expandedFolders: Set<string>): Set<string> {
-  const relativePath = notePath.startsWith(vaultRoot) ? notePath.slice(vaultRoot.length + 1) : notePath;
+export function revealNote(
+  notePath: string,
+  vaultRoot: string,
+  expandedFolders: Set<string>
+): Set<string> {
+  const relativePath = notePath.startsWith(vaultRoot)
+    ? notePath.slice(vaultRoot.length + 1)
+    : notePath;
   const parts = relativePath.split('/');
   if (parts.length <= 1) return expandedFolders;
   const updated = new Set(expandedFolders);
@@ -181,7 +198,12 @@ export function deepFileCount(node: TreeNode): number {
 // --- Tree building ---
 
 /** Builds a hierarchical tree structure from flat note paths and folder paths. */
-export function buildTree(notes: Note[], vaultRoot: string, sortBy: SortKey, folderPaths: string[] = []): TreeNode[] {
+export function buildTree(
+  notes: Note[],
+  vaultRoot: string,
+  sortBy: SortKey,
+  folderPaths: string[] = []
+): TreeNode[] {
   const root: TreeNode = { name: '', path: '', type: 'folder', children: [] };
   for (const relPath of folderPaths) {
     const parts = relPath.split('/');
@@ -189,23 +211,38 @@ export function buildTree(notes: Note[], vaultRoot: string, sortBy: SortKey, fol
     for (let i = 0; i < parts.length; i++) {
       const folderName = parts[i];
       const folderPath = vaultRoot + '/' + parts.slice(0, i + 1).join('/');
-      let folder = current.children.find(c => c.type === 'folder' && c.name === folderName);
-      if (!folder) { folder = { name: folderName, path: folderPath, type: 'folder', children: [] }; current.children.push(folder); }
+      let folder = current.children.find((c) => c.type === 'folder' && c.name === folderName);
+      if (!folder) {
+        folder = { name: folderName, path: folderPath, type: 'folder', children: [] };
+        current.children.push(folder);
+      }
       current = folder;
     }
   }
   for (const note of notes) {
-    const relativePath = vaultRoot && note.path.startsWith(vaultRoot) ? note.path.slice(vaultRoot.length + 1) : note.path;
+    const relativePath =
+      vaultRoot && note.path.startsWith(vaultRoot)
+        ? note.path.slice(vaultRoot.length + 1)
+        : note.path;
     const parts = relativePath.split('/');
     let current = root;
     for (let i = 0; i < parts.length - 1; i++) {
       const folderName = parts[i];
       const folderPath = vaultRoot + '/' + parts.slice(0, i + 1).join('/');
-      let folder = current.children.find(c => c.type === 'folder' && c.name === folderName);
-      if (!folder) { folder = { name: folderName, path: folderPath, type: 'folder', children: [] }; current.children.push(folder); }
+      let folder = current.children.find((c) => c.type === 'folder' && c.name === folderName);
+      if (!folder) {
+        folder = { name: folderName, path: folderPath, type: 'folder', children: [] };
+        current.children.push(folder);
+      }
       current = folder;
     }
-    current.children.push({ name: parts[parts.length - 1], path: note.path, type: 'file', children: [], note });
+    current.children.push({
+      name: parts[parts.length - 1],
+      path: note.path,
+      type: 'file',
+      children: [],
+      note,
+    });
   }
   return sortNodes(root.children, sortBy);
 }
@@ -213,16 +250,22 @@ export function buildTree(notes: Note[], vaultRoot: string, sortBy: SortKey, fol
 function getNewestDate(node: TreeNode, field: 'modified_at' | 'created_at'): string {
   if (node.type === 'file') return node.note?.[field] || '';
   let newest = '';
-  for (const child of node.children) { const d = getNewestDate(child, field); if (d > newest) newest = d; }
+  for (const child of node.children) {
+    const d = getNewestDate(child, field);
+    if (d > newest) newest = d;
+  }
   return newest;
 }
 
 function sortNodes(nodes: TreeNode[], sortBy: SortKey): TreeNode[] {
-  const folders = nodes.filter(n => n.type === 'folder');
-  const files = nodes.filter(n => n.type === 'file');
-  folders.forEach(f => { f.children = sortNodes(f.children, sortBy); });
-  if (sortBy === 'name') { folders.sort((a, b) => a.name.localeCompare(b.name)); }
-  else {
+  const folders = nodes.filter((n) => n.type === 'folder');
+  const files = nodes.filter((n) => n.type === 'file');
+  folders.forEach((f) => {
+    f.children = sortNodes(f.children, sortBy);
+  });
+  if (sortBy === 'name') {
+    folders.sort((a, b) => a.name.localeCompare(b.name));
+  } else {
     const field = sortBy === 'modified' ? 'modified_at' : 'created_at';
     folders.sort((a, b) => getNewestDate(b, field).localeCompare(getNewestDate(a, field)));
   }
@@ -239,7 +282,8 @@ export function formatDate(iso: string): string {
   if (!iso) return '';
   const d = new Date(iso);
   const diffDays = Math.floor((Date.now() - d.getTime()) / 86400000);
-  if (diffDays === 0) return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  if (diffDays === 0)
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
   if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return d.toLocaleDateString(undefined, { weekday: 'short' });
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -250,7 +294,10 @@ export function getPreview(note: Note): string {
   for (const line of note.content.split('\n')) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('---')) continue;
-    const clean = trimmed.replace(/^[-*>]+\s*/, '').replace(/\[\[([^\]]+)\]\]/g, '$1').replace(/\*\*|__|\*|_/g, '');
+    const clean = trimmed
+      .replace(/^[-*>]+\s*/, '')
+      .replace(/\[\[([^\]]+)\]\]/g, '$1')
+      .replace(/\*\*|__|\*|_/g, '');
     if (clean.length > 0) return clean.length > 80 ? clean.slice(0, 80) + '\u2026' : clean;
   }
   return '';

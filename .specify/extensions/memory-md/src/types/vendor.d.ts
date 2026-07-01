@@ -1,4 +1,4 @@
-declare module "better-sqlite3" {
+declare module 'better-sqlite3' {
   export interface Database {
     pragma(str: string): any;
     exec(str: string): void;
@@ -17,7 +17,7 @@ declare module "better-sqlite3" {
   export default Database;
 }
 
-declare module "markdown-it" {
+declare module 'markdown-it' {
   const MarkdownIt: any;
   export default MarkdownIt;
 }

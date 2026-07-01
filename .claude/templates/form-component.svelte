@@ -72,10 +72,24 @@
 </form>
 
 <style>
-  .form { display: flex; flex-direction: column; gap: var(--spacing-m); }
-  .form-group { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .form-label { font-size: var(--font-ui-small); font-weight: var(--font-semibold); color: var(--text-normal); }
-  .required { color: var(--color-danger); }
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .form-label {
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+  }
+  .required {
+    color: var(--color-danger);
+  }
   .form-input {
     padding: var(--form-input-padding-block) var(--form-input-padding-inline);
     background: var(--background-modifier-form-field);
@@ -85,8 +99,22 @@
     color: var(--text-normal);
     min-height: 40px;
   }
-  .form-input:focus { outline: none; border-color: var(--form-input-focus-border); }
-  .form-input.error { border-color: var(--color-danger); }
-  .form-error { font-size: var(--font-smallest); color: var(--color-danger); margin: 0; }
-  .form-actions { display: flex; justify-content: flex-end; gap: var(--spacing-s); margin-top: var(--spacing-s); }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--form-input-focus-border);
+  }
+  .form-input.error {
+    border-color: var(--color-danger);
+  }
+  .form-error {
+    font-size: var(--font-smallest);
+    color: var(--color-danger);
+    margin: 0;
+  }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-s);
+  }
 </style>

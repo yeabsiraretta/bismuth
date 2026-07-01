@@ -48,7 +48,9 @@ export function generateSvelteComponent(
 
   // Markup block
   const bounds = calculateBounds(visibleElements);
-  parts.push(`<div class="canvas-component" style="position: relative; width: {width}px; height: {height}px;">`);
+  parts.push(
+    `<div class="canvas-component" style="position: relative; width: {width}px; height: {height}px;">`
+  );
 
   for (const element of visibleElements) {
     const relX = element.x - bounds.minX;
@@ -88,7 +90,8 @@ function elementToSvelteMarkup(
 ): string {
   const baseStyle = `position: absolute; left: ${x}px; top: ${y}px; width: ${element.width}px; height: ${element.height}px;`;
   const rotationStyle = element.rotation ? ` transform: rotate(${element.rotation}deg);` : '';
-  const opacityStyle = (element.properties.opacity ?? 1) < 1 ? ` opacity: ${element.properties.opacity};` : '';
+  const opacityStyle =
+    (element.properties.opacity ?? 1) < 1 ? ` opacity: ${element.properties.opacity};` : '';
 
   switch (element.element_type) {
     case 'rectangle': {
@@ -158,7 +161,10 @@ function elementToCssClass(element: CanvasElement): string {
   switch (element.element_type) {
     case 'rectangle':
       lines.push(`    background: ${element.properties.fill || '#3b82f6'};`);
-      if (element.properties.stroke) lines.push(`    border: ${element.properties.strokeWidth || 1}px solid ${element.properties.stroke};`);
+      if (element.properties.stroke)
+        lines.push(
+          `    border: ${element.properties.strokeWidth || 1}px solid ${element.properties.stroke};`
+        );
       break;
     case 'circle':
       lines.push(`    background: ${element.properties.fill || '#10b981'};`);
@@ -177,7 +183,10 @@ function elementToCssClass(element: CanvasElement): string {
 function calculateBounds(elements: CanvasElement[]) {
   if (elements.length === 0) return { minX: 0, minY: 0, maxX: 100, maxY: 100 };
 
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
   for (const el of elements) {
     minX = Math.min(minX, el.x);
     minY = Math.min(minY, el.y);

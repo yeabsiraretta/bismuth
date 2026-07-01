@@ -3,9 +3,19 @@
   import { activeNote } from '@/stores/vault/vault';
   import { openNote } from '@/appNavigation';
   import Icon from '@/components/icons/Icon.svelte';
-  import { getGraphData, filterGraphData, initNodes, tickForces, hitTestNode } from '@/features/graph';
+  import {
+    getGraphData,
+    filterGraphData,
+    initNodes,
+    tickForces,
+    hitTestNode,
+  } from '@/features/graph';
   import type { GraphData, GraphEdge, GraphSettings } from '@/features/graph';
-  import { graphBannerConfig, toggleGraphBanner, setGraphBannerDepth } from '../stores/graphBannerStore';
+  import {
+    graphBannerConfig,
+    toggleGraphBanner,
+    setGraphBannerDepth,
+  } from '../stores/graphBannerStore';
 
   type SimNode = ReturnType<typeof initNodes>[number];
 
@@ -51,7 +61,9 @@
   async function loadBannerGraph(notePath: string) {
     try {
       graphData = await getGraphData();
-    } catch { return; }
+    } catch {
+      return;
+    }
 
     const filtered = filterGraphData(graphData, {
       showOrphans: false,
@@ -69,8 +81,11 @@
     for (let i = 0; i < 80; i++) tickForces(nodes, edges, settings, width, height);
 
     // Highlight center node
-    const center = nodes.find(n => n.id === notePath);
-    if (center) { center.x = width / 2; center.y = height / 2; }
+    const center = nodes.find((n) => n.id === notePath);
+    if (center) {
+      center.x = width / 2;
+      center.y = height / 2;
+    }
 
     render();
   }
@@ -88,7 +103,7 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, width, height);
 
-    const nodeMap = new Map(nodes.map(n => [n.id, n]));
+    const nodeMap = new Map(nodes.map((n) => [n.id, n]));
     const settings = buildSettings();
 
     // Edges
@@ -111,13 +126,19 @@
     for (const node of nodes) {
       const isHovered = hoveredNode === node.id;
       const isCenterNode = node.id === isCenter;
-      const radius = (settings.nodeSize + (node.connection_count || 0) * 0.3) * (isHovered ? 1.5 : isCenterNode ? 1.3 : 1);
+      const radius =
+        (settings.nodeSize + (node.connection_count || 0) * 0.3) *
+        (isHovered ? 1.5 : isCenterNode ? 1.3 : 1);
 
       ctx.beginPath();
       ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = isCenterNode ? '#4a9eff' : isHovered ? '#6bb6ff' : (
-        node.node_type === 'tag' ? '#7c3aed' : '#9ca3af'
-      );
+      ctx.fillStyle = isCenterNode
+        ? '#4a9eff'
+        : isHovered
+          ? '#6bb6ff'
+          : node.node_type === 'tag'
+            ? '#7c3aed'
+            : '#9ca3af';
       ctx.fill();
 
       if (settings.showLabels && (isHovered || isCenterNode)) {
@@ -186,11 +207,21 @@
       <Icon name="eye-off" size={12} />
     </button>
     <div class="depth-control">
-      <button class="banner-btn" on:click={() => setGraphBannerDepth(depth - 1)} title="Decrease depth" disabled={depth <= 1}>
+      <button
+        class="banner-btn"
+        on:click={() => setGraphBannerDepth(depth - 1)}
+        title="Decrease depth"
+        disabled={depth <= 1}
+      >
         <Icon name="minus" size={12} />
       </button>
       <span class="depth-label">{depth}</span>
-      <button class="banner-btn" on:click={() => setGraphBannerDepth(depth + 1)} title="Increase depth" disabled={depth >= 5}>
+      <button
+        class="banner-btn"
+        on:click={() => setGraphBannerDepth(depth + 1)}
+        title="Increase depth"
+        disabled={depth >= 5}
+      >
         <Icon name="plus" size={12} />
       </button>
     </div>
@@ -202,7 +233,7 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.06));
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
     background: var(--graph-banner-bg, var(--background-secondary, #16213e));
     flex-shrink: 0;
   }

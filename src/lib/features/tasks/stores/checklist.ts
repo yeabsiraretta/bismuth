@@ -53,7 +53,10 @@ export const checklistConfig = writable<ChecklistConfig>(loadConfig());
 /** Simple glob matcher supporting * and ** and ! negation */
 export function matchGlob(path: string, glob: string): boolean {
   if (!glob.trim()) return true;
-  const parts = glob.split(',').map(p => p.trim()).filter(Boolean);
+  const parts = glob
+    .split(',')
+    .map((p) => p.trim())
+    .filter(Boolean);
   let included = parts.length === 0;
   for (const part of parts) {
     if (part.startsWith('!')) {
@@ -83,38 +86,34 @@ function simpleGlobMatch(path: string, pattern: string): boolean {
 }
 
 /** Derived: tasks filtered by checklist config */
-export const checklistTasks = derived(
-  [tasks, checklistConfig],
-  ([$tasks, $config]) => {
-    return $tasks.filter(task => {
-      // Status filter
-      if (!$config.showCompleted && task.status === 'done') return false;
+export const checklistTasks = derived([tasks, checklistConfig], ([$tasks, $config]) => {
+  return $tasks.filter((task) => {
+    // Status filter
+    if (!$config.showCompleted && task.status === 'done') return false;
 
-      // Tag filter
-      if ($config.tagName) {
-        const hasTag = task.tags.some(t =>
-          t.toLowerCase() === $config.tagName.toLowerCase()
+    // Tag filter
+    if ($config.tagName) {
+      const hasTag = task.tags.some((t) => t.toLowerCase() === $config.tagName.toLowerCase());
+      if (!hasTag && !$config.showAllInFile) return false;
+      // showAllInFile: include if any task in same file has the tag
+      if (!hasTag && $config.showAllInFile) {
+        const fileHasTag = $tasks.some(
+          (other) =>
+            other.source_path === task.source_path &&
+            other.tags.some((t) => t.toLowerCase() === $config.tagName.toLowerCase())
         );
-        if (!hasTag && !$config.showAllInFile) return false;
-        // showAllInFile: include if any task in same file has the tag
-        if (!hasTag && $config.showAllInFile) {
-          const fileHasTag = $tasks.some(
-            other => other.source_path === task.source_path &&
-              other.tags.some(t => t.toLowerCase() === $config.tagName.toLowerCase())
-          );
-          if (!fileHasTag) return false;
-        }
+        if (!fileHasTag) return false;
       }
+    }
 
-      // Glob filter
-      if ($config.includeGlob && !matchGlob(task.source_path, $config.includeGlob)) {
-        return false;
-      }
+    // Glob filter
+    if ($config.includeGlob && !matchGlob(task.source_path, $config.includeGlob)) {
+      return false;
+    }
 
-      return true;
-    });
-  }
-);
+    return true;
+  });
+});
 
 export interface ChecklistGroup {
   key: string;
@@ -123,23 +122,28 @@ export interface ChecklistGroup {
 }
 
 /** Derived: grouped checklist results */
-export const checklistGroups = derived(
-  [checklistTasks, checklistConfig],
-  ([$tasks, $config]) => {
-    const sorted = sortTasks($tasks, $config.sort);
-    return groupTasks(sorted, $config.groupBy);
-  }
-);
+export const checklistGroups = derived([checklistTasks, checklistConfig], ([$tasks, $config]) => {
+  const sorted = sortTasks($tasks, $config.sort);
+  return groupTasks(sorted, $config.groupBy);
+});
 
 function sortTasks(items: Task[], sort: ChecklistSort): Task[] {
   const copy = [...items];
   switch (sort) {
     case 'newest':
-      return copy.sort((a, b) => (b.source_path).localeCompare(a.source_path));
+      return copy.sort((a, b) => b.source_path.localeCompare(a.source_path));
     case 'oldest':
-      return copy.sort((a, b) => (a.source_path).localeCompare(b.source_path));
+      return copy.sort((a, b) => a.source_path.localeCompare(b.source_path));
     case 'priority': {
-      const order: Record<string, number> = { critical: 0, highest: 1, high: 2, medium: 3, none: 4, low: 5, lowest: 6 };
+      const order: Record<string, number> = {
+        critical: 0,
+        highest: 1,
+        high: 2,
+        medium: 3,
+        none: 4,
+        low: 5,
+        lowest: 6,
+      };
       return copy.sort((a, b) => (order[a.priority] ?? 4) - (order[b.priority] ?? 4));
     }
     case 'alphabetical':
@@ -193,12 +197,12 @@ function extractFileName(path: string): string {
 /** Derived: distinct tags from all tasks */
 export const checklistTags = derived(tasks, ($tasks) => {
   const tagSet = new Set<string>();
-  $tasks.forEach(t => t.tags.forEach(tag => tagSet.add(tag)));
+  $tasks.forEach((t) => t.tags.forEach((tag) => tagSet.add(tag)));
   return [...tagSet].sort();
 });
 
 /** Persist config */
-checklistConfig.subscribe(config => {
+checklistConfig.subscribe((config) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
   } catch (e) {

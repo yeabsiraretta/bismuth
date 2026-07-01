@@ -34,67 +34,83 @@
 <div class="inspector-panel">
   <PanelHeader icon="box" title="Entity Info">
     <svelte:fragment slot="actions">
-      <ActionButton icon="share-2" title="Open in Graph" on:click={() => { window.dispatchEvent(new CustomEvent('open-graph-view', { detail: { noteId: note?.path } })); }} />
+      <ActionButton
+        icon="share-2"
+        title="Open in Graph"
+        on:click={() => {
+          window.dispatchEvent(
+            new CustomEvent('open-graph-view', { detail: { noteId: note?.path } })
+          );
+        }}
+      />
     </svelte:fragment>
   </PanelHeader>
 
   <div class="inspector-content">
-  {#if !note}
-    <div class="inspector-empty">
-      <p class="inspector-empty-title">No note selected</p>
-    </div>
-  {:else if entity}
-    <div class="entity-content">
-      <div class="entity-field">
-        <span class="field-label">Type</span>
-        <div class="field-value">
-          <Icon name={entity.type ? getPortentIcon(entity.type) : 'file'} size={14} />
-          <span>{entity.type || 'Untyped'}</span>
+    {#if !note}
+      <div class="inspector-empty">
+        <p class="inspector-empty-title">No note selected</p>
+      </div>
+    {:else if entity}
+      <div class="entity-content">
+        <div class="entity-field">
+          <span class="field-label">Type</span>
+          <div class="field-value">
+            <Icon name={entity.type ? getPortentIcon(entity.type) : 'file'} size={14} />
+            <span>{entity.type || 'Untyped'}</span>
+          </div>
+        </div>
+
+        <div class="entity-field">
+          <span class="field-label">Lifecycle</span>
+          <div class="field-value">
+            <span class="lifecycle-dot" style="background-color: {lifecycleColor(entity.lifecycle)}"
+            ></span>
+            <span>{entity.lifecycle}</span>
+          </div>
+        </div>
+
+        <div class="entity-field">
+          <span class="field-label">Belongs To</span>
+          {#if entity.belongsTo.length === 0}
+            <div class="empty-hint">No parent entities</div>
+          {:else}
+            <div class="entity-list">
+              {#each entity.belongsTo as ref}
+                <button
+                  class="entity-link"
+                  on:click={() => handleOpenNote(ref.path)}
+                  title="Open {ref.title}"
+                >
+                  <Icon name="link" size={12} />
+                  {ref.title}
+                </button>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <div class="entity-field">
+          <span class="field-label">Related To</span>
+          {#if entity.relatedTo.length === 0}
+            <div class="empty-hint">No related entities</div>
+          {:else}
+            <div class="entity-list">
+              {#each entity.relatedTo as ref}
+                <button
+                  class="entity-link"
+                  on:click={() => handleOpenNote(ref.path)}
+                  title="Open {ref.title}"
+                >
+                  <Icon name="link" size={12} />
+                  {ref.title}
+                </button>
+              {/each}
+            </div>
+          {/if}
         </div>
       </div>
-
-      <div class="entity-field">
-        <span class="field-label">Lifecycle</span>
-        <div class="field-value">
-          <span class="lifecycle-dot" style="background-color: {lifecycleColor(entity.lifecycle)}"
-          ></span>
-          <span>{entity.lifecycle}</span>
-        </div>
-      </div>
-
-      <div class="entity-field">
-        <span class="field-label">Belongs To</span>
-        {#if entity.belongsTo.length === 0}
-          <div class="empty-hint">No parent entities</div>
-        {:else}
-          <div class="entity-list">
-            {#each entity.belongsTo as ref}
-              <button class="entity-link" on:click={() => handleOpenNote(ref.path)} title="Open {ref.title}">
-                <Icon name="link" size={12} />
-                {ref.title}
-              </button>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
-      <div class="entity-field">
-        <span class="field-label">Related To</span>
-        {#if entity.relatedTo.length === 0}
-          <div class="empty-hint">No related entities</div>
-        {:else}
-          <div class="entity-list">
-            {#each entity.relatedTo as ref}
-              <button class="entity-link" on:click={() => handleOpenNote(ref.path)} title="Open {ref.title}">
-                <Icon name="link" size={12} />
-                {ref.title}
-              </button>
-            {/each}
-          </div>
-        {/if}
-      </div>
-    </div>
-  {/if}
+    {/if}
   </div>
 </div>
 

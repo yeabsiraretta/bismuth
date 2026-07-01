@@ -27,7 +27,7 @@ export function resolveCoverSrc(value: string, vaultRoot?: string): string {
 /** Get CSS dimensions for a cover shape. */
 export function getCoverDimensions(
   shape: CoverShape,
-  widths: Record<CoverShape, number>,
+  widths: Record<CoverShape, number>
 ): { width: number; height: number | 'auto'; borderRadius: string } {
   const w = widths[shape] || 120;
   switch (shape) {
@@ -69,8 +69,18 @@ export function resolveIcon(value: string): ResolvedIcon {
 // ─── Date formatting ────────────────────────────────────────────────────────
 
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 const MONTH_SHORT = MONTH_NAMES.map((m) => m.slice(0, 3));
@@ -126,10 +136,7 @@ export function formatDate(date: Date, format: string): string {
   ];
 
   // Build a single regex that matches the longest token at each position
-  const tokenPattern = new RegExp(
-    tokens.map(([re]) => `(${re.source})`).join('|'),
-    'g',
-  );
+  const tokenPattern = new RegExp(tokens.map(([re]) => `(${re.source})`).join('|'), 'g');
 
   return format.replace(tokenPattern, (match) => {
     for (const [re, val] of tokens) {
@@ -167,7 +174,7 @@ export interface ProgressBarData {
 /** Calculate progress bar data from frontmatter. */
 export function calculateProgress(
   frontmatter: Record<string, unknown>,
-  config: ProgressConfig,
+  config: ProgressConfig
 ): ProgressBarData {
   const rawVal = frontmatter[config.property];
   const value = typeof rawVal === 'number' ? rawVal : parseFloat(String(rawVal ?? 0)) || 0;
@@ -192,7 +199,7 @@ export function calculateProgress(
 export function getPropertyValueColor(
   colors: PropertyColorMap,
   propertyKey: string,
-  value: string,
+  value: string
 ): string | null {
   const entries = colors[propertyKey];
   if (!entries) return null;
@@ -205,7 +212,7 @@ export function setPropertyValueColor(
   colors: PropertyColorMap,
   propertyKey: string,
   value: string,
-  color: string | null,
+  color: string | null
 ): PropertyColorMap {
   const updated = { ...colors };
   const existing = [...(updated[propertyKey] || [])];
@@ -227,7 +234,10 @@ export function setPropertyValueColor(
 // ─── Tag colors ─────────────────────────────────────────────────────────────
 
 /** Find color for a tag. */
-export function getTagColor(tagColors: Array<{ tag: string; color: string }>, tag: string): string | null {
+export function getTagColor(
+  tagColors: Array<{ tag: string; color: string }>,
+  tag: string
+): string | null {
   const clean = tag.startsWith('#') ? tag.slice(1) : tag;
   const match = tagColors.find((t) => t.tag === clean);
   return match?.color ?? null;

@@ -12,7 +12,6 @@ export {
   speedReaderStore,
   startSpeedReader,
   stopSpeedReader,
-
   setWpm,
   adjustWpm,
   toggleFocusMode,

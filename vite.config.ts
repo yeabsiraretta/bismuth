@@ -1,8 +1,8 @@
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import path from "path";
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import path from 'path';
 
-const isDev = process.env.TAURI_ENV_DEBUG === "true" || process.env.NODE_ENV === "development";
+const isDev = process.env.TAURI_ENV_DEBUG === 'true' || process.env.NODE_ENV === 'development';
 
 export default defineConfig(async (_env) => ({
   plugins: [
@@ -15,8 +15,8 @@ export default defineConfig(async (_env) => ({
 
   resolve: {
     alias: {
-      $lib: path.resolve("./src/lib"),
-      '@': path.resolve("./src/lib"),
+      $lib: path.resolve('./src/lib'),
+      '@': path.resolve('./src/lib'),
     },
   },
 
@@ -32,7 +32,7 @@ export default defineConfig(async (_env) => ({
       clientPort: 5183,
     },
     watch: {
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
     },
   },
 
@@ -63,12 +63,24 @@ export default defineConfig(async (_env) => ({
     rolldownOptions: {
       // Optional dependencies not installed by default; externalize so rolldown doesn't error
       external: [
-        'hyperformula', 'standardized-audio-context', 'pdfjs-dist',
-        'abcjs', 'smiles-drawer', '@replit/codemirror-vim',
-        '@codemirror/lang-json', '@codemirror/lang-javascript', '@codemirror/lang-html',
-        '@codemirror/lang-css', '@codemirror/lang-python', '@codemirror/lang-rust',
-        '@codemirror/lang-cpp', '@codemirror/lang-java', '@codemirror/lang-php',
-        '@codemirror/lang-xml', '@codemirror/lang-sql', '@codemirror/lang-yaml',
+        'hyperformula',
+        'standardized-audio-context',
+        'pdfjs-dist',
+        'abcjs',
+        'smiles-drawer',
+        '@replit/codemirror-vim',
+        '@codemirror/lang-json',
+        '@codemirror/lang-javascript',
+        '@codemirror/lang-html',
+        '@codemirror/lang-css',
+        '@codemirror/lang-python',
+        '@codemirror/lang-rust',
+        '@codemirror/lang-cpp',
+        '@codemirror/lang-java',
+        '@codemirror/lang-php',
+        '@codemirror/lang-xml',
+        '@codemirror/lang-sql',
+        '@codemirror/lang-yaml',
         '@codemirror/lang-go',
       ],
       output: {
@@ -79,7 +91,13 @@ export default defineConfig(async (_env) => ({
         manualChunks(id: string) {
           if (id.includes('@codemirror/')) return 'codemirror';
           if (id.includes('konva')) return 'vendor-canvas';
-          if (id.includes('unified') || id.includes('remark') || id.includes('rehype') || id.includes('marked')) return 'vendor-markdown';
+          if (
+            id.includes('unified') ||
+            id.includes('remark') ||
+            id.includes('rehype') ||
+            id.includes('marked')
+          )
+            return 'vendor-markdown';
           if (id.includes('date-fns')) return 'vendor-dates';
           if (id.includes('chart.js')) return 'vendor-charts';
           if (id.includes('tone')) return 'vendor-audio';

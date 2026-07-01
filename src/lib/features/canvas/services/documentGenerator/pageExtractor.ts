@@ -4,7 +4,10 @@
 
 import type { CanvasElement } from '@/features/canvas/types';
 import type { PagePayload, PageComponentInstance } from '@/types/design-documents/page';
-import { filterByDesignTag, getDesignSourceTag } from '@/features/canvas/services/documentGenerator/tagging';
+import {
+  filterByDesignTag,
+  getDesignSourceTag,
+} from '@/features/canvas/services/documentGenerator/tagging';
 
 /** Extract a PagePayload from tagged page composition frames. */
 export function extractPage(

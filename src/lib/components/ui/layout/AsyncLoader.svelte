@@ -5,6 +5,7 @@
    *  switching between features (canvas → graph → canvas) never re-fetches. */
   const moduleCache = new Map<string, unknown>();
 </script>
+
 <script lang="ts">
   import Spinner from '@/components/ui/feedback/Spinner.svelte';
   import EmptyState from '@/components/ui/feedback/EmptyState.svelte';
@@ -27,17 +28,22 @@
   const RETRY_DELAYS = [0, 500, 2000];
 
   function emitTiming(durationMs: number, success: boolean, errorMsg?: string): void {
-    import('@/features/lazyloader').then((mod) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      mod.loadTimings.update((prev: any[]) => [...prev, {
-        featureId,
-        durationMs,
-        loadedAt: new Date().toISOString(),
-        trigger: 'demand',
-        success,
-        error: errorMsg,
-      }]);
-    }).catch(() => {});
+    import('@/features/lazyloader')
+      .then((mod) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        mod.loadTimings.update((prev: any[]) => [
+          ...prev,
+          {
+            featureId,
+            durationMs,
+            loadedAt: new Date().toISOString(),
+            trigger: 'demand',
+            success,
+            error: errorMsg,
+          },
+        ]);
+      })
+      .catch(() => {});
   }
 
   function loadFeature(): void {
@@ -75,7 +81,7 @@
     setTimeout(loadFeature, delay);
   }
 
-  $: loader, loadFeature();
+  $: (loader, loadFeature());
 </script>
 
 {#if error}
@@ -114,6 +120,8 @@
   }
 
   @keyframes fade-in {
-    to { opacity: 1; }
+    to {
+      opacity: 1;
+    }
   }
 </style>

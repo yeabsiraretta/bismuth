@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
-  extractWikilinks, extractConcepts, conceptFrequencies,
-  topConcepts, buildConceptGraph, buildMultiSourceGraph,
+  extractWikilinks,
+  extractConcepts,
+  conceptFrequencies,
+  topConcepts,
+  buildConceptGraph,
+  buildMultiSourceGraph,
   splitParagraphs,
 } from '../services/conceptExtractor';
 
@@ -72,7 +76,12 @@ describe('conceptFrequencies', () => {
 
 describe('topConcepts', () => {
   it('returns top N by frequency', () => {
-    const freq = new Map([['a', 10], ['b', 5], ['c', 20], ['d', 1]]);
+    const freq = new Map([
+      ['a', 10],
+      ['b', 5],
+      ['c', 20],
+      ['d', 1],
+    ]);
     expect(topConcepts(freq, 2)).toEqual(['c', 'a']);
   });
 });
@@ -102,9 +111,9 @@ describe('buildConceptGraph', () => {
     const { nodes, edges } = buildConceptGraph(content, 'wikilinks-only', 'paragraph');
     expect(nodes.length).toBeGreaterThanOrEqual(3);
     // Note A and Note B should be connected (same paragraph)
-    const hasAB = edges.some(e =>
-      (e.from === 'Note A' && e.to === 'Note B') ||
-      (e.from === 'Note B' && e.to === 'Note A'),
+    const hasAB = edges.some(
+      (e) =>
+        (e.from === 'Note A' && e.to === 'Note B') || (e.from === 'Note B' && e.to === 'Note A')
     );
     expect(hasAB).toBe(true);
   });
@@ -112,15 +121,15 @@ describe('buildConceptGraph', () => {
   it('includes concept nodes in concepts mode', () => {
     const content = 'Mitochondria generate energy through ATP synthesis. [[Cell Biology]]';
     const { nodes } = buildConceptGraph(content, 'wikilinks-and-concepts', 'paragraph');
-    const conceptNodes = nodes.filter(n => n.id.startsWith('concept:'));
+    const conceptNodes = nodes.filter((n) => n.id.startsWith('concept:'));
     expect(conceptNodes.length).toBeGreaterThan(0);
   });
 
   it('page mode connects all items', () => {
     const content = '[[A]] first paragraph\n\n[[B]] second paragraph';
     const { edges } = buildConceptGraph(content, 'wikilinks-only', 'page');
-    const hasAB = edges.some(e =>
-      (e.from === 'A' && e.to === 'B') || (e.from === 'B' && e.to === 'A'),
+    const hasAB = edges.some(
+      (e) => (e.from === 'A' && e.to === 'B') || (e.from === 'B' && e.to === 'A')
     );
     expect(hasAB).toBe(true);
   });
@@ -133,9 +142,9 @@ describe('buildMultiSourceGraph', () => {
       { path: 'b.md', content: '[[Shared]] and [[OnlyB]]' },
     ];
     const result = buildMultiSourceGraph(sources, 'wikilinks-only', 'paragraph');
-    expect(result.nodes.find(n => n.id === 'Shared')).toBeDefined();
-    expect(result.nodes.find(n => n.id === 'OnlyA')).toBeDefined();
-    expect(result.nodes.find(n => n.id === 'OnlyB')).toBeDefined();
+    expect(result.nodes.find((n) => n.id === 'Shared')).toBeDefined();
+    expect(result.nodes.find((n) => n.id === 'OnlyA')).toBeDefined();
+    expect(result.nodes.find((n) => n.id === 'OnlyB')).toBeDefined();
     expect(result.edges.length).toBeGreaterThanOrEqual(0);
   });
 });

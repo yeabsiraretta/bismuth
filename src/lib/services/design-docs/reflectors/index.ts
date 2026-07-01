@@ -23,9 +23,10 @@ export const REFLECT_SOURCES = {
   grid: 'src/lib/styles/grid-system.css',
 } as const;
 
-
 /** Reflect all available source files into design documents. */
-export async function reflectAll(readFile: (path: string) => Promise<string>): Promise<DesignDocumentAny[]> {
+export async function reflectAll(
+  readFile: (path: string) => Promise<string>
+): Promise<DesignDocumentAny[]> {
   const docs: DesignDocumentAny[] = [];
 
   // Read tokens.css once for both token and theme extraction
@@ -33,22 +34,47 @@ export async function reflectAll(readFile: (path: string) => Promise<string>): P
     const tokensCss = await readFile(REFLECT_SOURCES.tokens);
     const tokenPayload = reflectTokensFromCSS(tokensCss);
     if (tokenPayload.collections.length > 0) {
-      docs.push(createDocumentEnvelope<TokenPayload>('token', 'tok_reflected', 'Reflected Tokens', tokenPayload));
+      docs.push(
+        createDocumentEnvelope<TokenPayload>(
+          'token',
+          'tok_reflected',
+          'Reflected Tokens',
+          tokenPayload
+        )
+      );
     }
     const themePayload = reflectThemeFromCSS(tokensCss);
     if (themePayload) {
-      docs.push(createDocumentEnvelope<ThemePayload>('theme', 'theme_reflected_dark', 'Reflected Dark Theme', themePayload));
+      docs.push(
+        createDocumentEnvelope<ThemePayload>(
+          'theme',
+          'theme_reflected_dark',
+          'Reflected Dark Theme',
+          themePayload
+        )
+      );
     }
-  } catch (e) { log.warn('Failed to reflect tokens/theme from CSS', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to reflect tokens/theme from CSS', { error: String(e) });
+  }
 
   // Layout from grid-system.css
   try {
     const gridCss = await readFile(REFLECT_SOURCES.grid);
     const layoutPayload = reflectLayoutFromCSS(gridCss);
     if (layoutPayload) {
-      docs.push(createDocumentEnvelope<LayoutPayload>('layout', 'layout_reflected', 'Reflected Layout', layoutPayload));
+      docs.push(
+        createDocumentEnvelope<LayoutPayload>(
+          'layout',
+          'layout_reflected',
+          'Reflected Layout',
+          layoutPayload
+        )
+      );
     }
-  } catch (e) { log.warn('Failed to reflect layout from CSS', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to reflect layout from CSS', { error: String(e) });
+  }
 
   return docs;
 }

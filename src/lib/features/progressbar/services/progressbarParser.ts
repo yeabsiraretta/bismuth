@@ -3,7 +3,10 @@
  * computes time-based and manual progress values, resolves name templates.
  */
 import type {
-  ProgressBarKind, ProgressBarConfig, ProgressBarData, ProgressBarBlock,
+  ProgressBarKind,
+  ProgressBarConfig,
+  ProgressBarData,
+  ProgressBarBlock,
 } from '../types/progressbar';
 import { DEFAULT_PROGRESSBAR_CONFIG } from '../types/progressbar';
 
@@ -24,14 +27,30 @@ export function parseProgressBarYaml(raw: string): ProgressBarConfig {
     const val = rawVal.replace(/^["']|["']$/g, '').trim();
 
     switch (key.toLowerCase()) {
-      case 'kind': config.kind = val as ProgressBarKind; break;
-      case 'name': config.name = val; break;
-      case 'width': config.width = val; break;
-      case 'value': config.value = parseFloat(val); break;
-      case 'min': config.min = isNaN(Number(val)) ? val : parseFloat(val); break;
-      case 'max': config.max = isNaN(Number(val)) ? val : parseFloat(val); break;
-      case 'button': config.button = val === 'true'; break;
-      case 'id': config.id = val; break;
+      case 'kind':
+        config.kind = val as ProgressBarKind;
+        break;
+      case 'name':
+        config.name = val;
+        break;
+      case 'width':
+        config.width = val;
+        break;
+      case 'value':
+        config.value = parseFloat(val);
+        break;
+      case 'min':
+        config.min = isNaN(Number(val)) ? val : parseFloat(val);
+        break;
+      case 'max':
+        config.max = isNaN(Number(val)) ? val : parseFloat(val);
+        break;
+      case 'button':
+        config.button = val === 'true';
+        break;
+      case 'id':
+        config.id = val;
+        break;
     }
   }
 
@@ -45,7 +64,7 @@ export function computeTimeProgress(
   kind: ProgressBarKind,
   minVal: number | string | null,
   maxVal: number | string | null,
-  now: Date = new Date(),
+  now: Date = new Date()
 ): { value: number; min: number; max: number } {
   switch (kind) {
     case 'day-year': {
@@ -76,7 +95,8 @@ export function computeTimeProgress(
       const elapsed = Math.max(0, Math.min(total, daysBetween(startDate, now)));
       return { value: elapsed, min: 0, max: Math.max(total, 1) };
     }
-    default: return { value: 0, min: 0, max: 100 };
+    default:
+      return { value: 0, min: 0, max: 100 };
   }
 }
 
@@ -93,7 +113,7 @@ export function daysBetween(a: Date, b: Date): number {
 /** Resolve name templates: {value}, {max}, {min}, {percentage} */
 export function resolveNameTemplate(
   template: string,
-  data: { value: number; min: number; max: number; percentage: number },
+  data: { value: number; min: number; max: number; percentage: number }
 ): string {
   return template
     .replace(/\{value\}/g, String(data.value))
@@ -105,13 +125,20 @@ export function resolveNameTemplate(
 /** Generate default name from kind */
 export function defaultNameForKind(kind: ProgressBarKind | null): string {
   switch (kind) {
-    case 'day-year': return 'Day of Year ({percentage})';
-    case 'day-month': return 'Day of Month ({percentage})';
-    case 'day-week': return 'Day of Week ({percentage})';
-    case 'day-custom': return 'Custom ({percentage})';
-    case 'month': return 'Month ({percentage})';
-    case 'manual': return 'Progress ({percentage})';
-    default: return 'Progress ({percentage})';
+    case 'day-year':
+      return 'Day of Year ({percentage})';
+    case 'day-month':
+      return 'Day of Month ({percentage})';
+    case 'day-week':
+      return 'Day of Week ({percentage})';
+    case 'day-custom':
+      return 'Custom ({percentage})';
+    case 'month':
+      return 'Month ({percentage})';
+    case 'manual':
+      return 'Progress ({percentage})';
+    default:
+      return 'Progress ({percentage})';
   }
 }
 
@@ -120,7 +147,7 @@ export function defaultNameForKind(kind: ProgressBarKind | null): string {
 /** Compute full ProgressBarData from a parsed config */
 export function computeProgressBar(
   config: ProgressBarConfig,
-  now: Date = new Date(),
+  now: Date = new Date()
 ): ProgressBarData {
   let value: number;
   let min: number;

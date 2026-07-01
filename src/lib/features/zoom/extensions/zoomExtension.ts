@@ -3,17 +3,8 @@
  * provides keyboard shortcuts, and handles bullet click to zoom.
  */
 
-import {
-  StateField,
-  StateEffect,
-  type Extension,
-  type Range,
-} from '@codemirror/state';
-import {
-  Decoration,
-  EditorView,
-  keymap,
-} from '@codemirror/view';
+import { StateField, StateEffect, type Extension, type Range } from '@codemirror/state';
+import { Decoration, EditorView, keymap } from '@codemirror/view';
 import type { ZoomRange, ZoomTarget } from '../types/zoom';
 import { targetAtLine } from '../services/zoomService';
 
@@ -108,7 +99,7 @@ export const zoomKeymap = keymap.of([
  */
 export function bulletClickHandler(
   onZoomIn: (target: ZoomTarget) => void,
-  isEnabled: () => boolean,
+  isEnabled: () => boolean
 ): Extension {
   return EditorView.domEventHandlers({
     click(event: MouseEvent, view: EditorView) {
@@ -147,7 +138,7 @@ export function bulletClickHandler(
  */
 export function zoomExtension(
   onZoomIn: (target: ZoomTarget) => void,
-  isClickEnabled: () => boolean,
+  isClickEnabled: () => boolean
 ): Extension[] {
   return [
     zoomField,

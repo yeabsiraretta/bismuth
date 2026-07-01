@@ -6,16 +6,35 @@
 import { Decoration, type EditorView } from '@codemirror/view';
 import type { Range } from '@codemirror/state';
 import {
-  hiddenMark, tableHiddenLine, codeBlockLine, codeBlockFence,
-  quoteFirstLine, quoteLastLine, quoteMiddleLine, quoteSingleLine,
-  flashcardFront, flashcardBack, flashcardSep, flashcardReversed, clozeDeletion,
+  hiddenMark,
+  tableHiddenLine,
+  codeBlockLine,
+  codeBlockFence,
+  quoteFirstLine,
+  quoteLastLine,
+  quoteMiddleLine,
+  quoteSingleLine,
+  flashcardFront,
+  flashcardBack,
+  flashcardSep,
+  flashcardReversed,
+  clozeDeletion,
   CalloutWidget,
   decorateInline,
 } from './livePreviewDecorators';
-import { CodeBlockWidget, parseCodeBlockParams, resolveHighlightGroups, isLanguageExcluded, DEFAULT_THEME } from '@/features/code-styler';
+import {
+  CodeBlockWidget,
+  parseCodeBlockParams,
+  resolveHighlightGroups,
+  isLanguageExcluded,
+  DEFAULT_THEME,
+} from '@/features/code-styler';
 import { FlashcardWidget, ClozeWidget } from '@/features/flashcards';
 
-interface QuoteRawLine { lineNum: number; content: string }
+interface QuoteRawLine {
+  lineNum: number;
+  content: string;
+}
 
 /**
  * Handle a blockquote/callout block starting at line `startLineNum`.
@@ -27,7 +46,7 @@ export function decorateQuoteBlock(
   decos: Range<Decoration>[],
   startLineNum: number,
   endLine: number,
-  activeLines: Set<number>,
+  activeLines: Set<number>
 ): number {
   const doc = view.state.doc;
   let i = startLineNum;
@@ -41,7 +60,8 @@ export function decorateQuoteBlock(
     const qm = qText.match(/^(>+)\s?/);
     if (!qm) break;
     quoteRawLines.push({ lineNum: i, content: qText.slice(qm[0].length) });
-    if (i < endLine) i++; else break;
+    if (i < endLine) i++;
+    else break;
   }
   // If we overshot (line i is not a quote), back up
   if (i <= endLine && !doc.line(i).text.match(/^(>+)\s?/)) i--;
@@ -53,12 +73,14 @@ export function decorateQuoteBlock(
     const calloutType = calloutMatch[1];
     const foldChar = calloutMatch[2];
     const title = (calloutMatch[3] || '').trim();
-    const bodyLines = quoteRawLines.slice(1).map(r => r.content);
+    const bodyLines = quoteRawLines.slice(1).map((r) => r.content);
 
     const firstLine = doc.line(quoteBlockStart);
-    decos.push(Decoration.replace({
-      widget: new CalloutWidget(calloutType, title, bodyLines, !!foldChar, foldChar === '-'),
-    }).range(firstLine.from, firstLine.to));
+    decos.push(
+      Decoration.replace({
+        widget: new CalloutWidget(calloutType, title, bodyLines, !!foldChar, foldChar === '-'),
+      }).range(firstLine.from, firstLine.to)
+    );
 
     for (let ql = 1; ql < quoteRawLines.length; ql++) {
       const qln = doc.line(quoteBlockStart + ql);
@@ -103,7 +125,7 @@ export function decorateFlashcard(
   lineTo: number,
   text: string,
   activeLines?: Set<number>,
-  lineNum?: number,
+  lineNum?: number
 ): boolean {
   const reversedMatch = text.match(/^(.+?)\s*:::\s*(.+)$/);
   const basicMatch = !reversedMatch ? text.match(/^(.+?)\s*::\s*(.+)$/) : null;
@@ -116,9 +138,11 @@ export function decorateFlashcard(
 
   // Widget mode: cursor not on this line
   if (activeLines && lineNum !== undefined && !activeLines.has(lineNum)) {
-    decos.push(Decoration.replace({
-      widget: new FlashcardWidget(front, back, variant, lineFrom),
-    }).range(lineFrom, lineTo));
+    decos.push(
+      Decoration.replace({
+        widget: new FlashcardWidget(front, back, variant, lineFrom),
+      }).range(lineFrom, lineTo)
+    );
     return true;
   }
 
@@ -152,7 +176,7 @@ export function decorateCloze(
   text: string,
   lineTo?: number,
   activeLines?: Set<number>,
-  lineNum?: number,
+  lineNum?: number
 ): boolean {
   const hasCloze = /==.+?==/.test(text) || /(?<!\{)\{(?!\{)[^{}]+\}(?!\})/.test(text);
   if (!hasCloze) return false;
@@ -170,9 +194,11 @@ export function decorateCloze(
       clozes.push({ original: cm[0], answer: cm[1] });
     }
     if (clozes.length > 0) {
-      decos.push(Decoration.replace({
-        widget: new ClozeWidget(text, clozes, lineFrom),
-      }).range(lineFrom, lineTo));
+      decos.push(
+        Decoration.replace({
+          widget: new ClozeWidget(text, clozes, lineFrom),
+        }).range(lineFrom, lineTo)
+      );
       return true;
     }
   }
@@ -201,7 +227,10 @@ export function decorateCloze(
 
 // ─── Code block widget ──────────────────────────────────────────────────────
 
-interface CodeBlockRange { startLine: number; endLine: number }
+interface CodeBlockRange {
+  startLine: number;
+  endLine: number;
+}
 
 /**
  * Attempt to render a styled code block widget at the start of a code block.
@@ -213,10 +242,10 @@ export function decorateCodeBlock(
   lineNum: number,
   text: string,
   cbRanges: CodeBlockRange[],
-  activeLines: Set<number>,
+  activeLines: Set<number>
 ): number {
   const doc = view.state.doc;
-  const cbRange = cbRanges.find(r => r.startLine <= lineNum && r.endLine >= lineNum);
+  const cbRange = cbRanges.find((r) => r.startLine <= lineNum && r.endLine >= lineNum);
 
   if (cbRange && lineNum === cbRange.startLine) {
     const fenceText = doc.line(cbRange.startLine).text;
@@ -229,20 +258,28 @@ export function decorateCodeBlock(
       }
 
       const highlights = resolveHighlightGroups(
-        params.highlights, codeLines, DEFAULT_THEME.altHighlights,
-        DEFAULT_THEME.codeblock.highlightColor, true,
+        params.highlights,
+        codeLines,
+        DEFAULT_THEME.altHighlights,
+        DEFAULT_THEME.codeblock.highlightColor,
+        true
       );
 
       let cursorInBlock = false;
       for (let cl = cbRange.startLine; cl <= cbRange.endLine; cl++) {
-        if (activeLines.has(cl)) { cursorInBlock = true; break; }
+        if (activeLines.has(cl)) {
+          cursorInBlock = true;
+          break;
+        }
       }
 
       if (!cursorInBlock) {
         const firstLine = doc.line(cbRange.startLine);
-        decos.push(Decoration.replace({
-          widget: new CodeBlockWidget(params, codeLines, highlights, DEFAULT_THEME, params.fold),
-        }).range(firstLine.from, firstLine.to));
+        decos.push(
+          Decoration.replace({
+            widget: new CodeBlockWidget(params, codeLines, highlights, DEFAULT_THEME, params.fold),
+          }).range(firstLine.from, firstLine.to)
+        );
 
         for (let cl = cbRange.startLine + 1; cl <= cbRange.endLine; cl++) {
           const cLine = doc.line(cl);

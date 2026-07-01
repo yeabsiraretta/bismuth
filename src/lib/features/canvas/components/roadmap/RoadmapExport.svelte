@@ -12,9 +12,7 @@
     (el) => el.element_type === 'feature_card' && el.properties.featureCardData
   );
 
-  $: cardData = featureCards.map(
-    (el) => el.properties.featureCardData as FeatureCardData
-  );
+  $: cardData = featureCards.map((el) => el.properties.featureCardData as FeatureCardData);
 
   export function buildMarkdownTable(cards: FeatureCardData[]): string {
     const header = '| Feature | Status | Priority | Milestone | Owner |';
@@ -38,12 +36,17 @@
   $: fileName = activeTab === 'markdown' ? 'roadmap.md' : 'roadmap.json';
 
   function handleCopy() {
-    navigator.clipboard.writeText(activeContent).then(() => {
-      copyFeedback = 'Copied!';
-      setTimeout(() => { copyFeedback = ''; }, 2000);
-    }).catch((err) => {
-      log.error('RoadmapExport: clipboard write failed', err as Error);
-    });
+    navigator.clipboard
+      .writeText(activeContent)
+      .then(() => {
+        copyFeedback = 'Copied!';
+        setTimeout(() => {
+          copyFeedback = '';
+        }, 2000);
+      })
+      .catch((err) => {
+        log.error('RoadmapExport: clipboard write failed', err as Error);
+      });
   }
 
   function handleDownload() {
@@ -86,7 +89,11 @@
     <button class="action-btn" on:click={handleCopy} aria-label="Copy to clipboard">
       {copyFeedback || 'Copy to Clipboard'}
     </button>
-    <button class="action-btn action-btn--primary" on:click={handleDownload} aria-label="Download {fileName}">
+    <button
+      class="action-btn action-btn--primary"
+      on:click={handleDownload}
+      aria-label="Download {fileName}"
+    >
       Download {fileName}
     </button>
   </div>

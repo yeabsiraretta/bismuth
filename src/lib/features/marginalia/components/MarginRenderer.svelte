@@ -56,15 +56,60 @@
 </div>
 
 <style>
-  .margin-column { position: absolute; top: 0; height: 100%; pointer-events: none; z-index: 5; }
-  .margin-column.left { left: 0; }
-  .margin-column.right { right: 0; }
-  .margin-note { position: absolute; padding: 4px 8px; border-left: 3px solid var(--text-muted); pointer-events: auto; max-width: 100%; word-wrap: break-word; border-radius: 0 var(--radius-s) var(--radius-s) 0; transition: filter 0.2s, opacity 0.2s; cursor: default; }
-  .margin-note.blur .margin-text { filter: blur(5px); }
-  .margin-note.blur:hover .margin-text { filter: none; }
-  .margin-text { color: var(--text-normal); line-height: 1.4; }
-  .margin-image { max-width: 100%; }
-  .margin-image img { max-width: 100%; border-radius: var(--radius-s); cursor: zoom-in; transition: transform 0.2s; }
-  .margin-image img:hover { transform: scale(1.5); z-index: 100; position: relative; }
-  .blur-badge { display: inline-flex; margin-left: 4px; opacity: 0.5; vertical-align: middle; }
+  .margin-column {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .margin-column.left {
+    left: 0;
+  }
+  .margin-column.right {
+    right: 0;
+  }
+  .margin-note {
+    position: absolute;
+    padding: 4px 8px;
+    border-left: 3px solid var(--text-muted);
+    pointer-events: auto;
+    max-width: 100%;
+    word-wrap: break-word;
+    border-radius: 0 var(--radius-s) var(--radius-s) 0;
+    transition:
+      filter 0.2s,
+      opacity 0.2s;
+    cursor: default;
+  }
+  .margin-note.blur .margin-text {
+    filter: blur(5px);
+  }
+  .margin-note.blur:hover .margin-text {
+    filter: none;
+  }
+  .margin-text {
+    color: var(--text-normal);
+    line-height: 1.4;
+  }
+  .margin-image {
+    max-width: 100%;
+  }
+  .margin-image img {
+    max-width: 100%;
+    border-radius: var(--radius-s);
+    cursor: zoom-in;
+    transition: transform 0.2s;
+  }
+  .margin-image img:hover {
+    transform: scale(1.5);
+    z-index: 100;
+    position: relative;
+  }
+  .blur-badge {
+    display: inline-flex;
+    margin-left: 4px;
+    opacity: 0.5;
+    vertical-align: middle;
+  }
 </style>

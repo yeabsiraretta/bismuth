@@ -79,7 +79,12 @@
     <div class="popover-header">
       <Icon name="lightbulb" size={14} />
       <span>Link suggestions ({suggestions.length})</span>
-      <button class="close-btn" on:click={() => (visible = false)} title="Close suggestions" aria-label="Close suggestions">
+      <button
+        class="close-btn"
+        on:click={() => (visible = false)}
+        title="Close suggestions"
+        aria-label="Close suggestions"
+      >
         <Icon name="x" size={12} />
       </button>
     </div>
@@ -90,10 +95,18 @@
             "<strong>{suggestion.matched_text}</strong>" → [[{suggestion.title}]]
           </span>
           <div class="suggestion-actions">
-            <button class="action-btn link-btn" on:click={() => handleLink(suggestion)} title="Wrap in [[...]] wikilink">
+            <button
+              class="action-btn link-btn"
+              on:click={() => handleLink(suggestion)}
+              title="Wrap in [[...]] wikilink"
+            >
               Link
             </button>
-            <button class="action-btn dismiss-btn" on:click={() => handleDismiss(suggestion)} title="Dismiss this suggestion">
+            <button
+              class="action-btn dismiss-btn"
+              on:click={() => handleDismiss(suggestion)}
+              title="Dismiss this suggestion"
+            >
               Dismiss
             </button>
           </div>

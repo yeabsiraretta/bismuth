@@ -1,9 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import {
-  resolvePrefix, parseImage, isBlurNote, stripBlurSuffix,
-  parseMarginNotes, stripMarginNotes, lineMainText,
-  insertMarginNote, wrapWithMarginNote, wrapCornellBlock,
-  groupByColor, groupByFile,
+  resolvePrefix,
+  parseImage,
+  isBlurNote,
+  stripBlurSuffix,
+  parseMarginNotes,
+  stripMarginNotes,
+  lineMainText,
+  insertMarginNote,
+  wrapWithMarginNote,
+  wrapCornellBlock,
+  groupByColor,
+  groupByFile,
 } from '../services/marginParser';
 import { DEFAULT_PREFIXES } from '../types';
 
@@ -175,7 +183,7 @@ describe('groupByColor', () => {
   it('groups notes by prefix label', () => {
     const notes = parseMarginNotes(
       '%%> ? Question %% %%> ! Important %% %%> ? Another question %%',
-      'test.md',
+      'test.md'
     );
     const groups = groupByColor(notes);
     expect(groups.get('Question')?.length).toBe(2);

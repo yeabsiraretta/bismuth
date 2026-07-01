@@ -41,7 +41,10 @@
   $: totalCols = Math.max(rows.reduce((m, r) => Math.max(m, r.length), 0) + 3, 10);
   $: rowHeight = (r: number) => sheet?.rowHeights?.[r] ?? DEFAULT_ROW_HEIGHT;
   $: colWidth = (c: number) => sheet?.columnWidths?.[c] ?? DEFAULT_COL_WIDTH;
-  $: totalHeight = Array.from({ length: totalRows }, (_, i) => rowHeight(i)).reduce((a, b) => a + b, 0);
+  $: totalHeight = Array.from({ length: totalRows }, (_, i) => rowHeight(i)).reduce(
+    (a, b) => a + b,
+    0
+  );
   $: shouldVirtualize = totalRows > VIRTUAL_THRESHOLD;
 
   function getRowOffset(r: number): number {
@@ -70,7 +73,10 @@
     return totalRows - 1;
   })();
 
-  $: visibleRows = Array.from({ length: lastVisibleRow - firstVisibleRow + 1 }, (_, i) => firstVisibleRow + i);
+  $: visibleRows = Array.from(
+    { length: lastVisibleRow - firstVisibleRow + 1 },
+    (_, i) => firstVisibleRow + i
+  );
 
   // ─── Display values refresh ───────────────────────────────────────────────
   async function refreshDisplayValues() {
@@ -97,8 +103,12 @@
 
   function isSelected(r: number, c: number): boolean {
     if (!sel) return r === selectedRow && c === selectedCol;
-    return r >= Math.min(sel.startRow, sel.endRow) && r <= Math.max(sel.startRow, sel.endRow)
-      && c >= Math.min(sel.startCol, sel.endCol) && c <= Math.max(sel.startCol, sel.endCol);
+    return (
+      r >= Math.min(sel.startRow, sel.endRow) &&
+      r <= Math.max(sel.startRow, sel.endRow) &&
+      c >= Math.min(sel.startCol, sel.endCol) &&
+      c <= Math.max(sel.startCol, sel.endCol)
+    );
   }
 
   function isActiveCell(r: number, c: number): boolean {
@@ -106,15 +116,18 @@
   }
 
   function selectCell(r: number, c: number) {
-    selectedRow = r; selectedCol = c;
-    editingRow = -1; editingCol = -1;
+    selectedRow = r;
+    selectedCol = c;
+    editingRow = -1;
+    editingCol = -1;
     selectRange({ sheetId, startRow: r, startCol: c, endRow: r, endCol: c });
   }
 
   // ─── Edit mode ────────────────────────────────────────────────────────────
   async function enterEditMode(r: number, c: number) {
     if (!sheet) return;
-    editingRow = r; editingCol = c;
+    editingRow = r;
+    editingCol = c;
     const formula = await formulaEngine.getFormula(`sheet_${sheetId}`, r, c);
     editValue = formula ?? (sheet.rows[r]?.[c] != null ? String(sheet.rows[r][c]) : '');
   }
@@ -123,39 +136,86 @@
     if (editingRow < 0 || editingCol < 0) return;
     await setCell(editingRow, editingCol, editValue === '' ? null : editValue);
     log.debug('SpreadsheetGrid: cell committed', { cell: addressToLabel(editingRow, editingCol) });
-    editingRow = -1; editingCol = -1; editValue = '';
+    editingRow = -1;
+    editingCol = -1;
+    editValue = '';
     refreshDisplayValues();
   }
 
-  function exitEdit() { editingRow = -1; editingCol = -1; editValue = ''; }
+  function exitEdit() {
+    editingRow = -1;
+    editingCol = -1;
+    editValue = '';
+  }
 
   // ─── Keyboard ─────────────────────────────────────────────────────────────
   function handleKeydown(e: KeyboardEvent) {
     if (editingRow >= 0) {
-      if (e.key === 'Enter') { e.preventDefault(); commitEdit().then(() => selectCell(Math.min(selectedRow + 1, totalRows - 1), selectedCol)); }
-      else if (e.key === 'Tab') { e.preventDefault(); commitEdit().then(() => { const nc = (selectedCol + 1) % totalCols; selectCell(nc === 0 ? Math.min(selectedRow + 1, totalRows - 1) : selectedRow, nc); }); }
-      else if (e.key === 'Escape') exitEdit();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        commitEdit().then(() => selectCell(Math.min(selectedRow + 1, totalRows - 1), selectedCol));
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        commitEdit().then(() => {
+          const nc = (selectedCol + 1) % totalCols;
+          selectCell(nc === 0 ? Math.min(selectedRow + 1, totalRows - 1) : selectedRow, nc);
+        });
+      } else if (e.key === 'Escape') exitEdit();
       return;
     }
     if (selectedRow < 0) return;
     switch (e.key) {
-      case 'ArrowUp': e.preventDefault(); selectCell(Math.max(0, selectedRow - 1), selectedCol); break;
-      case 'ArrowDown': e.preventDefault(); selectCell(Math.min(totalRows - 1, selectedRow + 1), selectedCol); break;
-      case 'ArrowLeft': e.preventDefault(); selectCell(selectedRow, Math.max(0, selectedCol - 1)); break;
-      case 'ArrowRight': e.preventDefault(); selectCell(selectedRow, Math.min(totalCols - 1, selectedCol + 1)); break;
-      case 'Tab': e.preventDefault(); { const nc = (selectedCol + 1) % totalCols; selectCell(nc === 0 ? Math.min(selectedRow + 1, totalRows - 1) : selectedRow, nc); } break;
-      case 'Enter': enterEditMode(selectedRow, selectedCol); break;
-      case 'Delete': case 'Backspace': setCell(selectedRow, selectedCol, null).then(() => refreshDisplayValues()); break;
-      case 'Escape': selectedRow = -1; selectedCol = -1; selectRange(null); break;
+      case 'ArrowUp':
+        e.preventDefault();
+        selectCell(Math.max(0, selectedRow - 1), selectedCol);
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        selectCell(Math.min(totalRows - 1, selectedRow + 1), selectedCol);
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        selectCell(selectedRow, Math.max(0, selectedCol - 1));
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        selectCell(selectedRow, Math.min(totalCols - 1, selectedCol + 1));
+        break;
+      case 'Tab':
+        e.preventDefault();
+        {
+          const nc = (selectedCol + 1) % totalCols;
+          selectCell(nc === 0 ? Math.min(selectedRow + 1, totalRows - 1) : selectedRow, nc);
+        }
+        break;
+      case 'Enter':
+        enterEditMode(selectedRow, selectedCol);
+        break;
+      case 'Delete':
+      case 'Backspace':
+        setCell(selectedRow, selectedCol, null).then(() => refreshDisplayValues());
+        break;
+      case 'Escape':
+        selectedRow = -1;
+        selectedCol = -1;
+        selectRange(null);
+        break;
       default:
-        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) enterEditMode(selectedRow, selectedCol).then(() => { editValue = e.key; });
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey)
+          enterEditMode(selectedRow, selectedCol).then(() => {
+            editValue = e.key;
+          });
     }
   }
 
-  function handleGridEditKeydown(detail: { event: KeyboardEvent }) { handleKeydown(detail.event); }
+  function handleGridEditKeydown(detail: { event: KeyboardEvent }) {
+    handleKeydown(detail.event);
+  }
 
   onMount(() => {
-    const ro = new ResizeObserver((entries) => { containerHeight = entries[0].contentRect.height - DEFAULT_ROW_HEIGHT; });
+    const ro = new ResizeObserver((entries) => {
+      containerHeight = entries[0].contentRect.height - DEFAULT_ROW_HEIGHT;
+    });
     if (containerEl) ro.observe(containerEl);
     return () => ro.disconnect();
   });
@@ -168,12 +228,19 @@
   aria-label="Spreadsheet grid"
   on:keydown={handleKeydown}
   bind:this={containerEl}
-  on:scroll={(e) => { scrollTop = (e.target as HTMLElement).scrollTop; }}
+  on:scroll={(e) => {
+    scrollTop = (e.target as HTMLElement).scrollTop;
+  }}
 >
   <!-- Column headers (sticky top) -->
   <div class="header-row" style="padding-left: {HEADER_COL_WIDTH}px;">
     {#each Array.from({ length: totalCols }, (_, i) => i) as c (c)}
-      <div class="col-header" style="width: {colWidth(c)}px; min-width: {colWidth(c)}px;" role="columnheader" aria-label="Column {colIndexToLabel(c)}">
+      <div
+        class="col-header"
+        style="width: {colWidth(c)}px; min-width: {colWidth(c)}px;"
+        role="columnheader"
+        aria-label="Column {colIndexToLabel(c)}"
+      >
         {colIndexToLabel(c)}
       </div>
     {/each}
@@ -198,7 +265,9 @@
         virtualOffset={shouldVirtualize ? getRowOffset(r) : -1}
         onCellClick={(d) => selectCell(d.row, d.col)}
         onCellDblClick={(d) => enterEditMode(d.row, d.col)}
-        onEditInput={(d) => { editValue = d.value; }}
+        onEditInput={(d) => {
+          editValue = d.value;
+        }}
         onEditBlur={commitEdit}
         onEditKeydown={handleGridEditKeydown}
       />

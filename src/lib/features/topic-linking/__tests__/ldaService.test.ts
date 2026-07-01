@@ -15,10 +15,7 @@ function makeDoc(path: string, tokens: string[]): CorpusDocument {
 
 describe('buildVocabulary', () => {
   it('builds vocab and word indices', () => {
-    const docs = [
-      makeDoc('a.md', ['cat', 'dog', 'cat']),
-      makeDoc('b.md', ['dog', 'bird']),
-    ];
+    const docs = [makeDoc('a.md', ['cat', 'dog', 'cat']), makeDoc('b.md', ['dog', 'bird'])];
     const { vocab, wordToIdx, docWordIndices } = buildVocabulary(docs);
 
     expect(vocab).toContain('cat');

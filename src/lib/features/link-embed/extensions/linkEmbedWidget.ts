@@ -10,7 +10,9 @@ import type { LinkEmbedData } from '../types';
 import { serializeLinkEmbedData } from '../types';
 
 export class LinkEmbedWidget extends WidgetType {
-  constructor(private data: LinkEmbedData) { super(); }
+  constructor(private data: LinkEmbedData) {
+    super();
+  }
 
   toDOM(): HTMLElement {
     const card = document.createElement('a');
@@ -35,7 +37,9 @@ export class LinkEmbedWidget extends WidgetType {
       favicon.width = 16;
       favicon.height = 16;
       favicon.loading = 'lazy';
-      favicon.onerror = () => { favicon.style.display = 'none'; };
+      favicon.onerror = () => {
+        favicon.style.display = 'none';
+      };
       header.appendChild(favicon);
     }
 
@@ -57,9 +61,10 @@ export class LinkEmbedWidget extends WidgetType {
     if (this.data.description) {
       const desc = document.createElement('div');
       desc.className = 'cm-link-embed-desc';
-      desc.textContent = this.data.description.length > 200
-        ? this.data.description.slice(0, 197) + '...'
-        : this.data.description;
+      desc.textContent =
+        this.data.description.length > 200
+          ? this.data.description.slice(0, 197) + '...'
+          : this.data.description;
       content.appendChild(desc);
     }
 
@@ -73,7 +78,9 @@ export class LinkEmbedWidget extends WidgetType {
       img.className = 'cm-link-embed-img';
       img.src = this.data.image;
       img.loading = 'lazy';
-      img.onerror = () => { imgWrap.style.display = 'none'; };
+      img.onerror = () => {
+        imgWrap.style.display = 'none';
+      };
       if (this.data.aspectRatio) {
         img.style.aspectRatio = this.data.aspectRatio;
       }
@@ -89,25 +96,33 @@ export class LinkEmbedWidget extends WidgetType {
       const block = '```link-embed\n' + serializeLinkEmbedData(this.data) + '\n```';
       navigator.clipboard.writeText(block);
       copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1200);
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+      }, 1200);
     });
     actions.appendChild(copyBtn);
 
     card.appendChild(actions);
 
     // Prevent editor from handling the click
-    card.addEventListener('click', (e) => { e.stopPropagation(); });
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
 
     return card;
   }
 
   eq(other: LinkEmbedWidget): boolean {
-    return this.data.url === other.data.url
-      && this.data.title === other.data.title
-      && this.data.image === other.data.image;
+    return (
+      this.data.url === other.data.url &&
+      this.data.title === other.data.title &&
+      this.data.image === other.data.image
+    );
   }
 
-  ignoreEvent(): boolean { return true; }
+  ignoreEvent(): boolean {
+    return true;
+  }
 
   private extractDomain(): string {
     try {

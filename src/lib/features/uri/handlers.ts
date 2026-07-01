@@ -17,7 +17,11 @@ async function handleOpen(uri: ParsedUri): Promise<UriActionResult> {
     await openNote(uri.filepath);
 
     if (uri.heading || uri.block || uri.line) {
-      log.debug('URI: scroll target requested', { heading: uri.heading, block: uri.block, line: uri.line });
+      log.debug('URI: scroll target requested', {
+        heading: uri.heading,
+        block: uri.block,
+        line: uri.line,
+      });
     }
     return { success: true };
   } catch (e) {
@@ -173,7 +177,11 @@ async function handleFrontmatter(uri: ParsedUri): Promise<UriActionResult> {
       // Write mode: set frontmatter value
       const { updateFrontmatterField } = await import('@/services/frontmatter');
       let value: unknown = uri.data;
-      try { value = JSON.parse(uri.data); } catch { /* keep as string */ }
+      try {
+        value = JSON.parse(uri.data);
+      } catch {
+        /* keep as string */
+      }
       await updateFrontmatterField(uri.filepath, uri.frontmatterkey, value);
       return { success: true };
     } else {

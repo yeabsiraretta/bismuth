@@ -6,10 +6,7 @@
  * widget decorations after each block.
  */
 
-import {
-  Decoration,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate, EditorView } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { findAbcBlocks } from './abcParser';
@@ -40,21 +37,13 @@ export function abcNotationExtension() {
         const blocks = findAbcBlocks(text);
 
         for (const block of blocks) {
-          const widget = new AbcNotationWidget(
-            block.notation,
-            block.options,
-            block.optionsError,
-          );
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          const widget = new AbcNotationWidget(block.notation, block.options, block.optionsError);
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         this.decorations = builder.finish();
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 }

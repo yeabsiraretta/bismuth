@@ -15,11 +15,7 @@ export type {
   ExtractedWebLink,
   TopicLinkingConfig,
 } from './types';
-export {
-  DEFAULT_LDA_CONFIG,
-  DEFAULT_SAMPLING_CONFIG,
-  DEFAULT_TOPIC_LINKING_CONFIG,
-} from './types';
+export { DEFAULT_LDA_CONFIG, DEFAULT_SAMPLING_CONFIG, DEFAULT_TOPIC_LINKING_CONFIG } from './types';
 
 // Services — text processing
 export {
@@ -35,10 +31,7 @@ export {
 } from './services/textProcessor';
 
 // Services — LDA
-export {
-  buildVocabulary,
-  runLda,
-} from './services/ldaService';
+export { buildVocabulary, runLda } from './services/ldaService';
 
 // Services — topic linker
 export {

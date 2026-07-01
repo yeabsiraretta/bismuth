@@ -116,7 +116,10 @@ function injectTokenDocument(payload: TokenPayload): InjectionResult {
         width: LAYOUT.tokenCell.width,
         height: LAYOUT.tokenCell.height,
         properties: {
-          fill: token.type === 'color' ? String(token.values['default'] || token.values['light'] || '') : undefined,
+          fill:
+            token.type === 'color'
+              ? String(token.values['default'] || token.values['light'] || '')
+              : undefined,
         },
       });
     }

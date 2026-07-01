@@ -4,9 +4,42 @@ import { get } from 'svelte/store';
 // Mock the service layer before importing the store
 vi.mock('@/features/canvas/services/components', () => ({
   listComponents: vi.fn().mockResolvedValue([
-    { id: 'c1', name: 'Button', category: 'ui', elements: [], exposedProps: [], width: 100, height: 40, tags: ['btn'], created_at: 0, modified_at: 0 },
-    { id: 'c2', name: 'Card', category: 'layout', elements: [], exposedProps: [], width: 200, height: 160, tags: [], created_at: 0, modified_at: 0 },
-    { id: 'c3', name: 'Input', category: 'ui', elements: [], exposedProps: [], width: 180, height: 36, tags: ['form'], created_at: 0, modified_at: 0 },
+    {
+      id: 'c1',
+      name: 'Button',
+      category: 'ui',
+      elements: [],
+      exposedProps: [],
+      width: 100,
+      height: 40,
+      tags: ['btn'],
+      created_at: 0,
+      modified_at: 0,
+    },
+    {
+      id: 'c2',
+      name: 'Card',
+      category: 'layout',
+      elements: [],
+      exposedProps: [],
+      width: 200,
+      height: 160,
+      tags: [],
+      created_at: 0,
+      modified_at: 0,
+    },
+    {
+      id: 'c3',
+      name: 'Input',
+      category: 'ui',
+      elements: [],
+      exposedProps: [],
+      width: 180,
+      height: 36,
+      tags: ['form'],
+      created_at: 0,
+      modified_at: 0,
+    },
   ]),
   saveComponent: vi.fn().mockImplementation((c) => Promise.resolve(c)),
   deleteComponent: vi.fn().mockResolvedValue(undefined),
@@ -25,7 +58,11 @@ import {
   getComponentById,
   createComponentFromSelection,
 } from '../library/componentLibrary';
-import { deleteComponentWithDetach, enterComponentEditMode, exitComponentEditMode } from '../library/componentEditMode';
+import {
+  deleteComponentWithDetach,
+  enterComponentEditMode,
+  exitComponentEditMode,
+} from '../library/componentEditMode';
 import { currentCanvas, selectedElements } from '../elements/canvasStore';
 import type { CanvasDocument, CanvasElement } from '@/features/canvas/types';
 
@@ -99,13 +136,35 @@ describe('componentLibrary store', () => {
     });
 
     it('saveComponentToLibrary adds new component', async () => {
-      const newComp = { id: 'c4', name: 'Avatar', category: 'ui', elements: [], exposedProps: [], width: 48, height: 48, tags: [], created_at: 0, modified_at: 0 };
+      const newComp = {
+        id: 'c4',
+        name: 'Avatar',
+        category: 'ui',
+        elements: [],
+        exposedProps: [],
+        width: 48,
+        height: 48,
+        tags: [],
+        created_at: 0,
+        modified_at: 0,
+      };
       await saveComponentToLibrary(newComp);
       expect(get(components)).toHaveLength(4);
     });
 
     it('saveComponentToLibrary updates existing component', async () => {
-      const updated = { id: 'c1', name: 'ButtonV2', category: 'ui', elements: [], exposedProps: [], width: 100, height: 40, tags: [], created_at: 0, modified_at: 1 };
+      const updated = {
+        id: 'c1',
+        name: 'ButtonV2',
+        category: 'ui',
+        elements: [],
+        exposedProps: [],
+        width: 100,
+        height: 40,
+        tags: [],
+        created_at: 0,
+        modified_at: 1,
+      };
       await saveComponentToLibrary(updated);
       expect(get(components)).toHaveLength(3);
       expect(getComponentById('c1')?.name).toBe('ButtonV2');
@@ -128,22 +187,41 @@ describe('componentLibrary store', () => {
 
 function makeBaseCanvas(elements: CanvasElement[]): CanvasDocument {
   return {
-    id: 'cvs1', name: 'Test', vault_id: null, note_id: null,
-    grid_size: 16, snap_to_grid: true,
+    id: 'cvs1',
+    name: 'Test',
+    vault_id: null,
+    note_id: null,
+    grid_size: 16,
+    snap_to_grid: true,
     elements,
     flowLinks: [],
     layers: [{ id: 'default', name: 'Default', z_order: 0, visible: true, locked: false }],
-    pages: [], activePageId: '', components: [], styles: [], variables: [],
-    viewport: { x: 0, y: 0, scale: 1 }, created_at: 0, modified_at: 0,
+    pages: [],
+    activePageId: '',
+    components: [],
+    styles: [],
+    variables: [],
+    viewport: { x: 0, y: 0, scale: 1 },
+    created_at: 0,
+    modified_at: 0,
   };
 }
 
 function makeRect(id: string, x: number, y: number, w = 100, h = 50): CanvasElement {
   return {
-    id, element_type: 'rectangle',
-    x, y, width: w, height: h, rotation: 0,
-    properties: { fill: '#aaa' }, layer_id: 'default', z_index: 0,
-    locked: false, visible: true, name: id,
+    id,
+    element_type: 'rectangle',
+    x,
+    y,
+    width: w,
+    height: h,
+    rotation: 0,
+    properties: { fill: '#aaa' },
+    layer_id: 'default',
+    z_index: 0,
+    locked: false,
+    visible: true,
+    name: id,
   };
 }
 
@@ -192,22 +270,47 @@ describe('createComponentFromSelection (T051)', () => {
 describe('deleteComponentWithDetach (T057)', () => {
   beforeEach(() => {
     const compDef = {
-      id: 'comp_x', name: 'Box', elements: [makeRect('child1', 0, 0)],
-      exposedProps: [], width: 100, height: 50, tags: [], created_at: 0, modified_at: 0,
+      id: 'comp_x',
+      name: 'Box',
+      elements: [makeRect('child1', 0, 0)],
+      exposedProps: [],
+      width: 100,
+      height: 50,
+      tags: [],
+      created_at: 0,
+      modified_at: 0,
     };
     components.set([compDef]);
 
     const instance1: CanvasElement = {
-      id: 'inst_a', element_type: 'component_instance',
-      x: 0, y: 0, width: 100, height: 50, rotation: 0,
+      id: 'inst_a',
+      element_type: 'component_instance',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 50,
+      rotation: 0,
       properties: { definitionId: 'comp_x', overrides: {} },
-      layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Box',
+      layer_id: 'default',
+      z_index: 0,
+      locked: false,
+      visible: true,
+      name: 'Box',
     };
     const instance2: CanvasElement = {
-      id: 'inst_b', element_type: 'component_instance',
-      x: 200, y: 0, width: 100, height: 50, rotation: 0,
+      id: 'inst_b',
+      element_type: 'component_instance',
+      x: 200,
+      y: 0,
+      width: 100,
+      height: 50,
+      rotation: 0,
       properties: { definitionId: 'comp_x', overrides: {} },
-      layer_id: 'default', z_index: 1, locked: false, visible: true, name: 'Box',
+      layer_id: 'default',
+      z_index: 1,
+      locked: false,
+      visible: true,
+      name: 'Box',
     };
     currentCanvas.set(makeBaseCanvas([instance1, instance2]));
   });
@@ -237,23 +340,46 @@ describe('deleteComponentWithDetach (T057)', () => {
 
 describe('component edit mode integration (T056)', () => {
   const masterDef = {
-    id: 'def_edit', name: 'Card',
+    id: 'def_edit',
+    name: 'Card',
     elements: [makeRect('bg', 0, 0, 200, 100)],
-    exposedProps: [], width: 200, height: 100,
-    tags: [], created_at: 0, modified_at: 0,
+    exposedProps: [],
+    width: 200,
+    height: 100,
+    tags: [],
+    created_at: 0,
+    modified_at: 0,
   };
 
   const inst1: CanvasElement = {
-    id: 'inst_1', element_type: 'component_instance',
-    x: 10, y: 10, width: 200, height: 100, rotation: 0,
+    id: 'inst_1',
+    element_type: 'component_instance',
+    x: 10,
+    y: 10,
+    width: 200,
+    height: 100,
+    rotation: 0,
     properties: { definitionId: 'def_edit', overrides: {} },
-    layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Card',
+    layer_id: 'default',
+    z_index: 0,
+    locked: false,
+    visible: true,
+    name: 'Card',
   };
   const inst2: CanvasElement = {
-    id: 'inst_2', element_type: 'component_instance',
-    x: 250, y: 10, width: 200, height: 100, rotation: 0,
+    id: 'inst_2',
+    element_type: 'component_instance',
+    x: 250,
+    y: 10,
+    width: 200,
+    height: 100,
+    rotation: 0,
     properties: { definitionId: 'def_edit', overrides: {} },
-    layer_id: 'default', z_index: 1, locked: false, visible: true, name: 'Card',
+    layer_id: 'default',
+    z_index: 1,
+    locked: false,
+    visible: true,
+    name: 'Card',
   };
 
   beforeEach(() => {

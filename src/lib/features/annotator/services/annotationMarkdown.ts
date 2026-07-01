@@ -20,7 +20,7 @@ import { generatePrefixedId } from '@/utils/id';
 export function serializeAnnotations(
   target: string,
   targetType: AnnotationTargetType,
-  annotations: DocumentAnnotation[],
+  annotations: DocumentAnnotation[]
 ): string {
   const frontmatter = [
     '---',
@@ -89,10 +89,7 @@ export function deserializeAnnotations(content: string): {
 /**
  * Detects document type from file extension or explicit override.
  */
-export function resolveTargetType(
-  target: string,
-  explicit?: string,
-): AnnotationTargetType {
+export function resolveTargetType(target: string, explicit?: string): AnnotationTargetType {
   if (explicit === 'pdf' || explicit === 'epub') return explicit;
   const lower = target.toLowerCase();
   if (lower.endsWith('.epub')) return 'epub';
@@ -101,7 +98,10 @@ export function resolveTargetType(
 
 // ─── Internal Parsing ───────────────────────────────────────────────────────
 
-function parseFrontmatterBlock(content: string): { frontmatter: Record<string, string>; body: string } {
+function parseFrontmatterBlock(content: string): {
+  frontmatter: Record<string, string>;
+  body: string;
+} {
   const fm: Record<string, string> = {};
   if (!content.startsWith('---')) return { frontmatter: fm, body: content };
 
@@ -124,7 +124,7 @@ function parseFrontmatterBlock(content: string): { frontmatter: Record<string, s
 function parseAnnotationBlocks(
   body: string,
   target: string,
-  targetType: AnnotationTargetType,
+  targetType: AnnotationTargetType
 ): DocumentAnnotation[] {
   const blocks = body.split(/\n\n+(?=>)/).filter((b) => b.trim().startsWith('>'));
   const annotations: DocumentAnnotation[] = [];
@@ -140,7 +140,7 @@ function parseAnnotationBlocks(
 function parseAnnotationBlock(
   block: string,
   target: string,
-  targetType: AnnotationTargetType,
+  targetType: AnnotationTargetType
 ): DocumentAnnotation | null {
   const lines = block.split('\n').map((l) => l.replace(/^>\s?/, ''));
 
@@ -170,13 +170,22 @@ function parseAnnotationBlock(
     }
 
     const prefixMatch = line.match(/\*\*PREFIX\*\*:\s*(.+)/);
-    if (prefixMatch) { prefix = prefixMatch[1]; continue; }
+    if (prefixMatch) {
+      prefix = prefixMatch[1];
+      continue;
+    }
 
     const postfixMatch = line.match(/\*\*POSTFIX\*\*:\s*(.+)/);
-    if (postfixMatch) { suffix = postfixMatch[1]; continue; }
+    if (postfixMatch) {
+      suffix = postfixMatch[1];
+      continue;
+    }
 
     const commentMatch = line.match(/\*\*COMMENT\*\*:\s*(.+)/);
-    if (commentMatch) { comment = commentMatch[1]; continue; }
+    if (commentMatch) {
+      comment = commentMatch[1];
+      continue;
+    }
 
     const tagsMatch = line.match(/\*\*TAGS\*\*:\s*(.+)/);
     if (tagsMatch) {
@@ -185,7 +194,9 @@ function parseAnnotationBlock(
     }
 
     const idMatch = line.match(/\^(ann[_-][\w-]+)/);
-    if (idMatch) { id = idMatch[1]; }
+    if (idMatch) {
+      id = idMatch[1];
+    }
   }
 
   if (!highlight) return null;

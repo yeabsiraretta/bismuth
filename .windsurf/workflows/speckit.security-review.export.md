@@ -3,9 +3,9 @@ description: Export security review findings as a formal Executive and Technical
   Report.
 ---
 
-
 <!-- Extension: security-review -->
 <!-- Config: .specify/extensions/security-review/ -->
+
 # Security Review — Formal Export (Whitebox Pentest Style)
 
 ## User Input
@@ -42,22 +42,26 @@ Produce a structured Markdown report with the following mandatory sections. Use 
 ## 1. EXECUTIVE SUMMARY
 
 ### 1.1 Assessment Overview
+
 [1 paragraph summary of what was tested, when, and by whom (AI Security Auditor). Explicitly mention this was a Whitebox assessment with full source and memory hub access.]
 
 ### 1.2 Risk Posture
+
 **Overall Risk Rating: [CRITICAL|HIGH|MODERATE|LOW]**
 
-| Severity | Count | Primary Categories |
-| --- | --- | --- |
-| Critical | X | [e.g. A05:Injection] |
-| High | X | [e.g. A07:Authentication] |
-| Medium | X | [e.g. A02:Misconfiguration] |
-| Low | X | [e.g. A09:Logging] |
+| Severity | Count | Primary Categories          |
+| -------- | ----- | --------------------------- |
+| Critical | X     | [e.g. A05:Injection]        |
+| High     | X     | [e.g. A07:Authentication]   |
+| Medium   | X     | [e.g. A02:Misconfiguration] |
+| Low      | X     | [e.g. A09:Logging]          |
 
 ### 1.3 Key Findings & Strategic Impact
+
 [2-3 paragraphs summarizing the most critical risks in business terms. What is the impact on data privacy, customer trust, or system availability? Highlight systemic patterns identified.]
 
 ### 1.4 Remediation Roadmap
+
 [High-level summary of the implementation priorities. Which fixes should be fast-tracked? What long-term architectural changes are needed?]
 
 ---
@@ -65,12 +69,15 @@ Produce a structured Markdown report with the following mandatory sections. Use 
 ## 2. ASSESSMENT METHODOLOGY
 
 ### 2.1 Scope of Work
+
 - **Codebase**: [e.g. src/api, src/auth]
 - **Documentation**: Spec-Kit Feature Specs, Implementation Plans, Security Constitution.
 - **Historical Memory**: Durable repository memory (Memory Hub).
 
 ### 2.2 Testing Approach
+
 This was a **Whitebox Security Assessment**. Unlike a blackbox pentest, the auditor had full access to:
+
 - Source code logic and internal data flows.
 - Architectural decision records (ADRs) and design intent.
 - Historical bug patterns and security constraints preserved in the memory hub.
@@ -84,15 +91,18 @@ The assessment evaluated the codebase against **OWASP Top 10 (2025)**, **CWE/SAN
 [For each finding, provide the following detail:]
 
 ### [FINDING_ID] — [Finding Title]
+
 **Severity**: [CRITICAL|HIGH|MODERATE|LOW]
 **OWASP Category**: AXX:2025-Category
 **CWE**: CWE-XXX
 **CVSS v3.1**: X.X
 
 #### 3.X.1 Description
+
 [Concise technical description of the vulnerability and why it exists.]
 
 #### 3.X.2 Evidence (Affected Code)
+
 **File**: `path/to/file.ext:line`
 
 ```[language]
@@ -100,15 +110,19 @@ The assessment evaluated the codebase against **OWASP Top 10 (2025)**, **CWE/SAN
 ```
 
 #### 3.X.3 Exploit Scenario
+
 [Step-by-step technical walk-through of how an attacker would exploit this in the context of the application.]
 
 #### 3.X.4 Impact
+
 [Technical impact: e.g. Unauthorized access to PII, arbitrary code execution, etc.]
 
 #### 3.X.5 Remediation Guidance
+
 [Specific, actionable steps to resolve the finding.]
 
 **Proposed Fix**:
+
 ```[language]
 [Snippet of secure implementation]
 ```
@@ -127,12 +141,14 @@ The assessment evaluated the codebase against **OWASP Top 10 (2025)**, **CWE/SAN
 ## 5. APPENDICES
 
 ### 5.1 CVSS Scoring Rubric
+
 - **9.0 - 10.0**: Critical
 - **7.0 - 8.9**: High
 - **4.0 - 6.9**: Medium
 - **0.1 - 3.9**: Low
 
 ### 5.2 Tooling Context
+
 - **Orchestrator**: Spec-Kit Security Review Extension
 - **Memory Optimization**: [SQLite-enabled / Markdown-only]
 - **Date of Generation**: [YYYY-MM-DD]

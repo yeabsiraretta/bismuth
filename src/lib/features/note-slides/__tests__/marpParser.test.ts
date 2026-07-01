@@ -1,8 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseFrontmatter, isMarpNote, extractDirectives,
-  splitSlides, extractSlideDirectives, extractSpeakerNotes,
-  resolveWikilinks, markdownToHtml, parseMarpPresentation,
+  parseFrontmatter,
+  isMarpNote,
+  extractDirectives,
+  splitSlides,
+  extractSlideDirectives,
+  extractSpeakerNotes,
+  resolveWikilinks,
+  markdownToHtml,
+  parseMarpPresentation,
 } from '../services/marpParser';
 import { DEFAULT_DIRECTIVES } from '../types/marp';
 

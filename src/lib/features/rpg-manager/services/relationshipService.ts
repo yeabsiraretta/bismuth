@@ -13,12 +13,17 @@ function loadRelationships(): Relationship[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveRelationships(rels: Relationship[]): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rels)); }
-  catch { log.warn('Failed to persist RPG relationships'); }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rels));
+  } catch {
+    log.warn('Failed to persist RPG relationships');
+  }
 }
 
 /** Create a new relationship between two elements. */
@@ -26,11 +31,14 @@ export function createRelationship(
   sourceId: string,
   targetId: string,
   type: RelationshipType = 'bidirectional',
-  description: string = '',
+  description: string = ''
 ): Relationship {
   const rel: Relationship = {
     id: generatePrefixedId('rpg-rel'),
-    sourceId, targetId, type, description,
+    sourceId,
+    targetId,
+    type,
+    description,
   };
   const all = loadRelationships();
   all.push(rel);
@@ -40,7 +48,10 @@ export function createRelationship(
 }
 
 /** Update an existing relationship. */
-export function updateRelationship(id: string, partial: Partial<Relationship>): Relationship | null {
+export function updateRelationship(
+  id: string,
+  partial: Partial<Relationship>
+): Relationship | null {
   const all = loadRelationships();
   const idx = all.findIndex((r) => r.id === id);
   if (idx === -1) return null;
@@ -65,9 +76,7 @@ export function deleteRelationshipsForElement(elementId: string): void {
 
 /** Get all relationships where the element is source or target. */
 export function getRelationshipsForElement(elementId: string): Relationship[] {
-  return loadRelationships().filter(
-    (r) => r.sourceId === elementId || r.targetId === elementId
-  );
+  return loadRelationships().filter((r) => r.sourceId === elementId || r.targetId === elementId);
 }
 
 /**
@@ -94,8 +103,7 @@ export function getOtherElementId(rel: Relationship, thisElementId: string): str
 /** Check if two elements are already related. */
 export function areRelated(idA: string, idB: string): boolean {
   return loadRelationships().some(
-    (r) => (r.sourceId === idA && r.targetId === idB) ||
-           (r.sourceId === idB && r.targetId === idA)
+    (r) => (r.sourceId === idA && r.targetId === idB) || (r.sourceId === idB && r.targetId === idA)
   );
 }
 

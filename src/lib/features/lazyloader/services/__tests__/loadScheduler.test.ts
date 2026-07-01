@@ -39,13 +39,15 @@ describe('recordTiming', () => {
   });
 
   it('updates existing profile with running average', () => {
-    const existing: FeatureLoadProfile[] = [{
-      featureId: 'graph',
-      avgDurationMs: 100,
-      loadCount: 4,
-      lastLoaded: '2025-01-01T00:00:00Z',
-      priority: 'normal',
-    }];
+    const existing: FeatureLoadProfile[] = [
+      {
+        featureId: 'graph',
+        avgDurationMs: 100,
+        loadCount: 4,
+        lastLoaded: '2025-01-01T00:00:00Z',
+        priority: 'normal',
+      },
+    ];
     const timing: FeatureLoadTiming = {
       featureId: 'graph',
       durationMs: 200,
@@ -103,36 +105,42 @@ describe('resolveFeaturePriority', () => {
   });
 
   it('auto-promotes frequently used features', () => {
-    const profiles: FeatureLoadProfile[] = [{
-      featureId: 'graph',
-      avgDurationMs: 80,
-      loadCount: 10,
-      lastLoaded: '2025-01-01T00:00:00Z',
-      priority: 'normal',
-    }];
+    const profiles: FeatureLoadProfile[] = [
+      {
+        featureId: 'graph',
+        avgDurationMs: 80,
+        loadCount: 10,
+        lastLoaded: '2025-01-01T00:00:00Z',
+        priority: 'normal',
+      },
+    ];
     expect(resolveFeaturePriority('graph', cfg, profiles, false)).toBe('high');
   });
 
   it('does not auto-promote below threshold', () => {
-    const profiles: FeatureLoadProfile[] = [{
-      featureId: 'graph',
-      avgDurationMs: 80,
-      loadCount: 3,
-      lastLoaded: '2025-01-01T00:00:00Z',
-      priority: 'normal',
-    }];
+    const profiles: FeatureLoadProfile[] = [
+      {
+        featureId: 'graph',
+        avgDurationMs: 80,
+        loadCount: 3,
+        lastLoaded: '2025-01-01T00:00:00Z',
+        priority: 'normal',
+      },
+    ];
     expect(resolveFeaturePriority('graph', cfg, profiles, false)).toBe('normal');
   });
 
   it('does not auto-promote when disabled', () => {
     const noPromo = { ...cfg, autoPromote: false };
-    const profiles: FeatureLoadProfile[] = [{
-      featureId: 'graph',
-      avgDurationMs: 80,
-      loadCount: 100,
-      lastLoaded: '2025-01-01T00:00:00Z',
-      priority: 'normal',
-    }];
+    const profiles: FeatureLoadProfile[] = [
+      {
+        featureId: 'graph',
+        avgDurationMs: 80,
+        loadCount: 100,
+        lastLoaded: '2025-01-01T00:00:00Z',
+        priority: 'normal',
+      },
+    ];
     expect(resolveFeaturePriority('graph', noPromo, profiles, false)).toBe('normal');
   });
 });
@@ -148,7 +156,7 @@ describe('sortQueue', () => {
       { featureId: 'd', priority: 'high', loader: vi.fn() },
     ];
     const sorted = sortQueue(queue);
-    expect(sorted.map(e => e.featureId)).toEqual(['b', 'd', 'c', 'a']);
+    expect(sorted.map((e) => e.featureId)).toEqual(['b', 'd', 'c', 'a']);
   });
 });
 
@@ -161,7 +169,7 @@ describe('filterLoadable', () => {
     ];
     const filtered = filterLoadable(queue);
     expect(filtered).toHaveLength(2);
-    expect(filtered.map(e => e.featureId)).toEqual(['a', 'c']);
+    expect(filtered.map((e) => e.featureId)).toEqual(['a', 'c']);
   });
 });
 
@@ -255,7 +263,7 @@ describe('slowestFeatures', () => {
       { featureId: 'd', durationMs: 50, loadedAt: '', trigger: 'preload', success: true },
     ];
     const top2 = slowestFeatures(timings, 2);
-    expect(top2.map(t => t.featureId)).toEqual(['b', 'c']);
+    expect(top2.map((t) => t.featureId)).toEqual(['b', 'c']);
   });
 
   it('excludes failed timings', () => {

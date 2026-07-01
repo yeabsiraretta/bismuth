@@ -2,11 +2,11 @@
 
 ## Channels
 
-| Workflow | Channel | Trigger | Artifact Prefix |
-|----------|---------|---------|-----------------|
-| alpha.yml | Alpha (unstable) | Push to main | alpha- |
-| beta.yml | Beta (RC) | Tag v*-rc.* | beta- |
-| release.yml | Release (stable) | Manual dispatch | release- |
+| Workflow    | Channel          | Trigger         | Artifact Prefix |
+| ----------- | ---------------- | --------------- | --------------- |
+| alpha.yml   | Alpha (unstable) | Push to main    | alpha-          |
+| beta.yml    | Beta (RC)        | Tag v*-rc.*     | beta-           |
+| release.yml | Release (stable) | Manual dispatch | release-        |
 
 ## Key Rotation Runbook: TAURI_SIGNING_PRIVATE_KEY
 

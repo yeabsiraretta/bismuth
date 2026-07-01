@@ -19,15 +19,25 @@
   $: mainTabs = SIDEBAR_TABS.filter((t) => !t.bottom);
   $: bottomTabs = SIDEBAR_TABS.filter((t) => t.bottom);
 
-  function matchCount(tab: SettingsTab): number { return grouped.get(tab)?.length ?? 0; }
-  function isVisible(tab: SettingsTab): boolean { return !isSearching || matchCount(tab) > 0; }
+  function matchCount(tab: SettingsTab): number {
+    return grouped.get(tab)?.length ?? 0;
+  }
+  function isVisible(tab: SettingsTab): boolean {
+    return !isSearching || matchCount(tab) > 0;
+  }
 
   let inputEl: HTMLInputElement;
 
-  function handleClear() { searchQuery = ''; inputEl?.focus(); }
+  function handleClear() {
+    searchQuery = '';
+    inputEl?.focus();
+  }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape' && searchQuery) { e.stopPropagation(); searchQuery = ''; }
+    if (e.key === 'Escape' && searchQuery) {
+      e.stopPropagation();
+      searchQuery = '';
+    }
   }
 </script>
 
@@ -44,7 +54,12 @@
       aria-label="Search settings"
     />
     {#if searchQuery}
-      <button class="search-clear" on:click={handleClear} title="Clear search" aria-label="Clear search">
+      <button
+        class="search-clear"
+        on:click={handleClear}
+        title="Clear search"
+        aria-label="Clear search"
+      >
         <Icon name="x" size={12} />
       </button>
     {/if}

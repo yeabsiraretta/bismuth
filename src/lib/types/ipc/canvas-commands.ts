@@ -2,7 +2,10 @@
  * Canvas IPC Commands — Canvas, component, and design doc operations
  */
 
-interface CommandContract<P, R> { params: P; result: R }
+interface CommandContract<P, R> {
+  params: P;
+  result: R;
+}
 
 export interface CanvasCommands {
   create_canvas: CommandContract<{ name: string; noteId?: string }, unknown>;

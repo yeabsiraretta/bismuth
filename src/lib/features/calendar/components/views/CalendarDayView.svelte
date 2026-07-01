@@ -7,9 +7,9 @@
   const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
   $: focusDateStr = toDateStr($calendarFocusDate);
-  $: dayEvents = $expandedEvents.filter(e => e.date === focusDateStr);
-  $: allDayEvents = dayEvents.filter(e => e.startMinute === null);
-  $: timedEvents = dayEvents.filter(e => e.startMinute !== null);
+  $: dayEvents = $expandedEvents.filter((e) => e.date === focusDateStr);
+  $: allDayEvents = dayEvents.filter((e) => e.startMinute === null);
+  $: timedEvents = dayEvents.filter((e) => e.startMinute !== null);
   $: categories = $settings.calendarCategories ?? [];
 
   function toDateStr(d: Date): string {
@@ -39,7 +39,9 @@
 
   function getCategoryColor(event: CalendarEvent): string | undefined {
     if (!event.categoryId) return event.color;
-    return categories.find((c: CalendarCategory) => c.id === event.categoryId)?.color ?? event.color;
+    return (
+      categories.find((c: CalendarCategory) => c.id === event.categoryId)?.color ?? event.color
+    );
   }
 </script>
 
@@ -77,7 +79,7 @@
             height: {heightPct(event.durationMinutes ?? 60)};
             border-left-color: {getCategoryColor(event) ?? 'var(--interactive-accent)'};
           "
-          aria-label="{event.title}"
+          aria-label={event.title}
         >
           <EventChip {event} compact />
         </div>
@@ -111,7 +113,12 @@
     padding-top: 2px;
   }
 
-  .all-day-events { display: flex; flex-wrap: wrap; gap: 2px; flex: 1; }
+  .all-day-events {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    flex: 1;
+  }
 
   .time-grid {
     display: flex;

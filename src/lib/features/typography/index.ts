@@ -3,5 +3,7 @@
  */
 
 export {
-  applyContextualTypography, removeContextualTypography, detectLineTagName,
+  applyContextualTypography,
+  removeContextualTypography,
+  detectLineTagName,
 } from './services/contextualTypography';

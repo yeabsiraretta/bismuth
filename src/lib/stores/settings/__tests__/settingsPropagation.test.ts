@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { settings, DEFAULT_SETTINGS, editorSettings, appearanceSettings } from '@/features/settings';
+import {
+  settings,
+  DEFAULT_SETTINGS,
+  editorSettings,
+  appearanceSettings,
+} from '@/features/settings';
 import { get } from 'svelte/store';
 
 beforeEach(() => {

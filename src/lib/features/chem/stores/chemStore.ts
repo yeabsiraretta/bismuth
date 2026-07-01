@@ -27,13 +27,18 @@ function loadConfig(): ChemConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_CHEM_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_CHEM_CONFIG };
 }
 
 function persistConfig(config: ChemConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch {
+    /* ignore */
+  }
 }
 
 const configStore = writable<ChemConfig>(loadConfig());
@@ -44,10 +49,10 @@ configStore.subscribe((config) => {
   if (configListener) configListener(config);
 });
 
-export const chemConfig = derived(configStore, $c => $c);
+export const chemConfig = derived(configStore, ($c) => $c);
 
 export function updateChemConfig(partial: Partial<ChemConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetChemConfig(): void {
@@ -63,12 +68,12 @@ export function getChemConfig(): ChemConfig {
 export function setChemSize(width: number, height: number): void {
   const w = Math.max(100, Math.min(800, width));
   const h = Math.max(80, Math.min(600, height));
-  configStore.update(c => ({ ...c, width: w, height: h }));
+  configStore.update((c) => ({ ...c, width: w, height: h }));
 }
 
 export function toggleInlineSmiles(): boolean {
   let enabled = false;
-  configStore.update(c => {
+  configStore.update((c) => {
     enabled = !c.inlineEnabled;
     return { ...c, inlineEnabled: enabled };
   });

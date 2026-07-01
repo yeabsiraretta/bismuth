@@ -22,7 +22,7 @@
   };
 
   $: entries = $weeklyVolume;
-  $: maxVolume = entries.length > 0 ? Math.max(...entries.map(e => e.totalVolumeKg)) : 1;
+  $: maxVolume = entries.length > 0 ? Math.max(...entries.map((e) => e.totalVolumeKg)) : 1;
 
   function barWidth(entry: VolumeEntry): string {
     if (maxVolume <= 0) return '0%';
@@ -68,13 +68,53 @@
 </div>
 
 <style>
-  .volume-chart { padding: var(--spacing-m); }
-  .chart-title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); margin: 0 0 var(--spacing-m); }
-  .empty-state { color: var(--text-muted); font-size: var(--font-ui-small); text-align: center; padding: var(--spacing-l); }
-  .chart-body { display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .chart-row { display: grid; grid-template-columns: 80px 1fr 60px; align-items: center; gap: var(--spacing-s); }
-  .muscle-label { font-size: var(--font-ui-small); color: var(--text-muted); text-align: right; text-transform: capitalize; }
-  .bar-track { background: var(--background-secondary); border-radius: 999px; height: 14px; overflow: hidden; }
-  .bar { height: 100%; border-radius: 999px; transition: width 0.3s ease; min-width: 4px; }
-  .volume-label { font-size: var(--font-smallest); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .volume-chart {
+    padding: var(--spacing-m);
+  }
+  .chart-title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0 0 var(--spacing-m);
+  }
+  .empty-state {
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+    padding: var(--spacing-l);
+  }
+  .chart-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 60px;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .muscle-label {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+    text-align: right;
+    text-transform: capitalize;
+  }
+  .bar-track {
+    background: var(--background-secondary);
+    border-radius: 999px;
+    height: 14px;
+    overflow: hidden;
+  }
+  .bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+    min-width: 4px;
+  }
+  .volume-label {
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
 </style>

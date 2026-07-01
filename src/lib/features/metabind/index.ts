@@ -25,10 +25,7 @@ export type {
 } from './types/metabind';
 
 // Parser
-export {
-  parseMetaBindSyntax,
-  isMetaBindSyntax,
-} from './services/metabindParser';
+export { parseMetaBindSyntax, isMetaBindSyntax } from './services/metabindParser';
 
 // Extension
 export { metabindExtension } from './extensions/metabindExtension';

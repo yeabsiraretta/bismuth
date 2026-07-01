@@ -64,17 +64,19 @@
     border-radius: var(--radius-m, 6px);
     padding: var(--spacing-xs, 4px);
     cursor: pointer;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease;
   }
 
   .filter-tile:hover {
-    background-color: var(--interactive-hover, rgba(0,0,0,0.05));
+    background-color: var(--interactive-hover, rgba(0, 0, 0, 0.05));
     border-color: var(--border-color, #d1d5db);
   }
 
   .filter-tile.active {
     border-color: var(--interactive-accent, #3b82f6);
-    background-color: var(--background-modifier-active-hover, rgba(59,130,246,0.08));
+    background-color: var(--background-modifier-active-hover, rgba(59, 130, 246, 0.08));
   }
 
   .filter-thumb-wrap {

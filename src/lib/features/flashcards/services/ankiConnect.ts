@@ -7,7 +7,12 @@
  */
 
 import { get } from 'svelte/store';
-import type { Flashcard, CardSyncResult, SyncResult, AnkiConnectionStatus } from '../types/flashcard';
+import type {
+  Flashcard,
+  CardSyncResult,
+  SyncResult,
+  AnkiConnectionStatus,
+} from '../types/flashcard';
 import { log } from '@/utils/logger';
 import { settings } from '@/features/settings';
 
@@ -36,7 +41,7 @@ async function ankiRequest<T>(action: string, params: Record<string, unknown> = 
     body,
   });
   if (!res.ok) throw new Error(`AnkiConnect HTTP ${res.status}`);
-  const json = await res.json() as { error: string | null; result: T };
+  const json = (await res.json()) as { error: string | null; result: T };
   if (json.error) throw new Error(json.error);
   return json.result;
 }
@@ -80,11 +85,13 @@ async function ensureModels(): Promise<void> {
       inOrderFields: ['Front', 'Back', 'SourcePath'],
       css,
       isCloze: false,
-      cardTemplates: [{
-        Name: 'Card',
-        Front: '<div class="front">{{Front}}</div>',
-        Back: '<div class="front">{{Front}}</div><hr><div class="back">{{Back}}</div>',
-      }],
+      cardTemplates: [
+        {
+          Name: 'Card',
+          Front: '<div class="front">{{Front}}</div>',
+          Back: '<div class="front">{{Front}}</div><hr><div class="back">{{Back}}</div>',
+        },
+      ],
     });
   }
 
@@ -95,8 +102,16 @@ async function ensureModels(): Promise<void> {
       css,
       isCloze: false,
       cardTemplates: [
-        { Name: 'Forward', Front: '<div class="front">{{Front}}</div>', Back: '<div class="front">{{Front}}</div><hr><div class="back">{{Back}}</div>' },
-        { Name: 'Reverse', Front: '<div class="front">{{Back}}</div>', Back: '<div class="front">{{Back}}</div><hr><div class="back">{{Front}}</div>' },
+        {
+          Name: 'Forward',
+          Front: '<div class="front">{{Front}}</div>',
+          Back: '<div class="front">{{Front}}</div><hr><div class="back">{{Back}}</div>',
+        },
+        {
+          Name: 'Reverse',
+          Front: '<div class="front">{{Back}}</div>',
+          Back: '<div class="front">{{Back}}</div><hr><div class="back">{{Front}}</div>',
+        },
       ],
     });
   }
@@ -107,11 +122,13 @@ async function ensureModels(): Promise<void> {
       inOrderFields: ['Text', 'SourcePath'],
       css,
       isCloze: true,
-      cardTemplates: [{
-        Name: 'Cloze',
-        Front: '{{cloze:Text}}',
-        Back: '{{cloze:Text}}',
-      }],
+      cardTemplates: [
+        {
+          Name: 'Cloze',
+          Front: '{{cloze:Text}}',
+          Back: '{{cloze:Text}}',
+        },
+      ],
     });
   }
 }
@@ -119,16 +136,25 @@ async function ensureModels(): Promise<void> {
 // ─── Card sync ────────────────────────────────────────────────────────────────
 
 function cardToNote(card: Flashcard) {
-  const modelName = card.type === 'cloze' ? MODEL_CLOZE : card.type === 'basic-reversed' ? MODEL_REVERSED : MODEL_BASIC;
-  const fields = card.type === 'cloze'
-    ? { Text: card.front, SourcePath: card.sourcePath }
-    : { Front: card.front, Back: card.back ?? '', SourcePath: card.sourcePath };
+  const modelName =
+    card.type === 'cloze'
+      ? MODEL_CLOZE
+      : card.type === 'basic-reversed'
+        ? MODEL_REVERSED
+        : MODEL_BASIC;
+  const fields =
+    card.type === 'cloze'
+      ? { Text: card.front, SourcePath: card.sourcePath }
+      : { Front: card.front, Back: card.back ?? '', SourcePath: card.sourcePath };
   return { deckName: card.deck, modelName, fields, tags: card.tags };
 }
 
 export async function syncCards(cards: Flashcard[]): Promise<SyncResult> {
   const results: CardSyncResult[] = [];
-  let created = 0, updated = 0, skipped = 0, errors = 0;
+  let created = 0,
+    updated = 0,
+    skipped = 0,
+    errors = 0;
 
   await ensureModels();
 
@@ -149,7 +175,9 @@ export async function syncCards(cards: Flashcard[]): Promise<SyncResult> {
         updated++;
         results.push({ cardId: card.id, action: 'updated', ankiNoteId: card.ankiNoteId });
       } else {
-        const noteId = await ankiRequest<number>('addNote', { note: { ...note, options: { allowDuplicate: false } } });
+        const noteId = await ankiRequest<number>('addNote', {
+          note: { ...note, options: { allowDuplicate: false } },
+        });
         if (noteId) {
           created++;
           results.push({ cardId: card.id, action: 'created', ankiNoteId: noteId });
@@ -180,14 +208,19 @@ export async function getAnkiNoteIds(cards: Flashcard[]): Promise<Map<string, nu
   const map = new Map<string, number>();
   try {
     // Find existing notes by searching for SourcePath field
-    const paths = [...new Set(cards.map(c => c.sourcePath))];
+    const paths = [...new Set(cards.map((c) => c.sourcePath))];
     for (const path of paths) {
       const noteIds = await ankiRequest<number[]>('findNotes', { query: `SourcePath:${path}` });
       if (noteIds.length > 0) {
-        const infos = await ankiRequest<Array<{ noteId: number; fields: Record<string, { value: string }> }>>('notesInfo', { notes: noteIds });
+        const infos = await ankiRequest<
+          Array<{ noteId: number; fields: Record<string, { value: string }> }>
+        >('notesInfo', { notes: noteIds });
         for (const info of infos) {
           const front = info.fields['Front']?.value ?? info.fields['Text']?.value ?? '';
-          const card = cards.find(c => c.sourcePath === path && (c.front === front || c.front.startsWith(front.slice(0, 20))));
+          const card = cards.find(
+            (c) =>
+              c.sourcePath === path && (c.front === front || c.front.startsWith(front.slice(0, 20)))
+          );
           if (card) map.set(card.id, info.noteId);
         }
       }
@@ -208,17 +241,19 @@ export async function importFromAnki(): Promise<Flashcard[]> {
   const noteIds = await ankiRequest<number[]>('findNotes', { query: 'tag:bismuth' });
   if (noteIds.length === 0) return [];
 
-  const infos = await ankiRequest<Array<{
-    noteId: number;
-    modelName: string;
-    fields: Record<string, { value: string }>;
-    tags: string[];
-  }>>('notesInfo', { notes: noteIds });
+  const infos = await ankiRequest<
+    Array<{
+      noteId: number;
+      modelName: string;
+      fields: Record<string, { value: string }>;
+      tags: string[];
+    }>
+  >('notesInfo', { notes: noteIds });
 
   const imported: Flashcard[] = [];
   for (const info of infos) {
     const sourcePath = info.fields['SourcePath']?.value ?? '';
-    const tags = info.tags.filter(t => t !== 'bismuth');
+    const tags = info.tags.filter((t) => t !== 'bismuth');
 
     if (info.modelName === 'BismuthCloze') {
       const front = info.fields['Text']?.value ?? '';

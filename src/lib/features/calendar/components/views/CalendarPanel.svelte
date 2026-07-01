@@ -34,8 +34,8 @@
   // periodicNotesInRange contains path strings like 'Periodic Notes/daily/2024-01-15.md'
   $: dailyNoteDates = new Set(
     $periodicNotesInRange
-      .map(p => p.replace(/^.*\//, '').replace(/\.md$/, ''))
-      .filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d))
+      .map((p) => p.replace(/^.*\//, '').replace(/\.md$/, ''))
+      .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
   );
 
   $: eventCounts = (() => {
@@ -55,7 +55,12 @@
 
   const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-  function buildCalendar(y: number, m: number, days: number, offset: number): Array<{ day: number | null; date: string | null }> {
+  function buildCalendar(
+    y: number,
+    m: number,
+    days: number,
+    offset: number
+  ): Array<{ day: number | null; date: string | null }> {
     const cells: Array<{ day: number | null; date: string | null }> = [];
 
     for (let i = 0; i < offset; i++) {
@@ -119,55 +124,63 @@
   </PanelHeader>
 
   <div class="panel-body">
-  <div class="calendar-header">
-    <button class="nav-btn" on:click={prevMonth} title="Previous month" aria-label="Previous month">
-      <Icon name="chevron-left" size={14} />
-    </button>
-    <button class="month-label" on:click={goToToday} title="Go to today">
-      {monthName} {year}
-    </button>
-    <button class="nav-btn" on:click={nextMonth} title="Next month" aria-label="Next month">
-      <Icon name="chevron-right" size={14} />
-    </button>
-  </div>
+    <div class="calendar-header">
+      <button
+        class="nav-btn"
+        on:click={prevMonth}
+        title="Previous month"
+        aria-label="Previous month"
+      >
+        <Icon name="chevron-left" size={14} />
+      </button>
+      <button class="month-label" on:click={goToToday} title="Go to today">
+        {monthName}
+        {year}
+      </button>
+      <button class="nav-btn" on:click={nextMonth} title="Next month" aria-label="Next month">
+        <Icon name="chevron-right" size={14} />
+      </button>
+    </div>
 
-  <div class="calendar-grid">
-    {#each weekdays as day}
-      <div class="weekday-header">{day}</div>
-    {/each}
+    <div class="calendar-grid">
+      {#each weekdays as day}
+        <div class="weekday-header">{day}</div>
+      {/each}
 
-    {#each calendarDays as cell}
-      {#if cell.day === null}
-        <div class="day-cell empty"></div>
-      {:else}
-        <button
-          class="day-cell {intensityClass(cell.date)}"
-          class:today={cell.date === today}
-          class:selected={cell.date === selectedDate}
-          on:click={() => selectDay(cell.date)}
-          title="{cell.date}{eventCounts.get(cell.date ?? '') ? ` (${eventCounts.get(cell.date ?? '')} events)` : ''}"
-          aria-label="{cell.date}"
-        >
-          {cell.day}
-          <span class="dot-row">
-            {#if cell.date && dailyNoteDates.has(cell.date)}
-              <span class="note-dot" aria-hidden="true"></span>
-            {/if}
-            {#if cell.date && (eventCounts.get(cell.date) ?? 0) > 0}
-              <span class="event-dot" aria-hidden="true"></span>
-            {/if}
-          </span>
-        </button>
-      {/if}
-    {/each}
-  </div>
+      {#each calendarDays as cell}
+        {#if cell.day === null}
+          <div class="day-cell empty"></div>
+        {:else}
+          <button
+            class="day-cell {intensityClass(cell.date)}"
+            class:today={cell.date === today}
+            class:selected={cell.date === selectedDate}
+            on:click={() => selectDay(cell.date)}
+            title="{cell.date}{eventCounts.get(cell.date ?? '')
+              ? ` (${eventCounts.get(cell.date ?? '')} events)`
+              : ''}"
+            aria-label={cell.date}
+          >
+            {cell.day}
+            <span class="dot-row">
+              {#if cell.date && dailyNoteDates.has(cell.date)}
+                <span class="note-dot" aria-hidden="true"></span>
+              {/if}
+              {#if cell.date && (eventCounts.get(cell.date) ?? 0) > 0}
+                <span class="event-dot" aria-hidden="true"></span>
+              {/if}
+            </span>
+          </button>
+        {/if}
+      {/each}
+    </div>
 
-  <div class="calendar-footer">
-    <button class="today-btn" on:click={goToToday} title="Jump to today">
-      <Icon name="calendar" size={12} />
-      Today
-    </button>
-  </div>
+    <div class="calendar-footer">
+      <button class="today-btn" on:click={goToToday} title="Jump to today">
+        <Icon name="calendar" size={12} />
+        Today
+      </button>
+    </div>
   </div>
 </div>
 
@@ -193,14 +206,47 @@
     margin-bottom: 12px;
   }
 
-  .nav-btn { background: none; border: none; padding: 4px; border-radius: 4px; cursor: pointer; color: var(--text-muted, #a6adc8); display: flex; align-items: center; }
-  .nav-btn:hover { background: var(--bg-hover, #313244); color: var(--text-primary, #cdd6f4); }
+  .nav-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted, #a6adc8);
+    display: flex;
+    align-items: center;
+  }
+  .nav-btn:hover {
+    background: var(--bg-hover, #313244);
+    color: var(--text-primary, #cdd6f4);
+  }
 
-  .month-label { font-size: 0.8rem; font-weight: 600; color: var(--text-primary, #cdd6f4); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
-  .month-label:hover { background: var(--bg-hover, #313244); }
+  .month-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .month-label:hover {
+    background: var(--bg-hover, #313244);
+  }
 
-  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-  .weekday-header { text-align: center; font-size: 0.65rem; color: var(--text-faint, #585b70); padding: 4px 0; font-weight: 500; }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .weekday-header {
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--text-faint, #585b70);
+    padding: 4px 0;
+    font-weight: 500;
+  }
 
   .day-cell {
     text-align: center;
@@ -219,15 +265,41 @@
     gap: 2px;
   }
 
-  .dot-row { display: flex; gap: 2px; justify-content: center; min-height: 4px; }
-  .note-dot, .event-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
-  .note-dot { background: var(--interactive-accent, #89b4fa); }
-  .event-dot { background: var(--color-warning, #d97706); }
-  .day-cell.selected .note-dot, .day-cell.selected .event-dot { background: var(--bg-primary, #1e1e2e); }
-  .day-cell.intensity-1 { background: color-mix(in srgb, var(--color-success, #49af5d) 8%, transparent); }
-  .day-cell.intensity-2 { background: color-mix(in srgb, var(--color-success, #49af5d) 16%, transparent); }
-  .day-cell.intensity-3 { background: color-mix(in srgb, var(--color-success, #49af5d) 25%, transparent); }
-  .day-cell.empty { cursor: default; }
+  .dot-row {
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    min-height: 4px;
+  }
+  .note-dot,
+  .event-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .note-dot {
+    background: var(--interactive-accent, #89b4fa);
+  }
+  .event-dot {
+    background: var(--color-warning, #d97706);
+  }
+  .day-cell.selected .note-dot,
+  .day-cell.selected .event-dot {
+    background: var(--bg-primary, #1e1e2e);
+  }
+  .day-cell.intensity-1 {
+    background: color-mix(in srgb, var(--color-success, #49af5d) 8%, transparent);
+  }
+  .day-cell.intensity-2 {
+    background: color-mix(in srgb, var(--color-success, #49af5d) 16%, transparent);
+  }
+  .day-cell.intensity-3 {
+    background: color-mix(in srgb, var(--color-success, #49af5d) 25%, transparent);
+  }
+  .day-cell.empty {
+    cursor: default;
+  }
 
   .day-cell:not(.empty):hover {
     background: var(--bg-hover, #313244);
@@ -245,7 +317,25 @@
     font-weight: 600;
   }
 
-  .calendar-footer { margin-top: 8px; display: flex; justify-content: center; }
-  .today-btn { display: flex; align-items: center; gap: 4px; font-size: 0.7rem; padding: 4px 10px; border-radius: 4px; border: none; background: var(--bg-tertiary, #45475a); color: var(--text-muted, #a6adc8); cursor: pointer; }
-  .today-btn:hover { background: var(--bg-hover, #313244); color: var(--text-primary, #cdd6f4); }
+  .calendar-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+  }
+  .today-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: none;
+    background: var(--bg-tertiary, #45475a);
+    color: var(--text-muted, #a6adc8);
+    cursor: pointer;
+  }
+  .today-btn:hover {
+    background: var(--bg-hover, #313244);
+    color: var(--text-primary, #cdd6f4);
+  }
 </style>

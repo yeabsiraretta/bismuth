@@ -78,7 +78,7 @@ function buildCssFilterString(ops: PhotoOperation[]): string {
 export async function applyPhotoOps(
   imageUrl: string,
   ops: PhotoOperation[],
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement
 ): Promise<void> {
   const img = await loadImage(imageUrl);
   let width = img.naturalWidth;
@@ -121,7 +121,10 @@ export async function applyPhotoOps(
   ctx.save();
 
   let hasCrop = false;
-  let cropX = 0, cropY = 0, cropW = img.naturalWidth, cropH = img.naturalHeight;
+  let cropX = 0,
+    cropY = 0,
+    cropW = img.naturalWidth,
+    cropH = img.naturalHeight;
 
   for (const op of ops) {
     if (op.type === 'crop') {
@@ -167,11 +170,11 @@ export async function applyPhotoOps(
  */
 export async function applyChainToDataUrl(
   imageUrl: string,
-  chain: MediaEditChain,
+  chain: MediaEditChain
 ): Promise<string> {
   const canvas = document.createElement('canvas');
   const photoOps = chain.operations.filter(
-    (op): op is PhotoOperation => !['trim', 'split', 'speed', 'text-overlay'].includes(op.type),
+    (op): op is PhotoOperation => !['trim', 'split', 'speed', 'text-overlay'].includes(op.type)
   );
   await applyPhotoOps(imageUrl, photoOps, canvas);
   return canvas.toDataURL(chain.exportFormat, chain.exportQuality);
@@ -185,13 +188,10 @@ export async function applyChainToDataUrl(
  * @param chain     The full edit chain
  * @returns         Image Blob
  */
-export async function exportToBlob(
-  imageUrl: string,
-  chain: MediaEditChain,
-): Promise<Blob> {
+export async function exportToBlob(imageUrl: string, chain: MediaEditChain): Promise<Blob> {
   const canvas = document.createElement('canvas');
   const photoOps = chain.operations.filter(
-    (op): op is PhotoOperation => !['trim', 'split', 'speed', 'text-overlay'].includes(op.type),
+    (op): op is PhotoOperation => !['trim', 'split', 'speed', 'text-overlay'].includes(op.type)
   );
   await applyPhotoOps(imageUrl, photoOps, canvas);
 
@@ -202,7 +202,7 @@ export async function exportToBlob(
         else reject(new Error('canvas.toBlob returned null'));
       },
       chain.exportFormat,
-      chain.exportQuality,
+      chain.exportQuality
     );
   });
 }

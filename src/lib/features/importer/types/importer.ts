@@ -7,14 +7,14 @@ export type ImportSource =
   | 'markdown'
   | 'html'
   | 'csv'
-  | 'evernote'    // .enex XML
-  | 'bear'        // Bear JSON / Markdown export
+  | 'evernote' // .enex XML
+  | 'bear' // Bear JSON / Markdown export
   | 'google-keep' // Google Takeout JSON
-  | 'notion'      // Notion Markdown/CSV export
-  | 'roam'        // Roam Research JSON export
-  | 'onenote'     // OneNote HTML export
+  | 'notion' // Notion Markdown/CSV export
+  | 'roam' // Roam Research JSON export
+  | 'onenote' // OneNote HTML export
   | 'apple-notes' // Apple Notes HTML export
-  | 'text';       // Plain text files
+  | 'text'; // Plain text files
 
 export interface ImportSourceInfo {
   id: ImportSource;

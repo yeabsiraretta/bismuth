@@ -1,6 +1,11 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { searchOpen, searchQuery, setSearchQuery, toggleSearch } from '../stores/navigatorActions';
+  import {
+    searchOpen,
+    searchQuery,
+    setSearchQuery,
+    toggleSearch,
+  } from '../stores/navigatorActions';
   import { setFilterQuery, setActivePane } from '../stores/navigator';
   export let onClose: (() => void) | undefined = undefined;
 
@@ -95,9 +100,12 @@
     padding: 2px 0;
   }
 
-  .search-input::placeholder { color: var(--text-faint); }
+  .search-input::placeholder {
+    color: var(--text-faint);
+  }
 
-  .clear-btn, .close-btn {
+  .clear-btn,
+  .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,7 +120,8 @@
     flex-shrink: 0;
   }
 
-  .clear-btn:hover, .close-btn:hover {
+  .clear-btn:hover,
+  .close-btn:hover {
     background: var(--interactive-hover);
     color: var(--text-normal);
   }

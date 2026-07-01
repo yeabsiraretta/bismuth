@@ -16,7 +16,10 @@ import { applyRecipeTemplate } from './recipeTemplate';
 export async function fetchRecipeFromUrl(url: string): Promise<GrabbedRecipeData> {
   log.info('recipeGrabber: fetching recipe', { url });
   const data = await invoke<GrabbedRecipeData>('fetch_recipe_from_url', { url });
-  log.info('recipeGrabber: recipe fetched', { name: data.name, ingredients: data.ingredients.length });
+  log.info('recipeGrabber: recipe fetched', {
+    name: data.name,
+    ingredients: data.ingredients.length,
+  });
   return data;
 }
 
@@ -25,7 +28,7 @@ export async function fetchRecipeFromUrl(url: string): Promise<GrabbedRecipeData
  */
 export async function grabRecipe(
   url: string,
-  config: RecipeGrabberConfig = DEFAULT_GRABBER_CONFIG,
+  config: RecipeGrabberConfig = DEFAULT_GRABBER_CONFIG
 ): Promise<string> {
   const data = await fetchRecipeFromUrl(url);
   return applyRecipeTemplate(config.template, data);

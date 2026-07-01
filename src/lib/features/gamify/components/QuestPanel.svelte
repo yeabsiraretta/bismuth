@@ -13,7 +13,9 @@
   import { ACHIEVEMENTS } from '@/types/data/quest';
   import { taskStats } from '@/features/tasks';
 
-  onMount(() => { recordDailyPresence(); });
+  onMount(() => {
+    recordDailyPresence();
+  });
 
   $: progressBar = `${Math.min($questProgress.percent, 100).toFixed(0)}%`;
   $: streakDisplay = $questProfile.streak > 0 ? `${$questProfile.streak}d` : '—';
@@ -249,7 +251,9 @@
     opacity: 0.3;
     filter: grayscale(1);
     cursor: default;
-    transition: opacity 0.2s, filter 0.2s;
+    transition:
+      opacity 0.2s,
+      filter 0.2s;
   }
 
   .achievement-chip.unlocked {

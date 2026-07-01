@@ -27,10 +27,7 @@ const DEFAULT_AUTO_LAYOUT: AutoLayout = {
  * Computes positioned children for a frame with auto layout.
  * Returns new positions/sizes without mutating the originals.
  */
-export function computeAutoLayout(
-  frame: CanvasElement,
-  children: CanvasElement[]
-): LayoutResult[] {
+export function computeAutoLayout(frame: CanvasElement, children: CanvasElement[]): LayoutResult[] {
   const layout = frame.properties.autoLayout ?? DEFAULT_AUTO_LAYOUT;
   const { direction, gap, padding, alignItems, justifyContent } = layout;
 
@@ -120,10 +117,7 @@ export function computeAutoLayout(
 /**
  * Applies auto layout results to an element array (immutably).
  */
-export function applyAutoLayout(
-  elements: CanvasElement[],
-  frame: CanvasElement
-): CanvasElement[] {
+export function applyAutoLayout(elements: CanvasElement[], frame: CanvasElement): CanvasElement[] {
   if (!frame.properties.autoLayout) return elements;
 
   const children = elements

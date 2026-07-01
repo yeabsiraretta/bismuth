@@ -10,16 +10,23 @@ import { log } from '@/utils/logger';
 import { getNote } from '@/services/vault/vault';
 import { renameNote, updateLinksOnRename } from '@/services/vault/vault';
 import {
-  attachmentConfig, attachmentOverrides, getOriginalName, recordOriginalName,
+  attachmentConfig,
+  attachmentOverrides,
+  getOriginalName,
+  recordOriginalName,
 } from '../stores/attachmentStore';
 import {
-  buildAttachmentPath, buildContext, isExcludedPath, isExcludedExtension,
+  buildAttachmentPath,
+  buildContext,
+  isExcludedPath,
+  isExcludedExtension,
 } from './pathResolver';
 import { computeMd5Hex } from './md5';
 import type { RearrangeResult } from '../types';
 
 const IMAGE_EXTS = /\.(png|jpe?g|gif|bmp|svg|webp|tiff?|ico|heic|avif)$/i;
-const ALL_ATTACHMENT_EXTS = /\.(png|jpe?g|gif|bmp|svg|webp|tiff?|ico|heic|avif|pdf|mp3|mp4|wav|ogg|webm|mov|zip|rar)$/i;
+const ALL_ATTACHMENT_EXTS =
+  /\.(png|jpe?g|gif|bmp|svg|webp|tiff?|ico|heic|avif|pdf|mp3|mp4|wav|ogg|webm|mov|zip|rar)$/i;
 
 /** Extract attachment links from markdown content. */
 export function extractAttachmentLinks(content: string): string[] {
@@ -62,7 +69,7 @@ function getBaseName(path: string): string {
  */
 export async function rearrangeNoteAttachments(
   notePath: string,
-  vaultRoot: string,
+  vaultRoot: string
 ): Promise<RearrangeResult> {
   const result: RearrangeResult = { moved: 0, skipped: 0, errors: [] };
   const config = get(attachmentConfig);
@@ -74,8 +81,12 @@ export async function rearrangeNoteAttachments(
   }
 
   let note;
-  try { note = await getNote(notePath); }
-  catch { result.errors.push(`Failed to read note: ${notePath}`); return result; }
+  try {
+    note = await getNote(notePath);
+  } catch {
+    result.errors.push(`Failed to read note: ${notePath}`);
+    return result;
+  }
 
   const links = extractAttachmentLinks(note.content);
   if (links.length === 0) return result;
@@ -87,9 +98,13 @@ export async function rearrangeNoteAttachments(
     const absLink = resolveLink(link, noteDir, vaultRoot);
     const ext = getExt(absLink);
 
-    if (!extPattern.test(absLink)) { result.skipped++; continue; }
+    if (!extPattern.test(absLink)) {
+      result.skipped++;
+      continue;
+    }
     if (isExcludedExtension(ext, config.excludeExtensionPattern)) {
-      result.skipped++; continue;
+      result.skipped++;
+      continue;
     }
 
     try {
@@ -101,7 +116,10 @@ export async function rearrangeNoteAttachments(
       const ctx = buildContext(notePath, origName, md5);
       const destPath = buildAttachmentPath(config, overrides, ctx, ext, vaultRoot);
 
-      if (absLink === destPath) { result.skipped++; continue; }
+      if (absLink === destPath) {
+        result.skipped++;
+        continue;
+      }
 
       await renameNote(absLink, destPath);
       await updateLinksOnRename(absLink, destPath);
@@ -120,7 +138,7 @@ export async function rearrangeNoteAttachments(
  */
 export async function rearrangeAllAttachments(
   notePaths: string[],
-  vaultRoot: string,
+  vaultRoot: string
 ): Promise<RearrangeResult> {
   const totals: RearrangeResult = { moved: 0, skipped: 0, errors: [] };
 
@@ -133,7 +151,9 @@ export async function rearrangeAllAttachments(
   }
 
   log.info('rearrange: completed', {
-    moved: totals.moved, skipped: totals.skipped, errors: totals.errors.length,
+    moved: totals.moved,
+    skipped: totals.skipped,
+    errors: totals.errors.length,
   });
   return totals;
 }

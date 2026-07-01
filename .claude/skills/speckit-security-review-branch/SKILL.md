@@ -33,24 +33,25 @@ This command is the right fit for a branch, pull request, or merge request diff.
    - Hardcoded secrets or credentials
    - Compliance with the Spec-Kit memory hub context.
 
-      #### Optimizer-Aware Flow
+     #### Optimizer-Aware Flow
 
-      When `.specify/extensions/memory-md/config.yml` has `optimizer.enabled: true` and the CLI is available:
+     When `.specify/extensions/memory-md/config.yml` has `optimizer.enabled: true` and the CLI is available:
 
-      1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "security constraints vulnerabilities authentication authorization data-leakage"`.
-      2. **Read Synthesis**: Read `specs/<feature>/memory-synthesis.md` (or the search results) first.
+     1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "security constraints vulnerabilities authentication authorization data-leakage"`.
+     2. **Read Synthesis**: Read `specs/<feature>/memory-synthesis.md` (or the search results) first.
 
-      #### Markdown-Only Flow
+     #### Markdown-Only Flow
 
-      When the optimizer is disabled or unavailable, you **MUST** read these files explicitly using your file-reading tools (absolute or relative paths). Do not rely solely on workspace search or semantic indexers, as these files are often in `.gitignore`:
+     When the optimizer is disabled or unavailable, you **MUST** read these files explicitly using your file-reading tools (absolute or relative paths). Do not rely solely on workspace search or semantic indexers, as these files are often in `.gitignore`:
 
-      - `docs/memory/INDEX.md`
-      - `docs/memory/`
-      - `.specify/memory/security_constitution.md`
-      - `specs/<feature>/memory.md`
-      - `specs/<feature>/memory-synthesis.md`
-      - `specs/<feature>/security-constraints.md`
-      - `.github/copilot-instructions.md`
+     - `docs/memory/INDEX.md`
+     - `docs/memory/`
+     - `.specify/memory/security_constitution.md`
+     - `specs/<feature>/memory.md`
+     - `specs/<feature>/memory-synthesis.md`
+     - `specs/<feature>/security-constraints.md`
+     - `.github/copilot-instructions.md`
+
    - Broken access control or missing authorization checks
    - Cryptographic failures (weak algorithms, hardcoded keys)
    - Security misconfiguration
@@ -67,7 +68,7 @@ This command is the right fit for a branch, pull request, or merge request diff.
 
 Before writing the report body, emit a YAML frontmatter block at the very start of the output document. Populate all values from your analysis. Copy the `field_summaries` section verbatim — it is static schema documentation that enables any LLM or indexer reading only the header to understand the full field schema without parsing the report body.
 
-````yaml
+```yaml
 ---
 document_type: security-review
 review_type: branch
@@ -85,24 +86,24 @@ owasp_categories: [<A01>, <A05>, ...]
 cwe_ids: [<CWE-89>, ...]
 field_summaries:
   document_type: "Always 'security-review'. Allows indexers to skip non-review documents."
-  review_type: "Which command generated this document: audit, branch, staged, plan, tasks, or followup."
-  assessment_date: "ISO 8601 date the review was performed (YYYY-MM-DD)."
-  overall_risk: "Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL)."
-  critical_count: "Number of Critical findings (CVSS 9.0-10.0)."
-  high_count: "Number of High findings (CVSS 7.0-8.9)."
-  medium_count: "Number of Medium findings (CVSS 4.0-6.9)."
-  low_count: "Number of Low findings (CVSS 0.1-3.9)."
-  informational_count: "Number of Informational findings."
-  owasp_categories: "OWASP Top 10 2025 categories (A01-A10) that have at least one finding."
-  cwe_ids: "CWE identifiers referenced in this document."
-  finding_id: "Unique finding identifier (SEC-NNN) for cross-referencing and task linkage."
-  location: "File path and line number of the vulnerable code (path/to/file.ext:line)."
-  owasp_category: "OWASP Top 10 2025 category for this finding (AXX:2025-Name)."
-  cwe: "Common Weakness Enumeration identifier with short name (CWE-NNN: Name)."
-  cvss_score: "CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low."
-  spec_kit_task: "Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN)."
+  review_type: 'Which command generated this document: audit, branch, staged, plan, tasks, or followup.'
+  assessment_date: 'ISO 8601 date the review was performed (YYYY-MM-DD).'
+  overall_risk: 'Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL).'
+  critical_count: 'Number of Critical findings (CVSS 9.0-10.0).'
+  high_count: 'Number of High findings (CVSS 7.0-8.9).'
+  medium_count: 'Number of Medium findings (CVSS 4.0-6.9).'
+  low_count: 'Number of Low findings (CVSS 0.1-3.9).'
+  informational_count: 'Number of Informational findings.'
+  owasp_categories: 'OWASP Top 10 2025 categories (A01-A10) that have at least one finding.'
+  cwe_ids: 'CWE identifiers referenced in this document.'
+  finding_id: 'Unique finding identifier (SEC-NNN) for cross-referencing and task linkage.'
+  location: 'File path and line number of the vulnerable code (path/to/file.ext:line).'
+  owasp_category: 'OWASP Top 10 2025 category for this finding (AXX:2025-Name).'
+  cwe: 'Common Weakness Enumeration identifier with short name (CWE-NNN: Name).'
+  cvss_score: 'CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low.'
+  spec_kit_task: 'Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN).'
 ---
-````
+```
 
 Then follow with the report body.
 

@@ -5,9 +5,7 @@
  */
 
 // Types
-export type {
-  RagSearchMode, RagCitation, RagContext, RagMessage, RagConfig,
-} from './types';
+export type { RagSearchMode, RagCitation, RagContext, RagMessage, RagConfig } from './types';
 export { DEFAULT_RAG_CONFIG } from './types';
 
 // Services
@@ -16,9 +14,14 @@ export { buildRagSystemPrompt, buildRagMessages, formatCitationFooter } from './
 
 // Store
 export {
-  ragConfig, ragMessages, ragLoading, ragCitations,
-  updateRagConfig, resetRagConfig,
-  clearRagMessages, askRag,
+  ragConfig,
+  ragMessages,
+  ragLoading,
+  ragCitations,
+  updateRagConfig,
+  resetRagConfig,
+  clearRagMessages,
+  askRag,
 } from './stores/ragStore';
 
 // Components

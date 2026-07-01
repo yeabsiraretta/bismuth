@@ -68,7 +68,14 @@
     <h4>Performance</h4>
     <div class="setting-item">
       <label for="startup-threshold">Slow startup threshold</label>
-      <input id="startup-threshold" type="range" bind:value={startupThresholdMs} min="1000" max="10000" step="500" />
+      <input
+        id="startup-threshold"
+        type="range"
+        bind:value={startupThresholdMs}
+        min="1000"
+        max="10000"
+        step="500"
+      />
       <span class="setting-value">{startupThresholdMs / 1000}s</span>
       <span class="setting-hint">Show a notification if startup takes longer than this</span>
     </div>
@@ -86,7 +93,9 @@
         bind:value={defaultNoteLocation}
         placeholder="/"
       />
-      <span class="setting-hint col-span-full">Folder path where new notes are created (relative to vault root)</span>
+      <span class="setting-hint col-span-full"
+        >Folder path where new notes are created (relative to vault root)</span
+      >
     </div>
 
     <div class="setting-item">
@@ -99,8 +108,15 @@
 
     <div class="setting-item">
       <label for="file-name-template">New File Name Template</label>
-      <input id="file-name-template" type="text" bind:value={newFileNameTemplate} placeholder={"Untitled {date}"} />
-      <span class="setting-hint">Tokens: {'{date}'}, {'{time}'}, {'{title}'} — e.g. "Note {'{date}'}"</span>
+      <input
+        id="file-name-template"
+        type="text"
+        bind:value={newFileNameTemplate}
+        placeholder={'Untitled {date}'}
+      />
+      <span class="setting-hint"
+        >Tokens: {'{date}'}, {'{time}'}, {'{title}'} — e.g. "Note {'{date}'}"</span
+      >
     </div>
   </div>
 
@@ -160,7 +176,12 @@
 
     <div class="setting-item grid grid-cols-12 gap-sm items-center">
       <label class="col-span-4" for="homepage-option">On startup, open</label>
-      <select class="col-span-8" id="homepage-option" bind:value={homepageOption} on:change={handleHomepageChange}>
+      <select
+        class="col-span-8"
+        id="homepage-option"
+        bind:value={homepageOption}
+        on:change={handleHomepageChange}
+      >
         <option value="last-opened">Last opened note</option>
         <option value="home">Home tab</option>
         <option value="graph">Graph view</option>

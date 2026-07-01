@@ -25,10 +25,21 @@ export interface PartyMember {
 }
 
 export type Condition =
-  | 'blinded' | 'charmed' | 'deafened' | 'frightened'
-  | 'grappled' | 'incapacitated' | 'invisible' | 'paralyzed'
-  | 'petrified' | 'poisoned' | 'prone' | 'restrained'
-  | 'stunned' | 'unconscious' | 'exhaustion'
+  | 'blinded'
+  | 'charmed'
+  | 'deafened'
+  | 'frightened'
+  | 'grappled'
+  | 'incapacitated'
+  | 'invisible'
+  | 'paralyzed'
+  | 'petrified'
+  | 'poisoned'
+  | 'prone'
+  | 'restrained'
+  | 'stunned'
+  | 'unconscious'
+  | 'exhaustion'
   | string; // allow custom conditions
 
 export interface InventoryItem {

@@ -1,6 +1,7 @@
 Before planning:
 
 Read:
+
 - config, including retrieval budgets
 - Governance Layer (`.specify/memory/`) constitution, standards, or principles first
 - feature spec
@@ -9,6 +10,7 @@ Read:
 - existing `{specs_root}/<feature>/{memory_synthesis_filename}` when present
 
 When `optimizer.enabled` is `true` and the CLI is available:
+
 1. Refresh the cache if needed.
 2. Generate or refresh `{specs_root}/<feature>/{memory_synthesis_filename}`.
 3. Read `{specs_root}/<feature>/{memory_synthesis_filename}` first.
@@ -18,6 +20,7 @@ Select relevant index entries first, then read only the smallest necessary sourc
 Do not load all durable memory files during normal planning when the optimizer is enabled.
 
 Produce or refresh `{specs_root}/<feature>/{memory_synthesis_filename}` using only:
+
 - relevant project context
 - current constraints
 - reused decisions
@@ -29,6 +32,7 @@ Produce or refresh `{specs_root}/<feature>/{memory_synthesis_filename}` using on
 - verification watchpoints
 
 Format rules:
+
 - keep the metadata keys in this order: `feature`, `status`, `hard_conflicts`, `soft_conflicts`, `assumptions_to_confirm`
 - keep every required section, even when empty
 - use `- [none]` for empty sections

@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
-  betweennessCentrality, detectCommunities, detectGaps,
-  extractBigrams, analyzeGraph,
+  betweennessCentrality,
+  detectCommunities,
+  detectGaps,
+  extractBigrams,
+  analyzeGraph,
 } from '../services/graphAnalytics';
 import type { GraphNode, GraphEdge } from '../types';
 import type { TopicCluster } from '../types/analytics';
@@ -59,7 +62,9 @@ describe('detectCommunities', () => {
       ['b3', new Set(['b1', 'b2'])],
     ]);
     const { communities, modularity } = detectCommunities(
-      ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'], adj, 4,
+      ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'],
+      adj,
+      4
     );
     expect(communities.size).toBe(6);
     expect(modularity).toBeGreaterThanOrEqual(0);
@@ -80,12 +85,22 @@ describe('detectCommunities', () => {
 describe('detectGaps', () => {
   it('finds gaps between disconnected clusters', () => {
     const clusterA: TopicCluster = {
-      id: 0, label: 'A', color: '#ff0000', nodeIds: ['a1', 'a2'],
-      topConcepts: ['alpha'], density: 1, totalRelevance: 1,
+      id: 0,
+      label: 'A',
+      color: '#ff0000',
+      nodeIds: ['a1', 'a2'],
+      topConcepts: ['alpha'],
+      density: 1,
+      totalRelevance: 1,
     };
     const clusterB: TopicCluster = {
-      id: 1, label: 'B', color: '#0000ff', nodeIds: ['b1', 'b2'],
-      topConcepts: ['beta'], density: 1, totalRelevance: 1,
+      id: 1,
+      label: 'B',
+      color: '#0000ff',
+      nodeIds: ['b1', 'b2'],
+      topConcepts: ['beta'],
+      density: 1,
+      totalRelevance: 1,
     };
     const adj = new Map([
       ['a1', new Set(['a2'])],
@@ -100,10 +115,18 @@ describe('detectGaps', () => {
 
   it('returns no gaps for well-connected clusters', () => {
     const cluster: TopicCluster = {
-      id: 0, label: 'All', color: '#ff0000', nodeIds: ['a', 'b'],
-      topConcepts: ['x'], density: 1, totalRelevance: 1,
+      id: 0,
+      label: 'All',
+      color: '#ff0000',
+      nodeIds: ['a', 'b'],
+      topConcepts: ['x'],
+      density: 1,
+      totalRelevance: 1,
     };
-    const adj = new Map([['a', new Set(['b'])], ['b', new Set(['a'])]]);
+    const adj = new Map([
+      ['a', new Set(['b'])],
+      ['b', new Set(['a'])],
+    ]);
     const gaps = detectGaps([cluster], adj);
     expect(gaps.length).toBe(0);
   });
@@ -111,10 +134,12 @@ describe('detectGaps', () => {
 
 describe('extractBigrams', () => {
   it('extracts top bigrams by weight', () => {
-    const edges: GraphEdge[] = [
-      edge('a', 'b'), edge('a', 'b'), edge('b', 'c'),
-    ];
-    const labels = new Map([['a', 'Alpha'], ['b', 'Beta'], ['c', 'Gamma']]);
+    const edges: GraphEdge[] = [edge('a', 'b'), edge('a', 'b'), edge('b', 'c')];
+    const labels = new Map([
+      ['a', 'Alpha'],
+      ['b', 'Beta'],
+      ['c', 'Gamma'],
+    ]);
     const bigrams = extractBigrams(edges, labels);
     expect(bigrams[0].weight).toBe(2);
     expect(bigrams[0].a).toBe('Alpha');
@@ -142,7 +167,7 @@ describe('analyzeGraph', () => {
     const nodes = [node('A'), node('B'), node('C'), node('D')];
     const edges = [edge('A', 'B'), edge('B', 'C'), edge('C', 'D')];
     const result = analyzeGraph(nodes, edges);
-    const metricsMap = new Map(result.metrics.map(m => [m.id, m]));
+    const metricsMap = new Map(result.metrics.map((m) => [m.id, m]));
     expect(metricsMap.get('B')!.betweenness).toBeGreaterThan(metricsMap.get('A')!.betweenness);
   });
 

@@ -24,7 +24,12 @@ export { parseCslJson } from './services/cslJsonParser';
 export { renderBibtexBlock, BIBTEX_STYLES } from './services/bibtexRenderer';
 
 // Services — template
-export { renderTemplate, renderNoteTitle, extractVariables, buildSearchText } from './services/templateRenderer';
+export {
+  renderTemplate,
+  renderNoteTitle,
+  extractVariables,
+  buildSearchText,
+} from './services/templateRenderer';
 
 // Stores
 export {

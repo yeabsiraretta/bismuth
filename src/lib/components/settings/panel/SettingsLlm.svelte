@@ -49,7 +49,9 @@
           <option value="ollama">Ollama (local)</option>
           <option value="claude">Claude (Anthropic)</option>
         </select>
-        <span class="setting-hint">Ollama runs locally with no API key. Claude requires a key in your system keychain.</span>
+        <span class="setting-hint"
+          >Ollama runs locally with no API key. Claude requires a key in your system keychain.</span
+        >
       </div>
     </div>
 
@@ -58,22 +60,36 @@
         <h4>Ollama</h4>
         <div class="setting-item">
           <label for="ollama-url">Server URL</label>
-          <input id="ollama-url" type="text" bind:value={ollamaUrl}
-            on:change={handleOllamaUrlChange} placeholder="http://127.0.0.1:11434" />
+          <input
+            id="ollama-url"
+            type="text"
+            bind:value={ollamaUrl}
+            on:change={handleOllamaUrlChange}
+            placeholder="http://127.0.0.1:11434"
+          />
           <span class="setting-hint">Base URL of your running Ollama instance</span>
         </div>
         <div class="setting-item">
           <label for="ollama-model">Model name</label>
-          <input id="ollama-model" type="text" bind:value={ollamaModel}
-            on:change={() => setModel(ollamaModel)} placeholder="llama3.2" />
-          <span class="setting-hint">Ollama model tag — run <code>ollama list</code> to see installed models</span>
+          <input
+            id="ollama-model"
+            type="text"
+            bind:value={ollamaModel}
+            on:change={() => setModel(ollamaModel)}
+            placeholder="llama3.2"
+          />
+          <span class="setting-hint"
+            >Ollama model tag — run <code>ollama list</code> to see installed models</span
+          >
         </div>
       </div>
     {:else}
       <div class="setting-group">
         <h4>Claude API Key</h4>
         <div class="setting-item">
-          <span class="setting-hint">API key is stored in your system keychain (never in plain text). To add it:</span>
+          <span class="setting-hint"
+            >API key is stored in your system keychain (never in plain text). To add it:</span
+          >
           <pre class="keychain-cmd">bismuth keychain set anthropic-api-key YOUR_KEY</pre>
         </div>
       </div>
@@ -83,9 +99,17 @@
       <h4>Response</h4>
       <div class="setting-item">
         <label for="llm-max-tokens">Max tokens</label>
-        <input id="llm-max-tokens" type="number" bind:value={maxTokens}
-          on:change={handleMaxTokensChange} min="256" max="128000" step="256" />
-        <span class="setting-hint">Maximum number of tokens in each LLM response (256–128 000)</span>
+        <input
+          id="llm-max-tokens"
+          type="number"
+          bind:value={maxTokens}
+          on:change={handleMaxTokensChange}
+          min="256"
+          max="128000"
+          step="256"
+        />
+        <span class="setting-hint">Maximum number of tokens in each LLM response (256–128 000)</span
+        >
       </div>
     </div>
 
@@ -96,11 +120,20 @@
           <input type="checkbox" bind:checked={llmNoteContext} />
           Include current note as context
         </label>
-        <span class="setting-hint">Sends the active note content to the agent with each message</span>
+        <span class="setting-hint"
+          >Sends the active note content to the agent with each message</span
+        >
       </div>
       <div class="setting-item">
         <label for="llm-max-history">Max history</label>
-        <input id="llm-max-history" type="range" bind:value={llmMaxHistory} min="5" max="50" step="5" />
+        <input
+          id="llm-max-history"
+          type="range"
+          bind:value={llmMaxHistory}
+          min="5"
+          max="50"
+          step="5"
+        />
         <span class="setting-value">{llmMaxHistory} messages</span>
         <span class="setting-hint">Number of previous messages sent as context (5–50)</span>
       </div>

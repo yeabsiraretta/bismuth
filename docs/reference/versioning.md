@@ -11,7 +11,9 @@ Bismuth uses **automated semantic versioning** tied to git operations.
 ## Automatic Bumping
 
 ### On Commit (Patch)
+
 Every commit automatically increments the **patch** version:
+
 ```
 0.0.1 → 0.0.2 → 0.0.3
 ```
@@ -20,7 +22,9 @@ Every commit automatically increments the **patch** version:
 **Updates**: `package.json`, `Cargo.toml`
 
 ### On Push (Minor)
+
 Every push to remote increments the **minor** version and resets patch:
+
 ```
 0.0.5 → 0.1.0
 ```
@@ -29,7 +33,9 @@ Every push to remote increments the **minor** version and resets patch:
 **Updates**: `package.json`, `Cargo.toml`, `CHANGELOG.md`
 
 ### On Release (Major)
+
 Manual major version bump for releases:
+
 ```bash
 pnpm run version:release
 ```
@@ -72,15 +78,20 @@ The CHANGELOG follows [Keep a Changelog](https://keepachangelog.com/) format:
 ## [Unreleased]
 
 ### Added
+
 - New features go here
 
 ## [0.2.0] - 2026-05-26
+
 ### Added
+
 - Feature X
 - Feature Y
 
 ## [0.1.0] - 2026-05-25
+
 ### Added
+
 - Initial release
 ```
 

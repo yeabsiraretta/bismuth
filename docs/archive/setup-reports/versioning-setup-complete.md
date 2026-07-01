@@ -64,11 +64,13 @@ Examples:
 ### Pre-1.0.0 Development (Current Phase)
 
 **Rules**:
+
 - **0.x.0**: Minor version - New features, may include breaking changes
 - **0.x.y**: Patch version - Bug fixes and minor improvements
 - **1.0.0**: First stable release - API stability guaranteed
 
 **Examples**:
+
 ```
 0.0.1 → 0.1.0  (MVP release with core features)
 0.1.0 → 0.1.1  (bug fixes)
@@ -79,6 +81,7 @@ Examples:
 ### Post-1.0.0 Versioning (Future)
 
 **Rules**:
+
 - **x.0.0**: Major - Breaking changes
 - **0.x.0**: Minor - New features (backward compatible)
 - **0.0.x**: Patch - Bug fixes (backward compatible)
@@ -87,16 +90,16 @@ Examples:
 
 ### Planned Releases
 
-| Version | Target | Focus | Key Features |
-|---------|--------|-------|--------------|
-| **0.0.1** | ✅ 2026-05-25 | Initial | Git workflow, CI/CD setup |
-| **0.1.0** | Week 14 | MVP | Vault, Editor, Navigator |
-| **0.2.0** | Week 18 | Wikilinks | Bidirectional links, Graph view |
-| **0.3.0** | Week 22 | Search | Full-text search, Indexing |
-| **0.4.0** | Week 26 | Lifecycle | Dashboard, Organization |
-| **0.5.0** | Week 30 | Tags | Hierarchical tags, Metadata |
-| **0.6.0** | Week 34 | Polish | Command palette, Themes |
-| **1.0.0** | TBD | Stable | Production-ready release |
+| Version   | Target        | Focus     | Key Features                    |
+| --------- | ------------- | --------- | ------------------------------- |
+| **0.0.1** | ✅ 2026-05-25 | Initial   | Git workflow, CI/CD setup       |
+| **0.1.0** | Week 14       | MVP       | Vault, Editor, Navigator        |
+| **0.2.0** | Week 18       | Wikilinks | Bidirectional links, Graph view |
+| **0.3.0** | Week 22       | Search    | Full-text search, Indexing      |
+| **0.4.0** | Week 26       | Lifecycle | Dashboard, Organization         |
+| **0.5.0** | Week 30       | Tags      | Hierarchical tags, Metadata     |
+| **0.6.0** | Week 34       | Polish    | Command palette, Themes         |
+| **1.0.0** | TBD           | Stable    | Production-ready release        |
 
 ## 📝 Available Scripts
 
@@ -208,6 +211,7 @@ git push origin develop
 Changelog is automatically generated from conventional commits:
 
 **Commit Types → Changelog Sections**:
+
 - `feat:` → ✨ Features
 - `fix:` → 🐛 Bug Fixes
 - `perf:` → ⚡ Performance Improvements
@@ -228,14 +232,17 @@ For important changes not captured by commits:
 4. Include PR/issue number
 
 **Example**:
+
 ```markdown
 ## [Unreleased]
 
 ### Added
+
 - Vault editor with CodeMirror 6 integration (#42)
 - Wikilink autocomplete with fuzzy matching (#45)
 
 ### Fixed
+
 - Crash recovery now restores unsaved changes (#50)
 ```
 
@@ -354,6 +361,7 @@ After setup, verify:
    - Verify format is correct
 
 2. **Test Version Scripts**
+
    ```bash
    pnpm version:check
    pnpm release:dry
@@ -373,6 +381,7 @@ After setup, verify:
    - Document all MVP features
 
 2. **Create Release**
+
    ```bash
    pnpm release:minor
    ```
@@ -408,6 +417,7 @@ After setup, verify:
 **Problem**: Different versions in different files
 
 **Solution**:
+
 ```bash
 pnpm release:dry  # Preview
 pnpm release:patch  # Apply
@@ -418,6 +428,7 @@ pnpm release:patch  # Apply
 **Problem**: Git tag already exists
 
 **Solution**:
+
 ```bash
 git tag -d v0.1.0
 git push origin :refs/tags/v0.1.0
@@ -429,6 +440,7 @@ pnpm release:minor
 **Problem**: CHANGELOG.md not generated
 
 **Solution**:
+
 1. Ensure commits follow conventional format
 2. Check `.versionrc.json` configuration
 3. Run `pnpm release:dry` to preview
@@ -438,6 +450,7 @@ pnpm release:minor
 **Problem**: Release process failed mid-way
 
 **Solution**:
+
 ```bash
 # Rollback
 git reset --hard HEAD~1
@@ -466,7 +479,7 @@ pnpm release:minor
 **Changelog Management**: ✅ Automated  
 **Release Process**: ✅ Documented  
 **Scripts**: ✅ Ready to Use  
-**Documentation**: ✅ Comprehensive  
+**Documentation**: ✅ Comprehensive
 
 **Current Status**: Ready for development with proper version control!
 

@@ -5,8 +5,13 @@
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
 import type {
-  MarginNote, MarginaliaSettings, ExplorerState, ExplorerTab,
-  ExplorerGrouping, PrefixConfig, MarginDirection,
+  MarginNote,
+  MarginaliaSettings,
+  ExplorerState,
+  ExplorerTab,
+  ExplorerGrouping,
+  PrefixConfig,
+  MarginDirection,
 } from '../types';
 import { DEFAULT_MARGINALIA_SETTINGS } from '../types';
 import { parseMarginNotes, groupByColor, groupByFile } from '../services/marginParser';
@@ -20,7 +25,9 @@ function loadSettings(): MarginaliaSettings {
   try {
     const s = localStorage.getItem(SETTINGS_KEY);
     return s ? { ...DEFAULT_MARGINALIA_SETTINGS, ...JSON.parse(s) } : DEFAULT_MARGINALIA_SETTINGS;
-  } catch { return DEFAULT_MARGINALIA_SETTINGS; }
+  } catch {
+    return DEFAULT_MARGINALIA_SETTINGS;
+  }
 }
 
 // ─── Core stores ─────────────────────────────────────────────────────────────
@@ -31,40 +38,36 @@ export const vaultNotes = writable<FileMarginNotes[]>([]);
 export const activeRecall = writable(false);
 
 export const explorerState = writable<ExplorerState>({
-  tab: 'current', grouping: 'color', searchQuery: '', collapsed: new Set(),
+  tab: 'current',
+  grouping: 'color',
+  searchQuery: '',
+  collapsed: new Set(),
 });
 
 // Persist settings
-marginaliaSettings.subscribe(v => {
+marginaliaSettings.subscribe((v) => {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(v));
 });
 
 // ─── Derived ─────────────────────────────────────────────────────────────────
 
-export const filteredNotes = derived(
-  [currentNotes, explorerState],
-  ([$notes, $state]) => {
-    if (!$state.searchQuery) return $notes;
-    const q = $state.searchQuery.toLowerCase();
-    return $notes.filter(n =>
-      n.text.toLowerCase().includes(q) ||
-      (n.prefix?.label.toLowerCase().includes(q) ?? false),
-    );
-  },
-);
+export const filteredNotes = derived([currentNotes, explorerState], ([$notes, $state]) => {
+  if (!$state.searchQuery) return $notes;
+  const q = $state.searchQuery.toLowerCase();
+  return $notes.filter(
+    (n) => n.text.toLowerCase().includes(q) || (n.prefix?.label.toLowerCase().includes(q) ?? false)
+  );
+});
 
-export const groupedNotes = derived(
-  [filteredNotes, explorerState],
-  ([$notes, $state]) => {
-    if ($state.grouping === 'color') return groupByColor($notes);
-    if ($state.grouping === 'file') return groupByFile($notes);
-    return new Map([['All', $notes]]);
-  },
-);
+export const groupedNotes = derived([filteredNotes, explorerState], ([$notes, $state]) => {
+  if ($state.grouping === 'color') return groupByColor($notes);
+  if ($state.grouping === 'file') return groupByFile($notes);
+  return new Map([['All', $notes]]);
+});
 
 export const noteCount = derived(currentNotes, ($n) => $n.length);
 
-export const blurCount = derived(currentNotes, ($n) => $n.filter(n => n.isBlur).length);
+export const blurCount = derived(currentNotes, ($n) => $n.filter((n) => n.isBlur).length);
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
 
@@ -96,7 +99,9 @@ export async function scanVaultNotes(): Promise<void> {
             notes: marginNotes,
           });
         }
-      } catch { /* skip unreadable files */ }
+      } catch {
+        /* skip unreadable files */
+      }
     }
     vaultNotes.set(results);
     log.info('Scanned vault for marginalia', { files: results.length });
@@ -106,23 +111,23 @@ export async function scanVaultNotes(): Promise<void> {
 }
 
 export function toggleActiveRecall(): void {
-  activeRecall.update(v => !v);
+  activeRecall.update((v) => !v);
 }
 
 export function setExplorerTab(tab: ExplorerTab): void {
-  explorerState.update(s => ({ ...s, tab }));
+  explorerState.update((s) => ({ ...s, tab }));
 }
 
 export function setExplorerGrouping(grouping: ExplorerGrouping): void {
-  explorerState.update(s => ({ ...s, grouping }));
+  explorerState.update((s) => ({ ...s, grouping }));
 }
 
 export function setExplorerSearch(query: string): void {
-  explorerState.update(s => ({ ...s, searchQuery: query }));
+  explorerState.update((s) => ({ ...s, searchQuery: query }));
 }
 
 export function toggleGroup(key: string): void {
-  explorerState.update(s => {
+  explorerState.update((s) => {
     const next = new Set(s.collapsed);
     next.has(key) ? next.delete(key) : next.add(key);
     return { ...s, collapsed: next };
@@ -132,27 +137,27 @@ export function toggleGroup(key: string): void {
 // ─── Settings mutations ──────────────────────────────────────────────────────
 
 export function setAlignment(alignment: 'left' | 'right'): void {
-  marginaliaSettings.update(s => ({ ...s, alignment }));
+  marginaliaSettings.update((s) => ({ ...s, alignment }));
 }
 
 export function setMarginWidth(width: number): void {
-  marginaliaSettings.update(s => ({ ...s, marginWidth: Math.max(15, Math.min(60, width)) }));
+  marginaliaSettings.update((s) => ({ ...s, marginWidth: Math.max(15, Math.min(60, width)) }));
 }
 
 export function setFontSize(size: number): void {
-  marginaliaSettings.update(s => ({ ...s, fontSize: Math.max(8, Math.min(24, size)) }));
+  marginaliaSettings.update((s) => ({ ...s, fontSize: Math.max(8, Math.min(24, size)) }));
 }
 
 export function setFontFamily(fontFamily: string): void {
-  marginaliaSettings.update(s => ({ ...s, fontFamily }));
+  marginaliaSettings.update((s) => ({ ...s, fontFamily }));
 }
 
 export function toggleReadingView(): void {
-  marginaliaSettings.update(s => ({ ...s, showInReadingView: !s.showInReadingView }));
+  marginaliaSettings.update((s) => ({ ...s, showInReadingView: !s.showInReadingView }));
 }
 
 export function updatePrefix(index: number, updates: Partial<PrefixConfig>): void {
-  marginaliaSettings.update(s => {
+  marginaliaSettings.update((s) => {
     const prefixes = [...s.prefixes];
     if (index >= 0 && index < prefixes.length) {
       prefixes[index] = { ...prefixes[index], ...updates };
@@ -162,20 +167,20 @@ export function updatePrefix(index: number, updates: Partial<PrefixConfig>): voi
 }
 
 export function addPrefix(config: PrefixConfig): void {
-  marginaliaSettings.update(s => ({ ...s, prefixes: [...s.prefixes, config] }));
+  marginaliaSettings.update((s) => ({ ...s, prefixes: [...s.prefixes, config] }));
 }
 
 export function removePrefix(index: number): void {
-  marginaliaSettings.update(s => ({
+  marginaliaSettings.update((s) => ({
     ...s,
     prefixes: s.prefixes.filter((_, i) => i !== index),
   }));
 }
 
 export function setDefaultDirection(direction: MarginDirection): void {
-  marginaliaSettings.update(s => ({ ...s, defaultDirection: direction }));
+  marginaliaSettings.update((s) => ({ ...s, defaultDirection: direction }));
 }
 
 export function setLastCaptureDestination(path: string): void {
-  marginaliaSettings.update(s => ({ ...s, lastCaptureDestination: path }));
+  marginaliaSettings.update((s) => ({ ...s, lastCaptureDestination: path }));
 }

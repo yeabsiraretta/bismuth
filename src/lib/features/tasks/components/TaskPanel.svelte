@@ -3,7 +3,14 @@
   import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
   import SearchInput from '@/components/ui/forms/SearchInput.svelte';
   import FilterChip from '@/components/ui/actions/FilterChip.svelte';
-  import { filteredTasks, taskFilter, taskStats, tasksLoading, refreshTasks, toggleTask } from '../stores/tasks';
+  import {
+    filteredTasks,
+    taskFilter,
+    taskStats,
+    tasksLoading,
+    refreshTasks,
+    toggleTask,
+  } from '../stores/tasks';
   import type { Task } from '@/types/data/task';
   import { openNote } from '@/appNavigation';
   import { onMount } from 'svelte';
@@ -45,31 +52,46 @@
 
   function getPriorityIcon(priority: string): string {
     switch (priority) {
-      case 'critical': return 'alert-circle';
-      case 'high': return 'arrow-up';
-      case 'medium': return 'minus';
-      case 'low': return 'arrow-down';
-      default: return '';
+      case 'critical':
+        return 'alert-circle';
+      case 'high':
+        return 'arrow-up';
+      case 'medium':
+        return 'minus';
+      case 'low':
+        return 'arrow-down';
+      default:
+        return '';
     }
   }
 
   function getStatusIcon(status: string): string {
     switch (status) {
-      case 'done': return 'check-square';
-      case 'inprogress': return 'play';
-      case 'onhold': return 'pause';
-      case 'cancelled': return 'x-square';
-      default: return 'square';
+      case 'done':
+        return 'check-square';
+      case 'inprogress':
+        return 'play';
+      case 'onhold':
+        return 'pause';
+      case 'cancelled':
+        return 'x-square';
+      default:
+        return 'square';
     }
   }
 
   function getStatusLabel(status: string): string {
     switch (status) {
-      case 'done': return 'Done';
-      case 'inprogress': return 'In Progress';
-      case 'onhold': return 'On Hold';
-      case 'cancelled': return 'Cancelled';
-      default: return 'Open';
+      case 'done':
+        return 'Done';
+      case 'inprogress':
+        return 'In Progress';
+      case 'onhold':
+        return 'On Hold';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return 'Open';
     }
   }
 </script>
@@ -93,14 +115,38 @@
   </div>
 
   <div class="filter-bar">
-    <FilterChip label="All ({$taskStats.total})" active={!$taskFilter.status} on:click={() => $taskFilter = { ...$taskFilter, status: undefined }} />
-    <FilterChip label="Open ({$taskStats.open})" active={$taskFilter.status === 'open'} on:click={() => $taskFilter = { ...$taskFilter, status: 'open' }} />
-    <FilterChip label="Active ({$taskStats.inprogress})" active={$taskFilter.status === 'inprogress'} on:click={() => $taskFilter = { ...$taskFilter, status: 'inprogress' }} />
-    <FilterChip label="Done ({$taskStats.done})" active={$taskFilter.status === 'done'} on:click={() => $taskFilter = { ...$taskFilter, status: 'done' }} />
+    <FilterChip
+      label="All ({$taskStats.total})"
+      active={!$taskFilter.status}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: undefined })}
+    />
+    <FilterChip
+      label="Open ({$taskStats.open})"
+      active={$taskFilter.status === 'open'}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: 'open' })}
+    />
+    <FilterChip
+      label="Active ({$taskStats.inprogress})"
+      active={$taskFilter.status === 'inprogress'}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: 'inprogress' })}
+    />
+    <FilterChip
+      label="Done ({$taskStats.done})"
+      active={$taskFilter.status === 'done'}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: 'done' })}
+    />
   </div>
   <div class="filter-bar">
-    <FilterChip label="On Hold ({$taskStats.onhold})" active={$taskFilter.status === 'onhold'} on:click={() => $taskFilter = { ...$taskFilter, status: 'onhold' }} />
-    <FilterChip label="Cancelled ({$taskStats.cancelled})" active={$taskFilter.status === 'cancelled'} on:click={() => $taskFilter = { ...$taskFilter, status: 'cancelled' }} />
+    <FilterChip
+      label="On Hold ({$taskStats.onhold})"
+      active={$taskFilter.status === 'onhold'}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: 'onhold' })}
+    />
+    <FilterChip
+      label="Cancelled ({$taskStats.cancelled})"
+      active={$taskFilter.status === 'cancelled'}
+      on:click={() => ($taskFilter = { ...$taskFilter, status: 'cancelled' })}
+    />
   </div>
 
   <div class="task-list">
@@ -113,7 +159,12 @@
       </div>
     {:else}
       {#each $filteredTasks as task (task.source_path + ':' + task.line)}
-        <div class="task-item" class:done={task.status === 'done'} class:cancelled={task.status === 'cancelled'} class:overdue={isOverdue(task)}>
+        <div
+          class="task-item"
+          class:done={task.status === 'done'}
+          class:cancelled={task.status === 'cancelled'}
+          class:overdue={isOverdue(task)}
+        >
           <button
             class="checkbox status-{task.status}"
             on:click={() => handleToggle(task)}
@@ -121,7 +172,13 @@
           >
             <Icon name={getStatusIcon(task.status)} size={16} />
           </button>
-          <div class="task-content" on:click={() => openNote(task.source_path)} on:keydown={(e) => e.key === 'Enter' && openNote(task.source_path)} role="button" tabindex="0">
+          <div
+            class="task-content"
+            on:click={() => openNote(task.source_path)}
+            on:keydown={(e) => e.key === 'Enter' && openNote(task.source_path)}
+            role="button"
+            tabindex="0"
+          >
             <span class="task-text">{task.text}</span>
             <div class="task-meta">
               {#if task.status !== 'open' && task.status !== 'done'}
@@ -225,17 +282,45 @@
     flex-shrink: 0;
   }
 
-  .checkbox.status-done { color: var(--interactive-accent, #10b981); }
-  .checkbox.status-inprogress { color: var(--text-accent, #3b82f6); }
-  .checkbox.status-onhold { color: var(--text-warning, #f59e0b); }
-  .checkbox.status-cancelled { color: var(--text-error, #ef4444); }
+  .checkbox.status-done {
+    color: var(--interactive-accent, #10b981);
+  }
+  .checkbox.status-inprogress {
+    color: var(--text-accent, #3b82f6);
+  }
+  .checkbox.status-onhold {
+    color: var(--text-warning, #f59e0b);
+  }
+  .checkbox.status-cancelled {
+    color: var(--text-error, #ef4444);
+  }
 
-  .task-item.cancelled .task-text { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+  .task-item.cancelled .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
 
-  .status-badge { font-size: 9px; font-weight: 600; padding: 0 4px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
-  .status-badge.status-inprogress { color: var(--text-accent, #3b82f6); background: color-mix(in srgb, var(--text-accent, #3b82f6) 12%, transparent); }
-  .status-badge.status-onhold { color: var(--text-warning, #f59e0b); background: color-mix(in srgb, var(--text-warning, #f59e0b) 12%, transparent); }
-  .status-badge.status-cancelled { color: var(--text-error, #ef4444); background: color-mix(in srgb, var(--text-error, #ef4444) 12%, transparent); }
+  .status-badge {
+    font-size: 9px;
+    font-weight: 600;
+    padding: 0 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .status-badge.status-inprogress {
+    color: var(--text-accent, #3b82f6);
+    background: color-mix(in srgb, var(--text-accent, #3b82f6) 12%, transparent);
+  }
+  .status-badge.status-onhold {
+    color: var(--text-warning, #f59e0b);
+    background: color-mix(in srgb, var(--text-warning, #f59e0b) 12%, transparent);
+  }
+  .status-badge.status-cancelled {
+    color: var(--text-error, #ef4444);
+    background: color-mix(in srgb, var(--text-error, #ef4444) 12%, transparent);
+  }
 
   .task-content {
     flex: 1;
@@ -259,10 +344,18 @@
     font-size: 10px;
   }
 
-  .priority-critical { color: var(--text-error, #e53e3e); }
-  .priority-high { color: var(--text-warning, #dd6b20); }
-  .priority-medium { color: var(--text-normal); }
-  .priority-low { color: var(--text-muted); }
+  .priority-critical {
+    color: var(--text-error, #e53e3e);
+  }
+  .priority-high {
+    color: var(--text-warning, #dd6b20);
+  }
+  .priority-medium {
+    color: var(--text-normal);
+  }
+  .priority-low {
+    color: var(--text-muted);
+  }
 
   .due-date {
     font-size: 10px;
@@ -282,7 +375,8 @@
     border-radius: 3px;
   }
 
-  .loading, .empty-state {
+  .loading,
+  .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;

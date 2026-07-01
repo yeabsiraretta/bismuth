@@ -12,7 +12,6 @@ import type { Link } from '@/types/data/vault';
  */
 const WIKILINK_REGEX = /\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g;
 
-
 /**
  * Parses a wikilink string and extracts its components
  *

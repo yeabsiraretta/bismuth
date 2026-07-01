@@ -42,18 +42,21 @@ Balance clarity with performance, factor in future scalability and maintainabili
 ## Language-Specific Best Practices
 
 ### TypeScript/JavaScript
+
 - Use strict mode and proper type annotations
 - Prefer `const` over `let`, avoid `var`
 - Use async/await over raw promises
 - Destructure for clarity
 
 ### Rust
+
 - Use `Result<T, E>` for error handling
 - Prefer borrowing over cloning
 - Use iterators over loops when appropriate
 - Follow Rust API guidelines
 
 ### Svelte
+
 - Keep components under 300 lines
 - Use stores for shared state
 - Reactive statements for derived values

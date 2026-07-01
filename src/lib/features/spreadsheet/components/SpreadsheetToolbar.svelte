@@ -10,10 +10,7 @@
    * Uses the unified logger. No direct `invoke()` calls.
    */
   import { pickImportFile, pickSaveDestination } from '@/services/system/dialog';
-  import {
-    activeDocument,
-    activeSheetId,
-  } from '@/features/spreadsheet/stores/spreadsheetStore';
+  import { activeDocument, activeSheetId } from '@/features/spreadsheet/stores/spreadsheetStore';
   import { importCsv, exportCsv } from '@/features/spreadsheet/services/spreadsheet';
   import { log } from '@/utils/logger';
 
@@ -80,7 +77,9 @@
       const sheet = doc.sheets.find((s) => s.id === sheetId);
       if (!sheet) return;
 
-      const stringRows = sheet.rows.map((row) => row.map((cell) => (cell != null ? String(cell) : '')));
+      const stringRows = sheet.rows.map((row) =>
+        row.map((cell) => (cell != null ? String(cell) : ''))
+      );
       await exportCsv(savePath, stringRows);
       onExportComplete?.({ path: savePath });
       log.info('SpreadsheetToolbar: export complete', { path: savePath });
@@ -130,7 +129,15 @@
     title="Import CSV file"
     aria-label="Import CSV"
   >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="7 10 12 15 17 10" />
       <line x1="12" y1="15" x2="12" y2="3" />
@@ -146,7 +153,15 @@
     title="Export as CSV"
     aria-label="Export CSV"
   >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="17 8 12 3 7 8" />
       <line x1="12" y1="3" x2="12" y2="15" />
@@ -164,7 +179,15 @@
     title="Add new sheet"
     aria-label="Add sheet"
   >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
@@ -209,7 +232,9 @@
     color: var(--text-muted);
     font-size: var(--font-ui-small, 12px);
     cursor: pointer;
-    transition: background 0.1s, color 0.1s;
+    transition:
+      background 0.1s,
+      color 0.1s;
     white-space: nowrap;
   }
 

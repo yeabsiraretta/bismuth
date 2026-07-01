@@ -7,19 +7,15 @@
 </script>
 
 {#if isEditing}
-  <div
-    class="inline-editor-wrapper"
-    role="form"
-    aria-label={ariaLabel}
-  >
+  <div class="inline-editor-wrapper" role="form" aria-label={ariaLabel}>
     {#if multiline}
       <div class="auto-resize">
         <textarea
           class="inline-input bismuth-body"
           aria-label={ariaLabel}
-          value={value}
+          {value}
           data-value={value}
-          on:input={e => {
+          on:input={(e) => {
             const v = (e.target as HTMLTextAreaElement).value;
             (e.target as HTMLTextAreaElement).parentElement?.setAttribute('data-value', v);
             onChange(v);
@@ -32,7 +28,7 @@
         type="text"
         aria-label={ariaLabel}
         {value}
-        on:input={e => onChange((e.target as HTMLInputElement).value)}
+        on:input={(e) => onChange((e.target as HTMLInputElement).value)}
       />
     {/if}
   </div>
@@ -41,7 +37,10 @@
 {/if}
 
 <style>
-  .inline-editor-wrapper { display: block; width: 100%; }
+  .inline-editor-wrapper {
+    display: block;
+    width: 100%;
+  }
 
   .inline-input {
     all: unset;

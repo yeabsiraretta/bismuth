@@ -9,11 +9,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { log } from '@/utils/logger';
-import type {
-  NasConnectionResult,
-  RemoteEntryDto,
-  SyncSummary,
-} from '../types/nas';
+import type { NasConnectionResult, RemoteEntryDto, SyncSummary } from '../types/nas';
 
 /** Unsubscribe function returned by event listeners. */
 export type Unsubscribe = () => void;
@@ -25,7 +21,7 @@ export type { SyncSummary } from '../types/nas';
 export async function connectWebDav(
   url: string,
   username: string,
-  password: string,
+  password: string
 ): Promise<NasConnectionResult> {
   try {
     const vaultRoot = await getVaultRoot();
@@ -67,11 +63,7 @@ export async function syncVault(): Promise<SyncSummary> {
 }
 
 /** Apply a single change operation (for manual sync or file watcher integration). */
-export async function applyChange(
-  op: string,
-  path: string,
-  destPath?: string,
-): Promise<void> {
+export async function applyChange(op: string, path: string, destPath?: string): Promise<void> {
   try {
     const vaultRoot = await getVaultRoot();
     await invoke<void>('nas_apply_change', {
@@ -100,15 +92,17 @@ export async function cancelSync(): Promise<void> {
  * Subscribe to sync progress events.
  * Returns an unsubscribe function.
  */
-export function onSyncProgress(
-  cb: (pct: number, filesRemaining: number) => void,
-): Unsubscribe {
+export function onSyncProgress(cb: (pct: number, filesRemaining: number) => void): Unsubscribe {
   let unlisten: Unsubscribe = () => undefined;
   listen<{ percent: number; files_remaining: number }>('nas://sync-progress', (evt) => {
     cb(evt.payload.percent, evt.payload.files_remaining);
-  }).then((fn) => { unlisten = fn; }).catch((err) => {
-    log.warn('nas.service: failed to subscribe to sync-progress', { error: String(err) });
-  });
+  })
+    .then((fn) => {
+      unlisten = fn;
+    })
+    .catch((err) => {
+      log.warn('nas.service: failed to subscribe to sync-progress', { error: String(err) });
+    });
   return () => unlisten();
 }
 
@@ -116,15 +110,17 @@ export function onSyncProgress(
  * Subscribe to size warning events (file > 500 MB).
  * Returns an unsubscribe function.
  */
-export function onSizeWarning(
-  cb: (path: string, sizeMb: number) => void,
-): Unsubscribe {
+export function onSizeWarning(cb: (path: string, sizeMb: number) => void): Unsubscribe {
   let unlisten: Unsubscribe = () => undefined;
   listen<{ path: string; size_mb: number }>('nas://size-warning', (evt) => {
     cb(evt.payload.path, evt.payload.size_mb);
-  }).then((fn) => { unlisten = fn; }).catch((err) => {
-    log.warn('nas.service: failed to subscribe to size-warning', { error: String(err) });
-  });
+  })
+    .then((fn) => {
+      unlisten = fn;
+    })
+    .catch((err) => {
+      log.warn('nas.service: failed to subscribe to size-warning', { error: String(err) });
+    });
   return () => unlisten();
 }
 
@@ -139,10 +135,7 @@ export async function readNasConfig(vaultRoot: string): Promise<unknown> {
 }
 
 /** Write NAS config (no password field). */
-export async function writeNasConfig(
-  vaultRoot: string,
-  config: unknown,
-): Promise<void> {
+export async function writeNasConfig(vaultRoot: string, config: unknown): Promise<void> {
   await invoke<void>('write_nas_config', { vaultRoot, config });
 }
 

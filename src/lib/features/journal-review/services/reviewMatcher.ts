@@ -3,29 +3,35 @@
  * Calculates anniversary dates, handles lookup margins, produces
  * human-readable time-ago labels, and selects random notes.
  */
-import type {
-  ReviewTimeSpan, ReviewEntry, ReviewGroup, ReviewConfig,
-} from '../types/review';
+import type { ReviewTimeSpan, ReviewEntry, ReviewGroup, ReviewConfig } from '../types/review';
 import {
-  extractCreatedDate, extractPreview, extractTags, extractTitle, getFileType,
+  extractCreatedDate,
+  extractPreview,
+  extractTags,
+  extractTitle,
+  getFileType,
 } from './reviewFrontmatter';
 
 // ─── Date arithmetic ─────────────────────────────────────────────────────────
 
 /** Subtract a time span from a date, returning ISO date string */
-export function subtractSpan(
-  fromDate: Date,
-  span: ReviewTimeSpan,
-  multiplier: number = 1,
-): string {
+export function subtractSpan(fromDate: Date, span: ReviewTimeSpan, multiplier: number = 1): string {
   const d = new Date(fromDate);
   const amount = span.number * multiplier;
 
   switch (span.unit) {
-    case 'day': d.setDate(d.getDate() - amount); break;
-    case 'week': d.setDate(d.getDate() - amount * 7); break;
-    case 'month': d.setMonth(d.getMonth() - amount); break;
-    case 'year': d.setFullYear(d.getFullYear() - amount); break;
+    case 'day':
+      d.setDate(d.getDate() - amount);
+      break;
+    case 'week':
+      d.setDate(d.getDate() - amount * 7);
+      break;
+    case 'month':
+      d.setMonth(d.getMonth() - amount);
+      break;
+    case 'year':
+      d.setFullYear(d.getFullYear() - amount);
+      break;
   }
 
   return d.toISOString().slice(0, 10);
@@ -35,7 +41,7 @@ export function subtractSpan(
 export function getTargetDates(
   referenceDate: Date,
   span: ReviewTimeSpan,
-  maxYearsBack: number = 20,
+  maxYearsBack: number = 20
 ): string[] {
   if (!span.recurring) {
     return [subtractSpan(referenceDate, span)];
@@ -60,7 +66,7 @@ export function getTargetDates(
 export function datesMatchWithMargin(
   noteDate: string,
   targetDate: string,
-  margin: number,
+  margin: number
 ): boolean {
   if (margin === 0) {
     return sameMonthDay(noteDate, targetDate);
@@ -84,7 +90,7 @@ export function sameMonthDay(dateA: string, dateB: string): boolean {
 export function formatTimeSpanLabel(
   span: ReviewTimeSpan,
   multiplier: number = 1,
-  humanize: boolean = true,
+  humanize: boolean = true
 ): string {
   const n = span.number * multiplier;
   const unit = span.unit;
@@ -140,7 +146,7 @@ export interface VaultNote {
 export function buildReviewEntry(
   note: VaultNote,
   createdDate: string,
-  config: ReviewConfig,
+  config: ReviewConfig
 ): ReviewEntry {
   return {
     path: note.path,
@@ -157,7 +163,7 @@ export function buildReviewEntry(
 export function matchNotesToTimeSpans(
   notes: VaultNote[],
   config: ReviewConfig,
-  referenceDate: Date = new Date(),
+  referenceDate: Date = new Date()
 ): ReviewGroup[] {
   const groups: ReviewGroup[] = [];
 
@@ -215,11 +221,8 @@ export function shouldExcludeFile(path: string, config: ReviewConfig): boolean {
 // ─── Random note ─────────────────────────────────────────────────────────────
 
 /** Pick a random note from the vault, excluding configured folders */
-export function pickRandomNote(
-  notes: VaultNote[],
-  config: ReviewConfig,
-): ReviewEntry | null {
-  const eligible = notes.filter(n => {
+export function pickRandomNote(notes: VaultNote[], config: ReviewConfig): ReviewEntry | null {
+  const eligible = notes.filter((n) => {
     if (shouldExcludeFile(n.path, config)) return false;
     const created = extractCreatedDate(n.content, config.createdField);
     return created !== null;

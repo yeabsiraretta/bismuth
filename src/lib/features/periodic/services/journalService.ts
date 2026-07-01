@@ -3,11 +3,7 @@
  * note creation with frontmatter, and index computation.
  */
 
-import type {
-  JournalConfig,
-  PeriodType,
-  TemplateContext,
-} from '../types';
+import type { JournalConfig, PeriodType, TemplateContext } from '../types';
 import { resolveTemplateVars, formatDate } from './templateVars';
 
 /** Parse a YYYY-MM-DD string as local midnight (not UTC). */
@@ -19,10 +15,7 @@ function parseLocalDate(iso: string): Date {
 // ─── Period Boundaries ────────────────────────────────────────────────────
 
 /** Get the start and end dates for the period containing `date`. */
-export function getPeriodBounds(
-  date: Date,
-  journal: JournalConfig,
-): { start: Date; end: Date } {
+export function getPeriodBounds(date: Date, journal: JournalConfig): { start: Date; end: Date } {
   const type = journal.type;
 
   if (type === 'daily') {
@@ -64,12 +57,11 @@ export function getPeriodBounds(
   return { start: new Date(date), end: new Date(date) };
 }
 
-function getCustomPeriodBounds(
-  date: Date,
-  journal: JournalConfig,
-): { start: Date; end: Date } {
+function getCustomPeriodBounds(date: Date, journal: JournalConfig): { start: Date; end: Date } {
   const { every, unit } = journal.customInterval!;
-  const anchor = journal.startDate ? parseLocalDate(journal.startDate) : new Date(date.getFullYear(), 0, 1);
+  const anchor = journal.startDate
+    ? parseLocalDate(journal.startDate)
+    : new Date(date.getFullYear(), 0, 1);
 
   let periodStart = new Date(anchor);
   let periodEnd = advanceDate(periodStart, every, unit);
@@ -96,9 +88,15 @@ function getCustomPeriodBounds(
 function advanceDate(date: Date, amount: number, unit: string): Date {
   const result = new Date(date);
   switch (unit) {
-    case 'day': result.setDate(result.getDate() + amount); break;
-    case 'week': result.setDate(result.getDate() + amount * 7); break;
-    case 'month': result.setMonth(result.getMonth() + amount); break;
+    case 'day':
+      result.setDate(result.getDate() + amount);
+      break;
+    case 'week':
+      result.setDate(result.getDate() + amount * 7);
+      break;
+    case 'month':
+      result.setMonth(result.getMonth() + amount);
+      break;
   }
   return result;
 }
@@ -137,7 +135,7 @@ function computeCustomIndex(
   date: Date,
   anchor: Date,
   journal: JournalConfig,
-  startIndex: number,
+  startIndex: number
 ): number {
   const { every, unit } = journal.customInterval!;
   let count = 0;
@@ -158,12 +156,18 @@ function countPeriodsBetween(from: Date, to: Date, type: PeriodType): number {
   const diffDays = Math.floor(diffMs / 86400000);
 
   switch (type) {
-    case 'daily': return diffDays;
-    case 'weekly': return Math.floor(diffDays / 7);
-    case 'monthly': return (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
-    case 'quarterly': return Math.floor(countPeriodsBetween(from, to, 'monthly') / 3);
-    case 'yearly': return to.getFullYear() - from.getFullYear();
-    default: return 0;
+    case 'daily':
+      return diffDays;
+    case 'weekly':
+      return Math.floor(diffDays / 7);
+    case 'monthly':
+      return (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
+    case 'quarterly':
+      return Math.floor(countPeriodsBetween(from, to, 'monthly') / 3);
+    case 'yearly':
+      return to.getFullYear() - from.getFullYear();
+    default:
+      return 0;
   }
 }
 
@@ -197,10 +201,7 @@ export function resolveNotePath(date: Date, journal: JournalConfig): string {
 // ─── Frontmatter Generation ───────────────────────────────────────────────
 
 /** Build frontmatter YAML for a journal note. */
-export function buildFrontmatter(
-  date: Date,
-  journal: JournalConfig,
-): string {
+export function buildFrontmatter(date: Date, journal: JournalConfig): string {
   const fm = journal.frontmatter;
   const { start, end } = getPeriodBounds(date, journal);
   const index = computeIndex(date, journal);

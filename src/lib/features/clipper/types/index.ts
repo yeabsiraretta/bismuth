@@ -245,13 +245,6 @@ export const DEFAULT_TEMPLATES: Record<ContentType, { title: string; content: st
   },
   'text-snippet': {
     title: 'Clip {{ date }}',
-    content: [
-      '---',
-      'type: snippet',
-      'date: {{ date }}',
-      '---',
-      '',
-      '{{ content }}',
-    ].join('\n'),
+    content: ['---', 'type: snippet', 'date: {{ date }}', '---', '', '{{ content }}'].join('\n'),
   },
 };

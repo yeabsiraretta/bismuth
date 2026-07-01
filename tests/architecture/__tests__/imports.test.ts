@@ -23,7 +23,9 @@ function walkDir(dir: string, extensions: string[]): string[] {
         results.push(fullPath);
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
   return results;
 }
 
@@ -61,9 +63,7 @@ const FORBIDDEN_IMPORTS: Record<string, string[]> = {
 
 // Known pre-existing violations (tracked for remediation, do not add new ones)
 const KNOWN_VIOLATIONS: Record<string, string[]> = {
-  services: [
-    'src/lib/services/design-docs/reflectors/componentReflector.ts',
-  ],
+  services: ['src/lib/services/design-docs/reflectors/componentReflector.ts'],
   types: [],
 };
 
@@ -109,9 +109,7 @@ function checkLayer(layer: string): string[] {
     for (const imp of imports) {
       const targetLayer = getLayer(imp);
       if (targetLayer && forbidden.includes(targetLayer)) {
-        violations.push(
-          `${rel}: imports "${imp}" (${layer} -> ${targetLayer})`
-        );
+        violations.push(`${rel}: imports "${imp}" (${layer} -> ${targetLayer})`);
       }
     }
   }
@@ -125,16 +123,15 @@ function getFeatureModules(): string[] {
   const featuresDir = resolve(SRC, 'features');
   try {
     const entries = readdirSync(featuresDir, { withFileTypes: true });
-    return entries
-      .filter((e) => e.isDirectory())
-      .map((e) => e.name);
-  } catch { return []; }
+    return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+  } catch {
+    return [];
+  }
 }
 
 function isBarrelImport(importPath: string, featureName: string): boolean {
   return (
-    importPath === `@/features/${featureName}` ||
-    importPath === `@/features/${featureName}/index`
+    importPath === `@/features/${featureName}` || importPath === `@/features/${featureName}/index`
   );
 }
 
@@ -184,13 +181,8 @@ describe('Feature Module Rules', () => {
         const imports = extractImports(content);
 
         for (const imp of imports) {
-          if (
-            imp.startsWith(`@/features/${mod}/components`) ||
-            imp.startsWith('@/components/')
-          ) {
-            violations.push(
-              `${relative(ROOT, file)}: store imports component "${imp}"`
-            );
+          if (imp.startsWith(`@/features/${mod}/components`) || imp.startsWith('@/components/')) {
+            violations.push(`${relative(ROOT, file)}: store imports component "${imp}"`);
           }
         }
       }

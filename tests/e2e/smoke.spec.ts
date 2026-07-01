@@ -20,9 +20,7 @@ test.describe('Application Launch', () => {
   test('should show welcome screen or main layout', async ({ page }) => {
     await page.goto('/');
     // Either welcome screen (no vault) or main layout (vault open)
-    const content = page.locator(
-      '.welcome-screen, .app-container, .editor-pane, main'
-    );
+    const content = page.locator('.welcome-screen, .app-container, .editor-pane, main');
     await expect(content).toBeVisible({ timeout: 5000 });
   });
 
@@ -39,9 +37,7 @@ test.describe('Layout Structure', () => {
   test('should render sidebar area', async ({ page }) => {
     await page.goto('/');
     await page.waitForTimeout(1000);
-    const sidebar = page.locator(
-      '.left-sidebar, aside, [data-testid="left-sidebar"], nav'
-    );
+    const sidebar = page.locator('.left-sidebar, aside, [data-testid="left-sidebar"], nav');
     // Sidebar may be hidden on welcome screen but should exist in DOM
     const count = await sidebar.count();
     expect(count).toBeGreaterThanOrEqual(0);

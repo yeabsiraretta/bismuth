@@ -12,25 +12,41 @@
     <h4>Home Tab Content</h4>
     <div class="setting-item">
       <label>
-        <input type="checkbox" checked={$homeSettings.replaceNewTab} on:change={() => updateHomeSettings({ replaceNewTab: !$homeSettings.replaceNewTab })} />
+        <input
+          type="checkbox"
+          checked={$homeSettings.replaceNewTab}
+          on:change={() => updateHomeSettings({ replaceNewTab: !$homeSettings.replaceNewTab })}
+        />
         Replace empty new tabs with Home Tab
       </label>
     </div>
     <div class="setting-item">
       <label>
-        <input type="checkbox" checked={$homeSettings.showSearchBar} on:change={() => updateHomeSettings({ showSearchBar: !$homeSettings.showSearchBar })} />
+        <input
+          type="checkbox"
+          checked={$homeSettings.showSearchBar}
+          on:change={() => updateHomeSettings({ showSearchBar: !$homeSettings.showSearchBar })}
+        />
         Show search bar
       </label>
     </div>
     <div class="setting-item">
       <label>
-        <input type="checkbox" checked={$homeSettings.showBookmarks} on:change={() => updateHomeSettings({ showBookmarks: !$homeSettings.showBookmarks })} />
+        <input
+          type="checkbox"
+          checked={$homeSettings.showBookmarks}
+          on:change={() => updateHomeSettings({ showBookmarks: !$homeSettings.showBookmarks })}
+        />
         Show bookmarked files
       </label>
     </div>
     <div class="setting-item">
       <label>
-        <input type="checkbox" checked={$homeSettings.showRecentFiles} on:change={() => updateHomeSettings({ showRecentFiles: !$homeSettings.showRecentFiles })} />
+        <input
+          type="checkbox"
+          checked={$homeSettings.showRecentFiles}
+          on:change={() => updateHomeSettings({ showRecentFiles: !$homeSettings.showRecentFiles })}
+        />
         Show recent files
       </label>
     </div>
@@ -43,7 +59,10 @@
           min="2"
           max="24"
           value={$homeSettings.maxRecentFiles}
-          on:input={(e) => updateHomeSettings({ maxRecentFiles: parseInt((e.target as HTMLInputElement).value) || 8 })}
+          on:input={(e) =>
+            updateHomeSettings({
+              maxRecentFiles: parseInt((e.target as HTMLInputElement).value) || 8,
+            })}
         />
       </div>
     {/if}

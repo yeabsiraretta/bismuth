@@ -45,7 +45,8 @@ export function buildAiCommands(): Command[] {
       description: 'Enable or disable overriding Ctrl/Cmd+C with enhanced copy',
       category: 'Editor',
       action: async () => {
-        const { enhancedCopyConfig, updateEnhancedCopyConfig } = await import('@/features/enhanced-copy');
+        const { enhancedCopyConfig, updateEnhancedCopyConfig } =
+          await import('@/features/enhanced-copy');
         const { get: getStore } = await import('svelte/store');
         const current = getStore(enhancedCopyConfig);
         updateEnhancedCopyConfig({ overrideDefaultCopy: !current.overrideDefaultCopy });
@@ -135,7 +136,10 @@ export function buildAiCommands(): Command[] {
         const { activeNote } = await import('@/stores/vault/vault');
         const { get: getStore } = await import('svelte/store');
         const note = getStore(activeNote);
-        if (!note) { showToast('No active note', 'warning'); return; }
+        if (!note) {
+          showToast('No active note', 'warning');
+          return;
+        }
         const { getRelatedNotes } = await import('@/features/atomic-insights');
         const result = await getRelatedNotes(note.path);
         showToast(`Found ${result.results.length} related notes`, 'info');

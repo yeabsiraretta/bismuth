@@ -98,7 +98,11 @@ describe('sampleTokens', () => {
   });
 
   it('returns random sample when randomise is true', () => {
-    const result = sampleTokens(tokens, { ...DEFAULT_SAMPLING_CONFIG, fixedWordCount: 3, randomise: true });
+    const result = sampleTokens(tokens, {
+      ...DEFAULT_SAMPLING_CONFIG,
+      fixedWordCount: 3,
+      randomise: true,
+    });
     expect(result).toHaveLength(3);
     // All sampled tokens must come from the original
     for (const t of result) expect(tokens).toContain(t);
@@ -152,7 +156,11 @@ describe('extractUrls', () => {
 
 describe('buildDocument', () => {
   it('creates a corpus document', () => {
-    const doc = buildDocument('folder/My Note.md', '# Title\n\nSome content with #tag', DEFAULT_SAMPLING_CONFIG);
+    const doc = buildDocument(
+      'folder/My Note.md',
+      '# Title\n\nSome content with #tag',
+      DEFAULT_SAMPLING_CONFIG
+    );
     expect(doc.path).toBe('folder/My Note.md');
     expect(doc.title).toBe('My Note');
     expect(doc.tags).toContain('tag');

@@ -12,7 +12,7 @@ import { parseChordSymbol } from './chordParser';
 export class ChordSheetWidget extends WidgetType {
   constructor(
     private sheet: ChordSheet,
-    private instrument: ChordInstrument = 'guitar',
+    private instrument: ChordInstrument = 'guitar'
   ) {
     super();
   }
@@ -36,11 +36,20 @@ export class ChordSheetWidget extends WidgetType {
       const lines = transposeLines(this.sheet.lines, transpose);
 
       // Toolbar
-      wrap.appendChild(this.buildToolbar(transpose, instrument, (t) => {
-        transpose = t; renderAll();
-      }, (i) => {
-        instrument = i; renderAll();
-      }));
+      wrap.appendChild(
+        this.buildToolbar(
+          transpose,
+          instrument,
+          (t) => {
+            transpose = t;
+            renderAll();
+          },
+          (i) => {
+            instrument = i;
+            renderAll();
+          }
+        )
+      );
 
       // Chord overview
       const uniqueChords = getUniqueChords(lines);
@@ -58,7 +67,8 @@ export class ChordSheetWidget extends WidgetType {
 
         if (line.type === 'section') {
           lineEl.className = 'chord-section-header';
-          lineEl.style.cssText = 'font-weight: 700; color: var(--interactive-accent); margin-top: 12px; font-size: 14px;';
+          lineEl.style.cssText =
+            'font-weight: 700; color: var(--interactive-accent); margin-top: 12px; font-size: 14px;';
           lineEl.textContent = line.text;
         } else if (line.type === 'chord' && line.chords?.length) {
           lineEl.className = 'chord-line';
@@ -88,7 +98,7 @@ export class ChordSheetWidget extends WidgetType {
     transpose: number,
     instrument: ChordInstrument,
     onTranspose: (t: number) => void,
-    onInstrument: (i: ChordInstrument) => void,
+    onInstrument: (i: ChordInstrument) => void
   ): HTMLElement {
     const bar = document.createElement('div');
     bar.className = 'chord-toolbar';
@@ -101,7 +111,8 @@ export class ChordSheetWidget extends WidgetType {
 
     // Instrument selector
     const instrSel = document.createElement('select');
-    instrSel.style.cssText = 'font-size: 11px; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--background-secondary); color: var(--text-normal);';
+    instrSel.style.cssText =
+      'font-size: 11px; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--background-secondary); color: var(--text-normal);';
     for (const i of ['guitar', 'ukulele', 'mandolin'] as ChordInstrument[]) {
       const opt = document.createElement('option');
       opt.value = i;
@@ -114,7 +125,8 @@ export class ChordSheetWidget extends WidgetType {
 
     // Transpose controls
     const transposeGroup = document.createElement('div');
-    transposeGroup.style.cssText = 'display: flex; align-items: center; gap: 4px; margin-left: auto;';
+    transposeGroup.style.cssText =
+      'display: flex; align-items: center; gap: 4px; margin-left: auto;';
 
     const downBtn = this.makeBtn('−', 'Transpose down');
     downBtn.addEventListener('click', () => onTranspose(transpose - 1));
@@ -184,7 +196,7 @@ export class ChordSheetWidget extends WidgetType {
     container: HTMLElement,
     text: string,
     chords: ChordToken[],
-    instrument: ChordInstrument,
+    instrument: ChordInstrument
   ): void {
     container.style.cssText = 'color: var(--interactive-accent); font-weight: 600;';
 
@@ -243,10 +255,12 @@ export class ChordSheetWidget extends WidgetType {
   }
 
   eq(other: ChordSheetWidget): boolean {
-    return this.sheet.from === other.sheet.from &&
+    return (
+      this.sheet.from === other.sheet.from &&
       this.sheet.to === other.sheet.to &&
       this.sheet.transpose === other.sheet.transpose &&
       this.instrument === other.instrument &&
-      JSON.stringify(this.sheet.lines) === JSON.stringify(other.sheet.lines);
+      JSON.stringify(this.sheet.lines) === JSON.stringify(other.sheet.lines)
+    );
   }
 }

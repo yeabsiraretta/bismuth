@@ -24,7 +24,12 @@ export {
 export { parseQuery, parseExpr } from './services/queryParser';
 export { executeQuery, evaluateExpr } from './services/queryEngine';
 export { isTruthy, toNumber, compareValues, exprToString } from './services/exprEvaluator';
-export { parseDocumentInlineFields, parseDocumentTasks, parseLineInlineFields, coerceValue } from './services/inlineFieldParser';
+export {
+  parseDocumentInlineFields,
+  parseDocumentTasks,
+  parseLineInlineFields,
+  coerceValue,
+} from './services/inlineFieldParser';
 export { QueryCache, queryCache } from './services/queryCache';
 export type {
   DvQuery,

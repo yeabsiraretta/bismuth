@@ -21,7 +21,13 @@
 {:else}
   <div class="card-grid">
     {#each canvases as canvas (canvas.id)}
-      <div class="card" on:click={() => onOpen?.({ id: canvas.id })} on:keydown={(e) => e.key === 'Enter' && onOpen?.({ id: canvas.id })} role="button" tabindex="0">
+      <div
+        class="card"
+        on:click={() => onOpen?.({ id: canvas.id })}
+        on:keydown={(e) => e.key === 'Enter' && onOpen?.({ id: canvas.id })}
+        role="button"
+        tabindex="0"
+      >
         <div class="card-thumbnail">
           <div class="thumbnail-content">
             {#if canvas.elements.length > 0}
@@ -51,7 +57,6 @@
 {/if}
 
 <style>
-
   .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -65,7 +70,9 @@
     border-radius: var(--radius-m);
     overflow: hidden;
     cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
     text-align: left;
     padding: 0;
   }
@@ -141,7 +148,9 @@
     color: var(--text-faint);
     cursor: pointer;
     opacity: 0;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
+    transition:
+      opacity var(--transition-fast),
+      color var(--transition-fast);
   }
 
   .card:hover .card-delete {

@@ -24,33 +24,22 @@ export async function createMusicDocument(
   return invoke<MusicDocumentMeta>('create_music_document', { vaultPath, name });
 }
 
-export async function loadMusicDocument(
-  vaultPath: string,
-  id: string
-): Promise<MusicDocument> {
+export async function loadMusicDocument(vaultPath: string, id: string): Promise<MusicDocument> {
   log.info('[musicDoc] loadMusicDocument', { id });
   return invoke<MusicDocument>('load_music_document', { vaultPath, id });
 }
 
-export async function saveMusicDocument(
-  vaultPath: string,
-  doc: MusicDocument
-): Promise<void> {
+export async function saveMusicDocument(vaultPath: string, doc: MusicDocument): Promise<void> {
   log.info('[musicDoc] saveMusicDocument', { id: doc.id });
   return invoke<void>('save_music_document', { vaultPath, doc });
 }
 
-export async function listMusicDocuments(
-  vaultPath: string
-): Promise<MusicDocumentMeta[]> {
+export async function listMusicDocuments(vaultPath: string): Promise<MusicDocumentMeta[]> {
   log.info('[musicDoc] listMusicDocuments');
   return invoke<MusicDocumentMeta[]>('list_music_documents', { vaultPath });
 }
 
-export async function deleteMusicDocument(
-  vaultPath: string,
-  id: string
-): Promise<void> {
+export async function deleteMusicDocument(vaultPath: string, id: string): Promise<void> {
   log.info('[musicDoc] deleteMusicDocument', { id });
   return invoke<void>('delete_music_document', { vaultPath, id });
 }

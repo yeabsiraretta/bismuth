@@ -39,7 +39,8 @@ import {
   syncNow,
   resolveConflict,
   disconnectNas,
-} from '../stores/nasStore'; void _connectNas;
+} from '../stores/nasStore';
+void _connectNas;
 import type { ConflictRecord, NasConfig, SyncSummary } from '../types/nas';
 
 const validConfig: NasConfig = {

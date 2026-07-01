@@ -30,7 +30,11 @@
           <span class="zoom-crumb-text">{crumb.target.text}</span>
         </span>
       {:else}
-        <button class="zoom-crumb" on:click={() => handleBreadcrumbClick(i)} title="Zoom to this level">
+        <button
+          class="zoom-crumb"
+          on:click={() => handleBreadcrumbClick(i)}
+          title="Zoom to this level"
+        >
           <Icon name={crumb.target.kind === 'heading' ? 'hash' : 'list'} size={11} />
           <span class="zoom-crumb-text">{crumb.target.text}</span>
         </button>

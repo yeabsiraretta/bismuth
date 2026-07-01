@@ -21,9 +21,15 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { store = {}; },
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
   };
 })();
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
@@ -35,9 +41,21 @@ Object.defineProperty(globalThis, 'crypto', {
 
 // Mock date-fns
 vi.mock('date-fns', () => ({
-  addDays: (date: Date, n: number) => { const d = new Date(date); d.setDate(d.getDate() + n); return d; },
-  addWeeks: (date: Date, n: number) => { const d = new Date(date); d.setDate(d.getDate() + n * 7); return d; },
-  addMonths: (date: Date, n: number) => { const d = new Date(date); d.setMonth(d.getMonth() + n); return d; },
+  addDays: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n);
+    return d;
+  },
+  addWeeks: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n * 7);
+    return d;
+  },
+  addMonths: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + n);
+    return d;
+  },
 }));
 
 import { featureFlags } from '@/stores/settings/features';
@@ -48,11 +66,7 @@ import {
   completeGamifiedTask as _completeGamifiedTask,
   deleteGamifiedTask as _deleteGamifiedTask,
 } from '../stores/gamifyStore';
-import {
-  questProfile,
-  awardXp,
-  recordTaskCompleted,
-} from '../stores/questStore';
+import { questProfile, awardXp, recordTaskCompleted } from '../stores/questStore';
 import { getLevelFromXp, cumulativeXpForLevel, XP_VALUES } from '@/types/data/quest';
 
 describe('Gamification feature flag toggle', () => {

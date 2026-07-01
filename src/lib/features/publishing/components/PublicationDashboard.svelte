@@ -20,7 +20,9 @@
 
   let activeView: DashView = 'notes';
 
-  onMount(() => { refreshPublishableNotes(); });
+  onMount(() => {
+    refreshPublishableNotes();
+  });
 </script>
 
 <div class="pub-dashboard" role="tabpanel" aria-label="Publication Center">
@@ -34,16 +36,40 @@
 
   <div class="panel-body">
     <div class="view-tabs">
-      <button class="tab" class:active={activeView === 'notes'} on:click={() => { activeView = 'notes'; }}>
+      <button
+        class="tab"
+        class:active={activeView === 'notes'}
+        on:click={() => {
+          activeView = 'notes';
+        }}
+      >
         Notes
       </button>
-      <button class="tab" class:active={activeView === 'settings'} on:click={() => { activeView = 'settings'; }}>
+      <button
+        class="tab"
+        class:active={activeView === 'settings'}
+        on:click={() => {
+          activeView = 'settings';
+        }}
+      >
         Settings
       </button>
-      <button class="tab" class:active={activeView === 'history'} on:click={() => { activeView = 'history'; }}>
+      <button
+        class="tab"
+        class:active={activeView === 'history'}
+        on:click={() => {
+          activeView = 'history';
+        }}
+      >
         History
       </button>
-      <button class="tab" class:active={activeView === 'deploy'} on:click={() => { activeView = 'deploy'; }}>
+      <button
+        class="tab"
+        class:active={activeView === 'deploy'}
+        on:click={() => {
+          activeView = 'deploy';
+        }}
+      >
         Deploy
       </button>
     </div>
@@ -73,27 +99,40 @@
           {/each}
         </div>
       {/if}
-
     {:else if activeView === 'settings'}
       <div class="settings-form">
         <label class="field">
           <span class="field-label">Site Title</span>
-          <input class="field-input" value={$siteSettings.title} on:change={(e) => updateSiteSettings({ title: e.currentTarget.value })} />
+          <input
+            class="field-input"
+            value={$siteSettings.title}
+            on:change={(e) => updateSiteSettings({ title: e.currentTarget.value })}
+          />
         </label>
         <label class="field">
           <span class="field-label">Description</span>
-          <input class="field-input" value={$siteSettings.description} on:change={(e) => updateSiteSettings({ description: e.currentTarget.value })} />
+          <input
+            class="field-input"
+            value={$siteSettings.description}
+            on:change={(e) => updateSiteSettings({ description: e.currentTarget.value })}
+          />
         </label>
         <label class="field">
           <span class="field-label">Output Format</span>
-          <select class="field-input" value={$siteSettings.outputFormat} on:change={(e) => updateSiteSettings({ outputFormat: e.currentTarget.value as 'html' | 'markdown' | 'json' })}>
+          <select
+            class="field-input"
+            value={$siteSettings.outputFormat}
+            on:change={(e) =>
+              updateSiteSettings({
+                outputFormat: e.currentTarget.value as 'html' | 'markdown' | 'json',
+              })}
+          >
             <option value="html">HTML</option>
             <option value="markdown">Markdown</option>
             <option value="json">JSON</option>
           </select>
         </label>
       </div>
-
     {:else if activeView === 'history'}
       {#if $publishHistory.length === 0}
         <div class="empty-state"><p>No publish history yet</p></div>
@@ -110,7 +149,6 @@
           {/each}
         </div>
       {/if}
-
     {:else if activeView === 'deploy'}
       <DeploySettings />
     {/if}
@@ -118,38 +156,139 @@
 </div>
 
 <style>
-  .pub-dashboard { display: flex; flex-direction: column; height: 100%; }
-  .panel-body { padding: 8px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-  .view-tabs { display: flex; gap: 2px; background: var(--panel-bg-alt); border-radius: 6px; padding: 2px; }
+  .pub-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .panel-body {
+    padding: 8px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .view-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--panel-bg-alt);
+    border-radius: 6px;
+    padding: 2px;
+  }
   .tab {
-    flex: 1; padding: 6px; border: none; border-radius: 4px;
-    background: none; color: var(--text-muted); cursor: pointer; font-size: 11px;
+    flex: 1;
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
   }
-  .tab:hover { color: var(--text-primary); }
-  .tab.active { background: var(--accent-color, #6366f1); color: white; }
-  .stats-bar { display: flex; gap: 12px; padding: 8px 0; }
-  .stat { font-size: 11px; color: var(--text-muted); }
-  .loading, .empty-state { text-align: center; padding: 24px; color: var(--text-muted); }
-  .empty-state p { margin: 4px 0; font-size: 12px; }
-  .hint { font-size: 11px; opacity: 0.7; }
-  .note-list { display: flex; flex-direction: column; gap: 2px; }
+  .tab:hover {
+    color: var(--text-primary);
+  }
+  .tab.active {
+    background: var(--accent-color, #6366f1);
+    color: white;
+  }
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .stat {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .loading,
+  .empty-state {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-muted);
+  }
+  .empty-state p {
+    margin: 4px 0;
+    font-size: 12px;
+  }
+  .hint {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .note-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
   .note-item {
-    display: flex; align-items: center; gap: 8px; padding: 7px 10px;
-    border-radius: 4px; font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-size: 12px;
   }
-  .note-item:hover { background: var(--hover-bg); }
-  .note-path { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .settings-form { display: flex; flex-direction: column; gap: 12px; padding: 8px 0; }
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field-label { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+  .note-item:hover {
+    background: var(--hover-bg);
+  }
+  .note-path {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
   .field-input {
-    padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px;
-    background: var(--input-bg); color: var(--text-primary); font-size: 12px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 12px;
   }
-  .history-list { display: flex; flex-direction: column; gap: 4px; }
-  .history-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px; border-radius: 4px; border: 1px solid var(--border-color); }
-  .history-item.error { border-color: var(--error-color, #f87171); }
-  .history-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .history-msg { font-size: 12px; }
-  .history-time { font-size: 10px; color: var(--text-muted); }
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+  }
+  .history-item.error {
+    border-color: var(--error-color, #f87171);
+  }
+  .history-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .history-msg {
+    font-size: 12px;
+  }
+  .history-time {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
 </style>

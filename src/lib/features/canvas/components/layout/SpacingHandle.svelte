@@ -43,9 +43,34 @@
 </div>
 
 <style>
-  .spacing-handle { position: absolute; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; }
-  .spacing-handle.horizontal { width: 16px; height: 100%; cursor: col-resize; }
-  .spacing-handle.vertical { width: 100%; height: 16px; cursor: row-resize; }
-  .spacing-handle:hover, .spacing-handle.dragging { background: rgba(var(--accent-rgb, 74, 144, 226), 0.15); }
-  .value-label { font-size: 10px; color: var(--accent); background: var(--bg-primary); padding: 0 2px; border-radius: 2px; pointer-events: none; }
+  .spacing-handle {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: col-resize;
+    z-index: 10;
+  }
+  .spacing-handle.horizontal {
+    width: 16px;
+    height: 100%;
+    cursor: col-resize;
+  }
+  .spacing-handle.vertical {
+    width: 100%;
+    height: 16px;
+    cursor: row-resize;
+  }
+  .spacing-handle:hover,
+  .spacing-handle.dragging {
+    background: rgba(var(--accent-rgb, 74, 144, 226), 0.15);
+  }
+  .value-label {
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--bg-primary);
+    padding: 0 2px;
+    border-radius: 2px;
+    pointer-events: none;
+  }
 </style>

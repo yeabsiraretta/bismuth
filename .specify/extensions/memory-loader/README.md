@@ -30,9 +30,9 @@ specify extension add --dev /path/to/spec-kit-memory-loader
 
 ## Commands
 
-| Command | Description | Modifies Files? |
-|---------|-------------|-----------------|
-| `speckit.memory-loader.load` | Read all project memory files and output their contents for context | No — read-only |
+| Command                      | Description                                                         | Modifies Files? |
+| ---------------------------- | ------------------------------------------------------------------- | --------------- |
+| `speckit.memory-loader.load` | Read all project memory files and output their contents for context | No — read-only  |
 
 ## How It Works
 
@@ -41,6 +41,7 @@ specify extension add --dev /path/to/spec-kit-memory-loader
    - If a file cannot be read, skips it and continues
 
 2. **Output**: For each file, prints a headed section:
+
    ```
    ## Memory: {filename}
 
@@ -56,15 +57,15 @@ specify extension add --dev /path/to/spec-kit-memory-loader
 
 The extension fires automatically before these lifecycle commands:
 
-| Hook | Command | Description |
-|------|---------|-------------|
-| `before_specify` | `speckit.memory-loader.load` | Load context before specification |
-| `before_plan` | `speckit.memory-loader.load` | Load context before planning |
-| `before_tasks` | `speckit.memory-loader.load` | Load context before task generation |
-| `before_implement` | `speckit.memory-loader.load` | Load context before implementation |
-| `before_clarify` | `speckit.memory-loader.load` | Load context before clarification |
+| Hook               | Command                      | Description                              |
+| ------------------ | ---------------------------- | ---------------------------------------- |
+| `before_specify`   | `speckit.memory-loader.load` | Load context before specification        |
+| `before_plan`      | `speckit.memory-loader.load` | Load context before planning             |
+| `before_tasks`     | `speckit.memory-loader.load` | Load context before task generation      |
+| `before_implement` | `speckit.memory-loader.load` | Load context before implementation       |
+| `before_clarify`   | `speckit.memory-loader.load` | Load context before clarification        |
 | `before_checklist` | `speckit.memory-loader.load` | Load context before checklist generation |
-| `before_analyze` | `speckit.memory-loader.load` | Load context before analysis |
+| `before_analyze`   | `speckit.memory-loader.load` | Load context before analysis             |
 
 ## Design Decisions
 

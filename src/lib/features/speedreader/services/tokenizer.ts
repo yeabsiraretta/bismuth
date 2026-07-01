@@ -69,8 +69,8 @@ function naiveClean(text: string): string {
 /** Tokenize cleaned text into word tokens with ORP and delay data. */
 export function tokenize(text: string): WordToken[] {
   const cleaned = cleanMarkdown(text);
-  const words = cleaned.split(/\s+/).filter(w => w.length > 0);
-  return words.map(word => ({
+  const words = cleaned.split(/\s+/).filter((w) => w.length > 0);
+  return words.map((word) => ({
     text: word,
     orpIndex: calculateORP(word),
     delayMultiplier: calculateDelay(word),

@@ -37,17 +37,38 @@ const VIEW_RE = /^VIEW\[(\w[\w-]*):(\w[\w.-]*)(?:\(([^)]*)\))?\]$/;
 const BUTTON_RE = /^BUTTON\[([^:\]]+):(\w+)(?:\(([^)]*)\))?\]$/;
 
 const VALID_INPUT_TYPES = new Set<InputFieldType>([
-  'toggle', 'text', 'number', 'slider', 'date', 'select',
-  'textarea', 'suggester', 'multi-select', 'color', 'time',
+  'toggle',
+  'text',
+  'number',
+  'slider',
+  'date',
+  'select',
+  'textarea',
+  'suggester',
+  'multi-select',
+  'color',
+  'time',
 ]);
 
 const VALID_VIEW_TYPES = new Set<ViewFieldType>([
-  'text', 'number', 'date', 'list', 'link', 'progress',
-  'rating', 'tags', 'boolean',
+  'text',
+  'number',
+  'date',
+  'list',
+  'link',
+  'progress',
+  'rating',
+  'tags',
+  'boolean',
 ]);
 
 const VALID_BUTTON_ACTIONS = new Set<ButtonAction>([
-  'open', 'command', 'template', 'navigate', 'update', 'js',
+  'open',
+  'command',
+  'template',
+  'navigate',
+  'update',
+  'js',
 ]);
 
 // ─── Options parsing ─────────────────────────────────────────────────────────
@@ -74,7 +95,7 @@ function parseInputOptions(raw: string | undefined): InputFieldOptions {
   if (kv['step'] !== undefined) opts.step = Number(kv['step']);
   if (kv['default']) opts.defaultValue = kv['default'];
   if (kv['class']) opts.cssClass = kv['class'];
-  if (kv['choices']) opts.choices = kv['choices'].split('|').map(c => c.trim());
+  if (kv['choices']) opts.choices = kv['choices'].split('|').map((c) => c.trim());
   return opts;
 }
 

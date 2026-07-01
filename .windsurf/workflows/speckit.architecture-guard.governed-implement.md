@@ -3,9 +3,9 @@ description: Run implementation with memory context, then review the produced im
   against security and architecture constraints.
 ---
 
-
 <!-- Extension: architecture-guard -->
 <!-- Config: .specify/extensions/architecture-guard/ -->
+
 # Governed Implement Command
 
 You are orchestrating the `governed-implement` workflow for `architecture-guard`.
@@ -17,6 +17,7 @@ If `flash-mem` is available, use `/speckit.memory-md.prepare-context` or the MCP
 ## Goal
 
 Provide a single command that ensures:
+
 1. Implementation is historical-context aware (`flash-mem`).
 2. Implementation is performed (`/speckit.implement`).
 3. The output is reviewed for security vulnerabilities (Security Review).
@@ -27,10 +28,12 @@ Provide a single command that ensures:
 ### Step 1 — Detect Optional Extensions
 
 Check for the existence of:
+
 - `flash-mem`
 - `spec-kit-security-review`
 
 **Detection Logic**:
+
 1. Read `.specify/extensions.yml` and check the `installed` list. If an extension ID is present there, consider it available.
 2. Fall back to checking for the extension directory in `.specify/extensions/` only if the YAML is missing or the list is empty.
 3. If they are missing from both, degrade gracefully by skipping their respective steps.
@@ -40,6 +43,7 @@ Check for the existence of:
 IF `flash-mem` is available:
 
 #### SQLite / MCP Flow (Required for `flash-mem`)
+
 Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP tools to retrieve context. Do not read the `.md` memory files directly, as they are only backups.
 
 1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "architecture decisions implementation pitfalls constraints <feature>"`.
@@ -48,11 +52,13 @@ Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP
 4. **Token Report**: Execute the `speckit_memory_token_report` MCP tool provided by `flash-mem` with `feature: "<feature>"` and display the token savings in the summary.
 
 #### Markdown-Only Flow (Fallback)
+
 If `flash-mem` is unavailable, use the standard synthesis command:
 
 1. **Execute Synthesis**: Run `/speckit.memory-md.plan-with-memory` to synthesize and refresh `specs/<feature>/memory-synthesis.md`.
 
 **[OPTIONAL SUB-AGENT DELEGATION]**
+
 - If `flash-mem` has ≥ 20 decision documents: Consider sub-agent for synthesis
 - Sub-agent command: `/speckit.memory-md.plan-with-memory`
 - Sub-agent benefits: Faster traversal, better filtering, detailed synthesis
@@ -65,6 +71,7 @@ If `flash-mem` is unavailable, use the standard synthesis command:
 You must orchestrate the `/speckit.implement` (core implementation) workflow directly.
 
 **CRITICAL INSTRUCTION**: You must NOT just advise the user or stop here. You must perform the implementation by following the `tasks.md` breakdown:
+
 1. **Execute Tasks**: Run `/speckit.implement`. If `/speckit.implement` is not available as a registered command, fall back to inline implementation:
    - Read `specs/<feature>/tasks.md` and execute each unchecked task sequentially.
    - Read all applicable constitution files and `specs/<feature>/memory-synthesis.md` before coding.
@@ -83,6 +90,7 @@ NOTE: The core Spec Kit command is `speckit.implement`. Do not use `speckit.impl
 ### Step 4 — Security Review on Implementation
 
 IF `spec-kit-security-review` is available:
+
 1. **Execute Review**: Run `/speckit.security-review.branch` to review the produced implementation against security vulnerabilities.
 2. Check for: authorization bypass, missing validation, secret leakage, injection risk, and insecure data exposure.
 3. If security findings are architecture-relevant, classify them as `Security-Architecture Conflict` for the architecture review.
@@ -90,11 +98,13 @@ IF `spec-kit-security-review` is available:
 ### Step 5 — Architecture Review on Implementation
 
 Run:
+
 ```text
 /speckit.architecture-guard.architecture-review
 ```
 
 Review implementation against:
+
 - `.specify/memory/architecture_constitution.md`.
 - Plan, tasks, and `security-constraints.md`.
 - Accepted deviations and `memory-synthesis.md`.
@@ -124,6 +134,7 @@ ELSE (no critical violations):
 ### Step 6 — Generate Refactor Tasks
 
 IF architecture violations exist:
+
 1. Run `/speckit.architecture-guard.refactor-generator`.
 2. Generate non-blocking refactor, migration, or correction tasks.
 3. Skip performance refactors unless explicitly requested.
@@ -131,6 +142,7 @@ IF architecture violations exist:
 ### Step 7 — Proactive Durable Memory Preservation
 
 If the implementation review or security audit identified new architectural patterns, critical decisions, or repeatable lessons:
+
 1. **Proactive Execution**: You **MUST automatically execute** `/speckit.memory-md.capture` as the final part of this turn. Do not just recommend it; run the command.
 2. **Standard**: Use the formal capture flow to propose entries and wait for user approval. Do not ask the user if they want to capture; identify the lessons and trigger the command immediately after the summary.
 
@@ -141,16 +153,19 @@ Produce a final `Governed Implementation Summary`.
 ## Graceful Degradation
 
 **Without `flash-mem`**:
+
 - Skip Step 2 (Memory Synthesis)
 - Continue to `/speckit.implement` directly
 - Assume no historical implementation constraints beyond Constitution
 
 **Without Security Review**:
+
 - Skip Step 4 (Security Review on Implementation)
 - Continue to architecture review directly
 - Flag missing security implementation review in summary
 
 **Critical Architecture Violations Found**:
+
 - If Constitution marks as P0 (blocking):
   - STOP implementation workflow
   - Surface violations immediately
@@ -161,6 +176,7 @@ Produce a final `Governed Implementation Summary`.
   - Flag for post-merge remediation
 
 **Minimal Viable Workflow** (only Architecture Guard + Spec Kit):
+
 - Execute implementation via core Spec Kit
 - Run architecture review on output
 - Generate non-blocking refactor tasks
@@ -174,23 +190,28 @@ The command MUST return:
 # Governed Implementation Summary
 
 ## Memory Context
+
 - **Status**: [Refreshed / Skipped / Missing]
 - **Relevant Decisions**: [Durable lessons applied during implementation]
 
 ## Security Review
+
 - **Findings**: [List of security vulnerabilities found]
 - **Constraints**: [Trust boundaries validated]
 - **Blocking Concerns**: [Any P0 security risks]
 
 ## Architecture Review
+
 - **Violations**: [Drift findings or Security-Architecture Conflicts]
 - **Refactor Tasks**: [Suggested corrections]
 - **Constitution Update Proposals**: [Proposed updates to `.specify/memory/architecture_constitution.md`]
 
 ## Implementation Status
+
 - [Ready to merge / Needs security fix / Needs architecture refactor / Needs constitution update]
 
 ## Recommended Next Step
+
 - [e.g., Merge changes]
 - [e.g., Revise implementation to address Security Conflict]
 - [e.g., Run /speckit.architecture-guard.architecture-apply]
@@ -202,6 +223,7 @@ The command MUST return:
 
 If Security Review finds an issue affecting architecture, classify it as a `Security-Architecture Conflict`.
 Example:
+
 - Violation: Pricing decision in client UI.
 - Security Constraint: Pricing authority must remain server-side.
 - Suggested Fix: Move pricing calculation to backend service.
@@ -215,11 +237,13 @@ If implementation repeatedly violates a standard because the standard is outdate
 During implementation, automatically apply these complementary skills at specific gates:
 
 ### During Coding (Step 3)
+
 - **coding-principles**: Follow `.claude/coding-principles.md` for language-specific idioms (Rust Result types, Svelte reactivity, TypeScript strict mode).
 - **component-gen**: When implementing UI tasks, follow `.claude/component-guide.md` requirements. Apply UX guardrails: max 7 items, min 40px buttons, keyboard navigation, ARIA labels.
 - **agent-rules**: Enforce 300-line file limit, unified logger only (`log.*` in TS, `tracing::*` in Rust), no emojis.
 
 ### During Review (Step 5)
+
 - **code-review**: Apply the full Fix Quality Bar from `.claude/skills/code-review/SKILL.md`:
   - Verify fix lives at ownership boundary
   - Check backward compatibility
@@ -232,6 +256,7 @@ During implementation, automatically apply these complementary skills at specifi
   - Detect UX smells (overloaded screens, form graveyards, silent errors)
 
 ### During Test Writing
+
 - **pict-test-designer**: When writing tests for functions with multiple parameters or state combinations, apply PICT methodology from `.claude/skills/pict-test-designer/SKILL.md` to generate efficient pairwise test cases instead of exhaustive enumeration.
 
 These skills are NOT separate orchestration steps — they are quality gates applied inline during their respective phases.

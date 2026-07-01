@@ -12,13 +12,13 @@
 
 ## Layer Boundaries
 
-| Layer | Owns | May Depend On | Must Not Depend On |
-| --- | --- | --- | --- |
-| Entry | [HTTP, UI, CLI, queue entrypoints] | [Application, Contracts] | [Domain internals, Persistence drivers] |
-| Application | [Use cases, orchestration] | [Domain, Contracts, Data abstractions] | [Entry points, UI framework] |
-| Domain | [Business rules, policies, invariants] | [Domain types only] | [HTTP, database, queues, framework runtime] |
-| Data | [Persistence and query abstractions] | [Domain contracts, persistence drivers] | [Entry points, UI, application decisions] |
-| External | [Third-party integrations] | [Integration contracts] | [Domain internals] |
+| Layer       | Owns                                   | May Depend On                           | Must Not Depend On                          |
+| ----------- | -------------------------------------- | --------------------------------------- | ------------------------------------------- |
+| Entry       | [HTTP, UI, CLI, queue entrypoints]     | [Application, Contracts]                | [Domain internals, Persistence drivers]     |
+| Application | [Use cases, orchestration]             | [Domain, Contracts, Data abstractions]  | [Entry points, UI framework]                |
+| Domain      | [Business rules, policies, invariants] | [Domain types only]                     | [HTTP, database, queues, framework runtime] |
+| Data        | [Persistence and query abstractions]   | [Domain contracts, persistence drivers] | [Entry points, UI, application decisions]   |
+| External    | [Third-party integrations]             | [Integration contracts]                 | [Domain internals]                          |
 
 ## Business Logic Placement
 
@@ -47,8 +47,8 @@
 
 ## Module Boundaries
 
-| Module | Owns | Public Contracts | Must Not |
-| --- | --- | --- | --- |
+| Module   | Owns               | Public Contracts               | Must Not                                |
+| -------- | ------------------ | ------------------------------ | --------------------------------------- |
 | [Module] | [Responsibilities] | [APIs/events/services exposed] | [Forbidden dependencies or data access] |
 
 ## Framework-Specific Architecture Rules

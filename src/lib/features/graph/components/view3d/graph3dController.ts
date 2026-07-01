@@ -5,7 +5,13 @@
 import type { GraphData, GraphEdge } from '../../types';
 import type { SimNode3D, Camera3D, Graph3DSettings, FocusState3D } from '../../types/graph3d';
 import { DEFAULT_CAMERA, EMPTY_FOCUS } from '../../types/graph3d';
-import { initNodes3D, tickForces3D, projectAllNodes, hitTestNode3D, getNeighborIds } from '../../utils/simulation3d';
+import {
+  initNodes3D,
+  tickForces3D,
+  projectAllNodes,
+  hitTestNode3D,
+  getNeighborIds,
+} from '../../utils/simulation3d';
 import { filterGraphData } from '../../utils/simulation';
 import { render3DGraph, resolve3DColors, type Graph3DColors } from './graph3dRendering';
 import { getGraphData } from '../../services/graph';
@@ -25,24 +31,35 @@ export interface Graph3DState {
 export function createState(): Graph3DState {
   return {
     graphData: { nodes: [], edges: [] },
-    nodes: [], edges: [],
+    nodes: [],
+    edges: [],
     camera: { ...DEFAULT_CAMERA },
     focus: { ...EMPTY_FOCUS },
-    colors: null, animFrame: 0, initializing: false,
+    colors: null,
+    animFrame: 0,
+    initializing: false,
   };
 }
 
 // ─── Data loading ───────────────────────────────────────────────────────────
 
 export async function loadGraph3D(
-  state: Graph3DState, settings: Graph3DSettings, searchQuery: string,
+  state: Graph3DState,
+  settings: Graph3DSettings,
+  searchQuery: string
 ): Promise<Graph3DState> {
   try {
     const graphData = await getGraphData();
-    log.debug('3D graph data loaded', { nodes: graphData.nodes.length, edges: graphData.edges.length });
+    log.debug('3D graph data loaded', {
+      nodes: graphData.nodes.length,
+      edges: graphData.edges.length,
+    });
     const filtered = filterGraphData(graphData, {
-      searchQuery, showOrphans: settings.showOrphans,
-      isLocal: false, centerNode: null, depth: 3,
+      searchQuery,
+      showOrphans: settings.showOrphans,
+      isLocal: false,
+      centerNode: null,
+      depth: 3,
     });
     const nodes = initNodes3D(filtered.nodes, filtered.edges, state.nodes, true);
     // Warmup
@@ -57,24 +74,40 @@ export async function loadGraph3D(
 // ─── Rendering ──────────────────────────────────────────────────────────────
 
 export function render3D(
-  ctx: CanvasRenderingContext2D, canvasEl: HTMLCanvasElement,
-  state: Graph3DState, settings: Graph3DSettings,
-  width: number, height: number,
+  ctx: CanvasRenderingContext2D,
+  canvasEl: HTMLCanvasElement,
+  state: Graph3DState,
+  settings: Graph3DSettings,
+  width: number,
+  height: number
 ): Graph3DState {
   if (!ctx) return state;
   const colors = state.colors ?? resolve3DColors(canvasEl);
   projectAllNodes(state.nodes, state.camera, width, height);
-  render3DGraph(ctx, state.nodes, state.edges, state.camera, settings, state.focus, width, height, colors);
+  render3DGraph(
+    ctx,
+    state.nodes,
+    state.edges,
+    state.camera,
+    settings,
+    state.focus,
+    width,
+    height,
+    colors
+  );
   return { ...state, colors };
 }
 
 // ─── Animation ──────────────────────────────────────────────────────────────
 
 export function startAnimation3D(
-  ctx: CanvasRenderingContext2D, canvasEl: HTMLCanvasElement,
-  state: Graph3DState, settings: Graph3DSettings,
-  width: number, height: number,
-  onUpdate: (s: Graph3DState) => void,
+  ctx: CanvasRenderingContext2D,
+  canvasEl: HTMLCanvasElement,
+  state: Graph3DState,
+  settings: Graph3DSettings,
+  width: number,
+  height: number,
+  onUpdate: (s: Graph3DState) => void
 ): Graph3DState {
   cancelAnimationFrame(state.animFrame);
   function loop() {
@@ -108,7 +141,9 @@ export function focusCameraOnNode(camera: Camera3D, node: SimNode3D): Camera3D {
 // ─── Node interaction ───────────────────────────────────────────────────────
 
 export function handleNodeClick(
-  state: Graph3DState, sx: number, sy: number,
+  state: Graph3DState,
+  sx: number,
+  sy: number
 ): { state: Graph3DState; clickedNode: SimNode3D | undefined } {
   const node = hitTestNode3D(state.nodes, sx, sy);
   if (!node) {
@@ -118,7 +153,8 @@ export function handleNodeClick(
   const camera = focusCameraOnNode(state.camera, node);
   return {
     state: {
-      ...state, camera,
+      ...state,
+      camera,
       focus: { focusedNodeId: node.id, highlightedNeighborIds: neighbors },
     },
     clickedNode: node,
@@ -126,28 +162,33 @@ export function handleNodeClick(
 }
 
 export function handleNodeDoubleClick(
-  state: Graph3DState, sx: number, sy: number,
+  state: Graph3DState,
+  sx: number,
+  sy: number
 ): SimNode3D | undefined {
   return hitTestNode3D(state.nodes, sx, sy);
 }
 
 // ─── Hover ──────────────────────────────────────────────────────────────────
 
-export function getHoveredNode(
-  state: Graph3DState, sx: number, sy: number,
-): SimNode3D | undefined {
+export function getHoveredNode(state: Graph3DState, sx: number, sy: number): SimNode3D | undefined {
   return hitTestNode3D(state.nodes, sx, sy);
 }
 
 // ─── Filter update ──────────────────────────────────────────────────────────
 
 export function applyFilter3D(
-  state: Graph3DState, settings: Graph3DSettings, searchQuery: string,
+  state: Graph3DState,
+  settings: Graph3DSettings,
+  searchQuery: string
 ): Graph3DState {
   if (state.graphData.nodes.length === 0) return state;
   const filtered = filterGraphData(state.graphData, {
-    searchQuery, showOrphans: settings.showOrphans,
-    isLocal: false, centerNode: null, depth: 3,
+    searchQuery,
+    showOrphans: settings.showOrphans,
+    isLocal: false,
+    centerNode: null,
+    depth: 3,
   });
   const nodes = initNodes3D(filtered.nodes, filtered.edges, state.nodes);
   return { ...state, nodes, edges: filtered.edges };

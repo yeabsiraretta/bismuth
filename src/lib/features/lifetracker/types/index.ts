@@ -8,9 +8,18 @@
 export type PropertyType = 'number' | 'text' | 'checkbox' | 'date' | 'list' | 'tags';
 
 export type VisualizationType =
-  | 'heatmap' | 'line' | 'bar' | 'area'
-  | 'pie' | 'doughnut' | 'radar' | 'polar'
-  | 'scatter' | 'bubble' | 'tag-cloud' | 'timeline';
+  | 'heatmap'
+  | 'line'
+  | 'bar'
+  | 'area'
+  | 'pie'
+  | 'doughnut'
+  | 'radar'
+  | 'polar'
+  | 'scatter'
+  | 'bubble'
+  | 'tag-cloud'
+  | 'timeline';
 
 export type ColorScheme = 'green' | 'blue' | 'purple' | 'orange' | 'red';
 export type TimeGranularity = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
@@ -18,8 +27,15 @@ export type AggregationMethod = 'average' | 'sum' | 'count' | 'min' | 'max' | 'l
 export type FirstDayOfWeek = 'monday' | 'sunday';
 
 export type TimeFrame =
-  | 'all' | 'last-7' | 'last-30' | 'last-90' | 'last-365'
-  | 'this-week' | 'this-month' | 'this-quarter' | 'this-year';
+  | 'all'
+  | 'last-7'
+  | 'last-30'
+  | 'last-90'
+  | 'last-365'
+  | 'this-week'
+  | 'this-month'
+  | 'this-quarter'
+  | 'this-year';
 
 // ─── Property definition ─────────────────────────────────────────────────────
 
@@ -183,9 +199,9 @@ export const DEFAULT_CARD_CONFIG: Omit<CardConfig, 'id' | 'propertyName' | 'orde
 };
 
 export const COLOR_SCHEMES: Record<ColorScheme, { bg: string; levels: string[] }> = {
-  green:  { bg: '#161b22', levels: ['#0e4429', '#006d32', '#26a641', '#39d353'] },
-  blue:   { bg: '#161b22', levels: ['#0a3069', '#0550ae', '#1f6feb', '#58a6ff'] },
+  green: { bg: '#161b22', levels: ['#0e4429', '#006d32', '#26a641', '#39d353'] },
+  blue: { bg: '#161b22', levels: ['#0a3069', '#0550ae', '#1f6feb', '#58a6ff'] },
   purple: { bg: '#161b22', levels: ['#3b1261', '#6e40c9', '#8957e5', '#bc8cff'] },
   orange: { bg: '#161b22', levels: ['#5a1e02', '#bd561d', '#db6d28', '#f0883e'] },
-  red:    { bg: '#161b22', levels: ['#67060c', '#bd2c00', '#da3633', '#f85149'] },
+  red: { bg: '#161b22', levels: ['#67060c', '#bd2c00', '#da3633', '#f85149'] },
 };

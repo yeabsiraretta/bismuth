@@ -43,11 +43,13 @@ test.describe('Overview Mode (T065)', () => {
   });
 
   test('T065-03: overview mode activates via toolbar toggle button', async ({ page }) => {
-    const overviewBtn = page.locator(
-      '[data-testid="overview-toggle"], [aria-label*="Overview"], [title*="Overview"], button:has-text("Overview")'
-    ).first();
+    const overviewBtn = page
+      .locator(
+        '[data-testid="overview-toggle"], [aria-label*="Overview"], [title*="Overview"], button:has-text("Overview")'
+      )
+      .first();
 
-    if (!await overviewBtn.isVisible({ timeout: 2000 })) {
+    if (!(await overviewBtn.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Overview toggle button not found in toolbar');
       return;
     }
@@ -71,13 +73,15 @@ test.describe('Overview Mode (T065)', () => {
     await page.waitForTimeout(400);
 
     const overview = page.locator('.flow-overview');
-    if (!await overview.isVisible({ timeout: 2000 })) {
+    if (!(await overview.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Overview did not activate — no frames present');
       return;
     }
 
     // FlowOverview.svelte has .overview-close button
-    const closeBtn = overview.locator('.overview-close, button:has-text("Close"), [aria-label*="Close"]').first();
+    const closeBtn = overview
+      .locator('.overview-close, button:has-text("Close"), [aria-label*="Close"]')
+      .first();
     if (await closeBtn.isVisible({ timeout: 1000 })) {
       await closeBtn.click();
       await expect(overview).not.toBeVisible({ timeout: 2000 });
@@ -97,7 +101,7 @@ test.describe('Overview Mode (T065)', () => {
     await page.waitForTimeout(400);
 
     const overview = page.locator('.flow-overview');
-    if (!await overview.isVisible({ timeout: 2000 })) {
+    if (!(await overview.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Overview not visible — skipping frame count check');
       return;
     }
@@ -118,7 +122,7 @@ test.describe('Overview Mode (T065)', () => {
     await page.waitForTimeout(400);
 
     const overview = page.locator('.flow-overview');
-    if (!await overview.isVisible({ timeout: 2000 })) {
+    if (!(await overview.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Overview not visible');
       return;
     }

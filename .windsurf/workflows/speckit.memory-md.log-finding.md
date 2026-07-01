@@ -3,9 +3,9 @@ description: Turn a high-signal audit finding into a tracker-ready follow-up for
   GitLab, Jira, or another issue system.
 ---
 
-
 <!-- Extension: memory-md -->
 <!-- Config: .specify/extensions/memory-md/ -->
+
 # Log Finding
 
 Turn a high-signal audit finding into a tracker-ready follow-up.

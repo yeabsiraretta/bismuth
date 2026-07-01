@@ -19,7 +19,10 @@ export async function listLocalThemes(vaultRoot: string): Promise<ThemeManifest[
  * Imports a theme folder into the vault's `.bismuth/themes/` directory.
  * Validates path confinement and manifest schema server-side.
  */
-export async function importThemeFolder(sourcePath: string, vaultRoot: string): Promise<ThemeManifest> {
+export async function importThemeFolder(
+  sourcePath: string,
+  vaultRoot: string
+): Promise<ThemeManifest> {
   try {
     const manifest = await invoke<ThemeManifest>('import_theme_folder', { sourcePath, vaultRoot });
     log.info('Theme imported', { name: manifest.name });

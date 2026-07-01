@@ -226,7 +226,8 @@ export async function undo(): Promise<void> {
   if (!doc) return;
 
   // Restore the previous formula or value
-  const restoreValue = entry.previousFormula ?? (entry.previousValue != null ? String(entry.previousValue) : null);
+  const restoreValue =
+    entry.previousFormula ?? (entry.previousValue != null ? String(entry.previousValue) : null);
   await formulaEngine.setCell(hfSheetName(entry.sheetId), entry.row, entry.col, restoreValue);
 
   // Update document store

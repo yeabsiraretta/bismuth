@@ -40,7 +40,9 @@
     font-weight: var(--font-medium);
     cursor: pointer;
     white-space: nowrap;
-    transition: background var(--transition-fast, 150ms ease), color var(--transition-fast, 150ms ease);
+    transition:
+      background var(--transition-fast, 150ms ease),
+      color var(--transition-fast, 150ms ease);
     border: none;
   }
 
@@ -49,8 +51,13 @@
     outline-offset: 2px;
   }
 
-  .btn-tiny:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-tiny:active:not(:disabled) { transform: translateY(1px); }
+  .btn-tiny:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-tiny:active:not(:disabled) {
+    transform: translateY(1px);
+  }
 
   .btn-tiny-icon-only {
     padding: 0;
@@ -63,19 +70,26 @@
     background: var(--interactive-accent);
     color: var(--text-on-accent);
   }
-  .btn-tiny-primary:hover:not(:disabled) { background: var(--interactive-accent-hover); }
+  .btn-tiny-primary:hover:not(:disabled) {
+    background: var(--interactive-accent-hover);
+  }
 
   .btn-tiny-secondary {
     background: var(--background-primary);
     color: var(--text-normal);
     border: 1px solid var(--border-color);
   }
-  .btn-tiny-secondary:hover:not(:disabled) { background: var(--background-modifier-hover); }
+  .btn-tiny-secondary:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
 
   .btn-tiny-tertiary {
     background: transparent;
     color: var(--text-muted);
     border: none;
   }
-  .btn-tiny-tertiary:hover:not(:disabled) { background: var(--background-modifier-hover); color: var(--text-normal); }
+  .btn-tiny-tertiary:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
 </style>

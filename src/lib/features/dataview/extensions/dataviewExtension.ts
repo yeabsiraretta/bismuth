@@ -8,11 +8,7 @@
  * Pattern follows taskQueryExtension.ts.
  */
 
-import {
-  Decoration,
-  EditorView,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { DataviewResultWidget } from '@/features/dataview/extensions/dataviewWidgets';
@@ -81,11 +77,7 @@ export function dataviewExtension() {
               widget.setResult(cached);
             }
           }
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         this.decorations = builder.finish();
@@ -111,6 +103,6 @@ export function dataviewExtension() {
         }
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 }

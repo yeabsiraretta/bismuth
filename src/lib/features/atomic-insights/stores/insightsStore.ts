@@ -5,7 +5,12 @@
 
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
-import type { AtomicInsightsConfig, RelatedNote, InsightResult, InsightQueryOptions } from '../types';
+import type {
+  AtomicInsightsConfig,
+  RelatedNote,
+  InsightResult,
+  InsightQueryOptions,
+} from '../types';
 import { DEFAULT_INSIGHTS_CONFIG } from '../types';
 import { buildAdjacency, rankByAdamicAdar } from '../services/adamicAdar';
 import { scoreAndRank } from '../services/insightsScorer';
@@ -17,7 +22,9 @@ function loadConfig(): AtomicInsightsConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_INSIGHTS_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_INSIGHTS_CONFIG };
 }
 
@@ -36,15 +43,15 @@ const resultsInternal = writable<RelatedNote[]>([]);
 const loadingInternal = writable(false);
 const errorInternal = writable<string | null>(null);
 
-export const insightsConfig = derived(configInternal, $c => $c);
-export const insightsResults = derived(resultsInternal, $r => $r);
-export const insightsLoading = derived(loadingInternal, $l => $l);
-export const insightsError = derived(errorInternal, $e => $e);
+export const insightsConfig = derived(configInternal, ($c) => $c);
+export const insightsResults = derived(resultsInternal, ($r) => $r);
+export const insightsLoading = derived(loadingInternal, ($l) => $l);
+export const insightsError = derived(errorInternal, ($e) => $e);
 
 // ─── Config ─────────────────────────────────────────────────────────────────
 
 export function updateInsightsConfig(patch: Partial<AtomicInsightsConfig>): void {
-  configInternal.update(c => {
+  configInternal.update((c) => {
     const next = { ...c, ...patch };
     saveConfig(next);
     return next;
@@ -64,7 +71,7 @@ export function resetInsightsConfig(): void {
  */
 export async function getRelatedNotes(
   notePath: string,
-  options?: InsightQueryOptions,
+  options?: InsightQueryOptions
 ): Promise<InsightResult> {
   const config = get(configInternal);
   const limit = options?.limit ?? config.defaultLimit;
@@ -81,16 +88,23 @@ export async function getRelatedNotes(
 
     // Check target exists
     if (!adj.has(notePath)) {
-      const result: InsightResult = { status: 'error', results: [], message: `File not found in graph: ${notePath}` };
+      const result: InsightResult = {
+        status: 'error',
+        results: [],
+        message: `File not found in graph: ${notePath}`,
+      };
       errorInternal.set(result.message!);
       return result;
     }
 
     // Filter excluded folders
     const excluded = config.excludeFolders;
-    const filteredEdges = excluded.length > 0
-      ? graphData.edges.filter(e => !excluded.some(f => e.from.startsWith(f) || e.to.startsWith(f)))
-      : graphData.edges;
+    const filteredEdges =
+      excluded.length > 0
+        ? graphData.edges.filter(
+            (e) => !excluded.some((f) => e.from.startsWith(f) || e.to.startsWith(f))
+          )
+        : graphData.edges;
 
     const filteredAdj = excluded.length > 0 ? buildAdjacency(filteredEdges) : adj;
 
@@ -98,7 +112,7 @@ export async function getRelatedNotes(
     const candidates = rankByAdamicAdar(filteredAdj, notePath, limit * 2);
 
     // Build label map
-    const labels = new Map(graphData.nodes.map(n => [n.id, n.label]));
+    const labels = new Map(graphData.nodes.map((n) => [n.id, n.label]));
 
     // Build context for target
     const targetContext: NoteContext = { path: notePath, label: labels.get(notePath) ?? notePath };

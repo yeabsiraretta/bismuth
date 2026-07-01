@@ -41,8 +41,8 @@ export async function getWidgets(): Promise<Widget[]> {
 
 ## Logging Levels
 
-| Action                             | Level                       |
-| ---------------------------------- | --------------------------- |
+| Action                              | Level                       |
+| ----------------------------------- | --------------------------- |
 | Mutations (create, update, delete)  | `log.info`                  |
 | Reads / queries                     | `log.debug`                 |
 | Expected fallbacks (file not found) | `log.debug`                 |

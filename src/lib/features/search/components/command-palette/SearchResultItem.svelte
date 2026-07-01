@@ -10,12 +10,7 @@
   export let onSelect: () => void;
 </script>
 
-<button
-  class="result-item"
-  class:selected
-  data-index={index}
-  on:click={onSelect}
->
+<button class="result-item" class:selected data-index={index} on:click={onSelect}>
   <div class="result-header">
     <Icon name="file-text" size={14} />
     <span class="result-title">{title}</span>

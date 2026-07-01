@@ -44,9 +44,10 @@
   }
 
   $: isEditing = selected && $arborSelection.editing;
-  $: snippet = block.content.length > $arborConfig.previewSnippetLength
-    ? block.content.slice(0, $arborConfig.previewSnippetLength) + '…'
-    : block.content;
+  $: snippet =
+    block.content.length > $arborConfig.previewSnippetLength
+      ? block.content.slice(0, $arborConfig.previewSnippetLength) + '…'
+      : block.content;
   $: if (!isEditing) editContent = block.content;
 </script>
 
@@ -60,15 +61,13 @@
   tabindex="0"
   on:click={handleClick}
   on:dblclick={handleDblClick}
-  on:keydown={e => { if (e.key === 'Enter') handleDblClick(); }}
+  on:keydown={(e) => {
+    if (e.key === 'Enter') handleDblClick();
+  }}
 >
   {#if isEditing}
     <!-- svelte-ignore a11y_autofocus -->
-    <textarea
-      class="card-editor"
-      bind:value={editContent}
-      on:keydown={handleEditKeydown}
-      autofocus
+    <textarea class="card-editor" bind:value={editContent} on:keydown={handleEditKeydown} autofocus
     ></textarea>
   {:else}
     <div class="card-content">
@@ -84,16 +83,23 @@
     border-radius: var(--radius-m);
     background: var(--background-secondary);
     cursor: pointer;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
     overflow: hidden;
     position: relative;
   }
-  .arbor-card:hover { border-color: var(--interactive-accent); }
+  .arbor-card:hover {
+    border-color: var(--interactive-accent);
+  }
   .arbor-card.selected {
     border-color: var(--interactive-accent);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 20%, transparent);
   }
-  .arbor-card.editing { border-color: var(--interactive-accent); background: var(--background-primary); }
+  .arbor-card.editing {
+    border-color: var(--interactive-accent);
+    background: var(--background-primary);
+  }
   .card-content {
     font-size: var(--font-ui-small);
     color: var(--text-normal);

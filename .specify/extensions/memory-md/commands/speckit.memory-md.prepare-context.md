@@ -1,5 +1,5 @@
 ---
-description: "Centralized context preparation: refresh cache, search memory, and refresh synthesis."
+description: 'Centralized context preparation: refresh cache, search memory, and refresh synthesis.'
 ---
 
 # Prepare Context
@@ -26,6 +26,7 @@ When `.specify/extensions/memory-md/config.yml` has `optimizer.enabled: true` an
 ## Markdown-Only Flow
 
 When the optimizer is disabled, fall back to manual index retrieval:
+
 1. Run `/speckit.memory-md.plan-with-memory` to manually refresh synthesis and review the index.
 
 ## Orchestration Note

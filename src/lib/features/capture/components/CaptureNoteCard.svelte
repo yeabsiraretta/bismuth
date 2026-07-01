@@ -93,13 +93,18 @@
                 showOrganizeInput = false;
                 organizeFolderInput = '';
               }
-              if (e.key === 'Escape') { showOrganizeInput = false; organizeFolderInput = ''; }
+              if (e.key === 'Escape') {
+                showOrganizeInput = false;
+                organizeFolderInput = '';
+              }
             }}
           />
         {:else}
           <button
             class="quick-btn"
-            on:click|stopPropagation={() => { showOrganizeInput = true; }}
+            on:click|stopPropagation={() => {
+              showOrganizeInput = true;
+            }}
             title="Organize to folder"
             aria-label="Organize"
           >
@@ -135,7 +140,9 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-m);
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
   }
 
   .note-card:hover {

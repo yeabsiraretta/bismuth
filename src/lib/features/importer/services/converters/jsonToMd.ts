@@ -29,7 +29,7 @@ export function convertBearNotes(json: string): ConvertedNote[] {
     const fm: string[] = [];
     if (note.creationDate) fm.push(`created: "${note.creationDate}"`);
     if (note.modificationDate) fm.push(`modified: "${note.modificationDate}"`);
-    if (tags.length > 0) fm.push(`tags: [${tags.map(t => `"${t}"`).join(', ')}]`);
+    if (tags.length > 0) fm.push(`tags: [${tags.map((t) => `"${t}"`).join(', ')}]`);
 
     let content = '';
     if (fm.length > 0) content += `---\n${fm.join('\n')}\n---\n\n`;
@@ -60,7 +60,7 @@ export function convertGoogleKeepNotes(json: string): ConvertedNote[] {
   const items: KeepNote[] = Array.isArray(data) ? data : [data];
 
   return items
-    .filter(n => !n.isTrashed)
+    .filter((n) => !n.isTrashed)
     .map((note) => {
       const title = sanitizeTitle(note.title || 'Untitled Keep Note');
 
@@ -69,7 +69,7 @@ export function convertGoogleKeepNotes(json: string): ConvertedNote[] {
         fm.push(`created: "${new Date(note.createdTimestampUsec / 1000).toISOString()}"`);
       }
       if (note.labels && note.labels.length > 0) {
-        fm.push(`tags: [${note.labels.map(l => `"${l.name}"`).join(', ')}]`);
+        fm.push(`tags: [${note.labels.map((l) => `"${l.name}"`).join(', ')}]`);
       }
       if (note.isPinned) fm.push('pinned: true');
       if (note.isArchived) fm.push('archived: true');
@@ -79,7 +79,7 @@ export function convertGoogleKeepNotes(json: string): ConvertedNote[] {
       // Checklist notes
       if (note.listContent && note.listContent.length > 0) {
         body = note.listContent
-          .map(item => `- [${item.isChecked ? 'x' : ' '}] ${item.text}`)
+          .map((item) => `- [${item.isChecked ? 'x' : ' '}] ${item.text}`)
           .join('\n');
       } else {
         body = note.textContent ?? note.htmlContent ?? '';
@@ -89,7 +89,10 @@ export function convertGoogleKeepNotes(json: string): ConvertedNote[] {
       if (note.annotations && note.annotations.length > 0) {
         body += '\n\n## Links\n\n';
         body += note.annotations
-          .map(a => `- [${a.title || a.url || 'Link'}](${a.url || ''})${a.description ? ` — ${a.description}` : ''}`)
+          .map(
+            (a) =>
+              `- [${a.title || a.url || 'Link'}](${a.url || ''})${a.description ? ` — ${a.description}` : ''}`
+          )
           .join('\n');
       }
 
@@ -142,32 +145,34 @@ export function convertRoamNotes(json: string): ConvertedNote[] {
 }
 
 function convertRoamBlocks(blocks: RoamBlock[], depth: number): string {
-  return blocks.map((block) => {
-    let text = block.string ?? '';
+  return blocks
+    .map((block) => {
+      let text = block.string ?? '';
 
-    // Convert Roam syntax to standard Markdown
-    text = text
-      .replace(/\{\{TODO\}\}/g, '- [ ] ')
-      .replace(/\{\{DONE\}\}/g, '- [x] ')
-      .replace(/\(\((.+?)\)\)/g, '[[$1]]')   // block refs → wikilinks
-      .replace(/#\[\[(.+?)\]\]/g, '#$1')       // Roam tags → standard tags
-      .replace(/\^\^(.+?)\^\^/g, '==$1==');    // highlight
+      // Convert Roam syntax to standard Markdown
+      text = text
+        .replace(/\{\{TODO\}\}/g, '- [ ] ')
+        .replace(/\{\{DONE\}\}/g, '- [x] ')
+        .replace(/\(\((.+?)\)\)/g, '[[$1]]') // block refs → wikilinks
+        .replace(/#\[\[(.+?)\]\]/g, '#$1') // Roam tags → standard tags
+        .replace(/\^\^(.+?)\^\^/g, '==$1=='); // highlight
 
-    const indent = '  '.repeat(depth);
-    let line = '';
+      const indent = '  '.repeat(depth);
+      let line = '';
 
-    if (block.heading) {
-      line = `${'#'.repeat(block.heading)} ${text}\n\n`;
-    } else {
-      line = `${indent}- ${text}\n`;
-    }
+      if (block.heading) {
+        line = `${'#'.repeat(block.heading)} ${text}\n\n`;
+      } else {
+        line = `${indent}- ${text}\n`;
+      }
 
-    if (block.children) {
-      line += convertRoamBlocks(block.children, depth + 1);
-    }
+      if (block.children) {
+        line += convertRoamBlocks(block.children, depth + 1);
+      }
 
-    return line;
-  }).join('');
+      return line;
+    })
+    .join('');
 }
 
 // ─── Evernote ENEX ─────────────────────────────────────────────────────────────
@@ -189,7 +194,9 @@ export function convertEvernoteEnex(xml: string): ConvertedNote[] {
     const rawContent = contentEl?.textContent ?? '';
     const created = noteEl.querySelector('created')?.textContent ?? '';
     const updated = noteEl.querySelector('updated')?.textContent ?? '';
-    const tags = Array.from(noteEl.querySelectorAll('tag')).map(t => t.textContent ?? '').filter(Boolean);
+    const tags = Array.from(noteEl.querySelectorAll('tag'))
+      .map((t) => t.textContent ?? '')
+      .filter(Boolean);
 
     // Parse the inner XHTML content
     let body: string;
@@ -203,7 +210,7 @@ export function convertEvernoteEnex(xml: string): ConvertedNote[] {
     const fm: string[] = [];
     if (created) fm.push(`created: "${formatEvernoteDate(created)}"`);
     if (updated) fm.push(`modified: "${formatEvernoteDate(updated)}"`);
-    if (tags.length > 0) fm.push(`tags: [${tags.map(t => `"${t}"`).join(', ')}]`);
+    if (tags.length > 0) fm.push(`tags: [${tags.map((t) => `"${t}"`).join(', ')}]`);
 
     let content = '';
     if (fm.length > 0) content += `---\n${fm.join('\n')}\n---\n\n`;
@@ -231,19 +238,25 @@ function formatEvernoteDate(dateStr: string): string {
 /** Route JSON content to the appropriate converter based on source type. */
 export function convertJsonNotes(json: string, source: ImportSource): ConvertedNote[] {
   switch (source) {
-    case 'bear': return convertBearNotes(json);
-    case 'google-keep': return convertGoogleKeepNotes(json);
-    case 'roam': return convertRoamNotes(json);
-    default: return [];
+    case 'bear':
+      return convertBearNotes(json);
+    case 'google-keep':
+      return convertGoogleKeepNotes(json);
+    case 'roam':
+      return convertRoamNotes(json);
+    default:
+      return [];
   }
 }
 
 // ─── Utils ─────────────────────────────────────────────────────────────────────
 
 function sanitizeTitle(title: string): string {
-  return title
-    .replace(/[<>:"/\\|?*]/g, '-')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 200) || 'Untitled';
+  return (
+    title
+      .replace(/[<>:"/\\|?*]/g, '-')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 200) || 'Untitled'
+  );
 }

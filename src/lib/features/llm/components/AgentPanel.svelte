@@ -7,12 +7,7 @@
   import { afterUpdate, onMount } from 'svelte';
   import { log } from '@/utils/logger';
   import { getSecret } from '@/services/system/keychain';
-  import {
-    isLoading,
-    llmConfig,
-    addMessage,
-    setLoading,
-  } from '../stores/agentStore';
+  import { isLoading, llmConfig, addMessage, setLoading } from '../stores/agentStore';
   import {
     activeMessages,
     addMessageToActive,
@@ -44,7 +39,9 @@
     }
   }
 
-  onMount(() => { void checkClaudeKey(); });
+  onMount(() => {
+    void checkClaudeKey();
+  });
 
   function formatTime(iso: string): string {
     if (!iso) return '';
@@ -68,8 +65,8 @@
   function handleInput(): void {
     if (inputText.startsWith('/')) {
       const query = inputText.slice(1).toLowerCase();
-      filteredSlashCommands = BUILTIN_SLASH_COMMANDS.filter(c =>
-        c.trigger.toLowerCase().includes(query) || c.label.toLowerCase().includes(query),
+      filteredSlashCommands = BUILTIN_SLASH_COMMANDS.filter(
+        (c) => c.trigger.toLowerCase().includes(query) || c.label.toLowerCase().includes(query)
       );
       showSlashMenu = filteredSlashCommands.length > 0;
     } else {
@@ -109,7 +106,7 @@
         addMessage(placeholder);
         await sendClaudeMessageStream(history, $llmConfig.model, (chunk) => {
           updateLastAssistantMessage(
-            ($activeMessages[$activeMessages.length - 1]?.content ?? '') + chunk,
+            ($activeMessages[$activeMessages.length - 1]?.content ?? '') + chunk
           );
         });
       } else {
@@ -117,7 +114,7 @@
         addMessage(placeholder);
         for await (const chunk of chatOllamaStream($llmConfig.model, history)) {
           updateLastAssistantMessage(
-            ($activeMessages[$activeMessages.length - 1]?.content ?? '') + chunk,
+            ($activeMessages[$activeMessages.length - 1]?.content ?? '') + chunk
           );
         }
       }
@@ -157,7 +154,11 @@
       {#if noteTitle}
         <span class="note-badge" aria-label="Note context: {noteTitle}">Note: {noteTitle}</span>
       {/if}
-      <button class="clear-btn" on:click={handleClearHistory} aria-label="Clear conversation history">
+      <button
+        class="clear-btn"
+        on:click={handleClearHistory}
+        aria-label="Clear conversation history"
+      >
         Clear
       </button>
     </div>
@@ -191,7 +192,11 @@
           {#if message.toolCalls && message.toolCalls.length > 0}
             <div class="tool-calls">
               {#each message.toolCalls as tc}
-                <div class="tool-call" class:tool-running={tc.status === 'running'} class:tool-failed={tc.status === 'failed'}>
+                <div
+                  class="tool-call"
+                  class:tool-running={tc.status === 'running'}
+                  class:tool-failed={tc.status === 'failed'}
+                >
                   <span class="tool-name">{tc.toolName}</span>
                   <span class="tool-status">{tc.status}</span>
                 </div>
@@ -255,97 +260,333 @@
       class="send-btn"
       on:click={submitMessage}
       disabled={$isLoading || !inputText.trim()}
-      aria-label="Send message"
-    >Send</button>
+      aria-label="Send message">Send</button
+    >
   </div>
 </div>
 
 <style>
-  .agent-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .panel-header { flex-shrink: 0; border-bottom: 1px solid var(--background-modifier-border); }
-  .header-actions { display: flex; align-items: center; gap: var(--spacing-s); padding: var(--spacing-xs) var(--spacing-s); justify-content: flex-end; }
-  .note-badge { font-size: var(--font-ui-smaller); background: var(--background-modifier-border); border-radius: var(--radius-s); padding: 2px var(--spacing-xs); color: var(--text-muted); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .clear-btn { padding: 2px var(--spacing-s); background: transparent; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; font-size: var(--font-smallest); }
-  .clear-btn:hover { color: var(--text-normal); }
-  .claude-hint { flex-shrink: 0; padding: var(--spacing-xs) var(--spacing-s); background: var(--background-secondary); border-bottom: 1px solid var(--background-modifier-border); color: var(--text-muted); font-size: var(--font-ui-smaller); }
-  .message-list { flex: 1; overflow-y: auto; padding: var(--spacing-s); display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
-  .empty-text { color: var(--text-muted); font-size: var(--font-ui-small); text-align: center; }
-  .message-item { border-radius: var(--radius-m); padding: var(--spacing-s); max-width: 90%; }
-  .message--user { background: var(--interactive-accent); align-self: flex-end; }
-  .message--assistant { background: var(--background-secondary); align-self: flex-start; }
-  .message--system { background: var(--background-modifier-border); align-self: center; opacity: 0.85; }
-  .message--tool { background: var(--background-secondary); align-self: flex-start; border-left: 3px solid var(--interactive-accent); }
-  .plan-msg { border: 1px dashed var(--interactive-accent); }
-  .message-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-s); margin-bottom: 4px; }
-  .role-badge { font-size: var(--font-smallest); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-  .role--user { color: var(--text-on-accent, #fff); }
-  .role--assistant { color: var(--text-accent); }
-  .role--system { color: var(--text-muted); }
-  .role--tool { color: var(--interactive-accent); }
+  .agent-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .panel-header {
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-xs) var(--spacing-s);
+    justify-content: flex-end;
+  }
+  .note-badge {
+    font-size: var(--font-ui-smaller);
+    background: var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    padding: 2px var(--spacing-xs);
+    color: var(--text-muted);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clear-btn {
+    padding: 2px var(--spacing-s);
+    background: transparent;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: var(--font-smallest);
+  }
+  .clear-btn:hover {
+    color: var(--text-normal);
+  }
+  .claude-hint {
+    flex-shrink: 0;
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+  }
+  .message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-s);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .empty-text {
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+  }
+  .message-item {
+    border-radius: var(--radius-m);
+    padding: var(--spacing-s);
+    max-width: 90%;
+  }
+  .message--user {
+    background: var(--interactive-accent);
+    align-self: flex-end;
+  }
+  .message--assistant {
+    background: var(--background-secondary);
+    align-self: flex-start;
+  }
+  .message--system {
+    background: var(--background-modifier-border);
+    align-self: center;
+    opacity: 0.85;
+  }
+  .message--tool {
+    background: var(--background-secondary);
+    align-self: flex-start;
+    border-left: 3px solid var(--interactive-accent);
+  }
+  .plan-msg {
+    border: 1px dashed var(--interactive-accent);
+  }
+  .message-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-s);
+    margin-bottom: 4px;
+  }
+  .role-badge {
+    font-size: var(--font-smallest);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .role--user {
+    color: var(--text-on-accent, #fff);
+  }
+  .role--assistant {
+    color: var(--text-accent);
+  }
+  .role--system {
+    color: var(--text-muted);
+  }
+  .role--tool {
+    color: var(--interactive-accent);
+  }
   .plan-badge {
-    font-size: var(--font-smallest); background: var(--interactive-accent); color: var(--text-on-accent, #fff);
-    padding: 1px 6px; border-radius: 8px; font-weight: 600;
+    font-size: var(--font-smallest);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
   }
-  .message-time { font-size: var(--font-smallest); color: var(--text-faint); }
-  .message-content { font-size: var(--font-ui-small); line-height: 1.5; white-space: pre-wrap; word-break: break-word; color: var(--text-normal); }
-  .message--user .message-content { color: var(--text-on-accent, #fff); }
+  .message-time {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+  }
+  .message-content {
+    font-size: var(--font-ui-small);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text-normal);
+  }
+  .message--user .message-content {
+    color: var(--text-on-accent, #fff);
+  }
 
-  .tool-calls { display: flex; flex-direction: column; gap: 2px; margin-bottom: 4px; }
+  .tool-calls {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 4px;
+  }
   .tool-call {
-    display: flex; align-items: center; gap: var(--spacing-xs);
-    padding: 2px 6px; background: var(--background-primary);
-    border-radius: var(--radius-s); font-size: var(--font-smallest);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 2px 6px;
+    background: var(--background-primary);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smallest);
   }
-  .tool-name { font-weight: 600; color: var(--interactive-accent); font-family: var(--font-monospace, monospace); }
-  .tool-status { color: var(--text-faint); }
-  .tool-running { border-left: 2px solid var(--text-warning, #f59e0b); }
-  .tool-failed { border-left: 2px solid var(--text-error); }
+  .tool-name {
+    font-weight: 600;
+    color: var(--interactive-accent);
+    font-family: var(--font-monospace, monospace);
+  }
+  .tool-status {
+    color: var(--text-faint);
+  }
+  .tool-running {
+    border-left: 2px solid var(--text-warning, #f59e0b);
+  }
+  .tool-failed {
+    border-left: 2px solid var(--text-error);
+  }
   .tool-result {
-    padding: var(--spacing-xs); background: var(--background-primary);
-    border-radius: var(--radius-s); margin-bottom: 4px;
+    padding: var(--spacing-xs);
+    background: var(--background-primary);
+    border-radius: var(--radius-s);
+    margin-bottom: 4px;
   }
-  .tool-error { border-left: 2px solid var(--text-error); }
-  .tool-result-label { font-size: var(--font-smallest); font-weight: 600; color: var(--text-muted); font-family: var(--font-monospace, monospace); }
+  .tool-error {
+    border-left: 2px solid var(--text-error);
+  }
+  .tool-result-label {
+    font-size: var(--font-smallest);
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: var(--font-monospace, monospace);
+  }
   .tool-result-output {
-    margin: 4px 0 0; padding: 4px; font-size: var(--font-smallest);
-    font-family: var(--font-monospace, monospace); white-space: pre-wrap;
-    max-height: 100px; overflow-y: auto; color: var(--text-normal);
+    margin: 4px 0 0;
+    padding: 4px;
+    font-size: var(--font-smallest);
+    font-family: var(--font-monospace, monospace);
+    white-space: pre-wrap;
+    max-height: 100px;
+    overflow-y: auto;
+    color: var(--text-normal);
   }
-  .loading-indicator { display: flex; gap: 4px; padding: var(--spacing-s); align-self: flex-start; }
-  .loading-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); animation: pulse 1.2s infinite; }
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
-  .send-error { padding: var(--spacing-xs) var(--spacing-s); background: var(--background-modifier-error); color: var(--text-error); font-size: var(--font-ui-smaller); border-top: 1px solid var(--background-modifier-border); }
-  .input-area { flex-shrink: 0; display: flex; gap: var(--spacing-s); padding: var(--spacing-s); border-top: 1px solid var(--background-modifier-border); align-items: flex-end; }
-  .chat-input { flex: 1; min-height: 60px; padding: var(--spacing-s); background: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-small); resize: none; font-family: inherit; }
-  .chat-input:disabled { opacity: 0.6; }
-  .send-btn { padding: var(--spacing-s) var(--spacing-m); background: var(--interactive-accent); color: var(--text-on-accent, #fff); border: none; border-radius: var(--radius-s); cursor: pointer; font-size: var(--font-ui-small); height: 40px; flex-shrink: 0; }
-  .send-btn:hover:not(:disabled) { background: var(--interactive-accent-hover); }
-  .send-btn:disabled { opacity: 0.5; cursor: default; }
+  .loading-indicator {
+    display: flex;
+    gap: 4px;
+    padding: var(--spacing-s);
+    align-self: flex-start;
+  }
+  .loading-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    animation: pulse 1.2s infinite;
+  }
+  .loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  @keyframes pulse {
+    0%,
+    80%,
+    100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
+    40% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .send-error {
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-modifier-error);
+    color: var(--text-error);
+    font-size: var(--font-ui-smaller);
+    border-top: 1px solid var(--background-modifier-border);
+  }
+  .input-area {
+    flex-shrink: 0;
+    display: flex;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
+    border-top: 1px solid var(--background-modifier-border);
+    align-items: flex-end;
+  }
+  .chat-input {
+    flex: 1;
+    min-height: 60px;
+    padding: var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+    resize: none;
+    font-family: inherit;
+  }
+  .chat-input:disabled {
+    opacity: 0.6;
+  }
+  .send-btn {
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+    border: none;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    height: 40px;
+    flex-shrink: 0;
+  }
+  .send-btn:hover:not(:disabled) {
+    background: var(--interactive-accent-hover);
+  }
+  .send-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 
   .slash-menu {
     border-top: 1px solid var(--background-modifier-border);
     background: var(--background-secondary);
-    max-height: 180px; overflow-y: auto;
-    display: flex; flex-direction: column;
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
   .slash-item {
-    display: flex; align-items: center; gap: var(--spacing-s);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
     padding: var(--spacing-xs) var(--spacing-s);
-    background: transparent; border: none; cursor: pointer;
-    text-align: left; font-size: var(--font-ui-small); color: var(--text-normal);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
   }
-  .slash-item:hover { background: var(--background-modifier-hover); }
-  .slash-trigger { font-weight: 600; color: var(--interactive-accent); font-family: var(--font-monospace, monospace); min-width: 80px; }
-  .slash-desc { color: var(--text-muted); font-size: var(--font-ui-smaller); }
+  .slash-item:hover {
+    background: var(--background-modifier-hover);
+  }
+  .slash-trigger {
+    font-weight: 600;
+    color: var(--interactive-accent);
+    font-family: var(--font-monospace, monospace);
+    min-width: 80px;
+  }
+  .slash-desc {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+  }
 
-  .empty-hint { color: var(--text-faint); font-size: var(--font-ui-smaller); margin-top: var(--spacing-xs); }
+  .empty-hint {
+    color: var(--text-faint);
+    font-size: var(--font-ui-smaller);
+    margin-top: var(--spacing-xs);
+  }
 
   :global(.mention) {
     background: rgba(var(--interactive-accent-rgb, 99, 102, 241), 0.15);
-    color: var(--interactive-accent); padding: 1px 4px;
-    border-radius: 3px; font-weight: 500;
+    color: var(--interactive-accent);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 500;
   }
 </style>

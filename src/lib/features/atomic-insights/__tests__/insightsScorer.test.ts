@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  timeProximityScore, editTimeScore, metadataScore, scoreAndRank,
+  timeProximityScore,
+  editTimeScore,
+  metadataScore,
+  scoreAndRank,
 } from '../services/insightsScorer';
 import type { NoteContext } from '../services/insightsScorer';
 import type { AaCandidate } from '../services/adamicAdar';
@@ -31,8 +34,7 @@ describe('timeProximityScore', () => {
 describe('editTimeScore', () => {
   it('is an alias for timeProximityScore', () => {
     const now = Date.now();
-    expect(editTimeScore(now, now + 10 * DAY_MS))
-      .toBe(timeProximityScore(now, now + 10 * DAY_MS));
+    expect(editTimeScore(now, now + 10 * DAY_MS)).toBe(timeProximityScore(now, now + 10 * DAY_MS));
   });
 });
 
@@ -67,7 +69,9 @@ describe('scoreAndRank', () => {
     ['note-c', { path: 'note-c', label: 'Note C' }],
   ]);
   const labels = new Map([
-    ['note-a', 'Note A'], ['note-b', 'Note B'], ['note-c', 'Note C'],
+    ['note-a', 'Note A'],
+    ['note-b', 'Note B'],
+    ['note-c', 'Note C'],
   ]);
 
   it('ranks by AA score when only graph weight is used', () => {
@@ -112,7 +116,10 @@ describe('scoreAndRank', () => {
     const weights = { ...DEFAULT_INSIGHT_WEIGHTS };
     const results = scoreAndRank(
       [{ nodeId: 'note-a', aaScore: 1, commonNeighbors: [] }],
-      tCtx, cCtx, weights, labels,
+      tCtx,
+      cCtx,
+      weights,
+      labels
     );
     expect(results[0].reasons).toContain('time');
   });
@@ -125,7 +132,10 @@ describe('scoreAndRank', () => {
     const weights = { ...DEFAULT_INSIGHT_WEIGHTS };
     const results = scoreAndRank(
       [{ nodeId: 'note-a', aaScore: 1, commonNeighbors: [] }],
-      tCtx, cCtx, weights, labels,
+      tCtx,
+      cCtx,
+      weights,
+      labels
     );
     expect(results[0].reasons).toContain('metadata');
   });

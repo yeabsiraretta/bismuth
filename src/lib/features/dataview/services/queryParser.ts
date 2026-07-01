@@ -16,7 +16,10 @@ import type {
 } from '@/features/dataview/types/dataview';
 
 class ParseError extends Error {
-  constructor(message: string) { super(message); this.name = 'ParseError'; }
+  constructor(message: string) {
+    super(message);
+    this.name = 'ParseError';
+  }
 }
 
 /** Tokenize the query into clause segments. */
@@ -37,7 +40,10 @@ function splitClauses(input: string): Map<string, string> {
   if (afterType) clauses.set('FIELDS', afterType);
 
   // Split remaining lines into clauses
-  const lines = remaining.split('\n').map((l) => l.trim()).filter(Boolean);
+  const lines = remaining
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
   for (const line of lines) {
     let matched = false;
     for (const kw of keywords) {
@@ -128,7 +134,8 @@ export function parseExpr(raw: string): DvExpr {
     if (idx > 0) {
       const opLen = op.length;
       return {
-        type: 'binary', op,
+        type: 'binary',
+        op,
         left: parseExpr(trimmed.slice(0, idx).trimEnd()),
         right: parseExpr(trimmed.slice(idx + opLen).trimStart()),
       };
@@ -137,14 +144,16 @@ export function parseExpr(raw: string): DvExpr {
 
   // Binary: comparisons
   for (const op of ['!=', '>=', '<=', '=', '>', '<', 'contains'] as const) {
-    const re = op === 'contains'
-      ? /\s+contains\s+/i
-      : new RegExp(`\\s*${op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`);
+    const re =
+      op === 'contains'
+        ? /\s+contains\s+/i
+        : new RegExp(`\\s*${op.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`);
     const idx = trimmed.search(re);
     if (idx > 0) {
       const match = re.exec(trimmed)!;
       return {
-        type: 'binary', op,
+        type: 'binary',
+        op,
         left: parseExpr(trimmed.slice(0, idx)),
         right: parseExpr(trimmed.slice(idx + match[0].length)),
       };
@@ -156,7 +165,8 @@ export function parseExpr(raw: string): DvExpr {
     const idx = findArithOp(trimmed, op);
     if (idx > 0) {
       return {
-        type: 'binary', op,
+        type: 'binary',
+        op,
         left: parseExpr(trimmed.slice(0, idx)),
         right: parseExpr(trimmed.slice(idx + 1)),
       };
@@ -168,7 +178,8 @@ export function parseExpr(raw: string): DvExpr {
     const idx = findArithOp(trimmed, op);
     if (idx > 0) {
       return {
-        type: 'binary', op,
+        type: 'binary',
+        op,
         left: parseExpr(trimmed.slice(0, idx)),
         right: parseExpr(trimmed.slice(idx + 1)),
       };
@@ -205,8 +216,10 @@ export function parseExpr(raw: string): DvExpr {
   }
 
   // String literal
-  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
-      (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
     return { type: 'literal', value: trimmed.slice(1, -1) };
   }
 
@@ -241,7 +254,10 @@ function findMatchingParen(str: string, start: number): number {
   let depth = 0;
   for (let i = start; i < str.length; i++) {
     if (str[i] === '(') depth++;
-    else if (str[i] === ')') { depth--; if (depth === 0) return i; }
+    else if (str[i] === ')') {
+      depth--;
+      if (depth === 0) return i;
+    }
   }
   return -1;
 }
@@ -253,10 +269,22 @@ function findBinaryOp(str: string, op: string): number {
   const opRe = new RegExp(`\\s+${op}\\s+`, 'i');
   for (let i = 0; i < str.length; i++) {
     const ch = str[i];
-    if (inStr) { if (ch === inStr) inStr = ''; continue; }
-    if (ch === '"' || ch === "'") { inStr = ch; continue; }
-    if (ch === '(' || ch === '[') { depth++; continue; }
-    if (ch === ')' || ch === ']') { depth--; continue; }
+    if (inStr) {
+      if (ch === inStr) inStr = '';
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inStr = ch;
+      continue;
+    }
+    if (ch === '(' || ch === '[') {
+      depth++;
+      continue;
+    }
+    if (ch === ')' || ch === ']') {
+      depth--;
+      continue;
+    }
     if (depth === 0) {
       const sub = str.slice(i);
       const m = opRe.exec(sub);
@@ -272,10 +300,22 @@ function findArithOp(str: string, op: string): number {
   let inStr = '';
   for (let i = str.length - 1; i >= 0; i--) {
     const ch = str[i];
-    if (inStr) { if (ch === inStr) inStr = ''; continue; }
-    if (ch === '"' || ch === "'") { inStr = ch; continue; }
-    if (ch === ')' || ch === ']') { depth++; continue; }
-    if (ch === '(' || ch === '[') { depth--; continue; }
+    if (inStr) {
+      if (ch === inStr) inStr = '';
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      inStr = ch;
+      continue;
+    }
+    if (ch === ')' || ch === ']') {
+      depth++;
+      continue;
+    }
+    if (ch === '(' || ch === '[') {
+      depth--;
+      continue;
+    }
     if (depth === 0 && ch === op) {
       // For '-', skip if it's a unary minus (start of string or after operator)
       if (op === '-' && (i === 0 || /[=<>!+\-*/%,(]/.test(str[i - 1].trim() || '('))) continue;
@@ -292,10 +332,18 @@ function parseDuration(dur: string): number {
   for (const p of parts) {
     const n = parseInt(p[1], 10);
     switch (p[2].toLowerCase()) {
-      case 'd': ms += n * 86400000; break;
-      case 'h': ms += n * 3600000; break;
-      case 'm': ms += n * 60000; break;
-      case 's': ms += n * 1000; break;
+      case 'd':
+        ms += n * 86400000;
+        break;
+      case 'h':
+        ms += n * 3600000;
+        break;
+      case 'm':
+        ms += n * 60000;
+        break;
+      case 's':
+        ms += n * 1000;
+        break;
     }
   }
   return ms;

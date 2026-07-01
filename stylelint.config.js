@@ -10,10 +10,5 @@ export default {
     },
     'color-named': ['never', { ignore: ['inside-function'] }],
   },
-  ignoreFiles: [
-    'node_modules/**',
-    'dist/**',
-    'src/__mocks__/**',
-    'src-tauri/**',
-  ],
+  ignoreFiles: ['node_modules/**', 'dist/**', 'src/__mocks__/**', 'src-tauri/**'],
 };

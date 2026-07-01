@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { activeTool, setActiveTool, canvasSettings, toggleGrid, toggleSnap } from '@/features/canvas/stores';
+  import {
+    activeTool,
+    setActiveTool,
+    canvasSettings,
+    toggleGrid,
+    toggleSnap,
+  } from '@/features/canvas/stores';
   import type { Tool } from '@/features/canvas/types';
   import Icon from '@/components/icons/Icon.svelte';
   import { showToast } from '@/stores/toast/toast';
@@ -12,7 +18,10 @@
   }
 
   function cancelHover() {
-    if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
   }
 
   function selectTool(tool: Tool) {
@@ -79,7 +88,6 @@
 </div>
 
 <style>
-
   .canvas-toolbar {
     display: flex;
     align-items: center;
@@ -94,5 +102,4 @@
     display: flex;
     gap: var(--spacing-xs);
   }
-
 </style>

@@ -24,26 +24,42 @@ function convertNode(node: Node): string {
   const children = Array.from(el.childNodes).map(convertNode).join('');
 
   switch (tag) {
-    case 'h1': return `\n# ${children.trim()}\n\n`;
-    case 'h2': return `\n## ${children.trim()}\n\n`;
-    case 'h3': return `\n### ${children.trim()}\n\n`;
-    case 'h4': return `\n#### ${children.trim()}\n\n`;
-    case 'h5': return `\n##### ${children.trim()}\n\n`;
-    case 'h6': return `\n###### ${children.trim()}\n\n`;
-    case 'p': return `\n${children.trim()}\n\n`;
-    case 'br': return '\n';
-    case 'hr': return '\n---\n\n';
+    case 'h1':
+      return `\n# ${children.trim()}\n\n`;
+    case 'h2':
+      return `\n## ${children.trim()}\n\n`;
+    case 'h3':
+      return `\n### ${children.trim()}\n\n`;
+    case 'h4':
+      return `\n#### ${children.trim()}\n\n`;
+    case 'h5':
+      return `\n##### ${children.trim()}\n\n`;
+    case 'h6':
+      return `\n###### ${children.trim()}\n\n`;
+    case 'p':
+      return `\n${children.trim()}\n\n`;
+    case 'br':
+      return '\n';
+    case 'hr':
+      return '\n---\n\n';
     case 'strong':
-    case 'b': return `**${children}**`;
+    case 'b':
+      return `**${children}**`;
     case 'em':
-    case 'i': return `*${children}*`;
-    case 'u': return `<u>${children}</u>`;
+    case 'i':
+      return `*${children}*`;
+    case 'u':
+      return `<u>${children}</u>`;
     case 's':
     case 'strike':
-    case 'del': return `~~${children}~~`;
-    case 'code': return `\`${children}\``;
-    case 'pre': return `\n\`\`\`\n${el.textContent?.trim() ?? ''}\n\`\`\`\n\n`;
-    case 'blockquote': return `\n> ${children.trim().replace(/\n/g, '\n> ')}\n\n`;
+    case 'del':
+      return `~~${children}~~`;
+    case 'code':
+      return `\`${children}\``;
+    case 'pre':
+      return `\n\`\`\`\n${el.textContent?.trim() ?? ''}\n\`\`\`\n\n`;
+    case 'blockquote':
+      return `\n> ${children.trim().replace(/\n/g, '\n> ')}\n\n`;
     case 'a': {
       const href = el.getAttribute('href') ?? '';
       return href ? `[${children}](${href})` : children;
@@ -53,13 +69,20 @@ function convertNode(node: Node): string {
       const alt = el.getAttribute('alt') ?? '';
       return `![${alt}](${src})`;
     }
-    case 'ul': return `\n${convertList(el, '-')}\n`;
-    case 'ol': return `\n${convertList(el, '1.')}\n`;
-    case 'li': return children;
-    case 'table': return `\n${convertTable(el)}\n\n`;
-    case 'sup': return `<sup>${children}</sup>`;
-    case 'sub': return `<sub>${children}</sub>`;
-    case 'mark': return `==${children}==`;
+    case 'ul':
+      return `\n${convertList(el, '-')}\n`;
+    case 'ol':
+      return `\n${convertList(el, '1.')}\n`;
+    case 'li':
+      return children;
+    case 'table':
+      return `\n${convertTable(el)}\n\n`;
+    case 'sup':
+      return `<sup>${children}</sup>`;
+    case 'sub':
+      return `<sub>${children}</sub>`;
+    case 'mark':
+      return `==${children}==`;
     case 'div':
     case 'section':
     case 'article':
@@ -76,12 +99,14 @@ function convertNode(node: Node): string {
 }
 
 function convertList(el: HTMLElement, marker: string): string {
-  const items = Array.from(el.children).filter(c => c.tagName.toLowerCase() === 'li');
-  return items.map((li, i) => {
-    const bullet = marker === '1.' ? `${i + 1}.` : marker;
-    const content = convertNode(li).trim();
-    return `${bullet} ${content}`;
-  }).join('\n');
+  const items = Array.from(el.children).filter((c) => c.tagName.toLowerCase() === 'li');
+  return items
+    .map((li, i) => {
+      const bullet = marker === '1.' ? `${i + 1}.` : marker;
+      const content = convertNode(li).trim();
+      return `${bullet} ${content}`;
+    })
+    .join('\n');
 }
 
 function convertTable(el: HTMLElement): string {
@@ -90,7 +115,7 @@ function convertTable(el: HTMLElement): string {
 
   const headerRow = rows[0];
   const headerCells = Array.from(headerRow.querySelectorAll('th, td'));
-  const headers = headerCells.map(c => convertNode(c).trim());
+  const headers = headerCells.map((c) => convertNode(c).trim());
 
   const lines: string[] = [];
   lines.push(`| ${headers.join(' | ')} |`);
@@ -98,7 +123,7 @@ function convertTable(el: HTMLElement): string {
 
   for (let i = 1; i < rows.length; i++) {
     const cells = Array.from(rows[i].querySelectorAll('td'));
-    const values = cells.map(c => convertNode(c).trim());
+    const values = cells.map((c) => convertNode(c).trim());
     // Pad to match header length
     while (values.length < headers.length) values.push('');
     lines.push(`| ${values.join(' | ')} |`);
@@ -120,7 +145,11 @@ function extractTitle(html: string): string {
 }
 
 /** Convert an HTML file (content + filename) into a ConvertedNote. */
-export function convertHtmlFile(html: string, fileName: string, sourcePath?: string): ConvertedNote {
+export function convertHtmlFile(
+  html: string,
+  fileName: string,
+  sourcePath?: string
+): ConvertedNote {
   const title = extractTitle(html) || fileName.replace(/\.html?$/i, '');
   const markdown = htmlToMarkdown(html);
 

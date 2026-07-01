@@ -60,7 +60,11 @@
     </div>
 
     <div class="overview-canvas">
-      <svg class="overview-svg" viewBox="{boundingBox.x - 40} {boundingBox.y - 40} {boundingBox.width + 80} {boundingBox.height + 80}">
+      <svg
+        class="overview-svg"
+        viewBox="{boundingBox.x - 40} {boundingBox.y - 40} {boundingBox.width +
+          80} {boundingBox.height + 80}"
+      >
         <defs>
           <marker
             id="overview-arrow"
@@ -77,7 +81,10 @@
 
         {#each connections as { link, x1, y1, x2, y2 } (link.id)}
           <line
-            {x1} {y1} {x2} {y2}
+            {x1}
+            {y1}
+            {x2}
+            {y2}
             stroke="var(--interactive-accent)"
             stroke-width="3"
             marker-end="url(#overview-arrow)"

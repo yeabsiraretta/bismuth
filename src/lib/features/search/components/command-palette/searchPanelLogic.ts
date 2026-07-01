@@ -36,7 +36,7 @@ export async function performSearch(
   }
 
   try {
-    const searchResults = await searchNotes(query, 50) as SearchResult[];
+    const searchResults = (await searchNotes(query, 50)) as SearchResult[];
     return { ...state, results: searchResults, selectedIndex: 0, isLoading: false };
   } catch (error) {
     log.error('Search failed', error);

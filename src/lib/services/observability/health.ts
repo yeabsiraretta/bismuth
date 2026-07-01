@@ -32,7 +32,11 @@ async function checkMemory(): Promise<HealthCheck> {
   const name = 'memory';
   try {
     if ('memory' in performance) {
-      const mem = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+      const mem = (
+        performance as Performance & {
+          memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
+        }
+      ).memory;
       if (mem) {
         const usedMB = Math.round(mem.usedJSHeapSize / 1024 / 1024);
         const totalMB = Math.round(mem.totalJSHeapSize / 1024 / 1024);
@@ -44,7 +48,9 @@ async function checkMemory(): Promise<HealthCheck> {
 
         const status: HealthStatus = pct > 90 ? 'unhealthy' : pct > 70 ? 'degraded' : 'healthy';
         return {
-          name, status, durationMs: Math.round(performance.now() - start),
+          name,
+          status,
+          durationMs: Math.round(performance.now() - start),
           message: `${usedMB}MB / ${totalMB}MB (${pct}% of ${limitMB}MB limit)`,
           timestamp: new Date().toISOString(),
           details: { usedMB, totalMB, limitMB, pct },
@@ -52,13 +58,17 @@ async function checkMemory(): Promise<HealthCheck> {
       }
     }
     return {
-      name, status: 'healthy', durationMs: Math.round(performance.now() - start),
+      name,
+      status: 'healthy',
+      durationMs: Math.round(performance.now() - start),
       message: 'Memory API not available (non-Chromium)',
       timestamp: new Date().toISOString(),
     };
   } catch (e) {
     return {
-      name, status: 'degraded', durationMs: Math.round(performance.now() - start),
+      name,
+      status: 'degraded',
+      durationMs: Math.round(performance.now() - start),
       message: `Memory check failed: ${e}`,
       timestamp: new Date().toISOString(),
     };
@@ -73,9 +83,12 @@ async function checkIpc(): Promise<HealthCheck> {
     await invoke('plugin:app|version');
     const duration = Math.round(performance.now() - start);
     metrics.histogram('health.ipc.latency_ms').observe(duration);
-    const status: HealthStatus = duration > 2000 ? 'unhealthy' : duration > 500 ? 'degraded' : 'healthy';
+    const status: HealthStatus =
+      duration > 2000 ? 'unhealthy' : duration > 500 ? 'degraded' : 'healthy';
     return {
-      name, status, durationMs: duration,
+      name,
+      status,
+      durationMs: duration,
       message: `IPC round-trip: ${duration}ms`,
       timestamp: new Date().toISOString(),
       details: { latencyMs: duration },
@@ -83,7 +96,9 @@ async function checkIpc(): Promise<HealthCheck> {
   } catch (e) {
     const duration = Math.round(performance.now() - start);
     return {
-      name, status: 'unhealthy', durationMs: duration,
+      name,
+      status: 'unhealthy',
+      durationMs: duration,
       message: `IPC unreachable: ${e}`,
       timestamp: new Date().toISOString(),
     };
@@ -114,14 +129,18 @@ async function checkLocalStorage(): Promise<HealthCheck> {
 
     const status: HealthStatus = usedKB > 4096 ? 'degraded' : 'healthy';
     return {
-      name, status, durationMs: Math.round(performance.now() - start),
+      name,
+      status,
+      durationMs: Math.round(performance.now() - start),
       message: `${usedKeys} keys, ~${usedKB}KB used`,
       timestamp: new Date().toISOString(),
       details: { usedKeys, usedKB },
     };
   } catch (e) {
     return {
-      name, status: 'unhealthy', durationMs: Math.round(performance.now() - start),
+      name,
+      status: 'unhealthy',
+      durationMs: Math.round(performance.now() - start),
       message: `localStorage inaccessible: ${e}`,
       timestamp: new Date().toISOString(),
     };
@@ -136,14 +155,18 @@ async function checkDom(): Promise<HealthCheck> {
     metrics.gauge('health.dom.nodes').set(nodeCount);
     const status: HealthStatus = nodeCount > 10000 ? 'degraded' : 'healthy';
     return {
-      name, status, durationMs: Math.round(performance.now() - start),
+      name,
+      status,
+      durationMs: Math.round(performance.now() - start),
       message: `${nodeCount.toLocaleString()} DOM nodes`,
       timestamp: new Date().toISOString(),
       details: { nodeCount },
     };
   } catch (e) {
     return {
-      name, status: 'degraded', durationMs: Math.round(performance.now() - start),
+      name,
+      status: 'degraded',
+      durationMs: Math.round(performance.now() - start),
       message: `DOM check failed: ${e}`,
       timestamp: new Date().toISOString(),
     };
@@ -160,7 +183,9 @@ async function checkEventLoop(): Promise<HealthCheck> {
       metrics.histogram('health.eventloop.lag_ms').observe(lag);
       const status: HealthStatus = lag > 100 ? 'unhealthy' : lag > 50 ? 'degraded' : 'healthy';
       resolve({
-        name, status, durationMs: Math.round(performance.now() - start),
+        name,
+        status,
+        durationMs: Math.round(performance.now() - start),
         message: `Event loop lag: ${lag}ms`,
         timestamp: new Date().toISOString(),
         details: { lagMs: lag },

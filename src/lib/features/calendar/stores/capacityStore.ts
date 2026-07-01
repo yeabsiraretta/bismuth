@@ -29,17 +29,17 @@ function getWeekDates(reference: Date): string[] {
 /** Compute scheduled minutes for events on a specific date */
 function scheduledMinutesForDate(events: CalendarEvent[], date: string): number {
   return events
-    .filter(e => e.date === date && e.durationMinutes)
+    .filter((e) => e.date === date && e.durationMinutes)
     .reduce((sum, e) => sum + (e.durationMinutes ?? 0), 0);
 }
 
 /** Compute tracked (clock) minutes for a date */
 function trackedMinutesForDate(
   clocks: Array<{ startedAt: string; durationMinutes: number | null; status: string }>,
-  date: string,
+  date: string
 ): number {
   return clocks
-    .filter(c => {
+    .filter((c) => {
       if (c.status !== 'stopped' || c.durationMinutes === null) return false;
       const d = new Date(c.startedAt);
       return formatDateStr(d) === date;
@@ -66,7 +66,7 @@ export const todayCapacity = derived(
       remainingMinutes: remaining,
       utilization: totalMinutes > 0 ? Math.min(1, scheduled / totalMinutes) : 0,
     };
-  },
+  }
 );
 
 /** Capacity for current week */
@@ -76,7 +76,7 @@ export const weekCapacity = derived(
     const dates = getWeekDates(new Date());
     const totalPerDay = $settings.workDayEnd - $settings.workDayStart;
 
-    return dates.map(date => {
+    return dates.map((date) => {
       const scheduled = scheduledMinutesForDate($items, date);
       const tracked = trackedMinutesForDate($clocks, date);
       const remaining = Math.max(0, totalPerDay - scheduled);
@@ -89,28 +89,33 @@ export const weekCapacity = derived(
         utilization: totalPerDay > 0 ? Math.min(1, scheduled / totalPerDay) : 0,
       };
     });
-  },
+  }
 );
 
 /** Aggregate week totals */
-export const weekTotals = derived(weekCapacity, ($week): {
-  totalMinutes: number;
-  scheduledMinutes: number;
-  trackedMinutes: number;
-  remainingMinutes: number;
-  utilization: number;
-} => {
-  const total = $week.reduce((s, d) => s + d.totalMinutes, 0);
-  const scheduled = $week.reduce((s, d) => s + d.scheduledMinutes, 0);
-  const tracked = $week.reduce((s, d) => s + d.trackedMinutes, 0);
-  return {
-    totalMinutes: total,
-    scheduledMinutes: scheduled,
-    trackedMinutes: tracked,
-    remainingMinutes: Math.max(0, total - scheduled),
-    utilization: total > 0 ? Math.min(1, scheduled / total) : 0,
-  };
-});
+export const weekTotals = derived(
+  weekCapacity,
+  (
+    $week
+  ): {
+    totalMinutes: number;
+    scheduledMinutes: number;
+    trackedMinutes: number;
+    remainingMinutes: number;
+    utilization: number;
+  } => {
+    const total = $week.reduce((s, d) => s + d.totalMinutes, 0);
+    const scheduled = $week.reduce((s, d) => s + d.scheduledMinutes, 0);
+    const tracked = $week.reduce((s, d) => s + d.trackedMinutes, 0);
+    return {
+      totalMinutes: total,
+      scheduledMinutes: scheduled,
+      trackedMinutes: tracked,
+      remainingMinutes: Math.max(0, total - scheduled),
+      utilization: total > 0 ? Math.min(1, scheduled / total) : 0,
+    };
+  }
+);
 
 /** Format minutes as "Xh Ym" */
 export function formatCapacityTime(minutes: number): string {

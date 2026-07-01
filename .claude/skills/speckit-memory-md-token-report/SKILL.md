@@ -33,5 +33,4 @@ Report:
 Token counts are estimates using `@dqbd/tiktoken` with the **`cl100k_base` encoding (GPT-4 calibrated)**.
 Actual provider billing tokens may differ. For Claude or Gemini, estimates may be 15–30% off.
 
-
 If the optimizer is disabled or unavailable, report the markdown-only baseline and note that the optimized comparison could not be measured.

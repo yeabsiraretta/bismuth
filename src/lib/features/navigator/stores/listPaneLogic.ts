@@ -13,7 +13,7 @@ export function getFileName(path: string): string {
 /** Get a short content preview from a note, skipping headings and frontmatter delimiters. */
 export function getPreview(note: Note): string {
   if (!note.content) return '';
-  const lines = note.content.split('\n').filter(l => {
+  const lines = note.content.split('\n').filter((l) => {
     const t = l.trim();
     return t && !t.startsWith('#') && !t.startsWith('---');
   });
@@ -51,25 +51,20 @@ export function getSourceNotes(
   tag: string | null,
   tagNotes: Note[],
   prop: unknown,
-  propNotes: Note[],
+  propNotes: Note[]
 ): Note[] {
   if (tab === 'tags' && tag) return tagNotes;
   if (tab === 'properties' && prop) return propNotes;
-  if (folder) return allNotes.filter(n => n.path.startsWith(folder + '/'));
+  if (folder) return allNotes.filter((n) => n.path.startsWith(folder + '/'));
   return [];
 }
 
 /** Apply a text filter and sort notes. */
-export function applyFilter(
-  src: Note[],
-  query: string,
-  sort: string,
-  direction: string,
-): Note[] {
+export function applyFilter(src: Note[], query: string, sort: string, direction: string): Note[] {
   let result = src;
   if (query) {
     const lower = query.toLowerCase();
-    result = result.filter(n => {
+    result = result.filter((n) => {
       const name = n.path.split('/').pop() || '';
       return name.toLowerCase().includes(lower);
     });

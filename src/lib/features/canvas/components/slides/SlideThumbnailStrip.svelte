@@ -92,7 +92,9 @@
         <span class="slide-name">{frame.name ?? `Slide ${index + 1}`}</span>
         {#if meta.transitionType !== 'instant'}
           <span class="transition-badge" title="Transition: {meta.transitionType}">
-            {resolveTransitionClass(meta.transitionType) ? meta.transitionType[0].toUpperCase() : ''}
+            {resolveTransitionClass(meta.transitionType)
+              ? meta.transitionType[0].toUpperCase()
+              : ''}
           </span>
         {/if}
       </div>

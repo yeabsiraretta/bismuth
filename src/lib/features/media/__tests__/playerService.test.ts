@@ -151,7 +151,9 @@ describe('createTimestampLink', () => {
     expect(createTimestampLink('clip.mp4', 90)).toBe('[01:30](clip.mp4#t=01:30)');
   });
   it('creates a labeled timestamp link', () => {
-    expect(createTimestampLink('clip.mp4', 90, 'Key point')).toBe('[Key point (01:30)](clip.mp4#t=01:30)');
+    expect(createTimestampLink('clip.mp4', 90, 'Key point')).toBe(
+      '[Key point (01:30)](clip.mp4#t=01:30)'
+    );
   });
 });
 

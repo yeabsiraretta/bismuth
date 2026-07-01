@@ -5,8 +5,14 @@
 import { describe, it, expect, beforeEach, beforeAll, vi } from 'vitest';
 import { get } from 'svelte/store';
 import {
-  activeTeam, calcResult,
-  setCalcAttacker, setCalcDefender, setCalcMove, addToTeam, updateSlot, loadTeam,
+  activeTeam,
+  calcResult,
+  setCalcAttacker,
+  setCalcDefender,
+  setCalcMove,
+  addToTeam,
+  updateSlot,
+  loadTeam,
   loadPokemonData,
 } from '../stores/pokemonStore';
 import { defaultEvs, defaultIvs } from '../services/damageCalc';
@@ -38,7 +44,7 @@ function validateEvs(evs: Stats): { valid: boolean; reason?: string } {
   if (total > 510) return { valid: false, reason: `EV total ${total} exceeds 510` };
   for (const [stat, val] of Object.entries(evs)) {
     if (val > 252) return { valid: false, reason: `${stat} EV ${val} exceeds 252` };
-    if (val < 0)   return { valid: false, reason: `${stat} EV cannot be negative` };
+    if (val < 0) return { valid: false, reason: `${stat} EV cannot be negative` };
   }
   return { valid: true };
 }
@@ -81,8 +87,12 @@ describe('pokemonStore — initial shape', () => {
 
   it('clearing attacker resets calcResult to null', () => {
     const move: Move = {
-      id: 'earthquake', name: 'Earthquake', type: 'Ground',
-      power: 100, category: 'physical', accuracy: 100,
+      id: 'earthquake',
+      name: 'Earthquake',
+      type: 'Ground',
+      power: 100,
+      category: 'physical',
+      accuracy: 100,
     };
     setCalcAttacker(makeSlot(pokedex['garchomp']));
     setCalcDefender(makeSlot(pokedex['clefable']));
@@ -96,8 +106,12 @@ describe('pokemonStore — initial shape', () => {
 
 describe('pokemonStore — T13: derived calcResult damage values', () => {
   const earthquake: Move = {
-    id: 'earthquake', name: 'Earthquake', type: 'Ground',
-    power: 100, category: 'physical', accuracy: 100,
+    id: 'earthquake',
+    name: 'Earthquake',
+    type: 'Ground',
+    power: 100,
+    category: 'physical',
+    accuracy: 100,
   };
 
   it('Garchomp 252 Atk Jolly + Earthquake vs Clefable (Fairy, neutral) → min > 0', () => {
@@ -123,11 +137,15 @@ describe('pokemonStore — T13: derived calcResult damage values', () => {
   it('Normal move vs Gengar (Ghost/Poison) → calcResult.min === 0 (immune)', () => {
     // Normal type has 0x effectiveness vs Ghost
     const normalMove: Move = {
-      id: 'tackle', name: 'Tackle', type: 'Normal',
-      power: 40, category: 'physical', accuracy: 100,
+      id: 'tackle',
+      name: 'Tackle',
+      type: 'Normal',
+      power: 40,
+      category: 'physical',
+      accuracy: 100,
     };
     const attacker = makeSlot(pokedex['clefable']); // Fairy attacker using Normal
-    const defender = makeSlot(pokedex['gengar']);     // Ghost/Poison defender
+    const defender = makeSlot(pokedex['gengar']); // Ghost/Poison defender
     setCalcAttacker(attacker);
     setCalcDefender(defender);
     setCalcMove(normalMove);
@@ -194,7 +212,14 @@ describe('pokemonStore — team management', () => {
   });
 
   it('addToTeam fills all 6 slots correctly', () => {
-    const species = ['garchomp', 'clefable', 'gengar', 'rotom-wash', 'landorus-therian', 'garchomp'];
+    const species = [
+      'garchomp',
+      'clefable',
+      'gengar',
+      'rotom-wash',
+      'landorus-therian',
+      'garchomp',
+    ];
     for (let i = 0; i < 6; i++) {
       addToTeam(i, pokedex[species[i]] ?? pokedex['clefable']);
     }
@@ -223,8 +248,12 @@ describe('pokemonStore — team management', () => {
     const newTeam: Team = {
       generation: 'gen9',
       slots: [
-        makeSlot(pokedex['garchomp']), makeSlot(pokedex['clefable']),
-        makeSlot(null), makeSlot(null), makeSlot(null), makeSlot(null),
+        makeSlot(pokedex['garchomp']),
+        makeSlot(pokedex['clefable']),
+        makeSlot(null),
+        makeSlot(null),
+        makeSlot(null),
+        makeSlot(null),
       ],
     };
     loadTeam(newTeam);

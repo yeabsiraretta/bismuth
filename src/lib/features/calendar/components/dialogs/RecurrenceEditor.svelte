@@ -140,9 +140,19 @@
             type="button"
             class="clear-end"
             aria-label="Clear end date"
-            on:click={() => { endDate = ''; emit(); }}
+            on:click={() => {
+              endDate = '';
+              emit();
+            }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -151,7 +161,8 @@
       </div>
 
       <p class="summary" aria-live="polite">
-        Repeats every {interval} {frequencyLabel}{frequency === 'weekly' && daysOfWeek.length > 0
+        Repeats every {interval}
+        {frequencyLabel}{frequency === 'weekly' && daysOfWeek.length > 0
           ? ' on ' + daysOfWeek.map((d) => DAY_LABELS[d]).join(', ')
           : ''}{endDate ? ', until ' + endDate : ''}
       </p>
@@ -251,7 +262,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
   }
 
   .day-btn.active {

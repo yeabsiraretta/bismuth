@@ -9,9 +9,7 @@
   $: progress = getStoryCircleProgress(entries);
 
   function handleInput(stage: StoryCircleStage, value: string) {
-    const updated = entries.map((e) =>
-      e.stage === stage ? { ...e, description: value } : e
-    );
+    const updated = entries.map((e) => (e.stage === stage ? { ...e, description: value } : e));
     if (onUpdate) onUpdate(updated);
   }
 
@@ -20,14 +18,14 @@
   }
 
   const positions = [
-    { x: 50, y: 8 },   // you (top)
-    { x: 85, y: 22 },  // need (top-right)
-    { x: 92, y: 55 },  // go (right)
-    { x: 75, y: 85 },  // search (bottom-right)
-    { x: 50, y: 92 },  // find (bottom)
-    { x: 25, y: 85 },  // take (bottom-left)
-    { x: 8, y: 55 },   // return (left)
-    { x: 15, y: 22 },  // change (top-left)
+    { x: 50, y: 8 }, // you (top)
+    { x: 85, y: 22 }, // need (top-right)
+    { x: 92, y: 55 }, // go (right)
+    { x: 75, y: 85 }, // search (bottom-right)
+    { x: 50, y: 92 }, // find (bottom)
+    { x: 25, y: 85 }, // take (bottom-left)
+    { x: 8, y: 55 }, // return (left)
+    { x: 15, y: 22 }, // change (top-left)
   ];
 </script>
 
@@ -46,15 +44,16 @@
         {@const pos = positions[i]}
         {@const filled = getEntry(stage.stage).trim().length > 0}
         <circle
-          cx={pos.x} cy={pos.y} r="4"
+          cx={pos.x}
+          cy={pos.y}
+          r="4"
           fill={filled ? 'var(--interactive-accent)' : 'var(--background-secondary)'}
           stroke={filled ? 'var(--interactive-accent)' : 'var(--text-faint)'}
           stroke-width="0.5"
         />
-        <text
-          x={pos.x} y={pos.y - 6}
-          text-anchor="middle" font-size="3" fill="var(--text-muted)"
-        >{stage.label}</text>
+        <text x={pos.x} y={pos.y - 6} text-anchor="middle" font-size="3" fill="var(--text-muted)"
+          >{stage.label}</text
+        >
       {/each}
     </svg>
   </div>
@@ -73,7 +72,7 @@
         {:else}
           <textarea
             class="sc-entry-input"
-            value={value}
+            {value}
             placeholder={stage.prompt}
             rows={2}
             on:input={(e) => handleInput(stage.stage, e.currentTarget.value)}
@@ -85,18 +84,88 @@
 </div>
 
 <style>
-  .story-circle { display: flex; flex-direction: column; gap: 8px; }
-  .sc-header { display: flex; align-items: center; justify-content: space-between; }
-  .sc-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .sc-progress { font-size: 0.65rem; color: var(--text-faint); }
-  .sc-wheel { max-width: 200px; margin: 0 auto; }
-  .sc-svg { width: 100%; height: auto; }
-  .sc-entries { display: flex; flex-direction: column; gap: 6px; }
-  .sc-entry { padding: 6px 8px; background: var(--background-secondary); border-radius: var(--radius-s); }
-  .sc-entry-header { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
-  .sc-stage-num { font-size: 0.6rem; font-weight: 700; color: var(--interactive-accent); background: var(--background-modifier-hover); width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-  .sc-stage-name { font-size: 0.75rem; font-weight: 600; color: var(--text-normal); }
-  .sc-prompt { margin: 0 0 4px; font-size: 0.65rem; color: var(--text-faint); font-style: italic; }
-  .sc-entry-text { margin: 0; font-size: 0.75rem; color: var(--text-normal); }
-  .sc-entry-input { width: 100%; font-size: 0.75rem; padding: 4px 6px; border: 1px solid var(--border-color); border-radius: var(--radius-s); background: var(--background-primary); color: var(--text-normal); resize: vertical; font-family: inherit; }
+  .story-circle {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sc-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .sc-progress {
+    font-size: 0.65rem;
+    color: var(--text-faint);
+  }
+  .sc-wheel {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  .sc-svg {
+    width: 100%;
+    height: auto;
+  }
+  .sc-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sc-entry {
+    padding: 6px 8px;
+    background: var(--background-secondary);
+    border-radius: var(--radius-s);
+  }
+  .sc-entry-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+  .sc-stage-num {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--interactive-accent);
+    background: var(--background-modifier-hover);
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  .sc-stage-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-normal);
+  }
+  .sc-prompt {
+    margin: 0 0 4px;
+    font-size: 0.65rem;
+    color: var(--text-faint);
+    font-style: italic;
+  }
+  .sc-entry-text {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-normal);
+  }
+  .sc-entry-input {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    resize: vertical;
+    font-family: inherit;
+  }
 </style>

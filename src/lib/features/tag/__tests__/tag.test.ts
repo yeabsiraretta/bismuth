@@ -12,8 +12,12 @@ vi.mock('@/utils/logger', () => ({
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
 });
 
 import { notes } from '@/stores/vault/vault';
@@ -88,9 +92,7 @@ describe('tag store', () => {
     });
 
     it('nests tags with / separator', () => {
-      notes.set([
-        makeNote({ frontmatter: { tags: ['project', 'project/web'] } }),
-      ]);
+      notes.set([makeNote({ frontmatter: { tags: ['project', 'project/web'] } })]);
       const roots = get(tagHierarchy);
       expect(roots).toHaveLength(1);
       expect(roots[0].name).toBe('project');
@@ -144,7 +146,11 @@ describe('tag store', () => {
 
   describe('renameTag', () => {
     it('calls invoke with correct args', async () => {
-      vi.mocked(invoke).mockResolvedValue({ notes_modified: 3, was_merge: false, children_renamed: 0 });
+      vi.mocked(invoke).mockResolvedValue({
+        notes_modified: 3,
+        was_merge: false,
+        children_renamed: 0,
+      });
       const result = await renameTag('old', 'new');
       expect(invoke).toHaveBeenCalledWith('rename_tag', { oldName: 'old', newName: 'new' });
       expect(result.notes_modified).toBe(3);
@@ -158,7 +164,11 @@ describe('tag store', () => {
 
   describe('mergeTags', () => {
     it('calls invoke with correct args', async () => {
-      vi.mocked(invoke).mockResolvedValue({ notes_modified: 2, was_merge: true, children_renamed: 1 });
+      vi.mocked(invoke).mockResolvedValue({
+        notes_modified: 2,
+        was_merge: true,
+        children_renamed: 1,
+      });
       const result = await mergeTags('src', 'dest');
       expect(invoke).toHaveBeenCalledWith('merge_tags', { sourceTag: 'src', targetTag: 'dest' });
       expect(result.was_merge).toBe(true);

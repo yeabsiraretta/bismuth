@@ -6,10 +6,7 @@
  *          ${date}, ${md5}
  */
 
-import type {
-  AttachmentConfig, AttachmentOverride,
-  AttachmentPathContext,
-} from '../types';
+import type { AttachmentConfig, AttachmentOverride, AttachmentPathContext } from '../types';
 
 /**
  * Format a Date using a simplified Moment-like format string.
@@ -33,7 +30,7 @@ export function formatDate(date: Date, fmt: string): string {
 export function expandVariables(
   pattern: string,
   ctx: AttachmentPathContext,
-  dateFormat: string,
+  dateFormat: string
 ): string {
   const dateStr = formatDate(ctx.date, dateFormat);
   return pattern
@@ -61,7 +58,7 @@ export function sanitizePath(name: string): string {
 export function resolveRootPath(
   config: AttachmentConfig,
   noteDir: string,
-  vaultRoot: string,
+  vaultRoot: string
 ): string {
   switch (config.rootPathMode) {
     case 'obsidian':
@@ -82,23 +79,24 @@ export function resolveRootPath(
 export function findOverride(
   overrides: AttachmentOverride[],
   notePath: string,
-  fileExt: string,
+  fileExt: string
 ): AttachmentOverride | null {
-  const fileMatch = overrides.find(
-    o => o.targetType === 'file' && o.targetPath === notePath
-  );
+  const fileMatch = overrides.find((o) => o.targetType === 'file' && o.targetPath === notePath);
   if (fileMatch) return fileMatch;
 
   const folderOverrides = overrides
-    .filter(o => o.targetType === 'folder' && notePath.startsWith(o.targetPath))
+    .filter((o) => o.targetType === 'folder' && notePath.startsWith(o.targetPath))
     .sort((a, b) => b.targetPath.length - a.targetPath.length);
   if (folderOverrides.length > 0) return folderOverrides[0];
 
   const extLower = fileExt.toLowerCase().replace('.', '');
-  const extMatch = overrides.find(o => {
+  const extMatch = overrides.find((o) => {
     if (o.targetType !== 'extension') return false;
-    try { return new RegExp(o.targetPath, 'i').test(extLower); }
-    catch { return false; }
+    try {
+      return new RegExp(o.targetPath, 'i').test(extLower);
+    } catch {
+      return false;
+    }
   });
   return extMatch ?? null;
 }
@@ -109,11 +107,14 @@ export function findOverride(
 export function isExcludedPath(
   path: string,
   excludePaths: string,
-  excludeSubpaths: boolean,
+  excludeSubpaths: boolean
 ): boolean {
   if (!excludePaths.trim()) return false;
-  const segments = excludePaths.split(';').map(s => s.trim()).filter(Boolean);
-  return segments.some(seg => {
+  const segments = excludePaths
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return segments.some((seg) => {
     if (excludeSubpaths) return path.startsWith(seg);
     return path === seg || path.startsWith(seg + '/');
   });
@@ -124,8 +125,11 @@ export function isExcludedPath(
  */
 export function isExcludedExtension(ext: string, pattern: string): boolean {
   if (!pattern.trim()) return false;
-  try { return new RegExp(pattern, 'i').test(ext.replace('.', '')); }
-  catch { return false; }
+  try {
+    return new RegExp(pattern, 'i').test(ext.replace('.', ''));
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -136,7 +140,7 @@ export function buildAttachmentPath(
   overrides: AttachmentOverride[],
   ctx: AttachmentPathContext,
   fileExt: string,
-  vaultRoot: string,
+  vaultRoot: string
 ): string {
   const override = findOverride(overrides, ctx.notePath, fileExt);
 
@@ -185,7 +189,7 @@ export function extractParent(notePath: string): string {
 export function buildContext(
   notePath: string,
   originalName: string,
-  md5: string,
+  md5: string
 ): AttachmentPathContext {
   return {
     notePath: extractDir(notePath),

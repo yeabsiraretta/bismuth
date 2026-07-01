@@ -16,19 +16,28 @@ export function loadWorkflows(): CompileWorkflow[] {
     const raw = localStorage.getItem(CUSTOM_WORKFLOWS_KEY);
     const custom: CompileWorkflow[] = raw ? JSON.parse(raw) : [];
     return [...builtIn, ...custom];
-  } catch { return builtIn; }
+  } catch {
+    return builtIn;
+  }
 }
 
 export function persistCustomWorkflows(workflows: CompileWorkflow[]): void {
-  const custom = workflows.filter(w => !w.isBuiltIn);
-  try { localStorage.setItem(CUSTOM_WORKFLOWS_KEY, JSON.stringify(custom)); }
-  catch { /* silent */ }
+  const custom = workflows.filter((w) => !w.isBuiltIn);
+  try {
+    localStorage.setItem(CUSTOM_WORKFLOWS_KEY, JSON.stringify(custom));
+  } catch {
+    /* silent */
+  }
 }
 
 export function createWorkflow(name: string, description = ''): CompileWorkflow {
   return {
-    id: crypto.randomUUID(), name, description,
-    steps: [], outputFormat: 'markdown', isBuiltIn: false,
+    id: crypto.randomUUID(),
+    name,
+    description,
+    steps: [],
+    outputFormat: 'markdown',
+    isBuiltIn: false,
   };
 }
 
@@ -37,11 +46,13 @@ export function createWorkflow(name: string, description = ''): CompileWorkflow 
 export function executeWorkflow(
   workflow: CompileWorkflow,
   scenes: SceneEntity[],
-  chapters: ChapterEntity[],
+  chapters: ChapterEntity[]
 ): CompileResult {
   const warnings: string[] = [];
   let content = '';
-  const enabledSteps = workflow.steps.filter(s => s.enabled).sort((a, b) => a.sortOrder - b.sortOrder);
+  const enabledSteps = workflow.steps
+    .filter((s) => s.enabled)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
   // Build raw content from scenes ordered by chapter
   const orderedScenes = orderScenes(scenes, chapters);
@@ -49,7 +60,7 @@ export function executeWorkflow(
 
   for (const scene of orderedScenes) {
     const chapterId = scene.chapterId;
-    const chapter = chapters.find(c => c.id === chapterId);
+    const chapter = chapters.find((c) => c.id === chapterId);
     if (chapter && chapter.name !== currentChapter) {
       currentChapter = chapter.name;
       content += applyChapterHeader(currentChapter, enabledSteps);
@@ -63,7 +74,13 @@ export function executeWorkflow(
   }
 
   const wordCount = content.split(/\s+/).filter(Boolean).length;
-  return { content, wordCount, sceneCount: orderedScenes.length, chapterCount: chapters.length, warnings };
+  return {
+    content,
+    wordCount,
+    sceneCount: orderedScenes.length,
+    chapterCount: chapters.length,
+    warnings,
+  };
 }
 
 function orderScenes(scenes: SceneEntity[], chapters: ChapterEntity[]): SceneEntity[] {
@@ -78,16 +95,16 @@ function orderScenes(scenes: SceneEntity[], chapters: ChapterEntity[]): SceneEnt
 }
 
 function applyChapterHeader(name: string, steps: CompileStep[]): string {
-  const hasBreak = steps.some(s => s.type === 'add-chapter-breaks' && s.enabled);
+  const hasBreak = steps.some((s) => s.type === 'add-chapter-breaks' && s.enabled);
   return hasBreak ? `\n\n# ${name}\n\n` : '';
 }
 
 function applySceneContent(scene: SceneEntity, steps: CompileStep[]): string {
   let text = '';
-  const hasTitle = steps.some(s => s.type === 'add-scene-titles' && s.enabled);
+  const hasTitle = steps.some((s) => s.type === 'add-scene-titles' && s.enabled);
   if (hasTitle) text += `## ${scene.name}\n\n`;
   text += (scene.synopsis ?? scene.description) + '\n';
-  const sep = steps.find(s => s.type === 'scene-separator' && s.enabled);
+  const sep = steps.find((s) => s.type === 'scene-separator' && s.enabled);
   if (sep) text += `\n${(sep.config as Record<string, string>).separator ?? '---'}\n\n`;
   else text += '\n';
   return text;
@@ -102,11 +119,13 @@ function applyPostStep(content: string, step: CompileStep, warnings: string[]): 
     case 'table-of-contents': {
       const headings = content.match(/^#{1,3}\s.+$/gm) ?? [];
       if (headings.length > 0) {
-        const toc = headings.map(h => {
-          const level = (h.match(/^#+/) ?? [''])[0].length;
-          const title = h.replace(/^#+\s/, '');
-          return `${'  '.repeat(level - 1)}- ${title}`;
-        }).join('\n');
+        const toc = headings
+          .map((h) => {
+            const level = (h.match(/^#+/) ?? [''])[0].length;
+            const title = h.replace(/^#+\s/, '');
+            return `${'  '.repeat(level - 1)}- ${title}`;
+          })
+          .join('\n');
         return `# Table of Contents\n\n${toc}\n\n${content}`;
       }
       return content;
@@ -127,6 +146,7 @@ function applyPostStep(content: string, step: CompileStep, warnings: string[]): 
       }
       return content;
     }
-    default: return content;
+    default:
+      return content;
   }
 }

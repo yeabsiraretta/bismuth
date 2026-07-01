@@ -39,7 +39,10 @@ export function buildRpgCommands(): Command[] {
       action: async () => {
         const { activeCampaignId, createNewElement } = await import('@/features/rpg-manager');
         const { get } = await import('svelte/store');
-        if (!get(activeCampaignId)) { showToast('Select a campaign first', 'warning'); return; }
+        if (!get(activeCampaignId)) {
+          showToast('Select a campaign first', 'warning');
+          return;
+        }
         const name = prompt('NPC name:');
         if (!name) return;
         createNewElement('npc', name);
@@ -54,7 +57,10 @@ export function buildRpgCommands(): Command[] {
       action: async () => {
         const { activeCampaignId, createNewElement } = await import('@/features/rpg-manager');
         const { get } = await import('svelte/store');
-        if (!get(activeCampaignId)) { showToast('Select a campaign first', 'warning'); return; }
+        if (!get(activeCampaignId)) {
+          showToast('Select a campaign first', 'warning');
+          return;
+        }
         const name = prompt('Session name:');
         if (!name) return;
         createNewElement('session', name);
@@ -69,7 +75,10 @@ export function buildRpgCommands(): Command[] {
       action: async () => {
         const { activeCampaignId, createNewElement } = await import('@/features/rpg-manager');
         const { get } = await import('svelte/store');
-        if (!get(activeCampaignId)) { showToast('Select a campaign first', 'warning'); return; }
+        if (!get(activeCampaignId)) {
+          showToast('Select a campaign first', 'warning');
+          return;
+        }
         const name = prompt('Location name:');
         if (!name) return;
         createNewElement('location', name);
@@ -84,7 +93,10 @@ export function buildRpgCommands(): Command[] {
       action: async () => {
         const { activeCampaignId, createNewElement } = await import('@/features/rpg-manager');
         const { get } = await import('svelte/store');
-        if (!get(activeCampaignId)) { showToast('Select a campaign first', 'warning'); return; }
+        if (!get(activeCampaignId)) {
+          showToast('Select a campaign first', 'warning');
+          return;
+        }
         const name = prompt('Adventure name:');
         if (!name) return;
         createNewElement('adventure', name);

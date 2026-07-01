@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
-  findMatch, isWordTrigger, sortRules,
-  prettifyText, unprettifyText,
+  findMatch,
+  isWordTrigger,
+  sortRules,
+  prettifyText,
+  unprettifyText,
 } from '../services/prettifier';
 import type { SymbolRule } from '../types';
 import { DEFAULT_RULES } from '../types';
@@ -94,9 +97,7 @@ describe('findMatch', () => {
   });
 
   it('skips disabled rules', () => {
-    const custom: SymbolRule[] = [
-      { trigger: '->', replacement: '\u2192', enabled: false },
-    ];
+    const custom: SymbolRule[] = [{ trigger: '->', replacement: '\u2192', enabled: false }];
     expect(findMatch('test -', '>', custom)).toBeNull();
   });
 

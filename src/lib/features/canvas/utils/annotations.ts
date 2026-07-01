@@ -82,11 +82,7 @@ export interface HighlightAnnotation {
   anchoredToElementId?: string;
 }
 
-export type Annotation =
-  | StickyNote
-  | PinAnnotation
-  | FreehandAnnotation
-  | HighlightAnnotation;
+export type Annotation = StickyNote | PinAnnotation | FreehandAnnotation | HighlightAnnotation;
 
 // ─── Annotation Store Interface ─────────────────────────────────────────────
 
@@ -197,9 +193,7 @@ export function getAnnotationsForElement(
 
 /** Returns unresolved pin annotations (for review mode). */
 export function getUnresolvedPins(annotations: Annotation[]): PinAnnotation[] {
-  return annotations.filter(
-    (a): a is PinAnnotation => a.type === 'pin' && !a.resolved
-  );
+  return annotations.filter((a): a is PinAnnotation => a.type === 'pin' && !a.resolved);
 }
 
 /** Generates the next pin number in sequence. */

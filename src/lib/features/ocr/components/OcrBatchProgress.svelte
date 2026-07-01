@@ -6,9 +6,7 @@
    * Folder picker uses Tauri dialog API.
    */
   import { pickImportFile } from '@/services/system/dialog';
-  import {
-    activeJobs, activeJobId, clearCompleted,
-  } from '../stores/ocrStore';
+  import { activeJobs, activeJobId, clearCompleted } from '../stores/ocrStore';
   import { log } from '@/utils/logger';
   import type { OcrJob, OcrJobStatus } from '../types/ocr';
 
@@ -103,7 +101,13 @@
         <span class="progress-label">{completed} / {total} files</span>
         <span class="progress-pct">{progressPct}%</span>
       </div>
-      <div class="progress-bar" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
+      <div
+        class="progress-bar"
+        role="progressbar"
+        aria-valuenow={progressPct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <div class="progress-fill" style="width:{progressPct}%"></div>
       </div>
     </div>
@@ -139,11 +143,7 @@
     </ul>
 
     <!-- Cancel button -->
-    <button
-      class="btn btn--danger"
-      on:click={handleCancel}
-      disabled={!isBatchActive}
-    >
+    <button class="btn btn--danger" on:click={handleCancel} disabled={!isBatchActive}>
       Cancel All
     </button>
   {:else}
@@ -183,7 +183,11 @@
     max-width: 160px;
   }
 
-  .progress-section { display: flex; flex-direction: column; gap: 4px; }
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
   .progress-header {
     display: flex;
@@ -227,26 +231,44 @@
     cursor: default;
   }
 
-  .job-row--complete { cursor: pointer; }
-  .job-row--complete:hover { background: var(--background-modifier-hover, #313244); }
+  .job-row--complete {
+    cursor: pointer;
+  }
+  .job-row--complete:hover {
+    background: var(--background-modifier-hover, #313244);
+  }
 
-  .job-icon { width: 16px; text-align: center; flex-shrink: 0; }
+  .job-icon {
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+  }
 
-  .icon-check { color: var(--text-success, #a6e3a1); }
-  .icon-error { color: var(--text-warning, #f9e2af); }
-  .icon-clock { color: var(--text-faint, #6c7086); }
+  .icon-check {
+    color: var(--text-success, #a6e3a1);
+  }
+  .icon-error {
+    color: var(--text-warning, #f9e2af);
+  }
+  .icon-clock {
+    color: var(--text-faint, #6c7086);
+  }
 
   .spinner {
     display: inline-block;
     width: 10px;
     height: 10px;
-    border: 2px solid rgba(255,255,255,0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-top-color: var(--interactive-accent, #6366f1);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   .job-name {
     flex: 1;
@@ -256,10 +278,21 @@
     color: var(--text-normal, #cdd6f4);
   }
 
-  .job-status { flex-shrink: 0; color: var(--text-muted, #a6adc8); }
-  .job-error { color: var(--text-error, #f38ba8); font-weight: 700; cursor: help; }
+  .job-status {
+    flex-shrink: 0;
+    color: var(--text-muted, #a6adc8);
+  }
+  .job-error {
+    color: var(--text-error, #f38ba8);
+    font-weight: 700;
+    cursor: help;
+  }
 
-  .empty-hint { font-size: var(--font-ui-small, 11px); color: var(--text-faint, #6c7086); margin: 0; }
+  .empty-hint {
+    font-size: var(--font-ui-small, 11px);
+    color: var(--text-faint, #6c7086);
+    margin: 0;
+  }
 
   .btn {
     display: inline-flex;
@@ -275,8 +308,13 @@
     align-self: flex-start;
   }
 
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn:not(:disabled):hover { filter: brightness(1.1); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn:not(:disabled):hover {
+    filter: brightness(1.1);
+  }
 
   .btn--secondary {
     background: var(--background-modifier-hover, #313244);

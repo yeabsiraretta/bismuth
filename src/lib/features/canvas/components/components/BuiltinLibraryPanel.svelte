@@ -12,9 +12,7 @@
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       comps = comps.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.tags?.some((t) => t.toLowerCase().includes(q))
+        (c) => c.name.toLowerCase().includes(q) || c.tags?.some((t) => t.toLowerCase().includes(q))
       );
     }
     return { category: cat, components: comps };
@@ -35,7 +33,14 @@
       aria-label={showBuiltins ? 'Collapse built-in library' : 'Expand built-in library'}
       aria-expanded={showBuiltins}
     >
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
         <path d="M2 4L6 8L10 4" />
       </svg>
     </button>
@@ -46,10 +51,7 @@
       <div class="empty-msg">No matching components</div>
     {:else}
       {#each filteredGroups as group (group.category)}
-        <BuiltinCategoryGroup
-          category={group.category}
-          components={group.components}
-        />
+        <BuiltinCategoryGroup category={group.category} components={group.components} />
       {/each}
     {/if}
   {/if}
@@ -89,7 +91,9 @@
     cursor: pointer;
     color: var(--text-muted);
     border-radius: var(--radius-s);
-    transition: transform 0.15s ease, color 0.15s;
+    transition:
+      transform 0.15s ease,
+      color 0.15s;
   }
 
   .collapse-toggle:hover {

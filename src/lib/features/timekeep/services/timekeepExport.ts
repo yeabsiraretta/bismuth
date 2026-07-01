@@ -13,7 +13,10 @@ import {
 
 // ─── Markdown table export ──────────────────────────────────────────────────
 
-export function exportAsMarkdown(data: TimekeepData, options?: Partial<TimekeepExportOptions>): string {
+export function exportAsMarkdown(
+  data: TimekeepData,
+  options?: Partial<TimekeepExportOptions>
+): string {
   const opts = { ...DEFAULT_EXPORT_OPTIONS, ...options };
   const rows = flattenEntries(data.entries, opts.dateFormat, opts.includeSubEntries);
   const now = new Date();
@@ -44,7 +47,9 @@ export function exportAsCsv(data: TimekeepData, options?: Partial<TimekeepExport
   }
 
   for (const row of rows) {
-    lines.push(`${escapeCsv(row.name)},${escapeCsv(row.start)},${escapeCsv(row.end)},${escapeCsv(row.duration)}`);
+    lines.push(
+      `${escapeCsv(row.name)},${escapeCsv(row.start)},${escapeCsv(row.end)},${escapeCsv(row.duration)}`
+    );
   }
 
   return lines.join('\n');
@@ -58,12 +63,18 @@ export function exportAsJson(data: TimekeepData): string {
 
 // ─── Unified export ─────────────────────────────────────────────────────────
 
-export function exportTimekeep(data: TimekeepData, options?: Partial<TimekeepExportOptions>): string {
+export function exportTimekeep(
+  data: TimekeepData,
+  options?: Partial<TimekeepExportOptions>
+): string {
   const opts = { ...DEFAULT_EXPORT_OPTIONS, ...options };
   switch (opts.format) {
-    case 'csv': return exportAsCsv(data, opts);
-    case 'json': return exportAsJson(data);
-    default: return exportAsMarkdown(data, opts);
+    case 'csv':
+      return exportAsCsv(data, opts);
+    case 'json':
+      return exportAsJson(data);
+    default:
+      return exportAsMarkdown(data, opts);
   }
 }
 
@@ -80,7 +91,7 @@ function flattenEntries(
   entries: TimekeepEntry[],
   dateFormat: string,
   includeSubs: boolean,
-  indent = 0,
+  indent = 0
 ): FlatRow[] {
   const now = new Date();
   const rows: FlatRow[] = [];
@@ -88,7 +99,11 @@ function flattenEntries(
 
   for (const entry of entries) {
     const start = entry.startTime ? formatTimestamp(entry.startTime, dateFormat) : '';
-    const end = entry.endTime ? formatTimestamp(entry.endTime, dateFormat) : (entry.startTime ? 'running' : '');
+    const end = entry.endTime
+      ? formatTimestamp(entry.endTime, dateFormat)
+      : entry.startTime
+        ? 'running'
+        : '';
     const duration = formatDurationShort(getEntryDurationWithSubs(entry, now));
 
     rows.push({ name: `${prefix}${entry.name}`, start, end, duration });

@@ -12,11 +12,14 @@
 
   const nasEnabled = derived(settings, ($s) => $s.nasEnabled);
   let nasExpanded = false;
-  let NasPanelComponent: typeof import('@/features/nas/components/NasPanel.svelte').default | null = null;
+  let NasPanelComponent: typeof import('@/features/nas/components/NasPanel.svelte').default | null =
+    null;
 
   $: if ($nasEnabled && nasExpanded && !NasPanelComponent) {
     import('@/features/nas/components/NasPanel.svelte')
-      .then((m) => { NasPanelComponent = m.default; })
+      .then((m) => {
+        NasPanelComponent = m.default;
+      })
       .catch((err) => log.error('SettingsVaultNas: failed to load NasPanel', err as Error));
   }
 

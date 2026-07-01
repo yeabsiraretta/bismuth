@@ -8,7 +8,13 @@ import { describe, it, expect } from 'vitest';
 
 describe('formattingKeymap: wrapSelection logic', () => {
   // Simulate the core wrap logic without needing full CM6 state
-  function simulateWrap(text: string, selFrom: number, selTo: number, prefix: string, suffix: string) {
+  function simulateWrap(
+    text: string,
+    selFrom: number,
+    selTo: number,
+    prefix: string,
+    suffix: string
+  ) {
     const selected = text.slice(selFrom, selTo);
     const before = text.slice(selFrom - prefix.length, selFrom);
     const after = text.slice(selTo, selTo + suffix.length);
@@ -119,10 +125,19 @@ describe('formattingKeymap: setHeading logic', () => {
 describe('formattingKeymap: keybinding definitions', () => {
   it('has all expected shortcuts defined', () => {
     const expectedKeys = [
-      'Mod-b', 'Mod-i', 'Mod-u', 'Mod-Shift-s',
-      'Mod-e', 'Mod-k', 'Mod-Shift-h',
-      'Mod-1', 'Mod-2', 'Mod-3', 'Mod-4',
-      'Tab', 'Shift-Tab',
+      'Mod-b',
+      'Mod-i',
+      'Mod-u',
+      'Mod-Shift-s',
+      'Mod-e',
+      'Mod-k',
+      'Mod-Shift-h',
+      'Mod-1',
+      'Mod-2',
+      'Mod-3',
+      'Mod-4',
+      'Tab',
+      'Shift-Tab',
     ];
     expect(expectedKeys).toHaveLength(13);
     expect(expectedKeys).toContain('Tab');
@@ -183,7 +198,8 @@ describe('formattingKeymap: list indent normalization (preview)', () => {
 
   it('2 spaces = level 1', () => expect(normalizedIndentLevel('  ')).toBe(1));
   it('4 spaces = level 2', () => expect(normalizedIndentLevel('    ')).toBe(2));
-  it('1 tab = level 1 (tab treated as 2 spaces)', () => expect(normalizedIndentLevel('\t')).toBe(1));
+  it('1 tab = level 1 (tab treated as 2 spaces)', () =>
+    expect(normalizedIndentLevel('\t')).toBe(1));
   it('2 tabs = level 2', () => expect(normalizedIndentLevel('\t\t')).toBe(2));
   it('no indent = level 0', () => expect(normalizedIndentLevel('')).toBe(0));
 });

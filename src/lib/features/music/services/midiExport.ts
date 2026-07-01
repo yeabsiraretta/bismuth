@@ -89,16 +89,22 @@ export function exportMidi(doc: MusicDocument): Blob {
 
   // SMF header chunk: MThd
   const header: number[] = [
-    0x4d, 0x54, 0x68, 0x64,           // 'MThd'
-    ...uint32be(6),                     // chunk length = 6
-    ...uint16be(0),                     // format 0
-    ...uint16be(1),                     // 1 track
-    ...uint16be(TICKS_PER_QUARTER),     // ticks/quarter
+    0x4d,
+    0x54,
+    0x68,
+    0x64, // 'MThd'
+    ...uint32be(6), // chunk length = 6
+    ...uint16be(0), // format 0
+    ...uint16be(1), // 1 track
+    ...uint16be(TICKS_PER_QUARTER), // ticks/quarter
   ];
 
   // Track chunk: MTrk
   const trackHeader: number[] = [
-    0x4d, 0x54, 0x72, 0x6b,           // 'MTrk'
+    0x4d,
+    0x54,
+    0x72,
+    0x6b, // 'MTrk'
     ...uint32be(trackBytes.length),
   ];
 

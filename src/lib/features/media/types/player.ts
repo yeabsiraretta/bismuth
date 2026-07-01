@@ -115,7 +115,16 @@ export interface ScreenshotCapture {
 
 // ─── Supported formats ───────────────────────────────────────────────────────
 
-export const AUDIO_EXTENSIONS = ['mp3', 'ogg', 'wav', 'flac', 'aac', 'm4a', 'opus', 'weba'] as const;
+export const AUDIO_EXTENSIONS = [
+  'mp3',
+  'ogg',
+  'wav',
+  'flac',
+  'aac',
+  'm4a',
+  'opus',
+  'weba',
+] as const;
 export const VIDEO_EXTENSIONS = ['mp4', 'webm', 'ogv', 'mov', 'mkv', 'avi'] as const;
 export const SUBTITLE_EXTENSIONS = ['srt', 'vtt'] as const;
 

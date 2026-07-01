@@ -35,8 +35,13 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') { e.preventDefault(); handleAddTask(); }
-    if (e.key === 'Escape') { showForm = false; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddTask();
+    }
+    if (e.key === 'Escape') {
+      showForm = false;
+    }
   }
 </script>
 
@@ -51,9 +56,27 @@
 
   <!-- Tab bar -->
   <div class="view-tabs">
-    <button class="tab" class:active={view === 'tasks'} on:click={() => { view = 'tasks'; }}>Tasks</button>
-    <button class="tab" class:active={view === 'rewards'} on:click={() => { view = 'rewards'; }}>Rewards</button>
-    <button class="tab" class:active={view === 'history'} on:click={() => { view = 'history'; }}>History</button>
+    <button
+      class="tab"
+      class:active={view === 'tasks'}
+      on:click={() => {
+        view = 'tasks';
+      }}>Tasks</button
+    >
+    <button
+      class="tab"
+      class:active={view === 'rewards'}
+      on:click={() => {
+        view = 'rewards';
+      }}>Rewards</button
+    >
+    <button
+      class="tab"
+      class:active={view === 'history'}
+      on:click={() => {
+        view = 'history';
+      }}>History</button
+    >
   </div>
 
   <div class="panel-body">
@@ -73,17 +96,26 @@
                 class="diff-btn"
                 class:active={newTaskDifficulty === diff}
                 style="--diff-color: {DIFFICULTY_META[diff].color}"
-                on:click={() => { newTaskDifficulty = diff; }}
+                on:click={() => {
+                  newTaskDifficulty = diff;
+                }}
                 title="{DIFFICULTY_META[diff].label} ({DIFFICULTY_COINS[diff]} coins)"
               >
                 {DIFFICULTY_META[diff].label[0]}
               </button>
             {/each}
           </div>
-          <button class="submit-btn" on:click={handleAddTask} disabled={!newTaskText.trim()}>Add</button>
+          <button class="submit-btn" on:click={handleAddTask} disabled={!newTaskText.trim()}
+            >Add</button
+          >
         </div>
       {:else}
-        <button class="add-btn" on:click={() => { showForm = true; }}>
+        <button
+          class="add-btn"
+          on:click={() => {
+            showForm = true;
+          }}
+        >
           <Icon name="plus" size={14} /> New Task
         </button>
       {/if}
@@ -126,7 +158,6 @@
           </div>
         {/each}
       {/if}
-
     {:else if view === 'rewards'}
       <div class="balance-banner">
         <Icon name="star" size={16} />
@@ -147,16 +178,19 @@
               <button
                 class="buy-btn"
                 on:click={() => purchaseReward(reward.id)}
-                disabled={$gamifyCoins < reward.cost}
-              >Buy</button>
+                disabled={$gamifyCoins < reward.cost}>Buy</button
+              >
             {/if}
           </div>
         </div>
       {/each}
-
     {:else if view === 'history'}
       {#each $gamifyHistory.slice().reverse().slice(0, 20) as entry}
-        <div class="history-item" class:earn={entry.type === 'earn'} class:spend={entry.type === 'spend'}>
+        <div
+          class="history-item"
+          class:earn={entry.type === 'earn'}
+          class:spend={entry.type === 'spend'}
+        >
           <span class="history-amount">{entry.type === 'earn' ? '+' : '-'}{entry.amount}</span>
           <span class="history-desc">{entry.description}</span>
         </div>
@@ -168,115 +202,291 @@
 </div>
 
 <style>
-  .gamify-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .panel-body { flex: 1; overflow-y: auto; padding: var(--spacing-xs); }
+  .gamify-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xs);
+  }
   .coin-badge {
-    display: flex; align-items: center; gap: 3px;
-    font-size: 11px; font-weight: 600; color: var(--status-warning);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--status-warning);
     background: color-mix(in srgb, var(--status-warning) 10%, transparent);
-    padding: 2px 6px; border-radius: var(--radius-s);
+    padding: 2px 6px;
+    border-radius: var(--radius-s);
   }
   .view-tabs {
-    display: flex; border-bottom: 1px solid var(--border-color);
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
     padding: 0 var(--spacing-xs);
   }
   .tab {
-    flex: 1; padding: var(--spacing-xs) 0; font-size: 11px;
-    background: none; border: none; border-bottom: 2px solid transparent;
-    color: var(--text-muted); cursor: pointer; text-align: center;
+    flex: 1;
+    padding: var(--spacing-xs) 0;
+    font-size: 11px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: center;
     transition: all var(--transition-fast);
   }
-  .tab:hover { color: var(--text-normal); }
-  .tab.active { color: var(--interactive-accent); border-bottom-color: var(--interactive-accent); }
+  .tab:hover {
+    color: var(--text-normal);
+  }
+  .tab.active {
+    color: var(--interactive-accent);
+    border-bottom-color: var(--interactive-accent);
+  }
   .add-btn {
-    display: flex; align-items: center; gap: var(--spacing-xs); width: 100%;
-    padding: var(--spacing-xs) var(--spacing-s); border: 1px dashed var(--border-color);
-    border-radius: var(--radius-s); background: none; color: var(--text-muted);
-    font-size: var(--font-ui-small); cursor: pointer; margin-bottom: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-s);
+    background: none;
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    cursor: pointer;
+    margin-bottom: var(--spacing-xs);
     transition: all var(--transition-fast);
   }
-  .add-btn:hover { border-color: var(--interactive-accent); color: var(--interactive-accent); }
+  .add-btn:hover {
+    border-color: var(--interactive-accent);
+    color: var(--interactive-accent);
+  }
   .add-form {
-    display: flex; flex-direction: column; gap: var(--spacing-xs);
-    padding: var(--spacing-xs); border: 1px solid var(--border-color);
-    border-radius: var(--radius-s); margin-bottom: var(--spacing-xs);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    margin-bottom: var(--spacing-xs);
   }
   .task-input {
-    width: 100%; padding: var(--spacing-xs); border: 1px solid var(--border-color);
-    border-radius: var(--radius-s); background: var(--background-primary);
-    color: var(--text-normal); font-size: var(--font-ui-small);
+    width: 100%;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
   }
-  .difficulty-row { display: flex; gap: 4px; }
+  .difficulty-row {
+    display: flex;
+    gap: 4px;
+  }
   .diff-btn {
-    width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-color);
-    background: none; color: var(--text-muted); font-size: 10px; font-weight: 600;
-    cursor: pointer; transition: all var(--transition-fast);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: none;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
   }
-  .diff-btn:hover { border-color: var(--diff-color); color: var(--diff-color); }
-  .diff-btn.active { background: var(--diff-color); color: var(--text-on-accent); border-color: var(--diff-color); }
+  .diff-btn:hover {
+    border-color: var(--diff-color);
+    color: var(--diff-color);
+  }
+  .diff-btn.active {
+    background: var(--diff-color);
+    color: var(--text-on-accent);
+    border-color: var(--diff-color);
+  }
   .submit-btn {
-    padding: var(--spacing-xs) var(--spacing-s); background: var(--interactive-accent);
-    color: var(--text-on-accent); border: none; border-radius: var(--radius-s);
-    font-size: var(--font-ui-small); cursor: pointer;
-  }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .task-item {
-    display: flex; align-items: flex-start; gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-s); border-bottom: 1px solid var(--border-color);
-  }
-  .task-item.done { opacity: 0.5; }
-  .task-body { flex: 1; min-width: 0; }
-  .task-text { font-size: var(--font-ui-small); color: var(--text-normal); word-break: break-word; }
-  .task-meta { display: flex; align-items: center; gap: var(--spacing-xs); margin-top: 2px; }
-  .diff-badge { font-size: 10px; font-weight: 600; }
-  .coin-hint { font-size: 10px; color: var(--status-warning); }
-  .counter-btn {
-    font-size: 10px; padding: 1px 4px; border: 1px solid var(--border-color);
-    border-radius: var(--radius-s); background: none; color: var(--text-muted);
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-small);
     cursor: pointer;
   }
-  .counter-btn:hover { border-color: var(--interactive-accent); }
-  .check-btn, .del-btn {
-    border: none; background: none; color: var(--text-muted); cursor: pointer;
-    padding: 2px; border-radius: var(--radius-s);
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
-  .check-btn:hover { color: var(--status-added); }
-  .del-btn:hover { color: var(--text-error); }
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .task-item.done {
+    opacity: 0.5;
+  }
+  .task-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .task-text {
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
+    word-break: break-word;
+  }
+  .task-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: 2px;
+  }
+  .diff-badge {
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .coin-hint {
+    font-size: 10px;
+    color: var(--status-warning);
+  }
+  .counter-btn {
+    font-size: 10px;
+    padding: 1px 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .counter-btn:hover {
+    border-color: var(--interactive-accent);
+  }
+  .check-btn,
+  .del-btn {
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: var(--radius-s);
+  }
+  .check-btn:hover {
+    color: var(--status-added);
+  }
+  .del-btn:hover {
+    color: var(--text-error);
+  }
   .section-label {
-    font-size: 10px; color: var(--text-faint); text-transform: uppercase;
-    letter-spacing: 0.5px; padding: var(--spacing-xs) var(--spacing-s); margin-top: var(--spacing-xs);
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: var(--spacing-xs) var(--spacing-s);
+    margin-top: var(--spacing-xs);
   }
-  .empty-hint { font-size: var(--font-smallest); color: var(--text-faint); text-align: center; padding: var(--spacing-l); margin: 0; }
+  .empty-hint {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+    text-align: center;
+    padding: var(--spacing-l);
+    margin: 0;
+  }
   .balance-banner {
-    display: flex; align-items: center; gap: var(--spacing-xs); justify-content: center;
-    padding: var(--spacing-s); background: color-mix(in srgb, var(--status-warning) 8%, transparent);
-    border-radius: var(--radius-s); margin-bottom: var(--spacing-s);
-    color: var(--status-warning); font-weight: 600; font-size: var(--font-ui-small);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    justify-content: center;
+    padding: var(--spacing-s);
+    background: color-mix(in srgb, var(--status-warning) 8%, transparent);
+    border-radius: var(--radius-s);
+    margin-bottom: var(--spacing-s);
+    color: var(--status-warning);
+    font-weight: 600;
+    font-size: var(--font-ui-small);
   }
   .reward-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: var(--spacing-xs) var(--spacing-s); border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-bottom: 1px solid var(--border-color);
   }
-  .reward-item.purchased { opacity: 0.5; }
-  .reward-info { display: flex; flex-direction: column; gap: 1px; }
-  .reward-name { font-size: var(--font-ui-small); font-weight: 500; color: var(--text-normal); }
-  .reward-desc { font-size: 10px; color: var(--text-faint); }
-  .reward-action { display: flex; align-items: center; gap: var(--spacing-xs); }
-  .reward-cost { font-size: 11px; font-weight: 600; color: var(--status-warning); }
-  .buy-btn, .reset-btn {
-    font-size: 10px; padding: 2px 8px; border-radius: var(--radius-s);
-    border: 1px solid var(--border-color); background: none;
-    color: var(--text-muted); cursor: pointer;
+  .reward-item.purchased {
+    opacity: 0.5;
   }
-  .buy-btn:hover { border-color: var(--interactive-accent); color: var(--interactive-accent); }
-  .buy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .reset-btn:hover { border-color: var(--text-muted); }
+  .reward-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .reward-name {
+    font-size: var(--font-ui-small);
+    font-weight: 500;
+    color: var(--text-normal);
+  }
+  .reward-desc {
+    font-size: 10px;
+    color: var(--text-faint);
+  }
+  .reward-action {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  .reward-cost {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--status-warning);
+  }
+  .buy-btn,
+  .reset-btn {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: var(--radius-s);
+    border: 1px solid var(--border-color);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .buy-btn:hover {
+    border-color: var(--interactive-accent);
+    color: var(--interactive-accent);
+  }
+  .buy-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .reset-btn:hover {
+    border-color: var(--text-muted);
+  }
   .history-item {
-    display: flex; align-items: center; gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-s); font-size: var(--font-ui-small);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    font-size: var(--font-ui-small);
   }
-  .history-amount { font-weight: 600; min-width: 32px; }
-  .history-item.earn .history-amount { color: var(--status-added); }
-  .history-item.spend .history-amount { color: var(--text-error); }
-  .history-desc { color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-amount {
+    font-weight: 600;
+    min-width: 32px;
+  }
+  .history-item.earn .history-amount {
+    color: var(--status-added);
+  }
+  .history-item.spend .history-amount {
+    color: var(--text-error);
+  }
+  .history-desc {
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>

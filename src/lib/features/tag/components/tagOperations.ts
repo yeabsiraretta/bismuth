@@ -15,10 +15,7 @@ import { openConfirm } from '@/stores/confirm';
 
 export { type TagNode };
 
-export async function renameTagOp(
-  oldName: string,
-  closeContextMenu: () => void
-): Promise<void> {
+export async function renameTagOp(oldName: string, closeContextMenu: () => void): Promise<void> {
   const newName = prompt(`Rename tag "${oldName}" to:`, oldName);
   if (newName && newName !== oldName) {
     try {
@@ -33,10 +30,7 @@ export async function renameTagOp(
   closeContextMenu();
 }
 
-export async function mergeTagOp(
-  sourceTag: string,
-  closeContextMenu: () => void
-): Promise<void> {
+export async function mergeTagOp(sourceTag: string, closeContextMenu: () => void): Promise<void> {
   const targetTag = prompt(`Merge tag "${sourceTag}" into (target tag):`, '');
   if (targetTag && targetTag !== sourceTag) {
     openConfirm({

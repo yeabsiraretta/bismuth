@@ -36,7 +36,12 @@
 
   <div class="modal-footer">
     <Button variant="secondary" on:click={onClose} disabled={isProcessing}>Cancel</Button>
-    <Button variant="primary" on:click={handleConfirm} loading={isProcessing} disabled={isProcessing}>
+    <Button
+      variant="primary"
+      on:click={handleConfirm}
+      loading={isProcessing}
+      disabled={isProcessing}
+    >
       Confirm
     </Button>
   </div>

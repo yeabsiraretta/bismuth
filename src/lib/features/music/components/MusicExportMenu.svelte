@@ -12,7 +12,8 @@
 
   export let onExportStarted: ((detail: { type: 'wav' | 'midi' }) => void) | undefined = undefined;
   export let onExportDone: ((detail: { type: 'wav' | 'midi' }) => void) | undefined = undefined;
-  export let onExportError: ((detail: { type: 'wav' | 'midi'; message: string }) => void) | undefined = undefined;
+  export let onExportError:
+    ((detail: { type: 'wav' | 'midi'; message: string }) => void) | undefined = undefined;
 
   $: doc = $activeMusicDoc;
 
@@ -140,6 +141,8 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

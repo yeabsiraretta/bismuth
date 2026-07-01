@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  parseAbcBlockContent,
-  findAbcBlocks,
-  sampleAbcBlock,
-} from '../services/abcParser';
+import { parseAbcBlockContent, findAbcBlocks, sampleAbcBlock } from '../services/abcParser';
 
 describe('parseAbcBlockContent', () => {
   it('parses plain ABC notation', () => {
@@ -113,7 +109,8 @@ describe('findAbcBlocks', () => {
   });
 
   it('handles chorus/multi-voice notation', () => {
-    const text = '```abc\nX:1\nT:Chorus\nV:T1 clef=treble name="Soprano"\nV:B1 clef=bass name="Tenor"\nK:G\n[V:T1]CDEF |\n[V:B1]C3D |\n```';
+    const text =
+      '```abc\nX:1\nT:Chorus\nV:T1 clef=treble name="Soprano"\nV:B1 clef=bass name="Tenor"\nK:G\n[V:T1]CDEF |\n[V:B1]C3D |\n```';
     const blocks = findAbcBlocks(text);
     expect(blocks).toHaveLength(1);
     expect(blocks[0].notation).toContain('V:T1');

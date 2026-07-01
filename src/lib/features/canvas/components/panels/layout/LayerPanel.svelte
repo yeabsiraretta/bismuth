@@ -72,7 +72,11 @@
             title={layer.visible ? 'Hide layer' : 'Show layer'}
             aria-label={layer.visible ? 'Hide layer' : 'Show layer'}
           >
-            <Icon name={layer.visible ? 'eye' : 'eye'} size={14} color={layer.visible ? 'var(--text-normal)' : 'var(--text-faint)'} />
+            <Icon
+              name={layer.visible ? 'eye' : 'eye'}
+              size={14}
+              color={layer.visible ? 'var(--text-normal)' : 'var(--text-faint)'}
+            />
           </button>
           <span class="layer-name" class:muted={!layer.visible}>{layer.name}</span>
           <span class="layer-count">{getElementCount(layer.id)}</span>
@@ -98,7 +102,6 @@
     border-top: 1px solid var(--border-color);
     max-height: 200px;
   }
-
 
   .empty-state {
     display: flex;

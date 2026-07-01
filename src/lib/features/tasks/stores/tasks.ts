@@ -24,37 +24,36 @@ export const taskFilter = writable<TaskFilter>(loadFilter());
 export const tasksLoading = writable(false);
 
 /** Derived: filtered tasks based on active filter */
-export const filteredTasks = derived(
-  [tasks, taskFilter],
-  ([$tasks, $filter]) => {
-    return $tasks.filter(task => {
-      if ($filter.status && task.status !== $filter.status) return false;
-      if ($filter.priority && task.priority !== $filter.priority) return false;
-      if ($filter.project && task.project !== $filter.project) return false;
-      if ($filter.tag && !task.tags.includes($filter.tag)) return false;
-      if ($filter.search) {
-        const lower = $filter.search.toLowerCase();
-        if (!task.text.toLowerCase().includes(lower)) return false;
-      }
-      return true;
-    });
-  }
-);
+export const filteredTasks = derived([tasks, taskFilter], ([$tasks, $filter]) => {
+  return $tasks.filter((task) => {
+    if ($filter.status && task.status !== $filter.status) return false;
+    if ($filter.priority && task.priority !== $filter.priority) return false;
+    if ($filter.project && task.project !== $filter.project) return false;
+    if ($filter.tag && !task.tags.includes($filter.tag)) return false;
+    if ($filter.search) {
+      const lower = $filter.search.toLowerCase();
+      if (!task.text.toLowerCase().includes(lower)) return false;
+    }
+    return true;
+  });
+});
 
 /** Derived: task counts by status */
 export const taskStats = derived(tasks, ($tasks) => ({
   total: $tasks.length,
-  open: $tasks.filter(t => t.status === 'open').length,
-  done: $tasks.filter(t => t.status === 'done').length,
-  inprogress: $tasks.filter(t => t.status === 'inprogress').length,
-  onhold: $tasks.filter(t => t.status === 'onhold').length,
-  cancelled: $tasks.filter(t => t.status === 'cancelled').length,
+  open: $tasks.filter((t) => t.status === 'open').length,
+  done: $tasks.filter((t) => t.status === 'done').length,
+  inprogress: $tasks.filter((t) => t.status === 'inprogress').length,
+  onhold: $tasks.filter((t) => t.status === 'onhold').length,
+  cancelled: $tasks.filter((t) => t.status === 'cancelled').length,
 }));
 
 /** Derived: distinct projects from tasks */
 export const taskProjects = derived(tasks, ($tasks) => {
   const projects = new Set<string>();
-  $tasks.forEach(t => { if (t.project) projects.add(t.project); });
+  $tasks.forEach((t) => {
+    if (t.project) projects.add(t.project);
+  });
   return [...projects].sort();
 });
 
@@ -80,11 +79,11 @@ export async function toggleTask(task: Task): Promise<void> {
   try {
     await updateTaskStatus(task.source_path, task.line, newStatus);
     // Optimistic update
-    tasks.update(all => all.map(t =>
-      t.source_path === task.source_path && t.line === task.line
-        ? { ...t, status: newStatus }
-        : t
-    ));
+    tasks.update((all) =>
+      all.map((t) =>
+        t.source_path === task.source_path && t.line === task.line ? { ...t, status: newStatus } : t
+      )
+    );
     // Award XP when completing a task
     if (newStatus === 'done') {
       const { recordTaskCompleted } = await import('@/features/gamify');
@@ -97,8 +96,10 @@ export async function toggleTask(task: Task): Promise<void> {
 }
 
 /** Persist filter to localStorage when it changes */
-taskFilter.subscribe(filter => {
+taskFilter.subscribe((filter) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filter));
-  } catch (e) { log.warn('Failed to persist task filter to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist task filter to localStorage', { error: String(e) });
+  }
 });

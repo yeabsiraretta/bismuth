@@ -14,13 +14,19 @@ export function extractLayout(elements: CanvasElement[]): LayoutPayload | null {
   const primary = layoutFrames[0];
   const autoLayout = primary.properties.autoLayout;
 
-  const regions: LayoutRegion[] = (elements.filter((el) => el.parentId === primary.id)).map((child) => ({
-    name: child.name || child.id,
-    grid_area: child.name?.toLowerCase().replace(/\s+/g, '-') || child.id,
-    min_width: (child.properties.constraints as Record<string, unknown> | undefined)?.['minWidth'] as number | undefined,
-    max_width: (child.properties.constraints as Record<string, unknown> | undefined)?.['maxWidth'] as number | undefined,
-    flex: autoLayout?.direction === 'horizontal' ? 1 : undefined,
-  }));
+  const regions: LayoutRegion[] = elements
+    .filter((el) => el.parentId === primary.id)
+    .map((child) => ({
+      name: child.name || child.id,
+      grid_area: child.name?.toLowerCase().replace(/\s+/g, '-') || child.id,
+      min_width: (child.properties.constraints as Record<string, unknown> | undefined)?.[
+        'minWidth'
+      ] as number | undefined,
+      max_width: (child.properties.constraints as Record<string, unknown> | undefined)?.[
+        'maxWidth'
+      ] as number | undefined,
+      flex: autoLayout?.direction === 'horizontal' ? 1 : undefined,
+    }));
 
   return {
     layout_name: primary.name || 'Layout',

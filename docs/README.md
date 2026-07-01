@@ -105,20 +105,20 @@ Or automate with a GitHub Action that syncs on push to `main`.
 
 ## Quick Reference
 
-| Need | Document |
-|------|----------|
-| Architecture overview | [overview.md](architecture/overview.md) |
-| AI workflows & extensions | [extension-integration.md](development/extension-integration.md) |
-| IPC API reference | [api-spec.md](reference/api-spec.md) |
-| Canvas system | [bismuth-canvas-system.md](architecture/bismuth-canvas-system.md) |
-| Start developing | [getting-started.md](guides/getting-started.md) |
-| Contributing | [contributing.md](guides/contributing.md) |
-| Build a feature | [feature-development-guide.md](guides/feature-development-guide.md) |
-| Design tokens | [design-system.md](standards/design-system.md) |
-| Naming rules | [naming-conventions.md](standards/naming-conventions.md) |
-| Git branching | [git-workflow.md](reference/git-workflow.md) |
-| Project layout | [folder-structure.md](reference/folder-structure.md) |
-| Governed pipeline | [CLAUDE.md](../CLAUDE.md) |
+| Need                      | Document                                                            |
+| ------------------------- | ------------------------------------------------------------------- |
+| Architecture overview     | [overview.md](architecture/overview.md)                             |
+| AI workflows & extensions | [extension-integration.md](development/extension-integration.md)    |
+| IPC API reference         | [api-spec.md](reference/api-spec.md)                                |
+| Canvas system             | [bismuth-canvas-system.md](architecture/bismuth-canvas-system.md)   |
+| Start developing          | [getting-started.md](guides/getting-started.md)                     |
+| Contributing              | [contributing.md](guides/contributing.md)                           |
+| Build a feature           | [feature-development-guide.md](guides/feature-development-guide.md) |
+| Design tokens             | [design-system.md](standards/design-system.md)                      |
+| Naming rules              | [naming-conventions.md](standards/naming-conventions.md)            |
+| Git branching             | [git-workflow.md](reference/git-workflow.md)                        |
+| Project layout            | [folder-structure.md](reference/folder-structure.md)                |
+| Governed pipeline         | [CLAUDE.md](../CLAUDE.md)                                           |
 
 ---
 

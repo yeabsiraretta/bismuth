@@ -16,7 +16,12 @@ const mockJournal: JournalConfig = {
   startDate: null,
   endCondition: { mode: 'never' },
   indexConfig: null,
-  frontmatter: { journalField: 'journal', dateField: 'date', addStartEndDates: false, indexField: null },
+  frontmatter: {
+    journalField: 'journal',
+    dateField: 'date',
+    addStartEndDates: false,
+    indexField: null,
+  },
   decorations: [],
 };
 

@@ -2,9 +2,9 @@
 description: Launch the interactive wireframe viewer in a browser
 ---
 
-
 <!-- Extension: wireframe -->
 <!-- Config: .specify/extensions/wireframe/ -->
+
 # speckit.wireframe.view
 
 Open the interactive viewer for all wireframes in this project. Side-navigation auto-discovered from `specs/*/wireframes/*.svg`, with keyboard shortcuts, zoom, focus mode, and status badges derived from `.issues.md` files.
@@ -16,6 +16,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - `--port N` — override default port 3000
 - `--no-open` — start the server but don't auto-open the browser
 - `--rebuild-manifest` — regenerate the wireframes-manifest.json before launching

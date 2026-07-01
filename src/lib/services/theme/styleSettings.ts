@@ -7,7 +7,10 @@ export async function scanStyleSettings(): Promise<SettingsBlock[]> {
 }
 
 /** Save custom token overrides to vault .bismuth/style.json */
-export async function saveCustomTokens(vaultRoot: string, tokens: Record<string, string>): Promise<void> {
+export async function saveCustomTokens(
+  vaultRoot: string,
+  tokens: Record<string, string>
+): Promise<void> {
   await ipcCall<void>('save_custom_tokens', { vaultRoot, tokens });
 }
 

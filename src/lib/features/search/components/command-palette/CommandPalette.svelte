@@ -19,7 +19,11 @@
   let searchQuery = '';
   let selectedIndex = 0;
 
-  $: if (searchQuery.startsWith('>')) { mode = 'commands'; } else { mode = 'notes'; }
+  $: if (searchQuery.startsWith('>')) {
+    mode = 'commands';
+  } else {
+    mode = 'notes';
+  }
   $: effectiveQuery = mode === 'commands' ? searchQuery.slice(1).trim() : searchQuery;
   $: filteredNotes = mode === 'notes' ? filterNotes($notes, effectiveQuery) : [];
   $: filteredCommands = mode === 'commands' ? filterCommands($commandsStore, effectiveQuery) : [];
@@ -29,15 +33,19 @@
     if (!isOpen) return;
     switch (event.key) {
       case 'Escape':
-        event.preventDefault(); onClose(); break;
+        event.preventDefault();
+        onClose();
+        break;
       case 'ArrowDown':
         event.preventDefault();
         selectedIndex = navigateIndex('down', selectedIndex, totalItems);
-        scrollToIndex(selectedIndex); break;
+        scrollToIndex(selectedIndex);
+        break;
       case 'ArrowUp':
         event.preventDefault();
         selectedIndex = navigateIndex('up', selectedIndex, totalItems);
-        scrollToIndex(selectedIndex); break;
+        scrollToIndex(selectedIndex);
+        break;
       case 'Enter':
         event.preventDefault();
         if (mode === 'notes' && filteredNotes[selectedIndex]) {
@@ -94,8 +102,13 @@
     }, 50);
   }
 
-  $: if (!isOpen && trap) { trap.deactivate(); trap = null; }
-  $: if (effectiveQuery !== undefined) { selectedIndex = 0; }
+  $: if (!isOpen && trap) {
+    trap.deactivate();
+    trap = null;
+  }
+  $: if (effectiveQuery !== undefined) {
+    selectedIndex = 0;
+  }
 </script>
 
 {#if isOpen}
@@ -182,23 +195,128 @@
 {/if}
 
 <style>
-  .command-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: flex-start; justify-content: center; padding-top: calc(15vh / var(--ui-scale, 1)); z-index: 1000; }
-  .command-palette { width: 90%; max-width: 600px; max-height: calc(60vh / var(--ui-scale, 1)); background-color: var(--background-primary); border-radius: var(--radius-m); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; overflow: hidden; }
-  .command-header { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
-  .command-input { flex: 1; background: none; border: none; color: var(--text-normal); font-size: 16px; outline: none; }
-  .command-input::placeholder { color: var(--text-faint); }
-  .command-results { flex: 1; overflow-y: auto; padding: 8px; }
-  .command-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; background: none; border: none; border-radius: var(--radius-s); cursor: pointer; transition: background-color 0.15s ease; text-align: left; }
-  .command-item:hover { background-color: var(--interactive-hover); }
-  .command-item.selected { background-color: var(--interactive-accent); }
-  .command-item.selected .command-name, .command-item.selected .command-description, .command-item.selected .command-shortcut { color: var(--text-on-accent); }
-  .command-info { flex: 1; }
-  .command-name { font-size: 14px; font-weight: 500; color: var(--text-normal); margin-bottom: 2px; }
-  .command-description { font-size: 12px; color: var(--text-muted); }
-  .command-shortcut { padding: 4px 8px; background-color: var(--background-modifier-border); border-radius: 4px; font-size: 11px; font-family: var(--font-monospace); color: var(--text-faint); }
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 32px; gap: 12px; color: var(--text-muted); text-align: center; }
-  .empty-state p { font-size: 14px; margin: 0; }
-  .command-footer { display: flex; gap: 16px; padding: 12px 20px; border-top: 1px solid var(--border-color); background-color: var(--background-secondary); }
-  .hint { font-size: 11px; color: var(--text-muted); }
-  .hint kbd { padding: 2px 6px; background-color: var(--background-modifier-border); border-radius: 3px; font-family: var(--font-monospace); font-size: 10px; }
+  .command-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: calc(15vh / var(--ui-scale, 1));
+    z-index: 1000;
+  }
+  .command-palette {
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(60vh / var(--ui-scale, 1));
+    background-color: var(--background-primary);
+    border-radius: var(--radius-m);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .command-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .command-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-normal);
+    font-size: 16px;
+    outline: none;
+  }
+  .command-input::placeholder {
+    color: var(--text-faint);
+  }
+  .command-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .command-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    text-align: left;
+  }
+  .command-item:hover {
+    background-color: var(--interactive-hover);
+  }
+  .command-item.selected {
+    background-color: var(--interactive-accent);
+  }
+  .command-item.selected .command-name,
+  .command-item.selected .command-description,
+  .command-item.selected .command-shortcut {
+    color: var(--text-on-accent);
+  }
+  .command-info {
+    flex: 1;
+  }
+  .command-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-normal);
+    margin-bottom: 2px;
+  }
+  .command-description {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .command-shortcut {
+    padding: 4px 8px;
+    background-color: var(--background-modifier-border);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-monospace);
+    color: var(--text-faint);
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 32px;
+    gap: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .empty-state p {
+    font-size: 14px;
+    margin: 0;
+  }
+  .command-footer {
+    display: flex;
+    gap: 16px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-secondary);
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .hint kbd {
+    padding: 2px 6px;
+    background-color: var(--background-modifier-border);
+    border-radius: 3px;
+    font-family: var(--font-monospace);
+    font-size: 10px;
+  }
 </style>

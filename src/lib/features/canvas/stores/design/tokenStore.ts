@@ -104,9 +104,7 @@ export function deleteCollection(collectionId: string): void {
 /** Adds a token to a specific collection. */
 export function addToken(collectionId: string, token: DesignToken): void {
   tokenCollections.update((cols) =>
-    cols.map((c) =>
-      c.id === collectionId ? { ...c, tokens: [...c.tokens, token] } : c
-    )
+    cols.map((c) => (c.id === collectionId ? { ...c, tokens: [...c.tokens, token] } : c))
   );
 }
 
@@ -125,9 +123,7 @@ export function updateToken(collectionId: string, token: DesignToken): void {
 export function deleteToken(collectionId: string, tokenId: string): void {
   tokenCollections.update((cols) =>
     cols.map((c) =>
-      c.id === collectionId
-        ? { ...c, tokens: c.tokens.filter((t) => t.id !== tokenId) }
-        : c
+      c.id === collectionId ? { ...c, tokens: c.tokens.filter((t) => t.id !== tokenId) } : c
     )
   );
 }
@@ -149,17 +145,13 @@ export function applyTokenToElement(
 
 /** Removes a token binding from an element property. */
 export function removeTokenBinding(property: string): void {
-  selectedElementBindings.update((bindings) =>
-    bindings.filter((b) => b.property !== property)
-  );
+  selectedElementBindings.update((bindings) => bindings.filter((b) => b.property !== property));
 }
 
 /** Loads token collections from persisted data. */
 export function loadCollections(collections: TokenCollection[]): void {
   tokenCollections.set(collections);
-  const defaultMode = collections
-    .flatMap((c) => c.modes)
-    .find((m) => m.isDefault);
+  const defaultMode = collections.flatMap((c) => c.modes).find((m) => m.isDefault);
   if (defaultMode) {
     activeMode.set(defaultMode.id);
   }

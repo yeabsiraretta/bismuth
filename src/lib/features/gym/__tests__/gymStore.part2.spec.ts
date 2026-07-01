@@ -192,9 +192,9 @@ describe('gymStore — updateNutritionEntry', () => {
   it('throws on service error', async () => {
     vi.mocked(gymService.addNutrition).mockRejectedValueOnce(new Error('Write fail'));
 
-    await expect(
-      updateNutritionEntry(VAULT_ROOT, VAULT_ID, TODAY, 'Lunch'),
-    ).rejects.toThrow('Write fail');
+    await expect(updateNutritionEntry(VAULT_ROOT, VAULT_ID, TODAY, 'Lunch')).rejects.toThrow(
+      'Write fail'
+    );
   });
 });
 

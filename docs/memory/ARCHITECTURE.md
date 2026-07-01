@@ -73,6 +73,7 @@ Update the review date when boundaries, ownership, or integrations materially ch
 **Constraint**: Rust commands that join a user-provided `id: String` into a path via `dir.join(format!("{}.ext", id))` MUST validate the ID before path construction. A malicious `id` containing `../` sequences can escape the vault boundary.
 
 **Required pattern**:
+
 ```rust
 fn validate_id(id: &str) -> Result<(), String> {
     if id.is_empty() || id.len() > 128 { return Err("ID must be 1–128 chars".into()); }
@@ -82,6 +83,7 @@ fn validate_id(id: &str) -> Result<(), String> {
     Ok(())
 }
 ```
+
 Also: use `Mutex::map_err(|_| "lock poisoned")` instead of `Mutex::unwrap()` at command boundaries to prevent panic-on-poisoned-lock (SEC-004).
 
 **Evidence**: SEC-001 (High) and SEC-004 (Low) from spec 004 security review; fixed in `src-tauri/src/commands/canvas/component.rs`.
@@ -99,9 +101,13 @@ Also: use `Mutex::map_err(|_| "lock poisoned")` instead of `Mutex::unwrap()` at 
 **Constraint**: Components MUST NOT import `ipcCall` or `@tauri-apps/api/core`. All IPC calls MUST go through a named service function in the feature's `services/` layer. If no service exists for the operation, create one before writing the component.
 
 **Required pattern**:
+
 ```typescript
 // services/llmConfig.ts
-export async function writeVaultLlmConfig(vaultRoot: string, config: VaultLlmConfig): Promise<void> {
+export async function writeVaultLlmConfig(
+  vaultRoot: string,
+  config: VaultLlmConfig
+): Promise<void> {
   return ipcCall<void>('write_vault_llm_config', { vaultRoot, config });
 }
 

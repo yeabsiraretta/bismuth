@@ -1,6 +1,18 @@
 import { writable, derived, get } from 'svelte/store';
-import { scanPublishableNotes, publishSite, togglePublishFlag as serviceTogglePublishFlag } from '../services/publishing';
-import type { DeployTarget, PublishableNote, PublishConfig, PublishResult, PublishStatus, PublishHistoryEntry, SiteSettings } from '../types';
+import {
+  scanPublishableNotes,
+  publishSite,
+  togglePublishFlag as serviceTogglePublishFlag,
+} from '../services/publishing';
+import type {
+  DeployTarget,
+  PublishableNote,
+  PublishConfig,
+  PublishResult,
+  PublishStatus,
+  PublishHistoryEntry,
+  SiteSettings,
+} from '../types';
 import { log } from '@/utils/logger';
 
 const SETTINGS_KEY = 'bismuth-publish-settings';
@@ -17,8 +29,12 @@ export const deployStatus = writable<'idle' | 'deploying' | 'success' | 'error'>
 /** Derived: counts by status */
 export const publishStats = derived(publishableNotes, ($notes) => ({
   total: $notes.length,
-  published: $notes.filter(n => (n as PublishableNote & { status?: PublishStatus }).status === 'published').length,
-  draft: $notes.filter(n => (n as PublishableNote & { status?: PublishStatus }).status !== 'published').length,
+  published: $notes.filter(
+    (n) => (n as PublishableNote & { status?: PublishStatus }).status === 'published'
+  ).length,
+  draft: $notes.filter(
+    (n) => (n as PublishableNote & { status?: PublishStatus }).status !== 'published'
+  ).length,
 }));
 
 /** Refreshes the list of publishable notes. */
@@ -46,7 +62,7 @@ export async function triggerPublish(config: PublishConfig): Promise<PublishResu
       status: 'success',
       message: `Published ${get(publishableNotes).length} notes`,
     };
-    publishHistory.update(h => [entry, ...h].slice(0, 50));
+    publishHistory.update((h) => [entry, ...h].slice(0, 50));
     persistHistory();
     log.info('Site published', { noteCount: entry.noteCount });
     return result;
@@ -57,7 +73,7 @@ export async function triggerPublish(config: PublishConfig): Promise<PublishResu
       status: 'error',
       message: `Publish failed: ${error}`,
     };
-    publishHistory.update(h => [entry, ...h].slice(0, 50));
+    publishHistory.update((h) => [entry, ...h].slice(0, 50));
     persistHistory();
     throw error;
   } finally {
@@ -94,7 +110,7 @@ export async function publishAll(): Promise<void> {
       status: 'success',
       message: `Published all ${notes.length} notes`,
     };
-    publishHistory.update(h => [entry, ...h].slice(0, 50));
+    publishHistory.update((h) => [entry, ...h].slice(0, 50));
     persistHistory();
     log.info('Bulk publish all', { noteCount: notes.length });
   } catch (error) {
@@ -121,7 +137,7 @@ export async function unpublishAll(): Promise<void> {
       status: 'success',
       message: `Unpublished all ${notes.length} notes`,
     };
-    publishHistory.update(h => [entry, ...h].slice(0, 50));
+    publishHistory.update((h) => [entry, ...h].slice(0, 50));
     persistHistory();
     log.info('Bulk unpublish all', { noteCount: notes.length });
   } catch (error) {
@@ -134,7 +150,7 @@ export async function unpublishAll(): Promise<void> {
 
 /** Update site settings */
 export function updateSiteSettings(updates: Partial<SiteSettings>): void {
-  siteSettings.update(s => {
+  siteSettings.update((s) => {
     const next = { ...s, ...updates };
     persistSiteSettings(next);
     return next;
@@ -145,21 +161,40 @@ function loadSiteSettings(): SiteSettings {
   try {
     const stored = localStorage.getItem(SETTINGS_KEY);
     if (stored) return JSON.parse(stored);
-  } catch (e) { log.warn('Failed to load site settings from localStorage', { error: String(e) }); }
-  return { title: 'My Site', description: '', outputFormat: 'html', theme: 'default', outputDir: '.bismuth/publish/output' };
+  } catch (e) {
+    log.warn('Failed to load site settings from localStorage', { error: String(e) });
+  }
+  return {
+    title: 'My Site',
+    description: '',
+    outputFormat: 'html',
+    theme: 'default',
+    outputDir: '.bismuth/publish/output',
+  };
 }
 
 function persistSiteSettings(s: SiteSettings): void {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) { log.warn('Failed to persist site settings', { error: String(e) }); }
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  } catch (e) {
+    log.warn('Failed to persist site settings', { error: String(e) });
+  }
 }
 
 function loadHistory(): PublishHistoryEntry[] {
   try {
     const stored = localStorage.getItem(HISTORY_KEY);
     return stored ? JSON.parse(stored) : [];
-  } catch (e) { log.warn('Failed to load publish history from localStorage', { error: String(e) }); return []; }
+  } catch (e) {
+    log.warn('Failed to load publish history from localStorage', { error: String(e) });
+    return [];
+  }
 }
 
 function persistHistory(): void {
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(get(publishHistory))); } catch (e) { log.warn('Failed to persist publish history', { error: String(e) }); }
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(get(publishHistory)));
+  } catch (e) {
+    log.warn('Failed to persist publish history', { error: String(e) });
+  }
 }

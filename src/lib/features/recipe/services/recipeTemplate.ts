@@ -82,9 +82,9 @@ export function splitTags(value: string): string {
   if (!value) return '';
   return value
     .split(',')
-    .map(t => t.trim())
+    .map((t) => t.trim())
     .filter(Boolean)
-    .map(t => `  - ${t}`)
+    .map((t) => `  - ${t}`)
     .join('\n');
 }
 
@@ -131,12 +131,14 @@ function processEachBlocks(template: string, ctx: RecipeContext): string {
   return template.replace(eachRe, (_match, field: string, body: string) => {
     const arr = resolveField(ctx, field);
     if (!Array.isArray(arr)) return '';
-    return arr.map((item, i) => {
-      return body
-        .replace(/\{\{this\}\}/g, String(item))
-        .replace(/\{\{@index\}\}/g, String(i))
-        .replace(/\{\{@number\}\}/g, String(i + 1));
-    }).join('');
+    return arr
+      .map((item, i) => {
+        return body
+          .replace(/\{\{this\}\}/g, String(item))
+          .replace(/\{\{@index\}\}/g, String(i))
+          .replace(/\{\{@number\}\}/g, String(i + 1));
+      })
+      .join('');
   });
 }
 
@@ -159,9 +161,7 @@ export function applyRecipeTemplate(template: string, data: GrabbedRecipeData): 
   // Process helper calls: {{helperName arg1 "arg2"}}
   const helperRe = /\{\{(magicTime|splitTags)(?:\s+([^}]*))?\}\}/g;
   result = result.replace(helperRe, (_m, helper: string, argsStr: string) => {
-    const args = argsStr
-      ? argsStr.trim().split(/\s+/).filter(Boolean)
-      : [];
+    const args = argsStr ? argsStr.trim().split(/\s+/).filter(Boolean) : [];
     return processHelper(helper, args, ctx);
   });
 

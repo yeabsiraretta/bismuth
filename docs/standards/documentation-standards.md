@@ -7,6 +7,7 @@
 **Format**: `lowercase-with-hyphens.md`
 
 **Rules**:
+
 - All lowercase letters
 - Words separated by hyphens (kebab-case)
 - Descriptive, concise names
@@ -14,6 +15,7 @@
 - Extension: `.md`
 
 **Examples**:
+
 - ✅ `tailwind-integration.md`
 - ✅ `graph-view-implementation.md`
 - ✅ `design-system-quick-reference.md`
@@ -96,11 +98,13 @@ npm install package
 ### Links
 
 **Internal Links** (relative):
+
 ```markdown
 See [Architecture Proposal](./architecture/bismuth-architecture-proposal.md)
 ```
 
 **External Links**:
+
 ```markdown
 See [Tailwind Docs](https://tailwindcss.com/docs)
 ```
@@ -122,6 +126,7 @@ status: draft | review | complete
 ## Writing Style
 
 ### Tone
+
 - Clear and concise
 - Technical but accessible
 - Active voice preferred
@@ -129,6 +134,7 @@ status: draft | review | complete
 - Past tense for completed work
 
 ### Formatting
+
 - **Bold** for emphasis
 - `code` for inline code, commands, file names
 - > Blockquotes for important notes
@@ -138,6 +144,7 @@ status: draft | review | complete
 ### Examples
 
 **Good**:
+
 ```markdown
 ## Installation
 
@@ -155,6 +162,7 @@ npx tailwindcss init -p
 ```
 
 **Bad**:
+
 ```markdown
 ## Installation
 
@@ -182,13 +190,16 @@ docs: fix typo in naming conventions
 ## Maintenance
 
 ### Regular Updates
+
 - Review quarterly for accuracy
 - Update examples when code changes
 - Archive outdated documents
 - Keep status docs current
 
 ### Deprecation
+
 When deprecating a document:
+
 1. Add `[DEPRECATED]` to title
 2. Add deprecation notice at top
 3. Link to replacement document
@@ -207,6 +218,7 @@ Use templates for consistency:
 ### Pre-commit Hooks
 
 Validate documentation:
+
 - Check file naming (lowercase-with-hyphens)
 - Verify markdown syntax
 - Check for broken links
@@ -222,6 +234,7 @@ Validate documentation:
 ## Quick Reference
 
 **Creating New Doc**:
+
 1. Choose appropriate directory
 2. Use lowercase-with-hyphens.md naming
 3. Start with template
@@ -231,6 +244,7 @@ Validate documentation:
 7. Commit with `docs:` prefix
 
 **Updating Existing Doc**:
+
 1. Check current accuracy
 2. Update content
 3. Update date/version if using frontmatter
@@ -240,12 +254,14 @@ Validate documentation:
 ## Tools
 
 **Recommended**:
+
 - **Markdown linter**: markdownlint
 - **Link checker**: markdown-link-check
 - **Formatter**: prettier
 - **Preview**: VS Code Markdown Preview
 
 **VS Code Extensions**:
+
 - Markdown All in One
 - markdownlint
 - Markdown Preview Enhanced

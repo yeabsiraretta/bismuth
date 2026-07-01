@@ -1,7 +1,12 @@
 import { get } from 'svelte/store';
 import type { ComponentDefinition } from '@/features/canvas/types';
 import { currentCanvas, clearSelection } from '../elements/canvasStore';
-import { editingComponentId, getComponentById, saveComponentToLibrary, deleteComponentFromLibrary } from './componentLibrary';
+import {
+  editingComponentId,
+  getComponentById,
+  saveComponentToLibrary,
+  deleteComponentFromLibrary,
+} from './componentLibrary';
 import { log } from '@/utils/logger';
 
 /** Snapshot of the canvas elements before entering component edit mode. */

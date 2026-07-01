@@ -4,7 +4,14 @@ import WorkflowBadge from '../WorkflowBadge.svelte';
 import type { WorkflowCategory } from '../workflowBadgeTypes';
 
 const categories: WorkflowCategory[] = [
-  'draft', 'active', 'complete', 'blocked', 'archived', 'review', 'published', 'pending',
+  'draft',
+  'active',
+  'complete',
+  'blocked',
+  'archived',
+  'review',
+  'published',
+  'pending',
 ];
 
 describe('WorkflowBadge', () => {
@@ -14,7 +21,9 @@ describe('WorkflowBadge', () => {
   });
 
   it('renders label text', () => {
-    const { getByText } = render(WorkflowBadge, { props: { category: 'draft', label: 'In Draft' } });
+    const { getByText } = render(WorkflowBadge, {
+      props: { category: 'draft', label: 'In Draft' },
+    });
     expect(getByText('In Draft')).toBeTruthy();
   });
 
@@ -32,7 +41,9 @@ describe('WorkflowBadge', () => {
   });
 
   it('has role=status and aria-live=polite', () => {
-    const { container } = render(WorkflowBadge, { props: { category: 'pending', label: 'Pending' } });
+    const { container } = render(WorkflowBadge, {
+      props: { category: 'pending', label: 'Pending' },
+    });
     const el = container.querySelector('.workflow-badge');
     expect(el?.getAttribute('role')).toBe('status');
     expect(el?.getAttribute('aria-live')).toBe('polite');

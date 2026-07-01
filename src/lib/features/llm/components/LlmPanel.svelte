@@ -27,7 +27,9 @@
 
   $: changeCount = $pendingChanges.length;
 
-  onMount(() => { initConversations(); });
+  onMount(() => {
+    initConversations();
+  });
 </script>
 
 <div class="llm-panel">
@@ -38,7 +40,9 @@
         role="tab"
         aria-selected={activeTab === tab.id}
         on:click={() => (activeTab = tab.id)}
-        aria-label="{tab.label}{tab.id === 'changes' && changeCount > 0 ? ` (${changeCount} pending)` : ''}"
+        aria-label="{tab.label}{tab.id === 'changes' && changeCount > 0
+          ? ` (${changeCount} pending)`
+          : ''}"
       >
         {tab.label}
         {#if tab.id === 'changes' && changeCount > 0}
@@ -73,18 +77,58 @@
 </div>
 
 <style>
-  .llm-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .tab-bar { display: flex; border-bottom: 1px solid var(--background-modifier-border); flex-shrink: 0; }
-  .tab-btn {
-    flex: 1; padding: var(--spacing-s) var(--spacing-xs); background: transparent;
-    border: none; border-bottom: 2px solid transparent; color: var(--text-muted);
-    cursor: pointer; font-size: var(--font-ui-small); display: flex; align-items: center;
-    justify-content: center; gap: 4px; transition: color 0.15s;
+  .llm-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
-  .tab-btn:hover { color: var(--text-normal); }
-  .tab-btn.active { color: var(--interactive-accent); border-bottom-color: var(--interactive-accent); }
-  .tab-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; background: var(--interactive-accent); color: var(--text-on-accent, #fff); border-radius: 8px; font-size: var(--font-smallest); font-weight: 600; padding: 0 4px; }
-  .tab-content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: var(--spacing-s) var(--spacing-xs);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: color 0.15s;
+  }
+  .tab-btn:hover {
+    color: var(--text-normal);
+  }
+  .tab-btn.active {
+    color: var(--interactive-accent);
+    border-bottom-color: var(--interactive-accent);
+  }
+  .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+    border-radius: 8px;
+    font-size: var(--font-smallest);
+    font-weight: 600;
+    padding: 0 4px;
+  }
+  .tab-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
   .chat-toolbar {
     display: flex;
     align-items: center;
@@ -106,11 +150,16 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .plan-toggle:hover { border-color: var(--interactive-accent); color: var(--text-normal); }
+  .plan-toggle:hover {
+    border-color: var(--interactive-accent);
+    color: var(--text-normal);
+  }
   .plan-toggle.active {
     background: var(--interactive-accent);
     color: var(--text-on-accent, #fff);
     border-color: var(--interactive-accent);
   }
-  .plan-label { font-weight: var(--font-medium, 500); }
+  .plan-label {
+    font-weight: var(--font-medium, 500);
+  }
 </style>

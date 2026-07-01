@@ -103,13 +103,25 @@ export function isToneReady(): boolean {
 }
 
 /** Create a polyphonic synthesizer. Must call initTone() first. */
-export function createMidiSynth(options?: Record<string, unknown>): InstanceType<typeof import('tone').PolySynth> {
+export function createMidiSynth(
+  options?: Record<string, unknown>
+): InstanceType<typeof import('tone').PolySynth> {
   if (!_Tone) throw new Error('[audioContext] Tone not initialized — call initTone() first');
   return new _Tone.PolySynth(_Tone.Synth, options).toDestination();
 }
 
 /** Schedule all MidiNote entries in a clip onto the Tone Transport timeline. */
-export function scheduleClip(clip: { midiNotes?: Array<{ pitch: number; startTick: number; durationTicks: number; velocity: number }> }, startBeat: number): void {
+export function scheduleClip(
+  clip: {
+    midiNotes?: Array<{
+      pitch: number;
+      startTick: number;
+      durationTicks: number;
+      velocity: number;
+    }>;
+  },
+  startBeat: number
+): void {
   if (!_Tone) {
     log.warn('[audioContext] scheduleClip called before Tone initialized');
     return;
@@ -217,8 +229,14 @@ export function muteTrack(trackId: string, muted: boolean, lastGain = 1.0): void
 export function removeTrackNodes(trackId: string): void {
   const gain = _gainNodes.get(trackId);
   const pan = _panNodes.get(trackId);
-  if (gain) { gain.disconnect(); _gainNodes.delete(trackId); }
-  if (pan) { pan.disconnect(); _panNodes.delete(trackId); }
+  if (gain) {
+    gain.disconnect();
+    _gainNodes.delete(trackId);
+  }
+  if (pan) {
+    pan.disconnect();
+    _panNodes.delete(trackId);
+  }
   log.debug('[audioContext] removeTrackNodes', { trackId });
 }
 

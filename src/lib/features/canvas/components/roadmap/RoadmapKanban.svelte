@@ -6,7 +6,8 @@
   export let elements: CanvasElement[] = [];
   export let canvasWidth: number = 1200;
   export let canvasHeight: number = 800;
-  export let onStatusDrop: ((detail: { id: string; status: FeatureCardData['status'] }) => void) | undefined = undefined;
+  export let onStatusDrop:
+    ((detail: { id: string; status: FeatureCardData['status'] }) => void) | undefined = undefined;
 
   type Status = FeatureCardData['status'];
 
@@ -42,16 +43,19 @@
     (el) => el.element_type === 'feature_card' && el.properties.featureCardData
   );
 
-  $: cardsByStatus = COLUMNS.reduce<Record<Status, CanvasElement[]>>((acc, col) => {
-    acc[col] = featureCards
-      .filter((el) => (el.properties.featureCardData as FeatureCardData).status === col)
-      .sort((a, b) => {
-        const ap = (a.properties.featureCardData as FeatureCardData).priority;
-        const bp = (b.properties.featureCardData as FeatureCardData).priority;
-        return ap - bp;
-      });
-    return acc;
-  }, {} as Record<Status, CanvasElement[]>);
+  $: cardsByStatus = COLUMNS.reduce<Record<Status, CanvasElement[]>>(
+    (acc, col) => {
+      acc[col] = featureCards
+        .filter((el) => (el.properties.featureCardData as FeatureCardData).status === col)
+        .sort((a, b) => {
+          const ap = (a.properties.featureCardData as FeatureCardData).priority;
+          const bp = (b.properties.featureCardData as FeatureCardData).priority;
+          return ap - bp;
+        });
+      return acc;
+    },
+    {} as Record<Status, CanvasElement[]>
+  );
 
   let dragCardId: string | null = null;
   let dragOverColumn: Status | null = null;
@@ -108,10 +112,7 @@
       on:dragover={(e) => handleDragOver(e, col)}
       on:drop={(e) => handleDrop(e, col)}
     >
-      <div
-        class="column-header"
-        style="color: {COLUMN_HEADER_COLORS[col]};"
-      >
+      <div class="column-header" style="color: {COLUMN_HEADER_COLORS[col]};">
         {COLUMN_LABELS[col]}
         <span class="column-count">{cardsByStatus[col]?.length ?? 0}</span>
       </div>
@@ -125,10 +126,16 @@
             on:dragend={handleDragEnd}
             role="listitem"
           >
-            <div class="card-title">{(card.properties.featureCardData as FeatureCardData).title}</div>
+            <div class="card-title">
+              {(card.properties.featureCardData as FeatureCardData).title}
+            </div>
             <div class="card-priority">
               {#each Array.from({ length: 5 }, (_, idx) => idx) as idx (idx)}
-                <span class="pip {idx < (card.properties.featureCardData as FeatureCardData).priority ? 'pip--filled' : ''}"></span>
+                <span
+                  class="pip {idx < (card.properties.featureCardData as FeatureCardData).priority
+                    ? 'pip--filled'
+                    : ''}"
+                ></span>
               {/each}
             </div>
           </div>
@@ -157,9 +164,13 @@
     transition: background 0.1s ease;
   }
 
-  .kanban-column:last-child { border-right: none; }
+  .kanban-column:last-child {
+    border-right: none;
+  }
 
-  .kanban-column--over { background: rgba(220, 38, 38, 0.07) !important; }
+  .kanban-column--over {
+    background: rgba(220, 38, 38, 0.07) !important;
+  }
 
   .column-header {
     padding: 10px 12px 6px;
@@ -201,7 +212,9 @@
     user-select: none;
   }
 
-  .kanban-card-wrapper:active { cursor: grabbing; }
+  .kanban-card-wrapper:active {
+    cursor: grabbing;
+  }
 
   .card-title {
     font-weight: 600;

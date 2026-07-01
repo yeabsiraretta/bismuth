@@ -74,7 +74,7 @@ error!(error = ?err, path = "/api/notes", "API call failed");
 use crate::log_with_context;
 
 // Using the custom macro
-log_with_context!(info, "Processing request", 
+log_with_context!(info, "Processing request",
     request_id = "abc123",
     user_id = "user_456",
     duration_ms = 150
@@ -108,12 +108,14 @@ export RUST_LOG=bismuth=debug  # Debug for bismuth, info for others
 ## Log Files
 
 ### Frontend
+
 - Stored in browser localStorage
 - Key: `bismuth_logs`
 - Last 100 entries persisted
 - Can be exported as JSON
 
 ### Backend
+
 - Location: `.bismuth/logs/bismuth.log`
 - Rotation: Daily
 - Format: Structured JSON-like format
@@ -122,6 +124,7 @@ export RUST_LOG=bismuth=debug  # Debug for bismuth, info for others
 ## Example Output
 
 ### Frontend Console
+
 ```
 [14:30:45] [INFO] Application started
 Context: { version: "0.0.1", mode: "development" }
@@ -134,6 +137,7 @@ Stack: Error: File not found
 ```
 
 ### Backend File
+
 ```
 2026-05-26T14:30:45.123Z INFO bismuth::main: Starting Bismuth PKM Editor
 2026-05-26T14:30:45.456Z INFO bismuth::main: Database initialized path="/Users/user/.bismuth/bismuth.db"
@@ -150,10 +154,11 @@ Stack: Error: File not found
    - FATAL: Severe errors that will lead to abort
 
 2. **Add context to logs**
+
    ```typescript
    // Good
    log.error('Failed to save note', error, { noteId, userId, timestamp });
-   
+
    // Bad
    log.error('Error');
    ```
@@ -163,10 +168,11 @@ Stack: Error: File not found
    - Sanitize user data before logging
 
 4. **Use structured logging**
+
    ```rust
    // Good
    info!(user_id = user.id, action = "login", "User logged in");
-   
+
    // Bad
    info!("User {} logged in", user.id);
    ```

@@ -12,9 +12,12 @@
   import { log } from '@/utils/logger';
 
   // Cast settings to include OCR fields (added by Spec 038 Phase 1)
-  $: ocrEnabled = ($settings as unknown as Record<string, unknown>).ocrEnabled as boolean ?? false;
-  $: ocrDefaultLanguage = ($settings as unknown as Record<string, unknown>).ocrDefaultLanguage as string ?? 'en';
-  $: ocrModelPath = ($settings as unknown as Record<string, unknown>).ocrModelPath as string ?? '';
+  $: ocrEnabled =
+    (($settings as unknown as Record<string, unknown>).ocrEnabled as boolean) ?? false;
+  $: ocrDefaultLanguage =
+    (($settings as unknown as Record<string, unknown>).ocrDefaultLanguage as string) ?? 'en';
+  $: ocrModelPath =
+    (($settings as unknown as Record<string, unknown>).ocrModelPath as string) ?? '';
 
   let showModelDownloadPrompt = false;
   let modelDownloadProgress = 0;
@@ -163,9 +166,14 @@
 
     {#if ocrEnabled && !ocrModelPath && showModelDownloadPrompt}
       <div class="model-download-prompt" role="alert">
-        <p>Handwriting model not installed. Download the TrOCR model (~400 MB) to enable Tier 2 recognition.</p>
+        <p>
+          Handwriting model not installed. Download the TrOCR model (~400 MB) to enable Tier 2
+          recognition.
+        </p>
         {#if modelDownloading}
-          <progress value={modelDownloadProgress} max={100} aria-label="Model download progress">{modelDownloadProgress}%</progress>
+          <progress value={modelDownloadProgress} max={100} aria-label="Model download progress"
+            >{modelDownloadProgress}%</progress
+          >
           <span class="download-pct">{modelDownloadProgress}%</span>
         {:else}
           <button class="download-btn" on:click={handleDownloadModel}>
@@ -239,14 +247,16 @@
     display: inline-block;
     width: 12px;
     height: 12px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .staged-msg {

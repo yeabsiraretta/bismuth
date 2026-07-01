@@ -7,11 +7,7 @@
  */
 
 import { log } from '@/utils/logger';
-import type {
-  ConversionConfig,
-  ResizeMode,
-  FlipDirection,
-} from '../types/media';
+import type { ConversionConfig, ResizeMode, FlipDirection } from '../types/media';
 import { FORMAT_MIME_MAP } from '../types/media';
 
 /** Load an image from a URL or data URL. */
@@ -30,7 +26,7 @@ export function computeResizeDimensions(
   srcW: number,
   srcH: number,
   mode: ResizeMode,
-  value: number,
+  value: number
 ): { width: number; height: number } {
   const aspect = srcW / srcH;
   switch (mode) {
@@ -64,7 +60,7 @@ function applyFlip(
   ctx: CanvasRenderingContext2D,
   direction: FlipDirection,
   width: number,
-  height: number,
+  height: number
 ): void {
   if (direction === 'horizontal') {
     ctx.translate(width, 0);
@@ -79,10 +75,7 @@ function applyFlip(
  * Convert an image source (URL or data URL) to a Blob in the target format.
  * Pure Canvas-based — works completely offline.
  */
-export async function convertImage(
-  src: string,
-  config: ConversionConfig,
-): Promise<Blob> {
+export async function convertImage(src: string, config: ConversionConfig): Promise<Blob> {
   const img = await loadImage(src);
   let { naturalWidth: w, naturalHeight: h } = img;
 
@@ -110,9 +103,9 @@ export async function convertImage(
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
-      (blob) => blob ? resolve(blob) : reject(new Error('canvas.toBlob returned null')),
+      (blob) => (blob ? resolve(blob) : reject(new Error('canvas.toBlob returned null'))),
       mime,
-      quality,
+      quality
     );
   });
 }
@@ -122,7 +115,7 @@ export async function convertImage(
  */
 export async function convertImageToDataUrl(
   src: string,
-  config: ConversionConfig,
+  config: ConversionConfig
 ): Promise<string> {
   const img = await loadImage(src);
   let { naturalWidth: w, naturalHeight: h } = img;
@@ -153,9 +146,7 @@ export async function convertImageToDataUrl(
 /**
  * Read image dimensions from a source URL without loading full pixel data.
  */
-export async function getImageDimensions(
-  src: string,
-): Promise<{ width: number; height: number }> {
+export async function getImageDimensions(src: string): Promise<{ width: number; height: number }> {
   const img = await loadImage(src);
   return { width: img.naturalWidth, height: img.naturalHeight };
 }
@@ -164,10 +155,7 @@ export async function getImageDimensions(
  * Estimate output file size by converting and measuring blob size.
  * Returns bytes.
  */
-export async function estimateOutputSize(
-  src: string,
-  config: ConversionConfig,
-): Promise<number> {
+export async function estimateOutputSize(src: string, config: ConversionConfig): Promise<number> {
   try {
     const blob = await convertImage(src, config);
     return blob.size;
@@ -180,10 +168,7 @@ export async function estimateOutputSize(
 /**
  * Convert a File/Blob from clipboard or drag-drop to the target format.
  */
-export async function convertBlob(
-  blob: Blob,
-  config: ConversionConfig,
-): Promise<Blob> {
+export async function convertBlob(blob: Blob, config: ConversionConfig): Promise<Blob> {
   const dataUrl = await blobToDataUrl(blob);
   return convertImage(dataUrl, config);
 }

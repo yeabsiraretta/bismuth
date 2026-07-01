@@ -1,7 +1,12 @@
 import { writable, derived, get } from 'svelte/store';
 import type { ComponentDefinition } from '@/features/canvas/types';
 import * as componentService from '@/features/canvas/services/components';
-import { currentCanvas, selectedElements, clearSelection, selectElement } from '../elements/canvasStore';
+import {
+  currentCanvas,
+  selectedElements,
+  clearSelection,
+  selectElement,
+} from '../elements/canvasStore';
 import { addElement } from '../elements/canvasElements';
 import { BUILTIN_COMPONENTS } from '@/config/presets/canvas-library';
 import { generatePrefixedId } from '@/utils/id';
@@ -28,7 +33,6 @@ export const categoryFilter = writable<string | null>(null);
 
 /** ID of the component currently being edited (null = not in edit mode). */
 export const editingComponentId = writable<string | null>(null);
-
 
 // ─── Derived ─────────────────────────────────────────────────────────────────
 
@@ -230,7 +234,11 @@ export async function createComponentFromSelection(
   addElement(instanceElement);
   selectElement(instanceId);
 
-  log.info('Created component from selection', { id: saved.id, name: saved.name, elementCount: normalizedElements.length });
+  log.info('Created component from selection', {
+    id: saved.id,
+    name: saved.name,
+    elementCount: normalizedElements.length,
+  });
   return saved;
 }
 
@@ -242,11 +250,7 @@ export async function createComponentFromSelection(
  * @param y - Canvas Y position.
  * @returns The created instance element ID.
  */
-export function placeComponentInstance(
-  definitionId: string,
-  x: number,
-  y: number
-): string | null {
+export function placeComponentInstance(definitionId: string, x: number, y: number): string | null {
   const definition = getComponentById(definitionId);
   if (!definition) {
     log.warn('placeComponentInstance: definition not found', { definitionId });

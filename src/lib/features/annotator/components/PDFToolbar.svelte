@@ -35,9 +35,13 @@
 </script>
 
 <div class="pdf-toolbar">
-  <button on:click={() => dispatch('prev')} disabled={currentPage <= 1} title="Previous page">←</button>
+  <button on:click={() => dispatch('prev')} disabled={currentPage <= 1} title="Previous page"
+    >←</button
+  >
   <span class="page-info">{currentPage} / {totalPages}</span>
-  <button on:click={() => dispatch('next')} disabled={currentPage >= totalPages} title="Next page">→</button>
+  <button on:click={() => dispatch('next')} disabled={currentPage >= totalPages} title="Next page"
+    >→</button
+  >
   <input
     class="page-input"
     type="text"
@@ -85,10 +89,19 @@
     cursor: pointer;
     font-size: var(--font-size-sm);
   }
-  .pdf-toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
-  .page-info, .zoom-info { min-width: 60px; text-align: center; color: var(--text-secondary); }
+  .pdf-toolbar button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .page-info,
+  .zoom-info {
+    min-width: 60px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
   .page-input {
-    width: 48px; padding: 1px 4px;
+    width: 48px;
+    padding: 1px 4px;
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-sm);
     background: var(--bg-secondary);
@@ -96,15 +109,29 @@
     font-size: var(--font-size-xs);
     text-align: center;
   }
-  .separator { color: var(--text-muted); }
-  .color-palette-bar { display: flex; gap: 3px; align-items: center; }
+  .separator {
+    color: var(--text-muted);
+  }
+  .color-palette-bar {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
   .palette-swatch {
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid transparent; cursor: pointer; padding: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
   }
   .palette-swatch.active {
     border-color: var(--text-primary);
     box-shadow: 0 0 0 1px var(--bg-primary);
   }
-  .copy-feedback { font-size: var(--font-size-xs); color: var(--text-accent); font-weight: 600; }
+  .copy-feedback {
+    font-size: var(--font-size-xs);
+    color: var(--text-accent);
+    font-weight: 600;
+  }
 </style>

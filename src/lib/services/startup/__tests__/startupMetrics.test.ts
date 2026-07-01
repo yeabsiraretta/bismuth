@@ -9,7 +9,8 @@ describe('startupMetrics', () => {
   });
 
   it('replaces previous value on subsequent calls (no accumulation)', async () => {
-    const { recordStartupDuration, lastDuration, startupHistory } = await import('../startupMetrics');
+    const { recordStartupDuration, lastDuration, startupHistory } =
+      await import('../startupMetrics');
     recordStartupDuration(500);
     recordStartupDuration(1500);
     expect(get(lastDuration)).toBe(1500);

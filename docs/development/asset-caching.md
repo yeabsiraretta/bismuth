@@ -47,8 +47,8 @@ This serves as an explicit registry of all lazily-loadable features. The `Map<fe
 
 ## Summary
 
-| Context | Asset Server | Cache |
-|---------|-------------|-------|
-| Development | Vite (`localhost:5173`) | In-memory HMR, no persistence |
-| Production | Tauri `tauri://` protocol from `dist/` | WebView2 / WKWebView module cache |
+| Context       | Asset Server                             | Cache                                  |
+| ------------- | ---------------------------------------- | -------------------------------------- |
+| Development   | Vite (`localhost:5173`)                  | In-memory HMR, no persistence          |
+| Production    | Tauri `tauri://` protocol from `dist/`   | WebView2 / WKWebView module cache      |
 | Cross-session | App bundle replaces all assets on update | New content hash invalidates old cache |

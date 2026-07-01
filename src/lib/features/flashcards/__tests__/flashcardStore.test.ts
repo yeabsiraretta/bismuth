@@ -6,12 +6,21 @@ import { get } from 'svelte/store';
 
 vi.mock('../services/ankiConnect', () => ({
   checkConnection: vi.fn().mockResolvedValue('connected'),
-  syncCards: vi.fn().mockResolvedValue({ syncedAt: '2026-01-01', created: 1, updated: 0, skipped: 0, errors: 0, results: [] }),
+  syncCards: vi.fn().mockResolvedValue({
+    syncedAt: '2026-01-01',
+    created: 1,
+    updated: 0,
+    skipped: 0,
+    errors: 0,
+    results: [],
+  }),
   getAnkiNoteIds: vi.fn().mockResolvedValue(new Map()),
 }));
 
 vi.mock('@/services/vault/vault', () => ({
-  getNote: vi.fn().mockResolvedValue({ path: 'test.md', content: 'Q :: A', title: 'test', frontmatter: {} }),
+  getNote: vi
+    .fn()
+    .mockResolvedValue({ path: 'test.md', content: 'Q :: A', title: 'test', frontmatter: {} }),
 }));
 
 import {

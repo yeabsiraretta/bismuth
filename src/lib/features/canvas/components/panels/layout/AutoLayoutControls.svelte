@@ -127,7 +127,8 @@
         <button
           class="align-btn"
           class:active={autoLayout.justifyContent === justify}
-          on:click={() => onUpdateLayout({ justifyContent: justify as AutoLayout['justifyContent'] })}
+          on:click={() =>
+            onUpdateLayout({ justifyContent: justify as AutoLayout['justifyContent'] })}
           title={justify}
         >
           {justify === 'space-between' ? '⇔' : justify[0].toUpperCase()}
@@ -159,7 +160,8 @@
         class="control-input"
         value={autoLayout.counterAxisSpacing ?? 0}
         min="0"
-        on:change={(e) => onUpdateLayout({ counterAxisSpacing: parseInt(e.currentTarget.value) || 0 })}
+        on:change={(e) =>
+          onUpdateLayout({ counterAxisSpacing: parseInt(e.currentTarget.value) || 0 })}
       />
     </div>
   {/if}

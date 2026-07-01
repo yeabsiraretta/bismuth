@@ -14,7 +14,7 @@ const MEDIA_EDITS_SEGMENT = 'media-edits';
 export class MediaServiceError extends Error {
   constructor(
     message: string,
-    public readonly code: string,
+    public readonly code: string
   ) {
     super(message);
     this.name = 'MediaServiceError';
@@ -29,18 +29,18 @@ export class MediaServiceError extends Error {
 export async function writeMediaExport(
   destPath: string,
   sourcePath: string,
-  data: Uint8Array,
+  data: Uint8Array
 ): Promise<void> {
   if (destPath === sourcePath) {
     throw new MediaServiceError(
       'Destination path must not equal source path — originals are never overwritten',
-      'SOURCE_OVERWRITE_DENIED',
+      'SOURCE_OVERWRITE_DENIED'
     );
   }
   if (!destPath.includes(MEDIA_EDITS_SEGMENT)) {
     throw new MediaServiceError(
       `Export destination must be within a ${MEDIA_EDITS_SEGMENT} directory`,
-      'WRITE_SCOPE_VIOLATION',
+      'WRITE_SCOPE_VIOLATION'
     );
   }
 
@@ -51,7 +51,7 @@ export async function writeMediaExport(
     log.error('mediaService: writeMediaExport failed', err as Error);
     throw new MediaServiceError(
       `Failed to write export: ${(err as Error).message}`,
-      'WRITE_FAILED',
+      'WRITE_FAILED'
     );
   }
 }
@@ -61,9 +61,13 @@ export async function writeMediaExport(
  */
 export async function promptSavePath(
   sourcePath: string,
-  extension: string,
+  extension: string
 ): Promise<string | null> {
-  const baseName = sourcePath.split('/').pop()?.replace(/\.[^.]+$/, '') ?? 'export';
+  const baseName =
+    sourcePath
+      .split('/')
+      .pop()
+      ?.replace(/\.[^.]+$/, '') ?? 'export';
   const suggested = `${baseName}-edited.${extension}`;
 
   const result = await save({

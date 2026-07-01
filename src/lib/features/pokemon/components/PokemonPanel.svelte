@@ -8,11 +8,11 @@
   type Tab = 'calc' | 'team' | 'types' | 'import' | 'coverage';
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'calc',     label: 'Calc' },
-    { id: 'team',     label: 'Team' },
-    { id: 'types',    label: 'Types' },
+    { id: 'calc', label: 'Calc' },
+    { id: 'team', label: 'Team' },
+    { id: 'types', label: 'Types' },
     { id: 'coverage', label: 'Coverage' },
-    { id: 'import',   label: 'Import' },
+    { id: 'import', label: 'Import' },
   ];
 
   let activeTab: Tab = 'calc';
@@ -27,7 +27,9 @@
         role="tab"
         aria-selected={activeTab === tab.id}
         aria-controls="pokemon-tab-{tab.id}"
-        on:click={() => { activeTab = tab.id; }}
+        on:click={() => {
+          activeTab = tab.id;
+        }}
       >
         {tab.label}
       </button>
@@ -50,10 +52,40 @@
 </div>
 
 <style>
-  .pokemon-panel { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-  .tab-bar { display: flex; border-bottom: 1px solid var(--background-modifier-border); background: var(--background-secondary); padding: 0 var(--spacing-xs); flex-shrink: 0; }
-  .tab-btn { padding: 6px 10px; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: var(--font-ui-smaller); color: var(--text-muted); white-space: nowrap; min-height: 32px; }
-  .tab-btn:hover { color: var(--text-normal); }
-  .tab-btn.active { color: var(--text-normal); border-bottom-color: var(--interactive-accent); font-weight: 600; }
-  .tab-content { flex: 1; overflow-y: auto; }
+  .pokemon-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+  .tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--background-modifier-border);
+    background: var(--background-secondary);
+    padding: 0 var(--spacing-xs);
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    padding: 6px 10px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: var(--font-ui-smaller);
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-height: 32px;
+  }
+  .tab-btn:hover {
+    color: var(--text-normal);
+  }
+  .tab-btn.active {
+    color: var(--text-normal);
+    border-bottom-color: var(--interactive-accent);
+    font-weight: 600;
+  }
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+  }
 </style>

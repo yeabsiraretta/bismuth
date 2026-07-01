@@ -77,7 +77,7 @@ export function getHeaders(raw: string): string[] {
 export function convertCsvToNotes(
   raw: string,
   titleColumn?: string,
-  bodyColumn?: string,
+  bodyColumn?: string
 ): ConvertedNote[] {
   const delimiter = detectDelimiter(raw);
   const rows = parseCsv(raw, delimiter);
@@ -85,7 +85,7 @@ export function convertCsvToNotes(
 
   const headers = rows[0];
   const titleIdx = titleColumn ? headers.indexOf(titleColumn) : 0;
-  const bodyIdx = bodyColumn ? headers.indexOf(bodyColumn) : (headers.length > 1 ? 1 : -1);
+  const bodyIdx = bodyColumn ? headers.indexOf(bodyColumn) : headers.length > 1 ? 1 : -1;
 
   if (titleIdx === -1) return [];
 
@@ -93,7 +93,7 @@ export function convertCsvToNotes(
 
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
-    if (!row || row.every(cell => !cell.trim())) continue;
+    if (!row || row.every((cell) => !cell.trim())) continue;
 
     const title = sanitizeTitle(row[titleIdx] ?? `Row ${r}`);
     const body = bodyIdx >= 0 ? (row[bodyIdx] ?? '') : '';
@@ -122,9 +122,11 @@ export function convertCsvToNotes(
 }
 
 function sanitizeTitle(title: string): string {
-  return title
-    .replace(/[<>:"/\\|?*]/g, '-')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 200) || 'Untitled';
+  return (
+    title
+      .replace(/[<>:"/\\|?*]/g, '-')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 200) || 'Untitled'
+  );
 }

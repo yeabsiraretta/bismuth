@@ -63,7 +63,9 @@ function walkDir(dir: string): string[] {
         }
       }
     }
-  } catch { /* skip inaccessible dirs */ }
+  } catch {
+    /* skip inaccessible dirs */
+  }
   return results;
 }
 
@@ -90,7 +92,9 @@ function getDirectoryFileCounts(dir: string): Array<{ path: string; count: numbe
         results.push(...getDirectoryFileCounts(join(dir, entry.name)));
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
   return results;
 }
 
@@ -125,10 +129,14 @@ describe('Constitution VI: File Size Limits', () => {
         if (lineCount > MAX_LINES_TOLERANCE) {
           stillOver.push(`${known}: ${lineCount} lines`);
         }
-      } catch { /* file may have been fixed/removed */ }
+      } catch {
+        /* file may have been fixed/removed */
+      }
     }
     if (stillOver.length > 0) {
-      console.warn(`[Arch] Known oversize files (${stillOver.length} pending remediation):\n  ${stillOver.join('\n  ')}`);
+      console.warn(
+        `[Arch] Known oversize files (${stillOver.length} pending remediation):\n  ${stillOver.join('\n  ')}`
+      );
     }
   });
 
@@ -173,7 +181,9 @@ describe('Constitution VI: Folder Density Limits', () => {
       }
     }
     if (stillDense.length > 0) {
-      console.warn(`[Arch] Known dense dirs (${stillDense.length} pending subfolder split):\n  ${stillDense.join('\n  ')}`);
+      console.warn(
+        `[Arch] Known dense dirs (${stillDense.length} pending subfolder split):\n  ${stillDense.join('\n  ')}`
+      );
     }
   });
 });

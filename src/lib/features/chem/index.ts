@@ -4,13 +4,7 @@
  */
 
 // Types
-export type {
-  SmilesEntry,
-  SmilesBlock,
-  InlineSmiles,
-  ChemTheme,
-  ChemConfig,
-} from './types';
+export type { SmilesEntry, SmilesBlock, InlineSmiles, ChemTheme, ChemConfig } from './types';
 export { DEFAULT_CHEM_CONFIG } from './types';
 
 // Services — parser

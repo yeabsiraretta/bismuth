@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import {
-  aggregateTimeSeries, movingAverage, computeTrend,
-  buildHeatmap, heatmapColor, countListValues, detectScale,
+  aggregateTimeSeries,
+  movingAverage,
+  computeTrend,
+  buildHeatmap,
+  heatmapColor,
+  countListValues,
+  detectScale,
 } from '../services/aggregation';
 import type { DataPoint, AggregatedPoint } from '../types';
 
@@ -37,10 +42,7 @@ describe('aggregateTimeSeries', () => {
   });
 
   it('groups by month', () => {
-    const points = [
-      point('2026-01-05', 10), point('2026-01-20', 20),
-      point('2026-02-10', 30),
-    ];
+    const points = [point('2026-01-05', 10), point('2026-01-20', 20), point('2026-02-10', 30)];
     const result = aggregateTimeSeries(points, 'monthly', 'average');
     expect(result).toHaveLength(2);
     expect(result[0].date).toBe('2026-01');
@@ -114,7 +116,7 @@ describe('buildHeatmap', () => {
   it('assigns levels based on value', () => {
     const points = [point(new Date().toISOString().slice(0, 10), 100)];
     const cells = buildHeatmap(points, 'sum', 'monday', 52);
-    const todayCell = cells.find(c => c.date === new Date().toISOString().slice(0, 10));
+    const todayCell = cells.find((c) => c.date === new Date().toISOString().slice(0, 10));
     expect(todayCell?.level).toBe(4);
   });
 });
@@ -138,8 +140,8 @@ describe('countListValues', () => {
       { date: '2026-01-02', value: ['yoga', 'Swimming'], numericValue: null, sourcePath: 'b.md' },
     ];
     const counts = countListValues(points);
-    expect(counts.find(c => c.label === 'yoga')?.count).toBe(2);
-    expect(counts.find(c => c.label === 'running')?.count).toBe(1);
+    expect(counts.find((c) => c.label === 'yoga')?.count).toBe(2);
+    expect(counts.find((c) => c.label === 'running')?.count).toBe(1);
   });
 
   it('handles string values', () => {

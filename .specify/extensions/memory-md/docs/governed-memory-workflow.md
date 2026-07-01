@@ -5,6 +5,7 @@
 The `memory-md` approach is optimized for spec-driven AI execution through layered context and governed workflows.
 
 Main principles:
+
 - **Layered Context**: Separation between durable project memory and active feature memory.
 - **Index-First Retrieval**: Normal workflows read a compact memory index before selected source sections.
 - **Required Synthesis**: Every feature must have a `memory-synthesis.md` that acts as a focused lens for the AI.
@@ -44,9 +45,11 @@ Memory Hub acts as a cooperative citizen in the Spec Kit ecosystem. When used wi
 Memory Hub separates two distinct operations to ensure safety and signal quality:
 
 ### Synthesis
+
 Synthesis prepares relevant memory for the current workflow. It is safe to use during governed workflows because it reads the index, retrieves selected source sections, and summarizes compact context. It is triggered automatically by orchestrator commands like `governed-plan`.
 
 ### Capture
+
 Capture persists new durable memory and matching index rows. It should be **intentional and human-approved**.
 
 While Architecture Guard orchestration does not automatically mutate project memory without approval, it now includes a **Mandatory Self-Learning Check** as the penultimate step in every implementation and review flow. This ensures the agent evaluates the current execution for architectural lessons and is forced to propose any high-signal findings via `/speckit.memory-md.capture` before finalizing the governance summary.
@@ -56,13 +59,17 @@ While Architecture Guard orchestration does not automatically mutate project mem
 ## Command Integration
 
 ### Orchestrated Usage (via Architecture Guard)
+
 Architecture Guard orchestrator commands automatically consume memory synthesis:
+
 - **`governed-plan`**: Triggers `plan-with-memory` to provide context for the technical plan.
 - **`governed-tasks`**: Ensures tasks respect known constraints and architecture boundaries.
 - **`governed-implement`**: Provides the implementation watchpoints from the synthesis.
 
 ### Direct Usage
+
 The user can manually run memory commands:
+
 - **`init`**: Initialize the memory structure.
 - **`plan-with-memory`**: Manually refresh synthesis.
 - **`capture`**: Propose evidenced lessons and index rows for explicit approval.
@@ -73,6 +80,7 @@ The user can manually run memory commands:
 ## Conflict Detection Rules
 
 ### Hard Conflicts
+
 - Spec contradicts constitution or project principles.
 - Plan violates an explicit architecture boundary.
 - Tasks require crossing a prohibited service or module boundary.
@@ -82,6 +90,7 @@ The user can manually run memory commands:
 These should block progress until clarified or explicitly superseded.
 
 ### Soft Conflicts
+
 - Memory suggests a preferred pattern, but the new feature can justify a different approach.
 - A decision looks partially outdated but is not clearly invalid.
 - Bug patterns are adjacent rather than directly applicable.
@@ -93,12 +102,14 @@ These should warn, not block.
 ## Capture Quality Rules
 
 Every new durable entry must be **evidenced** by:
+
 - Implementation diff
 - Completed tasks
 - Verification or test results
 - Review findings
 
 ### Quality Rubric
+
 - **Durable**: Will it matter beyond this feature?
 - **Actionable**: Can an AI or maintainer do something differently because of it?
 - **Non-obvious**: Is it more than common sense?
@@ -110,6 +121,7 @@ Every new durable entry must be **evidenced** by:
 ## Migration Guidance
 
 For projects moving to v0.8:
+
 1. **Re-run Init**: Run `/speckit.memory-md.init` to ensure the latest `config.yml` and `INDEX.md` structure are in place. This is safe and will not overwrite your existing memory content.
 2. **Review `INDEX.md`**: Ensure your routing table correctly points to active decisions, architecture constraints, and bug patterns.
 3. **Build the Optimizer**: If using the local SQLite optimizer, run `cd .specify/extensions/memory-md && npm install && npm run build`. After building, use `npx .specify/extensions/memory-md speckit-memory` for subsequent CLI calls.

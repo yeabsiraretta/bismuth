@@ -2,10 +2,7 @@
   "name": "Bismuth PKM Editor",
   "description": "Local-first personal knowledge management editor with Johnny.Decimal, Zettelkasten, and intelligent knowledge management",
   "version": "0.0.1",
-  "rules": [
-    ".windsurf/rules/bismuth-rules.md",
-    ".windsurf/rules/specify-rules.md"
-  ],
+  "rules": [".windsurf/rules/bismuth-rules.md", ".windsurf/rules/specify-rules.md"],
   "context": {
     "projectContext": ".claude/project-context.md",
     "constitution": ".specify/memory/constitution.md",

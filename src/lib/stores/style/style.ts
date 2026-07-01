@@ -4,16 +4,11 @@ import { log } from '@/utils/logger';
 const STORAGE_KEY = 'bismuth-style-overrides';
 
 /** Regex patterns for unsafe CSS values */
-const UNSAFE_PATTERNS = [
-  /url\s*\(/i,
-  /expression\s*\(/i,
-  /@import/i,
-  /javascript:/i,
-];
+const UNSAFE_PATTERNS = [/url\s*\(/i, /expression\s*\(/i, /@import/i, /javascript:/i];
 
 /** Validates a CSS value is safe (no url(), expression(), etc.) */
 function isValidCssValue(value: string): boolean {
-  return !UNSAFE_PATTERNS.some(p => p.test(value));
+  return !UNSAFE_PATTERNS.some((p) => p.test(value));
 }
 
 /** Validates a color is hex, hsl, or rgb format */
@@ -26,7 +21,7 @@ function isValidColor(value: string): boolean {
     /^transparent$/i,
     /^inherit$/i,
   ];
-  return colorPatterns.some(p => p.test(value.trim()));
+  return colorPatterns.some((p) => p.test(value.trim()));
 }
 
 export interface StyleOverrides {
@@ -37,14 +32,18 @@ function loadOverrides(): StyleOverrides {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return JSON.parse(stored);
-  } catch (e) { log.warn('Failed to load style overrides from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load style overrides from localStorage', { error: String(e) });
+  }
   return { tokens: {} };
 }
 
 function persistOverrides(overrides: StyleOverrides): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
-  } catch (e) { log.warn('Failed to persist style overrides to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist style overrides to localStorage', { error: String(e) });
+  }
 }
 
 function applyToDocument(tokens: Record<string, string>): void {
@@ -75,7 +74,7 @@ export function setToken(name: string, value: string): void {
     log.warn('Unsafe CSS value rejected', { value });
     return;
   }
-  styleOverrides.update(s => {
+  styleOverrides.update((s) => {
     s.tokens[name] = value;
     return s;
   });
@@ -86,7 +85,7 @@ export function resetToken(name: string): void {
   if (!name.startsWith('--')) {
     name = `--${name}`;
   }
-  styleOverrides.update(s => {
+  styleOverrides.update((s) => {
     delete s.tokens[name];
     return s;
   });
@@ -126,7 +125,7 @@ export function importPreset(json: string): boolean {
 export { isValidColor, isValidCssValue };
 
 // Persist and apply on every change
-styleOverrides.subscribe(overrides => {
+styleOverrides.subscribe((overrides) => {
   persistOverrides(overrides);
   applyToDocument(overrides.tokens);
 });

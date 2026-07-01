@@ -17,23 +17,28 @@ function loadConfig(): ClozeConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_CLOZE_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_CLOZE_CONFIG };
 }
 
 function persistConfig(config: ClozeConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch {
+    /* ignore */
+  }
 }
 
 const configStore = writable<ClozeConfig>(loadConfig());
 
 configStore.subscribe(persistConfig);
 
-export const clozeConfig = derived(configStore, $c => $c);
+export const clozeConfig = derived(configStore, ($c) => $c);
 
 export function updateClozeConfig(partial: Partial<ClozeConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetClozeConfig(): void {
@@ -48,12 +53,12 @@ export function getClozeConfig(): ClozeConfig {
 
 const allRevealedStore = writable<boolean>(DEFAULT_CLOZE_CONFIG.defaultRevealed);
 
-export const allClozesRevealed = derived(allRevealedStore, $r => $r);
+export const allClozesRevealed = derived(allRevealedStore, ($r) => $r);
 
 /** Toggle all clozes visible/hidden. Returns new state. */
 export function toggleAllClozes(): boolean {
   let revealed = false;
-  allRevealedStore.update(r => {
+  allRevealedStore.update((r) => {
     revealed = !r;
     return revealed;
   });
@@ -77,7 +82,7 @@ export function getAllClozesRevealed(): boolean {
 
 export function toggleHoverReveal(): boolean {
   let enabled = false;
-  configStore.update(c => {
+  configStore.update((c) => {
     enabled = !c.hoverReveal;
     return { ...c, hoverReveal: enabled };
   });
@@ -86,7 +91,7 @@ export function toggleHoverReveal(): boolean {
 
 export function toggleFixedWidth(): boolean {
   let enabled = false;
-  configStore.update(c => {
+  configStore.update((c) => {
     enabled = !c.fixedWidth;
     return { ...c, fixedWidth: enabled };
   });
@@ -95,7 +100,7 @@ export function toggleFixedWidth(): boolean {
 
 export function toggleClozeEnabled(): boolean {
   let enabled = false;
-  configStore.update(c => {
+  configStore.update((c) => {
     enabled = !c.enabled;
     return { ...c, enabled };
   });

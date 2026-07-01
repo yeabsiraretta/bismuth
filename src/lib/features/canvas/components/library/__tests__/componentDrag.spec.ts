@@ -64,7 +64,9 @@ describe('T017: drag data format matches expected protocol', () => {
     const dataMap = new Map<string, string>();
 
     const mockDataTransfer = {
-      setData: vi.fn((type: string, value: string) => { dataMap.set(type, value); }),
+      setData: vi.fn((type: string, value: string) => {
+        dataMap.set(type, value);
+      }),
       effectAllowed: '',
     } as unknown as DataTransfer;
 
@@ -104,9 +106,7 @@ describe('T017: placeComponentInstance creates element with correct definitionId
     const canvas = get(currentCanvas);
     expect(canvas).not.toBeNull();
 
-    const instance = canvas!.elements.find(
-      (el) => el.element_type === 'component_instance'
-    );
+    const instance = canvas!.elements.find((el) => el.element_type === 'component_instance');
     expect(instance).toBeDefined();
     expect((instance!.properties as Record<string, unknown>)['definitionId']).toBe(definitionId);
   });
@@ -115,9 +115,7 @@ describe('T017: placeComponentInstance creates element with correct definitionId
     placeComponentInstance('builtin-input-text', 120, 240);
 
     const canvas = get(currentCanvas);
-    const instance = canvas!.elements.find(
-      (el) => el.element_type === 'component_instance'
-    );
+    const instance = canvas!.elements.find((el) => el.element_type === 'component_instance');
     expect(instance).toBeDefined();
     expect(instance!.x).toBe(120);
     expect(instance!.y).toBe(240);
@@ -138,9 +136,7 @@ describe('T017: placeComponentInstance creates element with correct definitionId
     placeComponentInstance('builtin-select-input', 0, 0);
 
     const canvas = get(currentCanvas);
-    const instance = canvas!.elements.find(
-      (el) => el.element_type === 'component_instance'
-    );
+    const instance = canvas!.elements.find((el) => el.element_type === 'component_instance');
     expect(instance!.width).toBe(definition!.width);
     expect(instance!.height).toBe(definition!.height);
   });

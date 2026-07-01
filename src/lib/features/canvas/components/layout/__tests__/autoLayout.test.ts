@@ -39,12 +39,26 @@ describe('Auto Layout', () => {
 
   describe('wrap behavior', () => {
     it('wrap property defaults to false/undefined', () => {
-      const layout: AutoLayout = { direction: 'horizontal', gap: 8, padding: { top: 0, right: 0, bottom: 0, left: 0 }, alignItems: 'start', justifyContent: 'start' };
+      const layout: AutoLayout = {
+        direction: 'horizontal',
+        gap: 8,
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+        alignItems: 'start',
+        justifyContent: 'start',
+      };
       expect(layout.wrap).toBeUndefined();
     });
 
     it('counterAxisSpacing only applies when wrap enabled', () => {
-      const layout: AutoLayout = { direction: 'horizontal', gap: 8, padding: { top: 0, right: 0, bottom: 0, left: 0 }, alignItems: 'start', justifyContent: 'start', wrap: true, counterAxisSpacing: 12 };
+      const layout: AutoLayout = {
+        direction: 'horizontal',
+        gap: 8,
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
+        alignItems: 'start',
+        justifyContent: 'start',
+        wrap: true,
+        counterAxisSpacing: 12,
+      };
       expect(layout.wrap).toBe(true);
       expect(layout.counterAxisSpacing).toBe(12);
     });

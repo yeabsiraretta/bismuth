@@ -17,7 +17,9 @@ export function loadSettings(): BismuthSettings {
       }
       return merged;
     }
-  } catch (e) { log.warn('Failed to load settings from localStorage, using defaults', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load settings from localStorage, using defaults', { error: String(e) });
+  }
   return { ...DEFAULT_SETTINGS };
 }
 
@@ -25,7 +27,9 @@ export function loadSettings(): BismuthSettings {
 export function saveSettings(s: BismuthSettings): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  } catch (e) { log.warn('Failed to save settings to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to save settings to localStorage', { error: String(e) });
+  }
 }
 
 /** Clear persisted settings, reverting to defaults on next load. */

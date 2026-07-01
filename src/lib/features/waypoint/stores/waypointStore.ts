@@ -63,11 +63,11 @@ export const autoCreateFolderNotes = derived(waypointConfig, ($c) => $c.autoCrea
 export const folderNoteCount = derived(folderNoteIndex, ($idx) => $idx.length);
 export const waypointCount = derived(
   folderNoteIndex,
-  ($idx) => $idx.filter((f) => f.marker === 'waypoint').length,
+  ($idx) => $idx.filter((f) => f.marker === 'waypoint').length
 );
 export const landmarkCount = derived(
   folderNoteIndex,
-  ($idx) => $idx.filter((f) => f.marker === 'landmark').length,
+  ($idx) => $idx.filter((f) => f.marker === 'landmark').length
 );
 
 // ─── Config actions ─────────────────────────────────────────────────────────

@@ -19,9 +19,7 @@ export const mcpServers = writable<McpServerConfig[]>([]);
 
 /** Tools from all connected MCP servers, merged. */
 export const mcpTools = derived(mcpServers, ($servers) =>
-  $servers
-    .filter(s => s.status === 'connected' && s.tools)
-    .flatMap(s => s.tools ?? []),
+  $servers.filter((s) => s.status === 'connected' && s.tools).flatMap((s) => s.tools ?? [])
 );
 
 // ─── Server Lifecycle ──────────────────────────────────────────────────────
@@ -30,22 +28,20 @@ export const mcpTools = derived(mcpServers, ($servers) =>
 export function addMcpServer(config: Omit<McpServerConfig, 'id' | 'status'>): void {
   const id = `mcp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   const server: McpServerConfig = { ...config, id, status: 'disconnected' };
-  mcpServers.update(list => [...list, server]);
+  mcpServers.update((list) => [...list, server]);
   log.info('MCP server added', { id, name: config.name, transport: config.transport });
 }
 
 /** Remove an MCP server by ID. Disconnects first if connected. */
 export function removeMcpServer(id: string): void {
   disconnectMcpServer(id);
-  mcpServers.update(list => list.filter(s => s.id !== id));
+  mcpServers.update((list) => list.filter((s) => s.id !== id));
   log.info('MCP server removed', { id });
 }
 
 /** Update an MCP server config. */
 export function updateMcpServer(id: string, partial: Partial<McpServerConfig>): void {
-  mcpServers.update(list =>
-    list.map(s => (s.id === id ? { ...s, ...partial } : s)),
-  );
+  mcpServers.update((list) => list.map((s) => (s.id === id ? { ...s, ...partial } : s)));
 }
 
 /**
@@ -58,7 +54,7 @@ export function updateMcpServer(id: string, partial: Partial<McpServerConfig>): 
  */
 export async function connectMcpServer(id: string): Promise<void> {
   const servers = get(mcpServers);
-  const server = servers.find(s => s.id === id);
+  const server = servers.find((s) => s.id === id);
   if (!server) return;
   if (!server.enabled) return;
 
@@ -71,7 +67,9 @@ export async function connectMcpServer(id: string): Promise<void> {
       tools = await fetchMcpTools(server);
     } else {
       // stdio: would spawn process via Tauri shell — for now, mark as connected with no tools
-      log.info('MCP stdio server registered (tool execution requires Tauri shell)', { name: server.name });
+      log.info('MCP stdio server registered (tool execution requires Tauri shell)', {
+        name: server.name,
+      });
       tools = [];
     }
 
@@ -93,9 +91,7 @@ export function disconnectMcpServer(id: string): void {
 /** Connect all enabled MCP servers. */
 export async function connectAllMcpServers(): Promise<void> {
   const servers = get(mcpServers);
-  await Promise.allSettled(
-    servers.filter(s => s.enabled).map(s => connectMcpServer(s.id)),
-  );
+  await Promise.allSettled(servers.filter((s) => s.enabled).map((s) => connectMcpServer(s.id)));
 }
 
 /**
@@ -106,10 +102,10 @@ export async function executeMcpTool(
   serverId: string,
   toolCallId: string,
   toolName: string,
-  args: Record<string, unknown>,
+  args: Record<string, unknown>
 ): Promise<ToolResult> {
   const servers = get(mcpServers);
-  const server = servers.find(s => s.id === serverId);
+  const server = servers.find((s) => s.id === serverId);
 
   if (!server || server.status !== 'connected') {
     return { toolCallId, toolName, output: `MCP server not connected: ${serverId}`, isError: true };
@@ -121,7 +117,12 @@ export async function executeMcpTool(
     }
 
     // stdio: would write JSON-RPC to process stdin
-    return { toolCallId, toolName, output: 'stdio tool execution not yet implemented', isError: true };
+    return {
+      toolCallId,
+      toolName,
+      output: 'stdio tool execution not yet implemented',
+      isError: true,
+    };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return { toolCallId, toolName, output: `MCP tool error: ${msg}`, isError: true };
@@ -157,7 +158,7 @@ async function callMcpToolHttp(
   server: McpServerConfig,
   toolCallId: string,
   toolName: string,
-  args: Record<string, unknown>,
+  args: Record<string, unknown>
 ): Promise<ToolResult> {
   const baseUrl = server.command.replace(/\/+$/, '');
   const resp = await fetch(`${baseUrl}/call-tool`, {
@@ -186,5 +187,5 @@ async function callMcpToolHttp(
 
 /** Load MCP server configs from vault config. */
 export function loadMcpServers(configs: McpServerConfig[]): void {
-  mcpServers.set(configs.map(c => ({ ...c, status: 'disconnected' as const })));
+  mcpServers.set(configs.map((c) => ({ ...c, status: 'disconnected' as const })));
 }

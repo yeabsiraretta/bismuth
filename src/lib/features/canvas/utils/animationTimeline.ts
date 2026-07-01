@@ -19,22 +19,10 @@ export interface AnimationState {
 
 /** What causes a state transition to fire. */
 export type TransitionTrigger =
-  | 'click'
-  | 'hover'
-  | 'hover-out'
-  | 'focus'
-  | 'blur'
-  | 'auto'
-  | 'drag';
+  'click' | 'hover' | 'hover-out' | 'focus' | 'blur' | 'auto' | 'drag';
 
 /** Easing function identifier. */
-export type EasingFunction =
-  | 'linear'
-  | 'ease'
-  | 'ease-in'
-  | 'ease-out'
-  | 'ease-in-out'
-  | 'spring';
+export type EasingFunction = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'spring';
 
 /** A directed edge in the animation state machine. */
 export interface Transition {
@@ -162,7 +150,5 @@ export function getTransitionsFor(
   fromStateId: string,
   trigger: TransitionTrigger
 ): Transition[] {
-  return timeline.transitions.filter(
-    (t) => t.fromStateId === fromStateId && t.trigger === trigger
-  );
+  return timeline.transitions.filter((t) => t.fromStateId === fromStateId && t.trigger === trigger);
 }

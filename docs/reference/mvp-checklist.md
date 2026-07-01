@@ -308,18 +308,21 @@
 ### Unit Tests (Target: 90% coverage per SC-005)
 
 **Priority 1 (Phase 2)**:
+
 - [ ] Path security tests (T019)
 - [ ] Frontmatter parser tests (T022)
 - [ ] Error handling tests (T014)
 - [ ] Database migration tests (T016)
 
 **Priority 2 (Phase 3-5)**:
+
 - [ ] Wikilink extraction tests (T056)
 - [ ] Graph data builder tests (T059)
 - [ ] Search query parser tests (T064)
 - [ ] Vault operations tests (T018)
 
 **Priority 3 (Phase 6+)**:
+
 - [ ] Entity system tests (T081-T085)
 - [ ] Tag management tests (T092-T097)
 - [ ] Lifecycle tracking tests (T070-T075)
@@ -454,7 +457,7 @@
 **Phase 8**: 2 days (theming)  
 **Phase 9**: 2-3 days (entity system)  
 **Phase 10**: 3-4 days (semantic connections)  
-**Phase 11**: 2 days (tag management)  
+**Phase 11**: 2 days (tag management)
 
 **Total MVP (Phases 2-5)**: ~13-18 days  
 **Total Full Feature Set (Phases 2-11)**: ~26-35 days

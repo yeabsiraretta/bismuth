@@ -36,7 +36,10 @@
     if (!showButton) return;
     loadMediaFile(filePath);
     setActiveTab('left', 'media');
-    log.info('MediaFileOpener: opened file in media editor', { filePath, type: isPhoto ? 'photo' : 'video' });
+    log.info('MediaFileOpener: opened file in media editor', {
+      filePath,
+      type: isPhoto ? 'photo' : 'video',
+    });
   }
 
   function handleKeydown(e: KeyboardEvent): void {
@@ -77,7 +80,10 @@
     font-size: var(--font-ui-smaller, 11px);
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s;
     white-space: nowrap;
   }
 
@@ -92,9 +98,19 @@
     outline-offset: 2px;
   }
 
-  .open-in-editor-btn--photo:hover { border-color: var(--interactive-accent, #3b82f6); }
-  .open-in-editor-btn--video:hover { border-color: var(--color-purple, #7c3aed); color: var(--color-purple, #7c3aed); }
+  .open-in-editor-btn--photo:hover {
+    border-color: var(--interactive-accent, #3b82f6);
+  }
+  .open-in-editor-btn--video:hover {
+    border-color: var(--color-purple, #7c3aed);
+    color: var(--color-purple, #7c3aed);
+  }
 
-  .btn-icon { font-size: 13px; line-height: 1; }
-  .btn-label { line-height: 1; }
+  .btn-icon {
+    font-size: 13px;
+    line-height: 1;
+  }
+  .btn-label {
+    line-height: 1;
+  }
 </style>

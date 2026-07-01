@@ -17,8 +17,14 @@ const defaultConfig: TopicLinkingConfig = {
 };
 
 const notes = [
-  { path: 'Generated/Data Analysis.md', content: 'Analysis of #data patterns including statistical methods and regression models' },
-  { path: 'Generated/Data Visualization.md', content: 'Charts and graphs for #data visualization using tools and libraries' },
+  {
+    path: 'Generated/Data Analysis.md',
+    content: 'Analysis of #data patterns including statistical methods and regression models',
+  },
+  {
+    path: 'Generated/Data Visualization.md',
+    content: 'Charts and graphs for #data visualization using tools and libraries',
+  },
   { path: 'Other/Unrelated.md', content: 'Some unrelated content about cooking recipes' },
 ];
 
@@ -32,7 +38,7 @@ describe('buildCorpus', () => {
     const config = { ...defaultConfig, topicFilePattern: 'Generated/Data' };
     const corpus = buildCorpus(notes, config);
     expect(corpus).toHaveLength(2);
-    expect(corpus.every(d => d.path.startsWith('Generated/Data'))).toBe(true);
+    expect(corpus.every((d) => d.path.startsWith('Generated/Data'))).toBe(true);
   });
 
   it('filters by search pattern', () => {
@@ -113,7 +119,10 @@ describe('generateTopicNote', () => {
 describe('extractWebLinks', () => {
   it('extracts links from notes', () => {
     const webNotes = [
-      { path: 'Bookmarks/links.md', content: '- [Google](https://google.com)\n- [GitHub](https://github.com)' },
+      {
+        path: 'Bookmarks/links.md',
+        content: '- [Google](https://google.com)\n- [GitHub](https://github.com)',
+      },
     ];
     const links = extractWebLinks(webNotes);
     expect(links).toHaveLength(2);
@@ -145,7 +154,11 @@ describe('getTopicFolderPath', () => {
   });
 
   it('includes pattern slug', () => {
-    const config = { ...defaultConfig, includePatternInFolder: true, topicFilePattern: 'Generated/Data' };
+    const config = {
+      ...defaultConfig,
+      includePatternInFolder: true,
+      topicFilePattern: 'Generated/Data',
+    };
     expect(getTopicFolderPath(config)).toContain('Generated_Data');
   });
 

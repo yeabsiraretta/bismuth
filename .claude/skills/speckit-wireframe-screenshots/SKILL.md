@@ -18,6 +18,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - `--all` — every wireframe across all features
 - `--feature NNN` — one feature
 - `--svg NNN:NN` — one specific SVG (e.g. `002:01` → `specs/002-*/wireframes/01-*.svg`)
@@ -27,6 +28,7 @@ Accepts:
 ## Capability check
 
 This command requires either:
+
 - **Python 3.9+** with `playwright` and `cairosvg`, OR
 - **Docker** with the screenshot container built
 
@@ -99,11 +101,13 @@ Wait for user confirmation before executing (the capture takes several seconds p
 ### Step 4: Execute
 
 **Python mode:**
+
 ```bash
 python3 .specify/extensions/wireframe/scripts/screenshots.py [args]
 ```
 
 **Docker mode:**
+
 ```bash
 docker run --rm -v "$PWD:/work" -w /work \
   speckit-wireframe-screenshots [args]
@@ -165,7 +169,7 @@ This is the "visual regression" end of the feedback loop.
 
 ## DO NOT
 
-- Require Python or Docker for the command to be *defined* — gracefully degrade when missing
+- Require Python or Docker for the command to be _defined_ — gracefully degrade when missing
 - Overwrite SVG source files — this command only reads SVGs and writes PNGs
 - Write to `.terminal-status.json` or any queue file
 - Skip the capability check — failing confusingly is worse than skipping with a clear message

@@ -11,11 +11,8 @@
   export let version: string;
   export let bumpType: BumpType = 'patch';
 
-  $: colorClass = bumpType === 'major'
-    ? 'badge-major'
-    : bumpType === 'minor'
-    ? 'badge-minor'
-    : 'badge-patch';
+  $: colorClass =
+    bumpType === 'major' ? 'badge-major' : bumpType === 'minor' ? 'badge-minor' : 'badge-patch';
 </script>
 
 <span

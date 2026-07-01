@@ -56,7 +56,9 @@
               aria-hidden="true"
             >
               <title>Built-in component (read only)</title>
-              <path d="M7.5 4.5H7V3a2 2 0 0 0-4 0v1.5H2.5A.5.5 0 0 0 2 5v3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5zM4 3a1 1 0 0 1 2 0v1.5H4V3z"/>
+              <path
+                d="M7.5 4.5H7V3a2 2 0 0 0-4 0v1.5H2.5A.5.5 0 0 0 2 5v3.5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5V5a.5.5 0 0 0-.5-.5zM4 3a1 1 0 0 1 2 0v1.5H4V3z"
+              />
             </svg>
           </div>
           <span class="card-label">{comp.name}</span>
@@ -118,7 +120,9 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-s);
     cursor: grab;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
     text-align: center;
   }
 

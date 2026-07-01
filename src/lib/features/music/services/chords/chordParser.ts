@@ -3,9 +3,7 @@
  * section headers, and parses ```chords fenced code blocks.
  * Supports %c / %t line markers and custom chord shapes in brackets.
  */
-import type {
-  ChordToken, ChordLine, ChordSheet, ChordInstrument,
-} from '../../types/chords';
+import type { ChordToken, ChordLine, ChordSheet, ChordInstrument } from '../../types/chords';
 import { NOTE_TO_INDEX } from '../../types/chords';
 
 // ─── Regex patterns ──────────────────────────────────────────────────────────
@@ -22,7 +20,9 @@ const LYRIC_MARKER_RE = /%t\s*$/;
 /** Parse a single chord symbol string into a ChordToken */
 export function parseChordSymbol(text: string, column: number = 0): ChordToken | null {
   // Match pattern: Root + quality + optional slash bass + optional custom shape
-  const m = text.match(/^([A-G][#b]?)((?:m(?:aj|in)?|M|aug|dim|sus[24]?|add|[Δø°+])?\d*(?:[#b]\d+)?(?:\/([A-G][#b]?))?)(\[([^\]]+)\])?$/);
+  const m = text.match(
+    /^([A-G][#b]?)((?:m(?:aj|in)?|M|aug|dim|sus[24]?|add|[Δø°+])?\d*(?:[#b]\d+)?(?:\/([A-G][#b]?))?)(\[([^\]]+)\])?$/
+  );
   if (!m) return null;
 
   const root = m[1];

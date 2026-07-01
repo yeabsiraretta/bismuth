@@ -229,23 +229,28 @@ feat(US1): implement vault editor
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Related Issues
+
 Closes #42
 
 ## Type of Change
+
 - [ ] Bug fix
 - [x] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [x] Unit tests pass
 - [x] E2E tests pass
 - [x] Manual testing completed
 
 ## Checklist
+
 - [x] Code follows style guidelines
 - [x] Self-review completed
 - [x] Comments added for complex logic
@@ -416,10 +421,10 @@ Test cross-component interactions:
 async fn test_note_save_and_index() {
     let vault = setup_test_vault().await;
     let note = Note::new("test.md", "# Test");
-    
+
     vault.write_note(&note).await.unwrap();
     let results = vault.search("Test").await.unwrap();
-    
+
     assert_eq!(results.len(), 1);
 }
 ```
@@ -435,7 +440,7 @@ test('create and edit note', async ({ page }) => {
   await page.fill('[data-testid="note-title"]', 'My Note');
   await page.fill('[data-testid="editor"]', '# Hello World');
   await page.click('text=Save');
-  
+
   await expect(page.locator('text=Saved')).toBeVisible();
 });
 ```

@@ -13,7 +13,9 @@
     {#if collapsible}
       <button
         class="collapse-toggle"
-        on:click={() => { collapsed = !collapsed; }}
+        on:click={() => {
+          collapsed = !collapsed;
+        }}
         aria-expanded={!collapsed}
         aria-label={collapsed ? 'Expand panel' : 'Collapse panel'}
       >
@@ -72,7 +74,9 @@
     padding: 0;
   }
 
-  .collapse-toggle:hover { color: var(--text-normal); }
+  .collapse-toggle:hover {
+    color: var(--text-normal);
+  }
 
   .panel-header-title {
     margin: 0;

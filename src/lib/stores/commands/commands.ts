@@ -17,7 +17,9 @@ export interface Command {
 const commandMap = writable<Map<string, Command>>(new Map());
 
 /** All registered commands as array */
-export const commands = derived(commandMap, ($map: Map<string, Command>) => Array.from($map.values()));
+export const commands = derived(commandMap, ($map: Map<string, Command>) =>
+  Array.from($map.values())
+);
 
 /** Register a command */
 export function registerCommand(command: Command) {

@@ -54,10 +54,7 @@ export function resolveInstance(
 /**
  * Checks whether a component instance is detached (its definition no longer exists).
  */
-export function isDetached(
-  instance: CanvasElement,
-  definitions: ComponentDefinition[]
-): boolean {
+export function isDetached(instance: CanvasElement, definitions: ComponentDefinition[]): boolean {
   const instanceData = instance.properties as unknown as ComponentInstanceData;
   if (!instanceData?.definitionId) return true;
   return !definitions.some((d) => d.id === instanceData.definitionId);
@@ -105,10 +102,7 @@ export function applyOverride(
 /**
  * Resets a single override on an instance, reverting to the definition's default.
  */
-export function resetOverride(
-  instance: CanvasElement,
-  propKey: string
-): Record<string, unknown> {
+export function resetOverride(instance: CanvasElement, propKey: string): Record<string, unknown> {
   const props = instance.properties as unknown as ComponentInstanceData;
   const overrides = { ...(props?.overrides ?? {}) };
   delete overrides[propKey];
@@ -131,9 +125,8 @@ export function getEffectiveProps(
 
   const effective: Record<string, unknown> = {};
   for (const prop of definition.exposedProps) {
-    effective[prop.key] = overrides[prop.key] !== undefined
-      ? overrides[prop.key]
-      : prop.defaultValue;
+    effective[prop.key] =
+      overrides[prop.key] !== undefined ? overrides[prop.key] : prop.defaultValue;
   }
   return effective;
 }

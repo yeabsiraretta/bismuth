@@ -23,21 +23,27 @@ export async function loadDeferredExtensions(_ctx: LazyExtensionContext): Promis
   const start = performance.now();
 
   const results = await Promise.allSettled([
-    import('@/features/footnotes').then(m => m.footnoteExtension()),
-    import('@/features/symbols').then(m => m.symbolPrettifierExtension()),
-    import('@/features/dataview/extensions/inlineFieldExtension').then(m => m.inlineFieldExtension()),
-    import('@/features/dataview/extensions/dataviewExtension').then(m => m.dataviewExtension()),
-    import('@/features/metabind/extensions/metabindExtension').then(m => m.metabindExtension()),
-    import('@/features/metabind/extensions/metabindTheme').then(m => m.metabindTheme),
-    import('@/features/media/extensions/timestampLinkExtension').then(m => m.timestampLinkExtension()),
-    import('@/features/music/services/abcExtension').then(m => m.abcNotationExtension()),
-    import('@/features/music/services/chords/chordExtension').then(m => m.chordSheetExtension()),
-    import('@/features/music/services/audioPlayer/audioPlayerExtension').then(m => m.audioPlayerExtension()),
-    import('@/features/chem').then(m => m.smilesExtension()),
-    import('@/features/progressbar').then(m => m.progressBarExtension()),
-    import('@/features/flashcards/services/clozeExtension').then(m => m.clozeExtension()),
-    import('@/features/code-styler/services/codeStylerTheme').then(m => m.codeStylerTheme),
-    import('@/features/flashcards/services/flashcardTheme').then(m => m.flashcardWidgetTheme),
+    import('@/features/footnotes').then((m) => m.footnoteExtension()),
+    import('@/features/symbols').then((m) => m.symbolPrettifierExtension()),
+    import('@/features/dataview/extensions/inlineFieldExtension').then((m) =>
+      m.inlineFieldExtension()
+    ),
+    import('@/features/dataview/extensions/dataviewExtension').then((m) => m.dataviewExtension()),
+    import('@/features/metabind/extensions/metabindExtension').then((m) => m.metabindExtension()),
+    import('@/features/metabind/extensions/metabindTheme').then((m) => m.metabindTheme),
+    import('@/features/media/extensions/timestampLinkExtension').then((m) =>
+      m.timestampLinkExtension()
+    ),
+    import('@/features/music/services/abcExtension').then((m) => m.abcNotationExtension()),
+    import('@/features/music/services/chords/chordExtension').then((m) => m.chordSheetExtension()),
+    import('@/features/music/services/audioPlayer/audioPlayerExtension').then((m) =>
+      m.audioPlayerExtension()
+    ),
+    import('@/features/chem').then((m) => m.smilesExtension()),
+    import('@/features/progressbar').then((m) => m.progressBarExtension()),
+    import('@/features/flashcards/services/clozeExtension').then((m) => m.clozeExtension()),
+    import('@/features/code-styler/services/codeStylerTheme').then((m) => m.codeStylerTheme),
+    import('@/features/flashcards/services/flashcardTheme').then((m) => m.flashcardWidgetTheme),
   ]);
 
   for (const r of results) {

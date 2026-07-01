@@ -11,12 +11,7 @@ import type {
   CorpusDocument,
   ExtractedWebLink,
 } from '../types';
-import {
-  buildDocument,
-  matchesPattern,
-  matchesTags,
-  extractUrls,
-} from './textProcessor';
+import { buildDocument, matchesPattern, matchesTags, extractUrls } from './textProcessor';
 import { runLda } from './ldaService';
 
 // ─── Corpus building ───────────────────────────────────────────────────────────
@@ -27,10 +22,7 @@ interface NoteInput {
 }
 
 /** Build a filtered corpus from vault notes. */
-export function buildCorpus(
-  notes: NoteInput[],
-  config: TopicLinkingConfig,
-): CorpusDocument[] {
+export function buildCorpus(notes: NoteInput[], config: TopicLinkingConfig): CorpusDocument[] {
   const docs: CorpusDocument[] = [];
 
   for (const note of notes) {
@@ -38,7 +30,11 @@ export function buildCorpus(
     if (!matchesPattern(note.path, config.topicFilePattern)) continue;
 
     // Search filter
-    if (config.topicSearchPattern && !note.content.toLowerCase().includes(config.topicSearchPattern.toLowerCase())) continue;
+    if (
+      config.topicSearchPattern &&
+      !note.content.toLowerCase().includes(config.topicSearchPattern.toLowerCase())
+    )
+      continue;
 
     const doc = buildDocument(note.path, note.content, config.sampling);
 
@@ -57,17 +53,14 @@ export function buildCorpus(
 // ─── Topic linking runner ──────────────────────────────────────────────────────
 
 /** Run the full topic linking pipeline. */
-export function linkTopics(
-  notes: NoteInput[],
-  config: TopicLinkingConfig,
-): TopicLinkingResult {
+export function linkTopics(notes: NoteInput[], config: TopicLinkingConfig): TopicLinkingResult {
   const corpus = buildCorpus(notes, config);
   const topics = runLda(corpus, config.lda);
 
   // Filter documents by threshold
-  const filteredTopics = topics.map(topic => ({
+  const filteredTopics = topics.map((topic) => ({
     ...topic,
-    documents: topic.documents.filter(d => d.probability >= config.topicThreshold),
+    documents: topic.documents.filter((d) => d.probability >= config.topicThreshold),
   }));
 
   return {
@@ -81,10 +74,7 @@ export function linkTopics(
 // ─── Note generation ───────────────────────────────────────────────────────────
 
 /** Generate the topic index note markdown. */
-export function generateTopicIndex(
-  result: TopicLinkingResult,
-  topicFolderPath: string,
-): string {
+export function generateTopicIndex(result: TopicLinkingResult, topicFolderPath: string): string {
   const lines: string[] = [
     '---',
     `created: ${new Date(result.timestamp).toISOString().slice(0, 10)}`,
@@ -104,7 +94,12 @@ export function generateTopicIndex(
     const topicPath = `${topicFolderPath}/Topic ${topic.id + 1}`;
     lines.push(`### [[${topicPath}|Topic ${topic.id + 1}: ${topic.label}]]`);
     lines.push('');
-    lines.push(`Keywords: ${topic.keywords.slice(0, 5).map(k => `*${k.word}*`).join(', ')}`);
+    lines.push(
+      `Keywords: ${topic.keywords
+        .slice(0, 5)
+        .map((k) => `*${k.word}*`)
+        .join(', ')}`
+    );
     lines.push(`Documents: ${topic.documents.length}`);
     lines.push('');
   }
@@ -130,12 +125,15 @@ export function generateTopicIndex(
 /** Generate a single topic note markdown. */
 export function generateTopicNote(
   topic: TopicLinkingResult['topics'][number],
-  topicFolderPath: string,
+  topicFolderPath: string
 ): string {
   const lines: string[] = [
     '---',
     `topic_id: ${topic.id + 1}`,
-    `keywords: [${topic.keywords.slice(0, 5).map(k => `"${k.word}"`).join(', ')}]`,
+    `keywords: [${topic.keywords
+      .slice(0, 5)
+      .map((k) => `"${k.word}"`)
+      .join(', ')}]`,
     '---',
     '',
     `# Topic ${topic.id + 1}: ${topic.label}`,
@@ -158,7 +156,9 @@ export function generateTopicNote(
     lines.push('*No documents meet the relevance threshold.*');
   } else {
     for (const doc of topic.documents) {
-      lines.push(`- [[${doc.path}|${doc.title}]] — ${(doc.probability * 100).toFixed(1)}% relevance`);
+      lines.push(
+        `- [[${doc.path}|${doc.title}]] — ${(doc.probability * 100).toFixed(1)}% relevance`
+      );
     }
   }
 
@@ -186,9 +186,7 @@ export function extractWebLinks(notes: NoteInput[]): ExtractedWebLink[] {
 }
 
 /** Generate a markdown file from extracted web link metadata. */
-export function generateWebLinkNote(
-  link: ExtractedWebLink,
-): string {
+export function generateWebLinkNote(link: ExtractedWebLink): string {
   const title = link.displayText || new URL(link.url).hostname;
   return [
     '---',

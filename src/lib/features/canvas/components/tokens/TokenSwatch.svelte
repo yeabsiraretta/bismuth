@@ -32,25 +32,58 @@
     align-items: center;
     justify-content: center;
   }
-  .token-swatch.sm { width: 16px; height: 16px; }
-  .token-swatch.md { width: 24px; height: 24px; }
+  .token-swatch.sm {
+    width: 16px;
+    height: 16px;
+  }
+  .token-swatch.md {
+    width: 24px;
+    height: 24px;
+  }
   .swatch-color {
     width: 100%;
     height: 100%;
     border-radius: 3px;
     border: 1px solid var(--color-border);
   }
-  .swatch-spacing { display: flex; align-items: center; height: 100%; }
-  .swatch-bar { height: 4px; background: var(--color-accent); border-radius: 2px; min-width: 4px; }
-  .swatch-radius { width: 100%; height: 100%; border: 2px solid var(--color-accent); }
-  .swatch-opacity { width: 100%; height: 100%; background: var(--color-text); border-radius: 3px; }
-  .swatch-text { font-size: 10px; font-weight: 600; color: var(--color-text-secondary); }
+  .swatch-spacing {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .swatch-bar {
+    height: 4px;
+    background: var(--color-accent);
+    border-radius: 2px;
+    min-width: 4px;
+  }
+  .swatch-radius {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--color-accent);
+  }
+  .swatch-opacity {
+    width: 100%;
+    height: 100%;
+    background: var(--color-text);
+    border-radius: 3px;
+  }
+  .swatch-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
   .swatch-shadow {
     width: 80%;
     height: 80%;
     background: var(--color-bg-elevated);
     border-radius: 3px;
-    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   }
-  .swatch-empty { width: 100%; height: 100%; border: 1px dashed var(--color-border); border-radius: 3px; }
+  .swatch-empty {
+    width: 100%;
+    height: 100%;
+    border: 1px dashed var(--color-border);
+    border-radius: 3px;
+  }
 </style>

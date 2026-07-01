@@ -87,8 +87,13 @@ function makeContainer(): HTMLElement {
 }
 
 function cleanup(): void {
-  if (mounted) { unmount(mounted); mounted = null; }
-  if (container?.parentNode) { container.parentNode.removeChild(container); }
+  if (mounted) {
+    unmount(mounted);
+    mounted = null;
+  }
+  if (container?.parentNode) {
+    container.parentNode.removeChild(container);
+  }
 }
 
 afterEach(() => {

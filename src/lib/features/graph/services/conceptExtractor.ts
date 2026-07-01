@@ -8,20 +8,128 @@ import type { ConceptMode, LinkMode } from '../types/analytics';
 // ─── Stopwords ───────────────────────────────────────────────────────────────
 
 const DEFAULT_STOPWORDS = new Set([
-  'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
-  'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
-  'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-  'could', 'should', 'may', 'might', 'shall', 'can', 'not', 'no', 'nor',
-  'so', 'yet', 'both', 'each', 'few', 'more', 'most', 'other', 'some',
-  'such', 'than', 'too', 'very', 'just', 'about', 'above', 'after',
-  'again', 'all', 'also', 'am', 'any', 'as', 'because', 'before',
-  'between', 'during', 'here', 'how', 'if', 'into', 'it', 'its',
-  'itself', 'let', 'like', 'made', 'make', 'many', 'me', 'much', 'my',
-  'new', 'now', 'off', 'only', 'out', 'own', 'over', 'said', 'same',
-  'she', 'he', 'her', 'his', 'that', 'their', 'them', 'then', 'there',
-  'these', 'they', 'this', 'those', 'through', 'under', 'until', 'up',
-  'us', 'use', 'used', 'using', 'we', 'what', 'when', 'where', 'which',
-  'while', 'who', 'whom', 'why', 'you', 'your',
+  'the',
+  'a',
+  'an',
+  'and',
+  'or',
+  'but',
+  'in',
+  'on',
+  'at',
+  'to',
+  'for',
+  'of',
+  'with',
+  'by',
+  'from',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'have',
+  'has',
+  'had',
+  'do',
+  'does',
+  'did',
+  'will',
+  'would',
+  'could',
+  'should',
+  'may',
+  'might',
+  'shall',
+  'can',
+  'not',
+  'no',
+  'nor',
+  'so',
+  'yet',
+  'both',
+  'each',
+  'few',
+  'more',
+  'most',
+  'other',
+  'some',
+  'such',
+  'than',
+  'too',
+  'very',
+  'just',
+  'about',
+  'above',
+  'after',
+  'again',
+  'all',
+  'also',
+  'am',
+  'any',
+  'as',
+  'because',
+  'before',
+  'between',
+  'during',
+  'here',
+  'how',
+  'if',
+  'into',
+  'it',
+  'its',
+  'itself',
+  'let',
+  'like',
+  'made',
+  'make',
+  'many',
+  'me',
+  'much',
+  'my',
+  'new',
+  'now',
+  'off',
+  'only',
+  'out',
+  'own',
+  'over',
+  'said',
+  'same',
+  'she',
+  'he',
+  'her',
+  'his',
+  'that',
+  'their',
+  'them',
+  'then',
+  'there',
+  'these',
+  'they',
+  'this',
+  'those',
+  'through',
+  'under',
+  'until',
+  'up',
+  'us',
+  'use',
+  'used',
+  'using',
+  'we',
+  'what',
+  'when',
+  'where',
+  'which',
+  'while',
+  'who',
+  'whom',
+  'why',
+  'you',
+  'your',
 ]);
 
 // ─── Wikilink extraction ─────────────────────────────────────────────────────
@@ -43,7 +151,7 @@ export function extractWikilinks(text: string): string[] {
 /** Tokenize text into candidate concept words/phrases */
 export function extractConcepts(
   text: string,
-  stopwords: Set<string> = DEFAULT_STOPWORDS,
+  stopwords: Set<string> = DEFAULT_STOPWORDS
 ): string[] {
   // Strip markdown formatting, code blocks, and frontmatter
   let clean = text
@@ -60,8 +168,8 @@ export function extractConcepts(
   // Split into words, filter, lowercase
   const words = clean
     .split(/[\s,;:!?()\[\]{}"'`\-–—/\\|]+/)
-    .map(w => w.toLowerCase().replace(/[^a-z0-9]/g, ''))
-    .filter(w => w.length >= 3 && !stopwords.has(w) && !/^\d+$/.test(w));
+    .map((w) => w.toLowerCase().replace(/[^a-z0-9]/g, ''))
+    .filter((w) => w.length >= 3 && !stopwords.has(w) && !/^\d+$/.test(w));
 
   return words;
 }
@@ -92,10 +200,10 @@ interface ParagraphData {
 export function splitParagraphs(
   text: string,
   mode: ConceptMode,
-  stopwords: Set<string> = DEFAULT_STOPWORDS,
+  stopwords: Set<string> = DEFAULT_STOPWORDS
 ): ParagraphData[] {
   const paragraphs = text.split(/\n\s*\n/);
-  return paragraphs.map(p => ({
+  return paragraphs.map((p) => ({
     wikilinks: extractWikilinks(p),
     concepts: mode === 'wikilinks-and-concepts' ? extractConcepts(p, stopwords) : [],
   }));
@@ -107,7 +215,7 @@ export function buildConceptGraph(
   mode: ConceptMode = 'wikilinks-and-concepts',
   linkMode: LinkMode = 'paragraph',
   stopwords: Set<string> = DEFAULT_STOPWORDS,
-  maxConcepts: number = 80,
+  maxConcepts: number = 80
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const paragraphs = splitParagraphs(content, mode, stopwords);
 
@@ -147,7 +255,7 @@ export function buildConceptGraph(
     for (const p of paragraphs) {
       const items = [
         ...p.wikilinks,
-        ...(mode === 'wikilinks-and-concepts' ? p.concepts.filter(c => conceptSet.has(c)) : []),
+        ...(mode === 'wikilinks-and-concepts' ? p.concepts.filter((c) => conceptSet.has(c)) : []),
       ];
       // All pairs within paragraph
       for (let i = 0; i < items.length; i++) {
@@ -162,7 +270,7 @@ export function buildConceptGraph(
     // page mode: all wikilinks connected to page
     const allItems = [
       ...allWikilinks,
-      ...(mode === 'wikilinks-and-concepts' ? [...conceptSet].map(c => `concept:${c}`) : []),
+      ...(mode === 'wikilinks-and-concepts' ? [...conceptSet].map((c) => `concept:${c}`) : []),
     ];
     for (let i = 0; i < allItems.length; i++) {
       for (let j = i + 1; j < allItems.length; j++) {
@@ -194,7 +302,7 @@ export function buildMultiSourceGraph(
   sources: ContentSource[],
   mode: ConceptMode = 'wikilinks-and-concepts',
   linkMode: LinkMode = 'paragraph',
-  stopwords: Set<string> = DEFAULT_STOPWORDS,
+  stopwords: Set<string> = DEFAULT_STOPWORDS
 ): { nodes: GraphNode[]; edges: GraphEdge[] } {
   const allNodes = new Map<string, GraphNode>();
   const allEdgeCounts = new Map<string, number>();

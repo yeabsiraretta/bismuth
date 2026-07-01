@@ -29,7 +29,7 @@ export async function createSession(
   vaultId: string,
   date: string,
   durationMin?: number,
-  notes?: string,
+  notes?: string
 ): Promise<string> {
   return ipcCall<string>('gym_create_session', { vaultRoot, vaultId, date, durationMin, notes });
 }
@@ -39,7 +39,7 @@ export async function updateSession(
   vaultId: string,
   sessionId: string,
   durationMin?: number,
-  notes?: string,
+  notes?: string
 ): Promise<void> {
   return ipcCall<void>('gym_update_session', { vaultRoot, vaultId, sessionId, durationMin, notes });
 }
@@ -47,7 +47,7 @@ export async function updateSession(
 export async function deleteSession(
   vaultRoot: string,
   vaultId: string,
-  sessionId: string,
+  sessionId: string
 ): Promise<void> {
   return ipcCall<void>('gym_delete_session', { vaultRoot, vaultId, sessionId });
 }
@@ -59,9 +59,17 @@ export async function addSet(
   exerciseId: string,
   setOrder: number,
   reps?: number,
-  weightKg?: number,
+  weightKg?: number
 ): Promise<string> {
-  return ipcCall<string>('gym_add_set', { vaultRoot, vaultId, sessionId, exerciseId, setOrder, reps, weightKg });
+  return ipcCall<string>('gym_add_set', {
+    vaultRoot,
+    vaultId,
+    sessionId,
+    exerciseId,
+    setOrder,
+    reps,
+    weightKg,
+  });
 }
 
 export async function deleteSet(vaultRoot: string, vaultId: string, setId: string): Promise<void> {
@@ -71,7 +79,7 @@ export async function deleteSet(vaultRoot: string, vaultId: string, setId: strin
 export async function listSessions(
   vaultRoot: string,
   vaultId: string,
-  limit = 20,
+  limit = 20
 ): Promise<WorkoutSession[]> {
   try {
     return await ipcCall<WorkoutSession[]>('gym_list_sessions', { vaultRoot, vaultId, limit });
@@ -84,10 +92,14 @@ export async function listSessions(
 export async function getSessionsForDate(
   vaultRoot: string,
   vaultId: string,
-  date: string,
+  date: string
 ): Promise<WorkoutSession[]> {
   try {
-    return await ipcCall<WorkoutSession[]>('gym_get_sessions_for_date', { vaultRoot, vaultId, date });
+    return await ipcCall<WorkoutSession[]>('gym_get_sessions_for_date', {
+      vaultRoot,
+      vaultId,
+      date,
+    });
   } catch (err) {
     log.error('Failed to get sessions for date', err as Error);
     return [];
@@ -97,7 +109,7 @@ export async function getSessionsForDate(
 export async function getWeeklyVolume(
   vaultRoot: string,
   vaultId: string,
-  weekStart: string,
+  weekStart: string
 ): Promise<VolumeEntry[]> {
   try {
     return await ipcCall<VolumeEntry[]>('gym_get_weekly_volume', { vaultRoot, vaultId, weekStart });
@@ -110,10 +122,14 @@ export async function getWeeklyVolume(
 export async function getStrengthProgression(
   vaultRoot: string,
   vaultId: string,
-  exerciseId: string,
+  exerciseId: string
 ): Promise<ProgressionPoint[]> {
   try {
-    return await ipcCall<ProgressionPoint[]>('gym_get_strength_progression', { vaultRoot, vaultId, exerciseId });
+    return await ipcCall<ProgressionPoint[]>('gym_get_strength_progression', {
+      vaultRoot,
+      vaultId,
+      exerciseId,
+    });
   } catch (err) {
     log.error('Failed to get strength progression', err as Error);
     return [];
@@ -122,7 +138,7 @@ export async function getStrengthProgression(
 
 export async function getPersonalRecords(
   vaultRoot: string,
-  vaultId: string,
+  vaultId: string
 ): Promise<PersonalRecord[]> {
   try {
     return await ipcCall<PersonalRecord[]>('gym_get_personal_records', { vaultRoot, vaultId });
@@ -137,9 +153,15 @@ export async function createExercise(
   vaultId: string,
   name: string,
   muscleGroup: string,
-  equipment: string,
+  equipment: string
 ): Promise<string> {
-  return ipcCall<string>('gym_create_exercise', { vaultRoot, vaultId, name, muscleGroup, equipment });
+  return ipcCall<string>('gym_create_exercise', {
+    vaultRoot,
+    vaultId,
+    name,
+    muscleGroup,
+    equipment,
+  });
 }
 
 export async function addNutrition(
@@ -150,15 +172,24 @@ export async function addNutrition(
   calories?: number,
   proteinG?: number,
   carbsG?: number,
-  fatG?: number,
+  fatG?: number
 ): Promise<string> {
-  return ipcCall<string>('gym_add_nutrition', { vaultRoot, vaultId, date, mealName, calories, proteinG, carbsG, fatG });
+  return ipcCall<string>('gym_add_nutrition', {
+    vaultRoot,
+    vaultId,
+    date,
+    mealName,
+    calories,
+    proteinG,
+    carbsG,
+    fatG,
+  });
 }
 
 export async function getNutritionForDate(
   vaultRoot: string,
   vaultId: string,
-  date: string,
+  date: string
 ): Promise<NutritionEntry[]> {
   try {
     return await ipcCall<NutritionEntry[]>('gym_get_nutrition', { vaultRoot, vaultId, date });
@@ -171,15 +202,12 @@ export async function getNutritionForDate(
 export async function deleteNutrition(
   vaultRoot: string,
   vaultId: string,
-  entryId: string,
+  entryId: string
 ): Promise<void> {
   return ipcCall<void>('gym_delete_nutrition', { vaultRoot, vaultId, entryId });
 }
 
-export async function getWeeklyMacros(
-  vaultRoot: string,
-  vaultId: string,
-): Promise<WeeklyMacros[]> {
+export async function getWeeklyMacros(vaultRoot: string, vaultId: string): Promise<WeeklyMacros[]> {
   try {
     return await ipcCall<WeeklyMacros[]>('gym_get_weekly_macros', { vaultRoot, vaultId });
   } catch (err) {
@@ -188,7 +216,10 @@ export async function getWeeklyMacros(
   }
 }
 
-export async function listTemplates(vaultRoot: string, vaultId: string): Promise<WorkoutTemplate[]> {
+export async function listTemplates(
+  vaultRoot: string,
+  vaultId: string
+): Promise<WorkoutTemplate[]> {
   try {
     return await ipcCall<WorkoutTemplate[]>('gym_list_templates', { vaultRoot, vaultId });
   } catch (err) {
@@ -201,7 +232,7 @@ export async function saveTemplate(
   vaultRoot: string,
   vaultId: string,
   name: string,
-  exercisesJson: string,
+  exercisesJson: string
 ): Promise<string> {
   return ipcCall<string>('gym_save_template', { vaultRoot, vaultId, name, exercisesJson });
 }

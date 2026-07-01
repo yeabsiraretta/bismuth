@@ -64,7 +64,9 @@
     border-bottom: 1px solid var(--background-modifier-border);
     background: var(--background-secondary);
   }
-  .chat-tab-bar::-webkit-scrollbar { height: 2px; }
+  .chat-tab-bar::-webkit-scrollbar {
+    height: 2px;
+  }
 
   .chat-tab-wrapper {
     display: flex;
@@ -76,7 +78,9 @@
     max-width: 130px;
     transition: background 0.15s;
   }
-  .chat-tab-wrapper:hover { background: var(--background-modifier-hover); }
+  .chat-tab-wrapper:hover {
+    background: var(--background-modifier-hover);
+  }
   .chat-tab-wrapper.active {
     background: var(--background-primary);
   }
@@ -95,7 +99,9 @@
     flex: 1;
     min-width: 0;
   }
-  .chat-tab-wrapper:hover .chat-tab { color: var(--text-normal); }
+  .chat-tab-wrapper:hover .chat-tab {
+    color: var(--text-normal);
+  }
   .chat-tab-wrapper.active .chat-tab {
     color: var(--text-normal);
     font-weight: var(--font-medium, 500);
@@ -122,8 +128,13 @@
     flex-shrink: 0;
     opacity: 0;
   }
-  .chat-tab-wrapper:hover .tab-close { opacity: 1; }
-  .tab-close:hover { background: var(--background-modifier-hover); color: var(--text-error); }
+  .chat-tab-wrapper:hover .tab-close {
+    opacity: 1;
+  }
+  .tab-close:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-error);
+  }
 
   .new-tab-btn {
     display: flex;
@@ -139,5 +150,8 @@
     cursor: pointer;
     flex-shrink: 0;
   }
-  .new-tab-btn:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+  .new-tab-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
 </style>

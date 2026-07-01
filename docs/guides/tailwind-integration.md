@@ -9,18 +9,21 @@ Integrated TailwindCSS v4 into Bismuth for design standardization, performance, 
 ## Why Tailwind for Bismuth?
 
 ### Performance Benefits
+
 - **Tree-shaking**: Only includes CSS actually used in components (~10-20KB gzipped in production)
 - **No runtime**: Pure CSS, no JavaScript overhead
 - **Optimized builds**: PostCSS processes and minifies automatically
 - **JIT mode**: Generates styles on-demand during development
 
 ### Developer Experience
+
 - **Utility-first**: Rapid prototyping with consistent spacing/colors
 - **Type-safe**: Works seamlessly with TypeScript and Svelte
 - **Autocomplete**: IDE support for class names
 - **No naming conflicts**: Utility classes eliminate CSS naming issues
 
 ### Design Consistency
+
 - **Design tokens**: Centralized color, spacing, typography system
 - **Responsive**: Mobile-first breakpoints built-in
 - **Dark mode**: Attribute-based dark mode support (`data-theme="dark"`)
@@ -29,12 +32,14 @@ Integrated TailwindCSS v4 into Bismuth for design standardization, performance, 
 ## Tech Stack Integration
 
 ### Svelte Compatibility
+
 - ✅ Works perfectly with Svelte components
 - ✅ Supports `class:` directives
 - ✅ Compatible with scoped styles
 - ✅ No conflicts with Svelte's CSS processing
 
 ### Tauri Compatibility
+
 - ✅ Pure CSS, no Node.js runtime required
 - ✅ Compiles at build time
 - ✅ Works with Tauri's asset bundling
@@ -75,6 +80,7 @@ Does NOT drive configuration — the `@theme` block in `app.css` is authoritativ
 **Purpose**: PostCSS configuration for processing Tailwind
 
 **Plugins**:
+
 - `@tailwindcss/postcss`: Tailwind v4 PostCSS plugin
 - `autoprefixer`: Adds vendor prefixes for browser compatibility
 
@@ -90,6 +96,7 @@ typography, border radius, shadows, z-index, and layout variables.
 ### Color Palette
 
 **Primary Colors** (Blue):
+
 ```css
 primary-50  → #f0f9ff
 primary-500 → #0ea5e9 (main)
@@ -97,37 +104,30 @@ primary-900 → #0c4a6e
 ```
 
 **Semantic Colors**:
+
 ```css
---color-bg: Background
---color-surface: Cards, panels
---color-text: Primary text
---color-text-muted: Secondary text
---color-border: Dividers, outlines
---color-error: #ef4444
---color-success: #10b981
---color-warning: #f59e0b
+--color-bg:
+  Background --color-surface: Cards,
+  panels --color-text: Primary text --color-text-muted: Secondary text --color-border: Dividers,
+  outlines --color-error: #ef4444 --color-success: #10b981 --color-warning: #f59e0b;
 ```
 
 ### Spacing Scale
 
 ```css
---space-1: 0.25rem (4px)
---space-2: 0.5rem  (8px)
---space-3: 0.75rem (12px)
---space-4: 1rem    (16px)
---space-5: 1.5rem  (24px)
---space-6: 2rem    (32px)
---space-7: 3rem    (48px)
---space-8: 4rem    (64px)
+--space-1: 0.25rem (4px) --space-2: 0.5rem (8px) --space-3: 0.75rem (12px) --space-4: 1rem (16px)
+  --space-5: 1.5rem (24px) --space-6: 2rem (32px) --space-7: 3rem (48px) --space-8: 4rem (64px);
 ```
 
 ### Typography
 
 **Font Families**:
+
 - **Sans**: System UI stack (optimal for each OS)
 - **Mono**: Code fonts (SF Mono, Fira Code, etc.)
 
 **Font Sizes**:
+
 ```css
 text-xs   → 0.75rem (12px)
 text-sm   → 0.875rem (14px)
@@ -239,7 +239,7 @@ text-2xl  → 1.5rem (24px)
 ```svelte
 <!-- Mobile-first breakpoints -->
 <div class="w-full md:w-1/2 lg:w-1/3">
-  
+
 <!-- Hide on mobile -->
 <div class="hidden md:block">
 
@@ -258,16 +258,19 @@ text-2xl  → 1.5rem (24px)
 ## Migration Strategy
 
 ### Phase 1: New Components (Current)
+
 - Use Tailwind for all new components
 - Gradually adopt component classes
 - Maintain existing CSS for legacy components
 
 ### Phase 2: Refactor Existing Components
+
 - Convert inline styles to Tailwind utilities
 - Replace custom CSS with component classes
 - Remove duplicate CSS rules
 
 ### Phase 3: Optimize
+
 - Remove unused CSS variables
 - Consolidate component variants
 - Tree-shake unused Tailwind classes
@@ -277,6 +280,8 @@ text-2xl  → 1.5rem (24px)
 ### Before (Custom CSS)
 
 ```svelte
+<button class="button">Click me</button>
+
 <style>
   .button {
     padding: 0.5rem 1rem;
@@ -286,21 +291,17 @@ text-2xl  → 1.5rem (24px)
     font-weight: 500;
     transition: background 0.2s;
   }
-  
+
   .button:hover {
     background: var(--color-primary-hover);
   }
 </style>
-
-<button class="button">Click me</button>
 ```
 
 ### After (Tailwind)
 
 ```svelte
-<button class="btn btn-primary">
-  Click me
-</button>
+<button class="btn btn-primary"> Click me </button>
 ```
 
 ### Complex Example
@@ -308,29 +309,25 @@ text-2xl  → 1.5rem (24px)
 ```svelte
 <!-- Graph controls with Tailwind -->
 <div class="flex items-center gap-2 p-3 bg-surface border-b border-border">
-  <input
-    type="text"
-    placeholder="Search nodes..."
-    class="input flex-1 max-w-xs"
-  />
+  <input type="text" placeholder="Search nodes..." class="input flex-1 max-w-xs" />
   <button class="btn btn-secondary btn-sm">
     <Icon name="settings" size={16} />
     Settings
   </button>
-  <button class="btn btn-primary btn-sm">
-    Export
-  </button>
+  <button class="btn btn-primary btn-sm"> Export </button>
 </div>
 ```
 
 ## Performance Metrics
 
 ### Development
+
 - **Build time**: +~200ms (PostCSS processing)
 - **HMR**: Instant (Tailwind JIT)
 - **File size**: ~3MB (all utilities, dev only)
 
 ### Production
+
 - **CSS bundle**: ~15-25KB gzipped (tree-shaken)
 - **Load time**: <50ms (cached)
 - **Render performance**: No impact (pure CSS)
@@ -373,7 +370,7 @@ text-2xl  → 1.5rem (24px)
   canvas {
     cursor: grab;
   }
-  
+
   canvas:active {
     cursor: grabbing;
   }
@@ -419,7 +416,7 @@ theme: {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -444,6 +441,7 @@ theme: {
 ### VS Code
 
 Install extensions:
+
 - **Tailwind CSS IntelliSense**: Autocomplete, linting, hover previews
 - **PostCSS Language Support**: Syntax highlighting for @apply
 
@@ -451,9 +449,7 @@ Install extensions:
 
 ```json
 {
-  "tailwindCSS.experimental.classRegex": [
-    ["class:\\s*{([^}]*)}"]
-  ],
+  "tailwindCSS.experimental.classRegex": [["class:\\s*{([^}]*)}"]],
   "css.validate": false,
   "tailwindCSS.includeLanguages": {
     "svelte": "html"
@@ -468,6 +464,7 @@ Install extensions:
 **Issue**: Tailwind classes not working
 
 **Solution**:
+
 1. Check `content` paths in `tailwind.config.js`
 2. Ensure `app.css` is imported in `+layout.svelte`
 3. Restart dev server
@@ -477,13 +474,14 @@ Install extensions:
 **Issue**: Classes removed in production
 
 **Solution**:
+
 ```js
 // tailwind.config.js
 safelist: [
   'bg-primary',
   'text-error',
   // Add dynamic classes here
-]
+];
 ```
 
 ### Conflicts with Existing CSS
@@ -491,6 +489,7 @@ safelist: [
 **Issue**: Tailwind resets override custom styles
 
 **Solution**:
+
 ```css
 /* Use layers to control specificity */
 @layer base {
@@ -524,6 +523,7 @@ safelist: [
 ## Status
 
 ✅ **COMPLETE** - TailwindCSS fully integrated:
+
 1. ✅ Configuration files created
 2. ✅ Design system defined
 3. ✅ Component classes implemented

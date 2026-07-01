@@ -4,8 +4,19 @@
  */
 
 import type { GraphEdge } from '../../types';
-import type { SimNode3D, Camera3D, Graph3DSettings, FocusState3D, NodeShape3D } from '../../types/graph3d';
-import { projectNode, getAppearanceForType, getNodeColor3D, getNodeRadius3D } from '../../utils/simulation3d';
+import type {
+  SimNode3D,
+  Camera3D,
+  Graph3DSettings,
+  FocusState3D,
+  NodeShape3D,
+} from '../../types/graph3d';
+import {
+  projectNode,
+  getAppearanceForType,
+  getNodeColor3D,
+  getNodeRadius3D,
+} from '../../utils/simulation3d';
 
 export interface Graph3DColors {
   bg: string;
@@ -25,20 +36,29 @@ export function resolve3DColors(el: HTMLElement): Graph3DColors {
 }
 
 export function render3DGraph(
-  ctx: CanvasRenderingContext2D, nodes: SimNode3D[], edges: GraphEdge[],
-  camera: Camera3D, settings: Graph3DSettings, focus: FocusState3D,
-  width: number, height: number, colors: Graph3DColors,
+  ctx: CanvasRenderingContext2D,
+  nodes: SimNode3D[],
+  edges: GraphEdge[],
+  camera: Camera3D,
+  settings: Graph3DSettings,
+  focus: FocusState3D,
+  width: number,
+  height: number,
+  colors: Graph3DColors
 ): void {
   ctx.fillStyle = colors.bg;
   ctx.fillRect(0, 0, width, height);
 
-  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+  const nodeMap = new Map(nodes.map((n) => [n.id, n]));
 
   // Sort nodes by depth for painter's algorithm (far first)
-  const projected = nodes.map(n => {
-    const p = projectNode(n, camera, width, height);
-    return { node: n, ...p };
-  }).filter(p => !p.behind).sort((a, b) => a.scale - b.scale);
+  const projected = nodes
+    .map((n) => {
+      const p = projectNode(n, camera, width, height);
+      return { node: n, ...p };
+    })
+    .filter((p) => !p.behind)
+    .sort((a, b) => a.scale - b.scale);
 
   // ── Draw edges ──
   for (const edge of edges) {
@@ -49,14 +69,18 @@ export function render3DGraph(
     const pt = projectNode(tgt, camera, width, height);
     if (ps.behind || pt.behind) continue;
 
-    const dimmed = focus.focusedNodeId !== null
-      && focus.focusedNodeId !== edge.from && focus.focusedNodeId !== edge.to;
+    const dimmed =
+      focus.focusedNodeId !== null &&
+      focus.focusedNodeId !== edge.from &&
+      focus.focusedNodeId !== edge.to;
 
     ctx.beginPath();
     ctx.moveTo(ps.sx, ps.sy);
     ctx.lineTo(pt.sx, pt.sy);
     ctx.strokeStyle = colors.edge;
-    ctx.globalAlpha = dimmed ? 0.05 : Math.min(settings.linkOpacity * Math.min(ps.scale, pt.scale) * 0.8, 0.6);
+    ctx.globalAlpha = dimmed
+      ? 0.05
+      : Math.min(settings.linkOpacity * Math.min(ps.scale, pt.scale) * 0.8, 0.6);
     ctx.lineWidth = settings.linkThickness * Math.min(ps.scale, pt.scale) * 0.6;
     ctx.stroke();
   }
@@ -109,8 +133,13 @@ export function render3DGraph(
 // ─── Shape drawing ──────────────────────────────────────────────────────────
 
 function drawShape(
-  ctx: CanvasRenderingContext2D, shape: NodeShape3D,
-  x: number, y: number, r: number, color: string, highlighted: boolean,
+  ctx: CanvasRenderingContext2D,
+  shape: NodeShape3D,
+  x: number,
+  y: number,
+  r: number,
+  color: string,
+  highlighted: boolean
 ): void {
   ctx.fillStyle = highlighted ? '#4a9eff' : color;
 

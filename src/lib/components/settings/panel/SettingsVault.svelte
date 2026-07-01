@@ -9,7 +9,7 @@
 
   $: noteCount = $notes.length;
   $: totalWords = $notes.reduce((sum, n) => sum + (n.content?.split(/\s+/).length || 0), 0);
-  $: totalLinks = $notes.reduce((sum, n) => sum + ((n.content?.match(/\[\[/g) || []).length), 0);
+  $: totalLinks = $notes.reduce((sum, n) => sum + (n.content?.match(/\[\[/g) || []).length, 0);
 
   export let vaultName: string;
   export let vaultPath: string;
@@ -66,7 +66,11 @@
       <label for="vault-name-edit">Vault Name</label>
       <div class="path-display">
         <input id="vault-name-edit" type="text" bind:value={renameInput} />
-        <button class="btn-secondary" on:click={handleRename} disabled={renameInput.trim() === vaultName}>
+        <button
+          class="btn-secondary"
+          on:click={handleRename}
+          disabled={renameInput.trim() === vaultName}
+        >
           Rename
         </button>
       </div>
@@ -134,8 +138,15 @@
 
       <div class="setting-item">
         <label for="commit-message-template">Commit Message Template</label>
-        <input id="commit-message-template" type="text" bind:value={commitMessageTemplate} placeholder="Update [filename]" />
-        <span class="setting-hint">Template for auto-commit messages. Use [filename] as placeholder for note name.</span>
+        <input
+          id="commit-message-template"
+          type="text"
+          bind:value={commitMessageTemplate}
+          placeholder="Update [filename]"
+        />
+        <span class="setting-hint"
+          >Template for auto-commit messages. Use [filename] as placeholder for note name.</span
+        >
       </div>
     {/if}
   </div>
@@ -172,7 +183,9 @@
         <Icon name="trash" size={16} />
         Remove from Recents
       </button>
-      <span class="setting-hint">Remove this vault from recent list. Files on disk are NOT deleted.</span>
+      <span class="setting-hint"
+        >Remove this vault from recent list. Files on disk are NOT deleted.</span
+      >
     </div>
   </div>
 </div>

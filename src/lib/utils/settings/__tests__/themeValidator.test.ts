@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  THEME_TOKEN_ALLOWLIST,
-  isThemeValueSafe,
-  validateThemeManifest,
-} from '../themeValidator';
+import { THEME_TOKEN_ALLOWLIST, isThemeValueSafe, validateThemeManifest } from '../themeValidator';
 import type { ThemeManifest } from '../themeValidator';
 
 const validManifest: ThemeManifest = {
@@ -21,8 +17,9 @@ describe('isThemeValueSafe', () => {
   it('accepts safe rgb()', () => expect(isThemeValueSafe('rgb(220, 38, 38)')).toBe(true));
   it('accepts named color', () => expect(isThemeValueSafe('crimson')).toBe(true));
   it('accepts spacing value', () => expect(isThemeValueSafe('8px')).toBe(true));
-  it('rejects url() injection', () => expect(isThemeValueSafe("url('evil')" )).toBe(false));
-  it('rejects expression() injection', () => expect(isThemeValueSafe('expression(alert(1))')).toBe(false));
+  it('rejects url() injection', () => expect(isThemeValueSafe("url('evil')")).toBe(false));
+  it('rejects expression() injection', () =>
+    expect(isThemeValueSafe('expression(alert(1))')).toBe(false));
   it('rejects @ character', () => expect(isThemeValueSafe('@import evil')).toBe(false));
   it('rejects semicolon', () => expect(isThemeValueSafe('#fff; body{display:none}')).toBe(false));
   it('rejects backslash', () => expect(isThemeValueSafe('\\0041')).toBe(false));
@@ -33,9 +30,12 @@ describe('isThemeValueSafe', () => {
 
 describe('THEME_TOKEN_ALLOWLIST', () => {
   it('contains --color-bg', () => expect(THEME_TOKEN_ALLOWLIST.has('--color-bg')).toBe(true));
-  it('contains --interactive-accent', () => expect(THEME_TOKEN_ALLOWLIST.has('--interactive-accent')).toBe(true));
-  it('does not contain --font-size', () => expect(THEME_TOKEN_ALLOWLIST.has('--font-size')).toBe(false));
-  it('does not contain arbitrary key', () => expect(THEME_TOKEN_ALLOWLIST.has('--evil-injection')).toBe(false));
+  it('contains --interactive-accent', () =>
+    expect(THEME_TOKEN_ALLOWLIST.has('--interactive-accent')).toBe(true));
+  it('does not contain --font-size', () =>
+    expect(THEME_TOKEN_ALLOWLIST.has('--font-size')).toBe(false));
+  it('does not contain arbitrary key', () =>
+    expect(THEME_TOKEN_ALLOWLIST.has('--evil-injection')).toBe(false));
 });
 
 describe('validateThemeManifest', () => {
@@ -54,17 +54,21 @@ describe('validateThemeManifest', () => {
   });
 
   it('rejects token with unknown key', () => {
-    expect(validateThemeManifest({
-      ...validManifest,
-      tokens: { '--unknown-prop': '#fff' },
-    })).toBe(false);
+    expect(
+      validateThemeManifest({
+        ...validManifest,
+        tokens: { '--unknown-prop': '#fff' },
+      })
+    ).toBe(false);
   });
 
   it('rejects token with unsafe value', () => {
-    expect(validateThemeManifest({
-      ...validManifest,
-      tokens: { '--color-bg': "url('evil')" },
-    })).toBe(false);
+    expect(
+      validateThemeManifest({
+        ...validManifest,
+        tokens: { '--color-bg': "url('evil')" },
+      })
+    ).toBe(false);
   });
 
   it('rejects null input', () => expect(validateThemeManifest(null)).toBe(false));

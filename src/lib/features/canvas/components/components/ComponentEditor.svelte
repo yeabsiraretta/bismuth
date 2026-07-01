@@ -11,9 +11,7 @@
       <span class="breadcrumb-label">Editing Component:</span>
       <span class="breadcrumb-name">{componentName}</span>
     </div>
-    <button class="done-btn" on:click={exitComponentEditMode}>
-      Done
-    </button>
+    <button class="done-btn" on:click={exitComponentEditMode}> Done </button>
   </div>
 {/if}
 

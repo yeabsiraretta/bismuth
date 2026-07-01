@@ -46,10 +46,10 @@ describe('versioning service', () => {
     it('calls compute_version_diff_metrics with correct argument keys', async () => {
       vi.mocked(ipcCall).mockResolvedValue(mockMetrics);
       const result = await computeDiffMetrics('old text', 'new text');
-      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith(
-        'compute_version_diff_metrics',
-        { oldContent: 'old text', newContent: 'new text' },
-      );
+      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith('compute_version_diff_metrics', {
+        oldContent: 'old text',
+        newContent: 'new text',
+      });
       expect(result).toEqual(mockMetrics);
     });
 
@@ -68,10 +68,10 @@ describe('versioning service', () => {
     it('calls bump_version with correct argument keys', async () => {
       vi.mocked(ipcCall).mockResolvedValue('0.3.0');
       const result = await bumpVersion('0.2.0', mockMetrics);
-      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith(
-        'bump_version',
-        { currentVersion: '0.2.0', metrics: mockMetrics },
-      );
+      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith('bump_version', {
+        currentVersion: '0.2.0',
+        metrics: mockMetrics,
+      });
       expect(result).toBe('0.3.0');
     });
 
@@ -86,16 +86,13 @@ describe('versioning service', () => {
     it('calls save_note_version with correct argument keys', async () => {
       vi.mocked(ipcCall).mockResolvedValue(mockEntry);
       const result = await saveDiff('/vault', 'note-id', 'old', 'new', '0.2.0');
-      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith(
-        'save_note_version',
-        {
-          vaultRoot: '/vault',
-          fileId: 'note-id',
-          oldContent: 'old',
-          newContent: 'new',
-          version: '0.2.0',
-        },
-      );
+      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith('save_note_version', {
+        vaultRoot: '/vault',
+        fileId: 'note-id',
+        oldContent: 'old',
+        newContent: 'new',
+        version: '0.2.0',
+      });
       expect(result).toEqual(mockEntry);
     });
 
@@ -114,10 +111,10 @@ describe('versioning service', () => {
     it('calls list_note_versions with correct argument keys', async () => {
       vi.mocked(ipcCall).mockResolvedValue([mockEntry]);
       const result = await listVersions('/vault', 'note-id');
-      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith(
-        'list_note_versions',
-        { vaultRoot: '/vault', fileId: 'note-id' },
-      );
+      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith('list_note_versions', {
+        vaultRoot: '/vault',
+        fileId: 'note-id',
+      });
       expect(result).toEqual([mockEntry]);
     });
 
@@ -133,10 +130,11 @@ describe('versioning service', () => {
     it('calls get_note_diff with correct argument keys', async () => {
       vi.mocked(ipcCall).mockResolvedValue('{"version":"0.2.0"}');
       const result = await getNoteDiff('/vault', 'note-id', '12345-0-2-0.json');
-      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith(
-        'get_note_diff',
-        { vaultRoot: '/vault', fileId: 'note-id', version: '12345-0-2-0.json' },
-      );
+      expect(vi.mocked(ipcCall)).toHaveBeenCalledWith('get_note_diff', {
+        vaultRoot: '/vault',
+        fileId: 'note-id',
+        version: '12345-0-2-0.json',
+      });
       expect(typeof result).toBe('string');
     });
   });

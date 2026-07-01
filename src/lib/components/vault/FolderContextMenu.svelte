@@ -1,6 +1,11 @@
 <script lang="ts">
   import { ContextMenu, MenuItem, MenuDivider } from '@/components/ui/menu';
-  import { createFolder, createInlineNote, renameFolder, deleteFolder } from '@/components/vault/fileTreeLogic';
+  import {
+    createFolder,
+    createInlineNote,
+    renameFolder,
+    deleteFolder,
+  } from '@/components/vault/fileTreeLogic';
   import { log } from '@/utils/logger';
 
   export let folderPath: string;
@@ -68,7 +73,10 @@
 
   function handleRenameKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter') handleRename();
-    else if (e.key === 'Escape') { isRenaming = false; handleClose(); }
+    else if (e.key === 'Escape') {
+      isRenaming = false;
+      handleClose();
+    }
   }
 </script>
 

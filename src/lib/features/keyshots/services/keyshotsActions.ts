@@ -19,12 +19,10 @@ export function moveLineUp(view: EditorView): boolean {
   const above = state.doc.line(firstLine.number - 1);
   const text = state.sliceDoc(firstLine.from, lastLine.to);
   view.dispatch({
-    changes: [
-      { from: above.from, to: lastLine.to, insert: text + '\n' + above.text },
-    ],
+    changes: [{ from: above.from, to: lastLine.to, insert: text + '\n' + above.text }],
     selection: EditorSelection.range(
       sel.from - above.text.length - 1,
-      sel.to - above.text.length - 1,
+      sel.to - above.text.length - 1
     ),
     userEvent: 'move.line',
   });
@@ -40,12 +38,10 @@ export function moveLineDown(view: EditorView): boolean {
   const below = state.doc.line(lastLine.number + 1);
   const text = state.sliceDoc(firstLine.from, lastLine.to);
   view.dispatch({
-    changes: [
-      { from: firstLine.from, to: below.to, insert: below.text + '\n' + text },
-    ],
+    changes: [{ from: firstLine.from, to: below.to, insert: below.text + '\n' + text }],
     selection: EditorSelection.range(
       sel.from + below.text.length + 1,
-      sel.to + below.text.length + 1,
+      sel.to + below.text.length + 1
     ),
     userEvent: 'move.line',
   });
@@ -71,10 +67,7 @@ function duplicateLine(view: EditorView, direction: 'up' | 'down'): boolean {
   if (direction === 'down') {
     view.dispatch({
       changes: { from: lastLine.to, insert: '\n' + text },
-      selection: EditorSelection.range(
-        sel.from + text.length + 1,
-        sel.to + text.length + 1,
-      ),
+      selection: EditorSelection.range(sel.from + text.length + 1, sel.to + text.length + 1),
       userEvent: 'input.duplicate',
     });
   } else {
@@ -156,7 +149,7 @@ function leadingSpaces(text: string): number {
 // ─── Sort / reverse / shuffle ──────────────────────────────────────────────────
 
 export function sortLines(view: EditorView, caseSensitive = false): boolean {
-  return transformSelectedLines(view, lines => {
+  return transformSelectedLines(view, (lines) => {
     const cmp = caseSensitive
       ? (a: string, b: string) => a.localeCompare(b)
       : (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase());
@@ -165,11 +158,11 @@ export function sortLines(view: EditorView, caseSensitive = false): boolean {
 }
 
 export function reverseLines(view: EditorView): boolean {
-  return transformSelectedLines(view, lines => [...lines].reverse());
+  return transformSelectedLines(view, (lines) => [...lines].reverse());
 }
 
 export function shuffleLines(view: EditorView): boolean {
-  return transformSelectedLines(view, lines => {
+  return transformSelectedLines(view, (lines) => {
     const arr = [...lines];
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -179,10 +172,7 @@ export function shuffleLines(view: EditorView): boolean {
   });
 }
 
-function transformSelectedLines(
-  view: EditorView,
-  fn: (lines: string[]) => string[],
-): boolean {
+function transformSelectedLines(view: EditorView, fn: (lines: string[]) => string[]): boolean {
   const { state } = view;
   const sel = state.selection.main;
   const firstLine = state.doc.lineAt(sel.from);

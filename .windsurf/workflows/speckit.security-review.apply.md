@@ -2,9 +2,9 @@
 description: Apply approved security follow-up items into Spec-Kit planning artifacts
 ---
 
-
 <!-- Extension: security-review -->
 <!-- Config: .specify/extensions/security-review/ -->
+
 # Security Review - Apply Follow-Ups
 
 ## User Input

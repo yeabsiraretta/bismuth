@@ -1,10 +1,6 @@
 <script lang="ts">
   import { currentVault } from '@/stores/vault/vault';
-  import {
-    activeNote,
-    removeNoteFromStore,
-    setActiveNote,
-  } from '@/stores/vault/vault';
+  import { activeNote, removeNoteFromStore, setActiveNote } from '@/stores/vault/vault';
   import { toggleLeftSidebar, toggleRightSidebar } from '@/stores/layout/layout';
   import { settings } from '@/features/settings';
   import { deleteNote } from '@/services/vault/vault';
@@ -95,7 +91,13 @@
   {#if $activeNote}
     <button
       class="toolbar-btn icon-only danger"
-      on:click={() => { if ($settings.confirmBeforeDelete) { showDeleteConfirm = true; } else { handleDeleteNote(); } }}
+      on:click={() => {
+        if ($settings.confirmBeforeDelete) {
+          showDeleteConfirm = true;
+        } else {
+          handleDeleteNote();
+        }
+      }}
       title="Delete Note"
       aria-label="Delete note"
     >
@@ -147,7 +149,6 @@
     margin: 0 var(--grid-gap-xs, 4px);
   }
 
-
   .toolbar-btn {
     display: flex;
     align-items: center;
@@ -183,7 +184,4 @@
     background-color: var(--interactive-hover);
     color: var(--text-error);
   }
-
-
-
 </style>

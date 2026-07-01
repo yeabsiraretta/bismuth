@@ -1,4 +1,5 @@
 <!-- SPECKIT START -->
+
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
 at specs/006-service-bugfixes/plan.md
@@ -28,4 +29,5 @@ You MUST follow the memory-first workflow defined in `.specify/memory/workflow.m
 - Memory Index: `docs/memory/INDEX.md`
 - Extension config: `.specify/extensions.yml`
 - Integration guide: `docs/development/extension-integration.md`
+
 <!-- SPECKIT END -->

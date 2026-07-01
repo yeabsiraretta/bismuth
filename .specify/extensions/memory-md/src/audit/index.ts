@@ -1,14 +1,14 @@
-import fs from "fs";
-import path from "path";
-import { loadConfig, resolveProjectPaths } from "../config";
-import { loadAllEntries, MemoryDatabase, loadIndexingState } from "../db";
-import { pathExists, readTextFile } from "../utils/fs";
-import { wordCount } from "../utils/text";
+import fs from 'fs';
+import path from 'path';
+import { loadConfig, resolveProjectPaths } from '../config';
+import { loadAllEntries, MemoryDatabase, loadIndexingState } from '../db';
+import { pathExists, readTextFile } from '../utils/fs';
+import { wordCount } from '../utils/text';
 
 export interface AuditIssue {
   id: string;
   file: string;
-  severity: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   issue: string;
   recommendation: string;
 }
@@ -25,7 +25,7 @@ export async function auditMemoryCache(
   db: MemoryDatabase,
   projectRoot: string,
   featurePath?: string,
-  config = loadConfig(projectRoot),
+  config = loadConfig(projectRoot)
 ): Promise<AuditReport> {
   const { memoryRoot, specsRoot } = resolveProjectPaths(projectRoot, config);
   const issues: AuditIssue[] = [];
@@ -43,9 +43,9 @@ export async function auditMemoryCache(
       issues.push({
         id: `M${issues.length + 1}`,
         file: row.source_path,
-        severity: "HIGH",
-        issue: "Indexing state points to a missing source file",
-        recommendation: "Remove the stale cache rows and reindex the file if it returns.",
+        severity: 'HIGH',
+        issue: 'Indexing state points to a missing source file',
+        recommendation: 'Remove the stale cache rows and reindex the file if it returns.',
       });
       continue;
     }
@@ -56,9 +56,9 @@ export async function auditMemoryCache(
       issues.push({
         id: `M${issues.length + 1}`,
         file: row.source_path,
-        severity: "HIGH",
-        issue: "Indexing state hash does not match the current file",
-        recommendation: "Run refresh-memory or rebuild-memory to resync the cache.",
+        severity: 'HIGH',
+        issue: 'Indexing state hash does not match the current file',
+        recommendation: 'Run refresh-memory or rebuild-memory to resync the cache.',
       });
     }
   }
@@ -70,9 +70,9 @@ export async function auditMemoryCache(
       issues.push({
         id: `M${issues.length + 1}`,
         file: entry.source_path,
-        severity: "MEDIUM",
-        issue: "Orphaned DB row references a deleted source file",
-        recommendation: "Remove orphaned rows during refresh or rebuild.",
+        severity: 'MEDIUM',
+        issue: 'Orphaned DB row references a deleted source file',
+        recommendation: 'Remove orphaned rows during refresh or rebuild.',
       });
     }
   }
@@ -83,9 +83,9 @@ export async function auditMemoryCache(
       issues.push({
         id: `M${issues.length + 1}`,
         file: path.relative(projectRoot, synthesisFile.path),
-        severity: "MEDIUM",
+        severity: 'MEDIUM',
         issue: `memory-synthesis.md exceeds the configured budget (${synthesisFile.words} words)`,
-        recommendation: "Trim synthesis output or raise the configured synthesis word limit.",
+        recommendation: 'Trim synthesis output or raise the configured synthesis word limit.',
       });
     }
   }
@@ -95,22 +95,27 @@ export async function auditMemoryCache(
     issues.push({
       id: `M${issues.length + 1}`,
       file: duplicate,
-      severity: "LOW",
-      issue: "Potential duplicate memory entries detected",
-      recommendation: "Review the duplicated source sections and consolidate if necessary.",
+      severity: 'LOW',
+      issue: 'Potential duplicate memory entries detected',
+      recommendation: 'Review the duplicated source sections and consolidate if necessary.',
     });
   }
 
   return {
     issues,
-    synthesisFiles: synthesisFiles.map((file) => ({ path: path.relative(projectRoot, file.path), words: file.words })),
+    synthesisFiles: synthesisFiles.map((file) => ({
+      path: path.relative(projectRoot, file.path),
+      words: file.words,
+    })),
     staleCount,
     missingCount,
     orphanedCount,
   };
 }
 
-async function collectSynthesisFiles(specsRoot: string): Promise<Array<{ path: string; words: number }>> {
+async function collectSynthesisFiles(
+  specsRoot: string
+): Promise<Array<{ path: string; words: number }>> {
   const result: Array<{ path: string; words: number }> = [];
   if (!(await pathExists(specsRoot))) {
     return result;
@@ -120,7 +125,7 @@ async function collectSynthesisFiles(specsRoot: string): Promise<Array<{ path: s
     if (!feature.isDirectory()) {
       continue;
     }
-    const synthesisPath = path.join(specsRoot, feature.name, "memory-synthesis.md");
+    const synthesisPath = path.join(specsRoot, feature.name, 'memory-synthesis.md');
     if (await pathExists(synthesisPath)) {
       const content = await readTextFile(synthesisPath);
       result.push({ path: synthesisPath, words: wordCount(content) });
@@ -130,16 +135,18 @@ async function collectSynthesisFiles(specsRoot: string): Promise<Array<{ path: s
 }
 
 async function hashFile(targetPath: string): Promise<string> {
-  const { sha256 } = await import("../utils/hash");
+  const { sha256 } = await import('../utils/hash');
   const content = await readTextFile(targetPath);
   return sha256(content);
 }
 
-function findDuplicateEntries(entries: Array<{ source_path: string; section_heading: string | null; snippet: string | null }>): string[] {
+function findDuplicateEntries(
+  entries: Array<{ source_path: string; section_heading: string | null; snippet: string | null }>
+): string[] {
   const seen = new Set<string>();
   const duplicates = new Set<string>();
   for (const entry of entries) {
-    const key = `${entry.source_path}::${entry.section_heading ?? ""}::${entry.snippet ?? ""}`;
+    const key = `${entry.source_path}::${entry.section_heading ?? ''}::${entry.snippet ?? ''}`;
     if (seen.has(key)) {
       duplicates.add(entry.source_path);
       continue;

@@ -39,9 +39,7 @@ export function expandRecurringEvents(
 
       if (cursor >= start && cursor <= effectiveEnd) {
         const shouldInclude =
-          frequency !== 'weekly' ||
-          !daysOfWeek?.length ||
-          daysOfWeek.includes(cursor.getDay());
+          frequency !== 'weekly' || !daysOfWeek?.length || daysOfWeek.includes(cursor.getDay());
 
         if (shouldInclude) {
           result.push({

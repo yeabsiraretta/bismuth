@@ -66,7 +66,7 @@ describe('reflectComponentFromSvelte', () => {
 
   it('generates correct import statement', () => {
     const result = reflectComponentFromSvelte(sampleSvelte, 'Button.svelte');
-    expect(result.code_connect.import).toContain("import Button from");
+    expect(result.code_connect.import).toContain('import Button from');
   });
 
   it('handles file with no props', () => {

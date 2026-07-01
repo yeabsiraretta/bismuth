@@ -20,17 +20,16 @@ export const relationships = writable<Relationship[]>(relSvc.getAllRelationships
 
 export const activeCampaign = derived(
   [campaigns, activeCampaignId],
-  ([$camps, $id]) => $camps.find((c) => c.id === $id) ?? null,
+  ([$camps, $id]) => $camps.find((c) => c.id === $id) ?? null
 );
 
 export const activeElement = derived(
   [elements, activeElementId],
-  ([$els, $id]) => $els.find((e) => e.id === $id) ?? null,
+  ([$els, $id]) => $els.find((e) => e.id === $id) ?? null
 );
 
-export const campaignElements = derived(
-  [elements, activeCampaignId],
-  ([$els, $id]) => $id ? $els.filter((e) => e.campaignId === $id) : [],
+export const campaignElements = derived([elements, activeCampaignId], ([$els, $id]) =>
+  $id ? $els.filter((e) => e.campaignId === $id) : []
 );
 
 export const elementsByType = derived(campaignElements, ($els) => {
@@ -77,7 +76,9 @@ export function removeCampaign(id: string): void {
 // ─── Element actions ─────────────────────────────────────────────────────────
 
 export function createNewElement(
-  type: ElementType, name: string, parentId: string | null = null,
+  type: ElementType,
+  name: string,
+  parentId: string | null = null
 ): RpgElement {
   const cid = get(activeCampaignId);
   const el = elSvc.createElement(type, name, cid, parentId);
@@ -107,9 +108,10 @@ export function removeElement(id: string): void {
 // ─── Relationship actions ────────────────────────────────────────────────────
 
 export function addRelationship(
-  sourceId: string, targetId: string,
+  sourceId: string,
+  targetId: string,
   type: import('../types').RelationshipType = 'bidirectional',
-  description: string = '',
+  description: string = ''
 ): void {
   relSvc.createRelationship(sourceId, targetId, type, description);
   refreshAll();

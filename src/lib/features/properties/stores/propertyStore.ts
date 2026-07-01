@@ -7,16 +7,9 @@
 
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
-import type {
-  PrettyPropertiesConfig,
-  CoverShape,
-  ProgressConfig,
-} from '../types/properties';
+import type { PrettyPropertiesConfig, CoverShape, ProgressConfig } from '../types/properties';
 import { DEFAULT_PRETTY_PROPERTIES_CONFIG } from '../types/properties';
-import {
-  setPropertyValueColor,
-  togglePropertyHidden,
-} from '../services/propertyDisplay';
+import { setPropertyValueColor, togglePropertyHidden } from '../services/propertyDisplay';
 
 const STORAGE_KEY = 'bismuth-pretty-properties';
 
@@ -133,11 +126,7 @@ export function toggleRevealAll(): void {
 
 // ── Property colors ──────────────────────────────────────────────────────
 
-export function setPropertyColor(
-  propertyKey: string,
-  value: string,
-  color: string | null,
-): void {
+export function setPropertyColor(propertyKey: string, value: string, color: string | null): void {
   update((c) => ({
     ...c,
     propertyColors: setPropertyValueColor(c.propertyColors, propertyKey, value, color),
@@ -173,10 +162,7 @@ export function setDatetimeFormat(datetimeFormat: string): void {
   update((c) => ({ ...c, dateFormat: { ...c.dateFormat, datetimeFormat } }));
 }
 
-export function setDateColor(
-  relative: 'past' | 'present' | 'future',
-  color: string,
-): void {
+export function setDateColor(relative: 'past' | 'present' | 'future', color: string): void {
   update((c) => ({ ...c, dateColors: { ...c.dateColors, [relative]: color } }));
 }
 
@@ -201,10 +187,7 @@ export function removeProgressBar(property: string): void {
 export function setPropertyTemplate(property: string, template: string): void {
   update((c) => ({
     ...c,
-    templates: [
-      ...c.templates.filter((t) => t.property !== property),
-      { property, template },
-    ],
+    templates: [...c.templates.filter((t) => t.property !== property), { property, template }],
   }));
 }
 

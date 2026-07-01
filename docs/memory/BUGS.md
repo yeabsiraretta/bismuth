@@ -85,6 +85,7 @@ This file stores durable implementation bug patterns and their mitigations.
 **Root Cause**: `Path::new(input)` does not resolve `..` segments or symlinks. Checking `starts_with(vault_root)` before `canonicalize()` is ineffective — the `..` is still in the string.
 
 **Required pattern**:
+
 ```rust
 let canon_root = Path::new(&vault_root).canonicalize()
     .map_err(|e| format!("Cannot canonicalize vault root: {}", e))?;

@@ -22,9 +22,13 @@ function isInsideCode(view: EditorView, pos: number): boolean {
     let node = tree.resolveInner(pos, -1);
     while (node) {
       const name = node.type.name.toLowerCase();
-      if (name.includes('codeblock') || name.includes('codetext') ||
-          name.includes('fencedcode') || name.includes('inlinecode') ||
-          name === 'codemark') {
+      if (
+        name.includes('codeblock') ||
+        name.includes('codetext') ||
+        name.includes('fencedcode') ||
+        name.includes('inlinecode') ||
+        name === 'codemark'
+      ) {
         return true;
       }
       if (!node.parent || node.parent === node) break;

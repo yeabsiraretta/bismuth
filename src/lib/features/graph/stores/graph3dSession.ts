@@ -37,9 +37,18 @@ export function load3DSession(): Graph3DSession {
       settings: {
         ...defaults.settings,
         ...(parsed.settings ?? {}),
-        noteAppearance: { ...defaults.settings.noteAppearance, ...(parsed.settings?.noteAppearance ?? {}) },
-        attachmentAppearance: { ...defaults.settings.attachmentAppearance, ...(parsed.settings?.attachmentAppearance ?? {}) },
-        tagAppearance: { ...defaults.settings.tagAppearance, ...(parsed.settings?.tagAppearance ?? {}) },
+        noteAppearance: {
+          ...defaults.settings.noteAppearance,
+          ...(parsed.settings?.noteAppearance ?? {}),
+        },
+        attachmentAppearance: {
+          ...defaults.settings.attachmentAppearance,
+          ...(parsed.settings?.attachmentAppearance ?? {}),
+        },
+        tagAppearance: {
+          ...defaults.settings.tagAppearance,
+          ...(parsed.settings?.tagAppearance ?? {}),
+        },
         colorGroups: parsed.settings?.colorGroups ?? defaults.settings.colorGroups,
       },
     };

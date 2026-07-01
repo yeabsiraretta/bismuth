@@ -5,12 +5,7 @@
 
 /** Time-based progress bar kinds */
 export type ProgressBarKind =
-  | 'day-year'
-  | 'day-month'
-  | 'day-week'
-  | 'day-custom'
-  | 'month'
-  | 'manual';
+  'day-year' | 'day-month' | 'day-week' | 'day-custom' | 'month' | 'manual';
 
 /** Parsed configuration from a ```progressbar code block */
 export interface ProgressBarConfig {

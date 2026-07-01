@@ -81,7 +81,12 @@ export class QueryCache {
 
   /** Get cache hit/miss stats. */
   stats(): { size: number; version: number; maxSize: number; ttlMs: number } {
-    return { size: this.cache.size, version: this.version, maxSize: this.maxSize, ttlMs: this.ttlMs };
+    return {
+      size: this.cache.size,
+      version: this.version,
+      maxSize: this.maxSize,
+      ttlMs: this.ttlMs,
+    };
   }
 }
 

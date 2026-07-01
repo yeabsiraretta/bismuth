@@ -11,11 +11,18 @@ vi.mock('@/utils/logger', () => ({
   log: { info: vi.fn(), debug: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 vi.mock('@/stores/vault/vault', () => ({
-  notes: { subscribe: vi.fn((fn: any) => { fn([]); return vi.fn(); }) },
+  notes: {
+    subscribe: vi.fn((fn: any) => {
+      fn([]);
+      return vi.fn();
+    }),
+  },
   refreshNotes: vi.fn().mockResolvedValue(undefined),
 }));
 vi.mock('@/types/data/entity', () => ({
-  deriveLifecycle: vi.fn((fm: any) => fm?.organized ? (fm?.archived ? 'archived' : 'organized') : 'captured'),
+  deriveLifecycle: vi.fn((fm: any) =>
+    fm?.organized ? (fm?.archived ? 'archived' : 'organized') : 'captured'
+  ),
 }));
 
 import {

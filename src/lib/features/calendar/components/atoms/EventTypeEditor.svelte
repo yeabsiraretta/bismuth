@@ -4,9 +4,18 @@
   import type { CalendarCategory } from '../../types';
 
   const SWATCH_COLORS = [
-    '#dc2626', '#ea580c', '#d97706', '#ca8a04',
-    '#16a34a', '#059669', '#0891b2', '#2563eb',
-    '#7c3aed', '#9333ea', '#db2777', '#6b7280',
+    '#dc2626',
+    '#ea580c',
+    '#d97706',
+    '#ca8a04',
+    '#16a34a',
+    '#059669',
+    '#0891b2',
+    '#2563eb',
+    '#7c3aed',
+    '#9333ea',
+    '#db2777',
+    '#6b7280',
   ];
 
   function addCategory() {
@@ -29,18 +38,14 @@
   function updateName(id: string, name: string) {
     settings.update((s) => ({
       ...s,
-      calendarCategories: s.calendarCategories.map((c) =>
-        c.id === id ? { ...c, name } : c
-      ),
+      calendarCategories: s.calendarCategories.map((c) => (c.id === id ? { ...c, name } : c)),
     }));
   }
 
   function updateColor(id: string, color: string) {
     settings.update((s) => ({
       ...s,
-      calendarCategories: s.calendarCategories.map((c) =>
-        c.id === id ? { ...c, color } : c
-      ),
+      calendarCategories: s.calendarCategories.map((c) => (c.id === id ? { ...c, color } : c)),
     }));
   }
 
@@ -69,11 +74,7 @@
         {/each}
       </div>
 
-      <div
-        class="color-preview"
-        style="background: {cat.color}"
-        aria-hidden="true"
-      ></div>
+      <div class="color-preview" style="background: {cat.color}" aria-hidden="true"></div>
 
       <input
         type="text"
@@ -90,7 +91,14 @@
         aria-label="Delete category {cat.name}"
         on:click={() => deleteCategory(cat.id)}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
           <path d="M10 11v6M14 11v6" />
@@ -100,12 +108,15 @@
     </div>
   {/each}
 
-  <button
-    type="button"
-    class="add-btn"
-    on:click={addCategory}
-  >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+  <button type="button" class="add-btn" on:click={addCategory}>
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+    >
       <line x1="12" y1="5" x2="12" y2="19" />
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
@@ -194,7 +205,9 @@
     color: var(--text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      background 0.15s;
   }
 
   .delete-btn:hover {
@@ -214,7 +227,9 @@
     color: var(--text-muted);
     cursor: pointer;
     font-size: 0.8rem;
-    transition: color 0.15s, border-color 0.15s;
+    transition:
+      color 0.15s,
+      border-color 0.15s;
     align-self: flex-start;
   }
 

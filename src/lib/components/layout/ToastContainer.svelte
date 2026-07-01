@@ -5,10 +5,14 @@
 
   function iconForType(type: ToastType): string {
     switch (type) {
-      case 'success': return 'check-circle';
-      case 'warning': return 'alert-triangle';
-      case 'error': return 'x-circle';
-      default: return 'info';
+      case 'success':
+        return 'check-circle';
+      case 'warning':
+        return 'alert-triangle';
+      case 'error':
+        return 'x-circle';
+      default:
+        return 'info';
     }
   }
 </script>
@@ -50,7 +54,7 @@
     color: var(--text-normal);
     background-color: var(--background-secondary);
     border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-l, 0 4px 12px rgba(0,0,0,0.15));
+    box-shadow: var(--shadow-l, 0 4px 12px rgba(0, 0, 0, 0.15));
     pointer-events: auto;
     animation: toast-in 0.25s ease-out;
   }

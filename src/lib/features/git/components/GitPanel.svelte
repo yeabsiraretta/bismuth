@@ -48,16 +48,26 @@
   }
 
   async function stageFile(change: FileChange) {
-    try { await doStage(vaultRoot, change.path); await loadStatus(); }
-    catch (err) { log.error('GitPanel: stage failed', err as Error); }
+    try {
+      await doStage(vaultRoot, change.path);
+      await loadStatus();
+    } catch (err) {
+      log.error('GitPanel: stage failed', err as Error);
+    }
   }
 
   async function unstageFile(change: FileChange) {
-    try { await doUnstage(vaultRoot, change.path); await loadStatus(); }
-    catch (err) { log.error('GitPanel: unstage failed', err as Error); }
+    try {
+      await doUnstage(vaultRoot, change.path);
+      await loadStatus();
+    } catch (err) {
+      log.error('GitPanel: unstage failed', err as Error);
+    }
   }
 
-  onMount(() => { loadStatus(); });
+  onMount(() => {
+    loadStatus();
+  });
   $: if (vaultRoot) loadStatus();
 </script>
 
@@ -69,77 +79,77 @@
   </PanelHeader>
 
   <div class="panel-body">
-  {#if loading}
-    <div class="git-loading">
-      <Icon name="loader" size={24} />
-      <span>Loading git status...</span>
-    </div>
-  {:else if !isGitRepo}
-    <div class="git-empty">
-      <Icon name="git-branch" size={28} />
-      <p class="git-empty-title">Not a git repository</p>
-      <p class="git-empty-desc">Initialize git in your vault to track changes</p>
-    </div>
-  {:else if error}
-    <div class="git-error">
-      <Icon name="alert-circle" size={24} />
-      <span>{error}</span>
-      <button class="retry-btn" on:click={loadStatus} title="Retry">Retry</button>
-    </div>
-  {:else}
-    {#if branch}
-      <div class="branch-info">
-        <Icon name="git-branch" size={12} />
-        <span>{branch}</span>
-        <button class="refresh-btn" on:click={loadStatus} title="Refresh status">
-          <Icon name="refresh-cw" size={12} />
+    {#if loading}
+      <div class="git-loading">
+        <Icon name="loader" size={24} />
+        <span>Loading git status...</span>
+      </div>
+    {:else if !isGitRepo}
+      <div class="git-empty">
+        <Icon name="git-branch" size={28} />
+        <p class="git-empty-title">Not a git repository</p>
+        <p class="git-empty-desc">Initialize git in your vault to track changes</p>
+      </div>
+    {:else if error}
+      <div class="git-error">
+        <Icon name="alert-circle" size={24} />
+        <span>{error}</span>
+        <button class="retry-btn" on:click={loadStatus} title="Retry">Retry</button>
+      </div>
+    {:else}
+      {#if branch}
+        <div class="branch-info">
+          <Icon name="git-branch" size={12} />
+          <span>{branch}</span>
+          <button class="refresh-btn" on:click={loadStatus} title="Refresh status">
+            <Icon name="refresh-cw" size={12} />
+          </button>
+        </div>
+      {/if}
+
+      <div class="commit-section">
+        <input
+          type="text"
+          placeholder="Commit message"
+          bind:value={commitMessage}
+          class="commit-input"
+        />
+        <button
+          class="commit-btn"
+          disabled={!commitMessage || stagedChanges.length === 0}
+          on:click={handleCommit}
+          title="Commit staged changes"
+        >
+          <Icon name="git-commit" size={14} />
+          Commit
         </button>
       </div>
-    {/if}
 
-    <div class="commit-section">
-      <input
-        type="text"
-        placeholder="Commit message"
-        bind:value={commitMessage}
-        class="commit-input"
+      <GitFileList
+        changes={stagedChanges}
+        label="Staged Changes"
+        icon="check-circle"
+        actionIcon="minus"
+        actionTitle="Unstage"
+        onAction={unstageFile}
       />
-      <button
-        class="commit-btn"
-        disabled={!commitMessage || stagedChanges.length === 0}
-        on:click={handleCommit}
-        title="Commit staged changes"
-      >
-        <Icon name="git-commit" size={14} />
-        Commit
-      </button>
-    </div>
 
-    <GitFileList
-      changes={stagedChanges}
-      label="Staged Changes"
-      icon="check-circle"
-      actionIcon="minus"
-      actionTitle="Unstage"
-      onAction={unstageFile}
-    />
+      <GitFileList
+        changes={unstagedChanges}
+        label="Changes"
+        icon="file-text"
+        actionIcon="plus"
+        actionTitle="Stage"
+        onAction={stageFile}
+      />
 
-    <GitFileList
-      changes={unstagedChanges}
-      label="Changes"
-      icon="file-text"
-      actionIcon="plus"
-      actionTitle="Stage"
-      onAction={stageFile}
-    />
-
-    {#if stagedChanges.length === 0 && unstagedChanges.length === 0}
-      <div class="git-clean">
-        <Icon name="check-circle" size={20} />
-        <p>Working tree clean</p>
-      </div>
+      {#if stagedChanges.length === 0 && unstagedChanges.length === 0}
+        <div class="git-clean">
+          <Icon name="check-circle" size={20} />
+          <p>Working tree clean</p>
+        </div>
+      {/if}
     {/if}
-  {/if}
   </div>
 </div>
 
@@ -194,7 +204,6 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-
 
   .git-loading,
   .git-empty,

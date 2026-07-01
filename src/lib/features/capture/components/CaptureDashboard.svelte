@@ -40,15 +40,19 @@
   let mergeModalOpen = false;
   $: mergeSourcePaths = Array.from($selectedCaptures);
 
-  $: activeNote = activeNotePath
-    ? captured.find(n => n.path === activeNotePath) || null
-    : null;
+  $: activeNote = activeNotePath ? captured.find((n) => n.path === activeNotePath) || null : null;
 
   function closeClassification() {
     activeNotePath = null;
   }
 
-  async function handleSave(data: { title: string; content: string; type: string; lifecycle: string; tags: string[] }) {
+  async function handleSave(data: {
+    title: string;
+    content: string;
+    type: string;
+    lifecycle: string;
+    tags: string[];
+  }) {
     if (!activeNotePath) return;
     await doClassificationSave(activeNotePath, data, closeClassification);
   }
@@ -89,12 +93,13 @@
   };
 
   $: filteredNotes = filterType
-    ? captured.filter(n => n.frontmatter?.type === filterType)
+    ? captured.filter((n) => n.frontmatter?.type === filterType)
     : captured;
 
   $: sortedNotes = [...filteredNotes].sort((a, b) => {
     if (sortBy === 'title') return a.title.localeCompare(b.title);
-    if (sortBy === 'type') return (a.frontmatter?.type || '').localeCompare(b.frontmatter?.type || '');
+    if (sortBy === 'type')
+      return (a.frontmatter?.type || '').localeCompare(b.frontmatter?.type || '');
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
 </script>
@@ -117,7 +122,12 @@
   <div class="capture-dashboard">
     <PanelHeader icon="inbox" title="Inbox" count={captured.length || undefined}>
       <svelte:fragment slot="actions">
-        <button class="icon-btn" on:click={handleQuickCapture} title="Quick Capture (Cmd+Shift+N)" aria-label="Quick capture">
+        <button
+          class="icon-btn"
+          on:click={handleQuickCapture}
+          title="Quick Capture (Cmd+Shift+N)"
+          aria-label="Quick capture"
+        >
           <Icon name="plus" size={14} />
         </button>
         <button class="icon-btn" on:click={refreshNotes} title="Refresh" aria-label="Refresh notes">
@@ -154,7 +164,11 @@
       onSelectAll={selectAllCaptures}
       onClearSelection={clearCaptureSelection}
       onBatchClassify={handleBatchClassify}
-      onMerge={selected.size >= 2 ? () => { mergeModalOpen = true; } : undefined}
+      onMerge={selected.size >= 2
+        ? () => {
+            mergeModalOpen = true;
+          }
+        : undefined}
     />
 
     <div class="notes-list">
@@ -170,7 +184,9 @@
           </div>
           <h3 class="empty-title">{filterType ? 'No matching notes' : 'Inbox is empty'}</h3>
           <p class="empty-description">
-            {filterType ? 'Try removing the filter or capture new notes.' : 'Capture fleeting thoughts before they slip away.'}
+            {filterType
+              ? 'Try removing the filter or capture new notes.'
+              : 'Capture fleeting thoughts before they slip away.'}
           </p>
           {#if !filterType}
             <button class="cta-btn" on:click={handleQuickCapture}>
@@ -209,26 +225,136 @@
 <MergeNotesModal
   isOpen={mergeModalOpen}
   sources={mergeSourcePaths}
-  onClose={() => { mergeModalOpen = false; }}
-  onMerged={() => { mergeModalOpen = false; clearCaptureSelection(); }}
+  onClose={() => {
+    mergeModalOpen = false;
+  }}
+  onMerged={() => {
+    mergeModalOpen = false;
+    clearCaptureSelection();
+  }}
 />
 
 <style>
-  .capture-dashboard { display: flex; flex-direction: column; height: 100%; background-color: var(--background-primary); }
-  .lifecycle-stats { display: flex; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-m); border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
-  .stat-badge { font-size: var(--font-smallest); font-weight: 500; color: var(--text-muted); background: var(--background-modifier-hover); border-radius: var(--radius-s); padding: 2px 6px; white-space: nowrap; }
-  .filter-bar { display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-m); border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
-  .sort-select { padding: 4px 6px; background: var(--background-modifier-form-field); border: 1px solid var(--border-color); border-radius: var(--radius-s); font-size: var(--font-smallest); color: var(--text-muted); cursor: pointer; }
-  .icon-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: none; border: none; border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; }
-  .icon-btn:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
-  .notes-list { flex: 1; overflow-y: auto; padding: var(--spacing-m); }
-  .notes-grid { display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--spacing-xl) var(--spacing-m); gap: var(--spacing-s); color: var(--text-muted); }
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--spacing-xl) var(--spacing-m); gap: var(--spacing-s); text-align: center; }
-  .empty-icon { color: var(--text-faint); opacity: 0.5; }
-  .empty-title { margin: 0; font-size: var(--font-ui-medium); font-weight: 600; color: var(--text-muted); }
-  .empty-description { margin: 0; font-size: var(--font-ui-small); color: var(--text-faint); max-width: 240px; line-height: 1.5; }
-  .cta-btn { display: inline-flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-m); background: var(--interactive-accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-m); font-size: var(--font-ui-small); font-weight: 600; cursor: pointer; margin-top: var(--spacing-xs); }
-  .cta-btn:hover { background: var(--interactive-accent-hover); }
-  .empty-hint { font-size: var(--font-smallest); color: var(--text-faint); margin-top: var(--spacing-xs); }
+  .capture-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--background-primary);
+  }
+  .lifecycle-stats {
+    display: flex;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+  .stat-badge {
+    font-size: var(--font-smallest);
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--background-modifier-hover);
+    border-radius: var(--radius-s);
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+  .sort-select {
+    padding: 4px 6px;
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .icon-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+  .notes-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-m);
+  }
+  .notes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--spacing-m);
+    gap: var(--spacing-s);
+    color: var(--text-muted);
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--spacing-m);
+    gap: var(--spacing-s);
+    text-align: center;
+  }
+  .empty-icon {
+    color: var(--text-faint);
+    opacity: 0.5;
+  }
+  .empty-title {
+    margin: 0;
+    font-size: var(--font-ui-medium);
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .empty-description {
+    margin: 0;
+    font-size: var(--font-ui-small);
+    color: var(--text-faint);
+    max-width: 240px;
+    line-height: 1.5;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-m);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-m);
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: var(--spacing-xs);
+  }
+  .cta-btn:hover {
+    background: var(--interactive-accent-hover);
+  }
+  .empty-hint {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+    margin-top: var(--spacing-xs);
+  }
 </style>

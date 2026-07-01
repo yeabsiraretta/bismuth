@@ -7,9 +7,16 @@ import type { EditorView } from '@codemirror/view';
 import type { AudioPlayerBlock, AudioBookmark } from '../../types/audioPlayer';
 import { formatTimestamp } from './audioPlayerParser';
 import {
-  audioPlayerState, loadAudio, playAudio, pauseAudio,
-  seekAudio, setPlayerVolume, addBookmark, removeBookmark,
-  setBlockBookmarks, togglePlayback,
+  audioPlayerState,
+  loadAudio,
+  playAudio,
+  pauseAudio,
+  seekAudio,
+  setPlayerVolume,
+  addBookmark,
+  removeBookmark,
+  setBlockBookmarks,
+  togglePlayback,
 } from '../../stores/audioPlayerStore';
 import { get } from 'svelte/store';
 
@@ -43,17 +50,20 @@ export class AudioPlayerWidget extends WidgetType {
 
       // File label
       const fileLabel = document.createElement('div');
-      fileLabel.style.cssText = 'font-size: 12px; color: var(--text-muted); margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+      fileLabel.style.cssText =
+        'font-size: 12px; color: var(--text-muted); margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
       fileLabel.textContent = `🎵 ${this.block.filePath}`;
       wrap.appendChild(fileLabel);
 
       // Waveform canvas
       const canvasWrap = document.createElement('div');
-      canvasWrap.style.cssText = 'position: relative; margin-bottom: 8px; cursor: pointer; height: 80px;';
+      canvasWrap.style.cssText =
+        'position: relative; margin-bottom: 8px; cursor: pointer; height: 80px;';
       canvas = document.createElement('canvas');
       canvas.width = 600;
       canvas.height = 80;
-      canvas.style.cssText = 'width: 100%; height: 80px; border-radius: 4px; background: var(--background-secondary);';
+      canvas.style.cssText =
+        'width: 100%; height: 80px; border-radius: 4px; background: var(--background-secondary);';
       canvasWrap.appendChild(canvas);
       wrap.appendChild(canvasWrap);
 
@@ -104,7 +114,8 @@ export class AudioPlayerWidget extends WidgetType {
 
       // Position / Duration
       posLabel = document.createElement('span');
-      posLabel.style.cssText = 'font-size: 12px; color: var(--text-normal); font-family: var(--font-monospace); min-width: 50px;';
+      posLabel.style.cssText =
+        'font-size: 12px; color: var(--text-normal); font-family: var(--font-monospace); min-width: 50px;';
       posLabel.textContent = formatTimestamp(state.positionSec);
       controls.appendChild(posLabel);
 
@@ -114,7 +125,8 @@ export class AudioPlayerWidget extends WidgetType {
       controls.appendChild(sep);
 
       durLabel = document.createElement('span');
-      durLabel.style.cssText = 'font-size: 12px; color: var(--text-muted); font-family: var(--font-monospace); min-width: 50px;';
+      durLabel.style.cssText =
+        'font-size: 12px; color: var(--text-muted); font-family: var(--font-monospace); min-width: 50px;';
       durLabel.textContent = formatTimestamp(state.durationSec);
       controls.appendChild(durLabel);
 
@@ -135,7 +147,9 @@ export class AudioPlayerWidget extends WidgetType {
       volSlider.max = '100';
       volSlider.value = String(Math.round(state.volume * 100));
       volSlider.style.cssText = 'width: 80px; accent-color: var(--interactive-accent);';
-      volSlider.addEventListener('input', () => setPlayerVolume(parseInt(volSlider.value, 10) / 100));
+      volSlider.addEventListener('input', () =>
+        setPlayerVolume(parseInt(volSlider.value, 10) / 100)
+      );
       controls.appendChild(volSlider);
 
       wrap.appendChild(controls);
@@ -147,7 +161,13 @@ export class AudioPlayerWidget extends WidgetType {
       renderBookmarks();
 
       // Draw initial waveform
-      drawWaveform(canvas, state.waveformPeaks, state.positionSec, state.durationSec, state.bookmarks);
+      drawWaveform(
+        canvas,
+        state.waveformPeaks,
+        state.positionSec,
+        state.durationSec,
+        state.bookmarks
+      );
 
       // Auto-load if this is a new file
       if (!state.currentFile || state.currentFile !== this.block.filePath) {
@@ -169,13 +189,15 @@ export class AudioPlayerWidget extends WidgetType {
       if (bms.length === 0) return;
 
       const title = document.createElement('div');
-      title.style.cssText = 'font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;';
+      title.style.cssText =
+        'font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;';
       title.textContent = 'Bookmarks';
       bookmarksList.appendChild(title);
 
       for (const bm of bms) {
         const row = document.createElement('div');
-        row.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 2px 0; font-size: 12px;';
+        row.style.cssText =
+          'display: flex; align-items: center; gap: 8px; padding: 2px 0; font-size: 12px;';
 
         const timeBtn = document.createElement('button');
         timeBtn.style.cssText = `
@@ -193,10 +215,14 @@ export class AudioPlayerWidget extends WidgetType {
         row.appendChild(labelEl);
 
         const delBtn = document.createElement('button');
-        delBtn.style.cssText = 'background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 11px; padding: 0;';
+        delBtn.style.cssText =
+          'background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 11px; padding: 0;';
         delBtn.textContent = '×';
         delBtn.title = 'Remove bookmark';
-        delBtn.addEventListener('click', () => { removeBookmark(bm.id); renderBookmarks(); });
+        delBtn.addEventListener('click', () => {
+          removeBookmark(bm.id);
+          renderBookmarks();
+        });
         row.appendChild(delBtn);
 
         bookmarksList.appendChild(row);
@@ -206,13 +232,19 @@ export class AudioPlayerWidget extends WidgetType {
     render();
 
     // Subscribe to state changes for live updates
-    this.unsub = audioPlayerState.subscribe(state => {
+    this.unsub = audioPlayerState.subscribe((state) => {
       if (state.currentFile === this.block.filePath) {
         if (posLabel) posLabel.textContent = formatTimestamp(state.positionSec);
         if (durLabel) durLabel.textContent = formatTimestamp(state.durationSec);
         updatePlayBtn();
         if (canvas) {
-          drawWaveform(canvas, state.waveformPeaks, state.positionSec, state.durationSec, state.bookmarks);
+          drawWaveform(
+            canvas,
+            state.waveformPeaks,
+            state.positionSec,
+            state.durationSec,
+            state.bookmarks
+          );
         }
       }
     });
@@ -256,12 +288,14 @@ export class AudioPlayerWidget extends WidgetType {
   }
 
   destroy(): void {
-    if (this.unsub) { this.unsub(); this.unsub = null; }
+    if (this.unsub) {
+      this.unsub();
+      this.unsub = null;
+    }
   }
 
   eq(other: AudioPlayerWidget): boolean {
-    return this.block.filePath === other.block.filePath &&
-      this.block.from === other.block.from;
+    return this.block.filePath === other.block.filePath && this.block.from === other.block.from;
   }
 }
 
@@ -272,7 +306,7 @@ function drawWaveform(
   peaks: number[],
   positionSec: number,
   durationSec: number,
-  bookmarks: AudioBookmark[],
+  bookmarks: AudioBookmark[]
 ): void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;

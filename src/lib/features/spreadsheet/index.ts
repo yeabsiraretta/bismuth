@@ -18,11 +18,7 @@ export type {
   SpreadsheetDocument,
 } from './types/spreadsheet';
 
-export {
-  colIndexToLabel,
-  addressToLabel,
-  SCHEMA_VERSION,
-} from './types/spreadsheet';
+export { colIndexToLabel, addressToLabel, SCHEMA_VERSION } from './types/spreadsheet';
 
 // ─── Store (read-only subscription surface) ───────────────────────────────────
 export { activeDocument, activeSheetId, selection } from './stores/spreadsheetStore';

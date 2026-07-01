@@ -14,51 +14,51 @@ When reviewing a Nuxt project, map generic architecture boundaries to Nuxt primi
 
 ### Entry Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Pages (`pages/`) |
-| Entry point for API / Server Routes | Server Routes (`server/api/`, `server/routes/`) |
-| Entry point for Server Hooks | Nitro Tasks / Server Plugins |
-| Route request filtering | Middleware (`middleware/` or `server/middleware/`) |
-| Layout/Container entry | Layouts (`layouts/`) |
+| Generic Concept                     | Nuxt Equivalent                                    |
+| ----------------------------------- | -------------------------------------------------- |
+| Entry point for HTTP requests       | Pages (`pages/`)                                   |
+| Entry point for API / Server Routes | Server Routes (`server/api/`, `server/routes/`)    |
+| Entry point for Server Hooks        | Nitro Tasks / Server Plugins                       |
+| Route request filtering             | Middleware (`middleware/` or `server/middleware/`) |
+| Layout/Container entry              | Layouts (`layouts/`)                               |
 
 ### Validation Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
+| Generic Concept         | Nuxt Equivalent                                  |
+| ----------------------- | ------------------------------------------------ |
 | Server input validation | `readBody` validation in Nitro or `h3` utilities |
-| Frontend validation | Zod/VeeValidate in components or composables |
-| Server query validation | `getQuery` validation in Nitro |
+| Frontend validation     | Zod/VeeValidate in components or composables     |
+| Server query validation | `getQuery` validation in Nitro                   |
 
 ### Contract Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
+| Generic Concept                | Nuxt Equivalent                                                     |
+| ------------------------------ | ------------------------------------------------------------------- |
 | Stable request/response shapes | TypeScript Interfaces (often shared via `types/` or `server/utils`) |
-| Auto-generated types | Nitro `internal` types (ensure they aren't leaked improperly) |
+| Auto-generated types           | Nitro `internal` types (ensure they aren't leaked improperly)       |
 
 ### Application Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
-| Shared logic coordination | Composables (`composables/`) or Plugins |
-| Server-side coordination | Server Utils (`server/utils/`) |
-| Use case orchestration | Server Routes (delegating to server utils) |
+| Generic Concept           | Nuxt Equivalent                            |
+| ------------------------- | ------------------------------------------ |
+| Shared logic coordination | Composables (`composables/`) or Plugins    |
+| Server-side coordination  | Server Utils (`server/utils/`)             |
+| Use case orchestration    | Server Routes (delegating to server utils) |
 
 ### Domain Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
+| Generic Concept              | Nuxt Equivalent                                    |
+| ---------------------------- | -------------------------------------------------- |
 | Business rules and decisions | Utilities (`utils/`) or specialized domain folders |
-| Domain models | TypeScript Entities |
+| Domain models                | TypeScript Entities                                |
 
 ### Data Boundary
 
-| Generic Concept | Nuxt Equivalent |
-| --- | --- |
+| Generic Concept         | Nuxt Equivalent                                          |
+| ----------------------- | -------------------------------------------------------- |
 | Persistence abstraction | Server-side Data Access (calling DB from `server/utils`) |
-| Server storage | Nitro Storage layer |
-| Fetching client | `$fetch` or `useFetch` with interceptors |
+| Server storage          | Nitro Storage layer                                      |
+| Fetching client         | `$fetch` or `useFetch` with interceptors                 |
 
 ---
 
@@ -67,6 +67,7 @@ When reviewing a Nuxt project, map generic architecture boundaries to Nuxt primi
 ### Nitro Server Discipline (The Server/Client Boundary)
 
 Detect when:
+
 - A frontend component or Composable attempts to import from `server/` (this is impossible at runtime but check for shared type leakage).
 - Sensitive logic (secret keys, complex permissions) is placed in `composables/` or `utils/` (which are bundled to the client) instead of `server/utils/`.
 - Large business workflows are implemented directly inside an `eventHandler` in `server/api/`.
@@ -74,6 +75,7 @@ Detect when:
 ### Composable Discipline
 
 Detect when:
+
 - A Composable is "Fat" (e.g., handles Auth, Data Fetching, and UI state all in one `useAuth()` hook).
 - Composables are used to store global state instead of using **Pinia** (if Pinia is adopted in the Constitution).
 - Composables have side effects that aren't properly cleaned up (e.g., event listeners without `onUnmounted`).
@@ -81,12 +83,14 @@ Detect when:
 ### Auto-Import Clarity
 
 Detect when:
+
 - Multiple functions with the same name exist in different directories (e.g., `utils/format.ts` and `composables/format.ts`), causing auto-import confusion.
 - Third-party libraries are used without proper Nuxt plugin integration when the Constitution requires it.
 
 ### Missing Validation Boundary [Focus: api]
 
 Detect when:
+
 - Nitro routes use `readBody(event)` without immediate validation via a schema (e.g., Zod).
 - Server routes return raw Database objects instead of transformed Response shapes.
 
@@ -99,19 +103,19 @@ Detect when:
 ```typescript
 // ❌ Server route handles DB and logic
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const user = await db.user.create({ data: body })
-  await sendEmail(user.email)
-  return user
-})
+  const body = await readBody(event);
+  const user = await db.user.create({ data: body });
+  await sendEmail(user.email);
+  return user;
+});
 ```
 
 ```typescript
 // ✅ Server route delegates to server util
 export default defineEventHandler(async (event) => {
-  const body = await readValidatedBody(event, userSchema.parse)
-  return userService.register(body)
-})
+  const body = await readValidatedBody(event, userSchema.parse);
+  return userService.register(body);
+});
 ```
 
 ### 2. Leaky Utils
@@ -119,9 +123,9 @@ export default defineEventHandler(async (event) => {
 ```typescript
 // ❌ Sensitive logic in utils/ (bundled to client)
 export const calculateTaxSecretly = (amount: number) => {
-  const secretKey = '12345' // LEAKED
-  return amount * 0.2
-}
+  const secretKey = '12345'; // LEAKED
+  return amount * 0.2;
+};
 ```
 
 ---

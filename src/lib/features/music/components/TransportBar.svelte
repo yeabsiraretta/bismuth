@@ -114,8 +114,8 @@
       on:click={(e) => stepBpm(-1, e.shiftKey)}
       aria-label="Decrease BPM"
       title="Decrease BPM (Shift: -10)"
-      disabled={!doc}
-    >&#8722;</button>
+      disabled={!doc}>&#8722;</button
+    >
     <label class="bpm-label" for="bpm-input">BPM</label>
     <input
       id="bpm-input"
@@ -133,8 +133,8 @@
       on:click={(e) => stepBpm(1, e.shiftKey)}
       aria-label="Increase BPM"
       title="Increase BPM (Shift: +10)"
-      disabled={!doc}
-    >&#43;</button>
+      disabled={!doc}>&#43;</button
+    >
   </div>
 
   <div class="separator" aria-hidden="true"></div>

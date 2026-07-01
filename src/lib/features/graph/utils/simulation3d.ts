@@ -9,22 +9,29 @@ import { getNodeColor, DEFAULT_NODE_COLORS } from './simulation';
 // ─── Init ───────────────────────────────────────────────────────────────────
 
 export function initNodes3D(
-  graphNodes: GraphNode[], edges: GraphEdge[],
-  existing: SimNode3D[] = [], bloom = false,
+  graphNodes: GraphNode[],
+  edges: GraphEdge[],
+  existing: SimNode3D[] = [],
+  bloom = false
 ): SimNode3D[] {
   const counts = new Map<string, number>();
-  edges.forEach(e => {
+  edges.forEach((e) => {
     counts.set(e.from, (counts.get(e.from) || 0) + 1);
     counts.set(e.to, (counts.get(e.to) || 0) + 1);
   });
-  return graphNodes.map(node => {
-    const ex = existing.find(n => n.id === node.id);
+  return graphNodes.map((node) => {
+    const ex = existing.find((n) => n.id === node.id);
     if (ex) return { ...ex, ...node, connection_count: counts.get(node.id) || ex.connection_count };
     const spread = bloom ? 20 : 400;
     return {
-      ...node, connection_count: counts.get(node.id) || 0,
-      x: (Math.random() - 0.5) * spread, y: (Math.random() - 0.5) * spread, z: (Math.random() - 0.5) * spread,
-      vx: 0, vy: 0, vz: 0,
+      ...node,
+      connection_count: counts.get(node.id) || 0,
+      x: (Math.random() - 0.5) * spread,
+      y: (Math.random() - 0.5) * spread,
+      z: (Math.random() - 0.5) * spread,
+      vx: 0,
+      vy: 0,
+      vz: 0,
     };
   });
 }
@@ -32,7 +39,9 @@ export function initNodes3D(
 // ─── Force tick ─────────────────────────────────────────────────────────────
 
 export function tickForces3D(
-  nodes: SimNode3D[], edges: GraphEdge[], settings: Graph3DSettings,
+  nodes: SimNode3D[],
+  edges: GraphEdge[],
+  settings: Graph3DSettings
 ): void {
   const damping = settings.damping;
 
@@ -56,13 +65,17 @@ export function tickForces3D(
       const fx = (dx / dist) * f;
       const fy = (dy / dist) * f;
       const fz = (dz / dist) * f;
-      nodes[i].vx -= fx; nodes[i].vy -= fy; nodes[i].vz -= fz;
-      nodes[j].vx += fx; nodes[j].vy += fy; nodes[j].vz += fz;
+      nodes[i].vx -= fx;
+      nodes[i].vy -= fy;
+      nodes[i].vz -= fz;
+      nodes[j].vx += fx;
+      nodes[j].vy += fy;
+      nodes[j].vz += fz;
     }
   }
 
   // Link force (spring)
-  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+  const nodeMap = new Map(nodes.map((n) => [n.id, n]));
   for (const edge of edges) {
     const src = nodeMap.get(edge.from);
     const tgt = nodeMap.get(edge.to);
@@ -75,25 +88,36 @@ export function tickForces3D(
     const fx = (dx / dist) * f;
     const fy = (dy / dist) * f;
     const fz = (dz / dist) * f;
-    src.vx += fx; src.vy += fy; src.vz += fz;
-    tgt.vx -= fx; tgt.vy -= fy; tgt.vz -= fz;
+    src.vx += fx;
+    src.vy += fy;
+    src.vz += fz;
+    tgt.vx -= fx;
+    tgt.vy -= fy;
+    tgt.vz -= fz;
   }
 
   // Integrate
   const maxV = 12;
   for (const n of nodes) {
-    n.vx *= damping; n.vy *= damping; n.vz *= damping;
+    n.vx *= damping;
+    n.vy *= damping;
+    n.vz *= damping;
     n.vx = Math.max(-maxV, Math.min(maxV, n.vx));
     n.vy = Math.max(-maxV, Math.min(maxV, n.vy));
     n.vz = Math.max(-maxV, Math.min(maxV, n.vz));
-    n.x += n.vx; n.y += n.vy; n.z += n.vz;
+    n.x += n.vx;
+    n.y += n.vy;
+    n.z += n.vz;
   }
 }
 
 // ─── Projection ─────────────────────────────────────────────────────────────
 
 export function projectNode(
-  node: SimNode3D, camera: Camera3D, width: number, height: number,
+  node: SimNode3D,
+  camera: Camera3D,
+  width: number,
+  height: number
 ): { sx: number; sy: number; scale: number; behind: boolean } {
   // Translate to camera-relative
   const rx = node.x - camera.focusX;
@@ -101,8 +125,10 @@ export function projectNode(
   const rz = node.z - camera.focusZ;
 
   // Rotate by theta (Y-axis) then phi (X-axis)
-  const cosT = Math.cos(camera.theta), sinT = Math.sin(camera.theta);
-  const cosP = Math.cos(camera.phi), sinP = Math.sin(camera.phi);
+  const cosT = Math.cos(camera.theta),
+    sinT = Math.sin(camera.theta);
+  const cosP = Math.cos(camera.phi),
+    sinP = Math.sin(camera.phi);
 
   const x1 = rx * cosT + rz * sinT;
   const z1 = -rx * sinT + rz * cosT;
@@ -123,7 +149,10 @@ export function projectNode(
 }
 
 export function projectAllNodes(
-  nodes: SimNode3D[], camera: Camera3D, width: number, height: number,
+  nodes: SimNode3D[],
+  camera: Camera3D,
+  width: number,
+  height: number
 ): void {
   for (const n of nodes) {
     const p = projectNode(n, camera, width, height);
@@ -136,10 +165,15 @@ export function projectAllNodes(
 // ─── Hit testing ────────────────────────────────────────────────────────────
 
 export function hitTestNode3D(
-  nodes: SimNode3D[], sx: number, sy: number, hitRadius = 14,
+  nodes: SimNode3D[],
+  sx: number,
+  sy: number,
+  hitRadius = 14
 ): SimNode3D | undefined {
   // Sort by depth (closest to camera first) for correct picking
-  const sorted = [...nodes].filter(n => (n.screenScale ?? 0) > 0).sort((a, b) => (b.screenScale ?? 0) - (a.screenScale ?? 0));
+  const sorted = [...nodes]
+    .filter((n) => (n.screenScale ?? 0) > 0)
+    .sort((a, b) => (b.screenScale ?? 0) - (a.screenScale ?? 0));
   for (const n of sorted) {
     const dx = (n.screenX ?? 0) - sx;
     const dy = (n.screenY ?? 0) - sy;
@@ -151,18 +185,20 @@ export function hitTestNode3D(
 // ─── Node appearance helpers ────────────────────────────────────────────────
 
 export function getAppearanceForType(
-  nodeType: string, settings: Graph3DSettings,
+  nodeType: string,
+  settings: Graph3DSettings
 ): NodeAppearance3D {
   switch (nodeType) {
-    case 'attachment': return settings.attachmentAppearance;
-    case 'tag': return settings.tagAppearance;
-    default: return settings.noteAppearance;
+    case 'attachment':
+      return settings.attachmentAppearance;
+    case 'tag':
+      return settings.tagAppearance;
+    default:
+      return settings.noteAppearance;
   }
 }
 
-export function getNodeColor3D(
-  node: SimNode3D, settings: Graph3DSettings,
-): string {
+export function getNodeColor3D(node: SimNode3D, settings: Graph3DSettings): string {
   return getNodeColor(node, DEFAULT_NODE_COLORS, settings.colorGroups);
 }
 

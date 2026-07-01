@@ -15,7 +15,12 @@
   } from '@/features/canvas/stores';
   import { addFlowLink } from '@/features/canvas/stores';
   import { log } from '@/utils/logger';
-  import { drawGrid, drawElements, drawElement, type ViewportState } from '@/features/canvas/components/workspace/canvasRendering';
+  import {
+    drawGrid,
+    drawElements,
+    drawElement,
+    type ViewportState,
+  } from '@/features/canvas/components/workspace/canvasRendering';
   import {
     createInteractionState,
     handleMouseDown as _mouseDown,
@@ -25,7 +30,11 @@
     handleKeyDown as _keyDown,
     type CanvasContext,
   } from '@/features/canvas/components/workspace/canvasInteractions';
-  import { handleDragOver, handleDrop as _drop, handleComponentConfirm } from '@/features/canvas/components/workspace/canvasDragDrop';
+  import {
+    handleDragOver,
+    handleDrop as _drop,
+    handleComponentConfirm,
+  } from '@/features/canvas/components/workspace/canvasDragDrop';
   import CanvasToolbar from '@/features/canvas/components/CanvasToolbar.svelte';
   import CanvasContextMenu from '@/features/canvas/components/workspace/CanvasContextMenu.svelte';
   import CreateComponentDialog from '@/features/canvas/components/components/CreateComponentDialog.svelte';
@@ -147,7 +156,7 @@
     // T057: Inspect mode toggle (Cmd+Shift+I)
     if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'I') {
       e.preventDefault();
-      inspectEnabled.update(v => !v);
+      inspectEnabled.update((v) => !v);
       return;
     }
     iState = _keyDown(e, iState, getCtx());
@@ -215,7 +224,11 @@
       </div>
     {/if}
 
-    <FlowLinkOverlay onEditFlowLink={(id) => { editingFlowLinkId = id; }} />
+    <FlowLinkOverlay
+      onEditFlowLink={(id) => {
+        editingFlowLinkId = id;
+      }}
+    />
     <FlowOverview />
     {#if editingFlowLinkId}
       <FlowLinkEditor linkId={editingFlowLinkId} />
@@ -223,15 +236,24 @@
 
     <!-- T047: Auto Layout spacing handles when auto-layout frame selected -->
     {#if $currentCanvas && $selectedElements.length === 1}
-      {@const selEl = $currentCanvas.elements.find(e => e.id === $selectedElements[0])}
+      {@const selEl = $currentCanvas.elements.find((e) => e.id === $selectedElements[0])}
       {#if selEl?.properties?.autoLayout}
-        <AutoLayoutOverlay layout={selEl.properties.autoLayout} selected={true} scale={$viewport.scale} />
+        <AutoLayoutOverlay
+          layout={selEl.properties.autoLayout}
+          selected={true}
+          scale={$viewport.scale}
+        />
       {/if}
     {/if}
 
     <!-- T058: Inspect mode measurement overlays -->
     {#if $inspectEnabled}
-      <InspectOverlay scale={$viewport.scale} offsetX={$viewport.x} offsetY={$viewport.y} elements={$currentCanvas?.elements ?? []} />
+      <InspectOverlay
+        scale={$viewport.scale}
+        offsetX={$viewport.x}
+        offsetY={$viewport.y}
+        elements={$currentCanvas?.elements ?? []}
+      />
     {/if}
 
     <CanvasMinimap canvasWidth={width} canvasHeight={height} />
@@ -250,10 +272,7 @@
     onCancel={() => (showCreateComponentDialog = false)}
   />
 
-  <FlowPreview
-    bind:show={showPreview}
-    onExit={() => (showPreview = false)}
-  />
+  <FlowPreview bind:show={showPreview} onExit={() => (showPreview = false)} />
 </div>
 
 <style>

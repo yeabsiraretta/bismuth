@@ -55,14 +55,14 @@ describe('Drawer', () => {
 
   it('sets body overflow hidden when open=true', async () => {
     render(Drawer, { props: { ...baseProps, open: true } });
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise((r) => setTimeout(r, 0));
     expect(document.body.style.overflow).toBe('hidden');
   });
 
   it('restores body overflow when component destroyed', async () => {
     document.body.style.overflow = '';
     const { unmount } = render(Drawer, { props: { ...baseProps, open: true } });
-    await new Promise(r => setTimeout(r, 0));
+    await new Promise((r) => setTimeout(r, 0));
     unmount();
     expect(document.body.style.overflow).toBe('');
   });

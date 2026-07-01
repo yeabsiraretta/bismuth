@@ -17,12 +17,14 @@ This document describes the branch protection rules to configure on GitHub.
 ### Protection Settings
 
 ✅ **Require a pull request before merging**
+
 - Required approvals: **2**
 - Dismiss stale pull request approvals when new commits are pushed: ✅
 - Require review from Code Owners: ✅
 - Require approval of the most recent reviewable push: ✅
 
 ✅ **Require status checks to pass before merging**
+
 - Require branches to be up to date before merging: ✅
 - Status checks that are required:
   - `Rust Checks / rust-checks (ubuntu-latest, stable)`
@@ -44,6 +46,7 @@ This document describes the branch protection rules to configure on GitHub.
 ✅ **Include administrators**
 
 ✅ **Restrict who can push to matching branches**
+
 - Restrict pushes that create matching branches: ✅
 - Allowed to push: (leave empty - no direct pushes)
 
@@ -60,12 +63,14 @@ This document describes the branch protection rules to configure on GitHub.
 ### Protection Settings
 
 ✅ **Require a pull request before merging**
+
 - Required approvals: **1**
 - Dismiss stale pull request approvals when new commits are pushed: ✅
 - Require review from Code Owners: ❌
 - Require approval of the most recent reviewable push: ✅
 
 ✅ **Require status checks to pass before merging**
+
 - Require branches to be up to date before merging: ✅
 - Status checks that are required:
   - `Rust Checks / rust-checks (ubuntu-latest, stable)`
@@ -82,6 +87,7 @@ This document describes the branch protection rules to configure on GitHub.
 ✅ **Include administrators**
 
 ✅ **Restrict who can push to matching branches**
+
 - Restrict pushes that create matching branches: ✅
 - Allowed to push: (leave empty - no direct pushes)
 
@@ -98,12 +104,14 @@ This document describes the branch protection rules to configure on GitHub.
 ### Protection Settings
 
 ✅ **Require a pull request before merging**
+
 - Required approvals: **2**
 - Dismiss stale pull request approvals when new commits are pushed: ✅
 - Require review from Code Owners: ✅
 - Require approval of the most recent reviewable push: ✅
 
 ✅ **Require status checks to pass before merging**
+
 - Require branches to be up to date before merging: ✅
 - Status checks that are required:
   - `Rust Checks / rust-checks (ubuntu-latest, stable)`
@@ -231,13 +239,17 @@ After configuring, verify:
 ## Troubleshooting
 
 **Issue**: Status checks not appearing
+
 - **Solution**: Push a commit to trigger CI, then add checks to branch protection
 
 **Issue**: Cannot merge despite passing checks
+
 - **Solution**: Ensure branch is up-to-date with base branch
 
 **Issue**: Administrators can bypass rules
+
 - **Solution**: Enable "Include administrators" in branch protection
 
 **Issue**: Signed commits required but failing
+
 - **Solution**: Configure GPG signing: `git config commit.gpgsign true`

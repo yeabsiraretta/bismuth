@@ -55,7 +55,14 @@ beforeEach(() => {
   vi.clearAllMocks();
   conversationHistory.set([]);
   pendingChanges.set([]);
-  llmConfig.set({ provider: 'ollama', model: 'llama3.2', ollamaUrl: 'http://127.0.0.1:11434', maxTokens: 4096, temperature: 0.7, openaiBaseUrl: 'https://api.openai.com/v1' });
+  llmConfig.set({
+    provider: 'ollama',
+    model: 'llama3.2',
+    ollamaUrl: 'http://127.0.0.1:11434',
+    maxTokens: 4096,
+    temperature: 0.7,
+    openaiBaseUrl: 'https://api.openai.com/v1',
+  });
 });
 
 describe('addMessage', () => {
@@ -149,7 +156,14 @@ describe('llmConfig — setProvider', () => {
   });
 
   it('setProvider without model preserves existing model', () => {
-    llmConfig.set({ provider: 'ollama', model: 'mistral', ollamaUrl: 'http://127.0.0.1:11434', maxTokens: 4096, temperature: 0.7, openaiBaseUrl: 'https://api.openai.com/v1' });
+    llmConfig.set({
+      provider: 'ollama',
+      model: 'mistral',
+      ollamaUrl: 'http://127.0.0.1:11434',
+      maxTokens: 4096,
+      temperature: 0.7,
+      openaiBaseUrl: 'https://api.openai.com/v1',
+    });
     setProvider('claude');
     expect(get(llmConfig).model).toBe('mistral');
   });

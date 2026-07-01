@@ -60,7 +60,7 @@ export const layoutStore = writable<LayoutState>(defaultLayout);
 
 /** Toggles the left sidebar between visible and collapsed states. */
 export function toggleLeftSidebar() {
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     leftSidebarVisible: !state.leftSidebarVisible,
   }));
@@ -68,7 +68,7 @@ export function toggleLeftSidebar() {
 
 /** Toggles the right sidebar between visible and collapsed states. */
 export function toggleRightSidebar() {
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     rightSidebarVisible: !state.rightSidebarVisible,
   }));
@@ -80,7 +80,7 @@ export function setLeftSidebarWidth(width: number) {
     LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
     Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, width)
   );
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     leftSidebarWidth: clampedWidth,
   }));
@@ -92,7 +92,7 @@ export function setRightSidebarWidth(width: number) {
     LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
     Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, width)
   );
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     rightSidebarWidth: clampedWidth,
   }));
@@ -100,14 +100,14 @@ export function setRightSidebarWidth(width: number) {
 
 /** Move a tab between left and right sidebars */
 export function moveTabToSidebar(tabId: string, target: 'left' | 'right') {
-  layoutStore.update(state => {
+  layoutStore.update((state) => {
     const sourceKey = target === 'left' ? 'rightTabs' : 'leftTabs';
     const destKey = target === 'left' ? 'leftTabs' : 'rightTabs';
-    const tab = state[sourceKey].find(t => t.id === tabId);
+    const tab = state[sourceKey].find((t) => t.id === tabId);
     if (!tab || tab.pinned) return state;
     return {
       ...state,
-      [sourceKey]: state[sourceKey].filter(t => t.id !== tabId),
+      [sourceKey]: state[sourceKey].filter((t) => t.id !== tabId),
       [destKey]: [...state[destKey], tab],
     };
   });
@@ -115,7 +115,7 @@ export function moveTabToSidebar(tabId: string, target: 'left' | 'right') {
 
 /** Set the active tab for a sidebar. Also expands the sidebar if collapsed. */
 export function setActiveTab(side: 'left' | 'right', tabId: string) {
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     [side === 'left' ? 'leftActiveTab' : 'rightActiveTab']: tabId,
     [side === 'left' ? 'leftSidebarVisible' : 'rightSidebarVisible']: true,
@@ -124,7 +124,7 @@ export function setActiveTab(side: 'left' | 'right', tabId: string) {
 
 /** Reorder tabs within a sidebar */
 export function reorderTabs(side: 'left' | 'right', tabs: SidebarTab[]) {
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     [side === 'left' ? 'leftTabs' : 'rightTabs']: tabs,
   }));
@@ -132,7 +132,7 @@ export function reorderTabs(side: 'left' | 'right', tabs: SidebarTab[]) {
 
 /** Reorder lower tabs within a sidebar */
 export function reorderLowerTabs(side: 'left' | 'right', tabs: SidebarTab[]) {
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     [side === 'left' ? 'leftLowerTabs' : 'rightLowerTabs']: tabs,
   }));
@@ -140,7 +140,7 @@ export function reorderLowerTabs(side: 'left' | 'right', tabs: SidebarTab[]) {
 
 /** Move a tab between upper and lower sections within the same sidebar */
 export function moveTabToSection(side: 'left' | 'right', tabId: string, target: 'upper' | 'lower') {
-  layoutStore.update(state => {
+  layoutStore.update((state) => {
     const upperKey = side === 'left' ? 'leftTabs' : 'rightTabs';
     const lowerKey = side === 'left' ? 'leftLowerTabs' : 'rightLowerTabs';
 
@@ -148,12 +148,12 @@ export function moveTabToSection(side: 'left' | 'right', tabId: string, target: 
     const lowerTabs = [...state[lowerKey]];
 
     if (target === 'lower') {
-      const idx = upperTabs.findIndex(t => t.id === tabId);
+      const idx = upperTabs.findIndex((t) => t.id === tabId);
       if (idx === -1 || upperTabs[idx].pinned) return state;
       const [tab] = upperTabs.splice(idx, 1);
       lowerTabs.push(tab);
     } else {
-      const idx = lowerTabs.findIndex(t => t.id === tabId);
+      const idx = lowerTabs.findIndex((t) => t.id === tabId);
       if (idx === -1) return state;
       const [tab] = lowerTabs.splice(idx, 1);
       upperTabs.push(tab);
@@ -183,17 +183,23 @@ export function loadLayout(vaultName?: string) {
     const saved = localStorage.getItem(key);
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<LayoutState>;
-      layoutStore.update(state => ({
+      layoutStore.update((state) => ({
         ...state,
         ...parsed,
         bottomTabs: DEFAULT_BOTTOM_TABS,
         leftSidebarWidth: Math.max(
           LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
-          Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, parsed.leftSidebarWidth ?? state.leftSidebarWidth)
+          Math.min(
+            LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH,
+            parsed.leftSidebarWidth ?? state.leftSidebarWidth
+          )
         ),
         rightSidebarWidth: Math.max(
           LAYOUT_CONSTANTS.SIDEBAR_MIN_WIDTH,
-          Math.min(LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH, parsed.rightSidebarWidth ?? state.rightSidebarWidth)
+          Math.min(
+            LAYOUT_CONSTANTS.SIDEBAR_MAX_WIDTH,
+            parsed.rightSidebarWidth ?? state.rightSidebarWidth
+          )
         ),
       }));
     }
@@ -204,7 +210,7 @@ export function loadLayout(vaultName?: string) {
 
 /** Auto-persist layout changes */
 export function enableAutoSave(vaultName?: string) {
-  return layoutStore.subscribe(state => {
+  return layoutStore.subscribe((state) => {
     const key = vaultName ? `${STORAGE_KEY}-${vaultName}` : STORAGE_KEY;
     try {
       localStorage.setItem(key, JSON.stringify(state));

@@ -51,7 +51,7 @@ export function parseWikilinkValue(value: unknown): string | null {
 /** Look up the first defined value for a set of frontmatter keys. */
 function firstFrontmatterValue(
   fm: Record<string, unknown>,
-  keys: readonly string[],
+  keys: readonly string[]
 ): string | null {
   for (const key of keys) {
     const val = fm[key];
@@ -64,7 +64,7 @@ function firstFrontmatterValue(
 export function buildContext(
   notePath: string,
   vaultRoot: string,
-  frontmatter: Record<string, unknown>,
+  frontmatter: Record<string, unknown>
 ): BreadcrumbContext {
   return {
     trail: buildTrail(notePath, vaultRoot),
@@ -80,7 +80,7 @@ export function buildContext(
  */
 export function resolveSiblings(
   notePath: string,
-  siblingPaths: string[],
+  siblingPaths: string[]
 ): { prev: string | null; next: string | null } {
   if (siblingPaths.length < 2) return { prev: null, next: null };
 

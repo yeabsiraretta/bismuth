@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseTimestamp, formatTimestamp,
-  parseAudioPlayerBlock, findAudioPlayerBlocks,
+  parseTimestamp,
+  formatTimestamp,
+  parseAudioPlayerBlock,
+  findAudioPlayerBlocks,
   sampleAudioPlayerBlock,
 } from '../services/audioPlayer/audioPlayerParser';
 

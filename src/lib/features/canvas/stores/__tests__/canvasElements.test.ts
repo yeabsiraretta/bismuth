@@ -37,7 +37,10 @@ function makeFrame(id: string): CanvasElement {
   return {
     id,
     element_type: 'frame',
-    x: 0, y: 0, width: 100, height: 80,
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 80,
     rotation: 0,
     properties: {},
     layer_id: 'default',
@@ -135,7 +138,12 @@ describe('canvasElements flow link operations', () => {
 
   describe('addFlowLink', () => {
     it('appends a new flow link to the document', () => {
-      const newLink: FlowLink = { id: 'link3', fromFrameId: 'frame1', toFrameId: 'frame3', transition: { type: 'dissolve', duration: 300 } };
+      const newLink: FlowLink = {
+        id: 'link3',
+        fromFrameId: 'frame1',
+        toFrameId: 'frame3',
+        transition: { type: 'dissolve', duration: 300 },
+      };
       addFlowLink(newLink);
       const canvas = get(currentCanvas)!;
       expect(canvas.flowLinks).toHaveLength(3);
@@ -147,7 +155,12 @@ describe('canvasElements flow link operations', () => {
       delete (canvasNoLinks as CanvasDocument & { flowLinks?: FlowLink[] }).flowLinks;
       currentCanvas.set(canvasNoLinks);
 
-      const link: FlowLink = { id: 'lnew', fromFrameId: 'f1', toFrameId: 'f1', transition: { type: 'instant', duration: 0 } };
+      const link: FlowLink = {
+        id: 'lnew',
+        fromFrameId: 'f1',
+        toFrameId: 'f1',
+        transition: { type: 'instant', duration: 0 },
+      };
       addFlowLink(link);
       expect(get(currentCanvas)!.flowLinks).toHaveLength(1);
     });

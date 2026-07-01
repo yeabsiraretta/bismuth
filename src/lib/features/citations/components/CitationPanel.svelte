@@ -122,7 +122,11 @@
         No library loaded
       {/if}
     </span>
-    <button class="cit-btn cit-btn-icon" on:click={() => (showSettings = !showSettings)} title="Settings">
+    <button
+      class="cit-btn cit-btn-icon"
+      on:click={() => (showSettings = !showSettings)}
+      title="Settings"
+    >
       ⚙
     </button>
   </div>
@@ -146,11 +150,11 @@
       </label>
       <label class="cit-field">
         <span>Note title template</span>
-        <input type="text" bind:value={configTitleTpl} placeholder={"@{{citekey}}"} />
+        <input type="text" bind:value={configTitleTpl} placeholder={'@{{citekey}}'} />
       </label>
       <label class="cit-field">
         <span>Citation template</span>
-        <input type="text" bind:value={configCiteTpl} placeholder={"[@{{citekey}}]"} />
+        <input type="text" bind:value={configCiteTpl} placeholder={'[@{{citekey}}]'} />
       </label>
       <div class="cit-settings-actions">
         <button class="cit-btn" on:click={handleSaveSettings}>Save</button>
@@ -183,7 +187,11 @@
 
   <div class="cit-list">
     {#each $filteredEntries as entry (entry.id)}
-      <button class="cit-entry" class:selected={selectedEntry?.id === entry.id} on:click={() => selectEntry(entry)}>
+      <button
+        class="cit-entry"
+        class:selected={selectedEntry?.id === entry.id}
+        on:click={() => selectEntry(entry)}
+      >
         <div class="cit-entry-key">@{entry.id}</div>
         <div class="cit-entry-title">{entry.title || 'Untitled'}</div>
         <div class="cit-entry-meta">
@@ -199,7 +207,8 @@
         <div class="cit-entry-detail">
           {#if entry.abstract}
             <div class="cit-abstract">
-              <strong>Abstract:</strong> {entry.abstract}
+              <strong>Abstract:</strong>
+              {entry.abstract}
             </div>
           {/if}
           {#if entry.DOI}
@@ -210,7 +219,8 @@
           {/if}
           <div class="cit-entry-actions">
             <button class="cit-btn" on:click={() => handleOpenNote(entry)}>Open/Create Note</button>
-            <button class="cit-btn" on:click={() => handleCopyCitation(entry)}>Copy Citation</button>
+            <button class="cit-btn" on:click={() => handleCopyCitation(entry)}>Copy Citation</button
+            >
             <button class="cit-btn" on:click={() => handleCopyLink(entry)}>Copy Note Link</button>
             <button class="cit-btn" on:click={() => handleCopyContent(entry)}>Copy Content</button>
           </div>
@@ -242,8 +252,16 @@
     border-bottom: 1px solid var(--background-modifier-border, #333);
   }
 
-  .cit-title { font-weight: 600; font-size: 14px; }
-  .cit-count { flex: 1; text-align: right; font-size: 11px; opacity: 0.6; }
+  .cit-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .cit-count {
+    flex: 1;
+    text-align: right;
+    font-size: 11px;
+    opacity: 0.6;
+  }
 
   .cit-btn {
     padding: 4px 10px;
@@ -255,9 +273,19 @@
     font-size: 12px;
   }
 
-  .cit-btn:hover { background: var(--background-modifier-hover, #333); }
-  .cit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .cit-btn-icon { border: none; background: none; font-size: 16px; padding: 2px 4px; }
+  .cit-btn:hover {
+    background: var(--background-modifier-hover, #333);
+  }
+  .cit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .cit-btn-icon {
+    border: none;
+    background: none;
+    font-size: 16px;
+    padding: 2px 4px;
+  }
 
   .cit-toolbar {
     display: flex;
@@ -276,9 +304,22 @@
     font-size: 13px;
   }
 
-  .cit-search:focus { outline: none; border-color: var(--interactive-accent, #7c3aed); }
-  .cit-error { padding: 6px 12px; background: var(--background-modifier-error, #5c1a1a); color: var(--text-error, #f87171); font-size: 12px; }
-  .cit-feedback { padding: 6px 12px; background: var(--background-modifier-success, #1a3a1a); color: var(--text-success, #4ade80); font-size: 12px; }
+  .cit-search:focus {
+    outline: none;
+    border-color: var(--interactive-accent, #7c3aed);
+  }
+  .cit-error {
+    padding: 6px 12px;
+    background: var(--background-modifier-error, #5c1a1a);
+    color: var(--text-error, #f87171);
+    font-size: 12px;
+  }
+  .cit-feedback {
+    padding: 6px 12px;
+    background: var(--background-modifier-success, #1a3a1a);
+    color: var(--text-success, #4ade80);
+    font-size: 12px;
+  }
 
   .cit-settings {
     padding: 12px;
@@ -294,7 +335,9 @@
     font-size: 12px;
   }
 
-  .cit-field span { opacity: 0.7; }
+  .cit-field span {
+    opacity: 0.7;
+  }
 
   .cit-field input,
   .cit-field select {
@@ -306,8 +349,16 @@
     font-size: 12px;
   }
 
-  .cit-settings-actions { display: flex; gap: 6px; justify-content: flex-end; }
-  .cit-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+  .cit-settings-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .cit-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
 
   .cit-entry {
     display: block;
@@ -322,8 +373,13 @@
     font-size: 13px;
   }
 
-  .cit-entry:hover { background: var(--background-modifier-hover, #2a2a2a); }
-  .cit-entry.selected { background: var(--background-secondary-alt, #333); border-left: 3px solid var(--interactive-accent, #7c3aed); }
+  .cit-entry:hover {
+    background: var(--background-modifier-hover, #2a2a2a);
+  }
+  .cit-entry.selected {
+    background: var(--background-secondary-alt, #333);
+    border-left: 3px solid var(--interactive-accent, #7c3aed);
+  }
 
   .cit-entry-key {
     font-family: var(--font-monospace, monospace);
@@ -346,8 +402,12 @@
     opacity: 0.65;
   }
 
-  .cit-entry-year { font-weight: 600; }
-  .cit-entry-journal { font-style: italic; }
+  .cit-entry-year {
+    font-weight: 600;
+  }
+  .cit-entry-journal {
+    font-style: italic;
+  }
 
   .cit-entry-detail {
     padding: 8px 16px 12px;
@@ -369,6 +429,15 @@
     word-break: break-all;
   }
 
-  .cit-entry-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-  .cit-empty { text-align: center; padding: 24px; opacity: 0.5; }
+  .cit-entry-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .cit-empty {
+    text-align: center;
+    padding: 24px;
+    opacity: 0.5;
+  }
 </style>

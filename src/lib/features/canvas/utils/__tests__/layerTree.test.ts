@@ -6,7 +6,10 @@ function makeElement(overrides: Partial<CanvasElement> = {}): CanvasElement {
   return {
     id: 'el-1',
     element_type: 'rectangle',
-    x: 0, y: 0, width: 100, height: 100,
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
     rotation: 0,
     properties: {},
     layer_id: 'layer-1',
@@ -23,10 +26,7 @@ describe('buildLayerTree', () => {
   });
 
   it('creates root nodes for elements without parentId', () => {
-    const elements = [
-      makeElement({ id: 'a', z_index: 1 }),
-      makeElement({ id: 'b', z_index: 2 }),
-    ];
+    const elements = [makeElement({ id: 'a', z_index: 1 }), makeElement({ id: 'b', z_index: 2 })];
     const tree = buildLayerTree(elements);
     expect(tree).toHaveLength(2);
     expect(tree[0].el.id).toBe('b'); // higher z_index first
@@ -119,7 +119,11 @@ describe('elementLabel', () => {
   });
 
   it('falls back to "Element" for unknown types', () => {
-    const el = makeElement({ id: 'xx-9999', element_type: 'unknown' as unknown as ElementType, name: undefined });
+    const el = makeElement({
+      id: 'xx-9999',
+      element_type: 'unknown' as unknown as ElementType,
+      name: undefined,
+    });
     expect(elementLabel(el)).toBe('Element 9999');
   });
 });

@@ -21,10 +21,7 @@ export interface RenameContext {
 /**
  * Apply rename variables to a pattern string.
  */
-export function applyRenamePattern(
-  pattern: string,
-  ctx: RenameContext,
-): string {
+export function applyRenamePattern(pattern: string, ctx: RenameContext): string {
   const now = new Date();
   const date = now.toISOString().slice(0, 10);
   const time = now.toTimeString().slice(0, 8).replace(/:/g, '');
@@ -51,7 +48,7 @@ export function buildOutputPath(
   sourceDir: string,
   config: RenameConfig,
   format: ImageFormat,
-  ctx: RenameContext,
+  ctx: RenameContext
 ): string {
   const ext = FORMAT_EXT_MAP[format];
   const baseName = config.enabled
@@ -70,11 +67,7 @@ export function buildOutputPath(
  * Resolve an output folder path, applying variables.
  * Supports both absolute and relative (to source dir) paths.
  */
-function resolveOutputFolder(
-  sourceDir: string,
-  folder: string,
-  ctx: RenameContext,
-): string {
+function resolveOutputFolder(sourceDir: string, folder: string, ctx: RenameContext): string {
   let resolved = applyRenamePattern(folder, ctx);
   // If not absolute, treat as relative to source dir
   if (!resolved.startsWith('/')) {

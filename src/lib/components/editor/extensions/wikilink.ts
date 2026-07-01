@@ -5,11 +5,7 @@
  * Scans the document for `[[...]]` patterns and applies decorations.
  */
 
-import {
-  ViewPlugin,
-  Decoration,
-  EditorView,
-} from '@codemirror/view';
+import { ViewPlugin, Decoration, EditorView } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 

@@ -16,11 +16,19 @@ export function buildIntegrationFeatureCommands(): Command[] {
         const { get: getStore } = await import('svelte/store');
         const { currentVault } = await import('@/stores/vault/vault');
         const vault = getStore(currentVault);
-        if (!vault) { showToast('No vault open', 'error'); return; }
+        if (!vault) {
+          showToast('No vault open', 'error');
+          return;
+        }
         await runAllExports({
           scanNotes: async () => {
             const notes = await scanVault();
-            return notes.map(n => ({ path: n.path, title: n.title, content: n.content, frontmatter: n.frontmatter }));
+            return notes.map((n) => ({
+              path: n.path,
+              title: n.title,
+              content: n.content,
+              frontmatter: n.frontmatter,
+            }));
           },
           listFolders: () => listFolders(vault.root_path),
           listNonMdFiles: async () => [],
@@ -41,7 +49,12 @@ export function buildIntegrationFeatureCommands(): Command[] {
         await runTagExport({
           scanNotes: async () => {
             const notes = await scanVault();
-            return notes.map(n => ({ path: n.path, title: n.title, content: n.content, frontmatter: n.frontmatter }));
+            return notes.map((n) => ({
+              path: n.path,
+              title: n.title,
+              content: n.content,
+              frontmatter: n.frontmatter,
+            }));
           },
           listFolders: async () => [],
           listNonMdFiles: async () => [],
@@ -62,7 +75,12 @@ export function buildIntegrationFeatureCommands(): Command[] {
         await runMetadataExport({
           scanNotes: async () => {
             const notes = await scanVault();
-            return notes.map(n => ({ path: n.path, title: n.title, content: n.content, frontmatter: n.frontmatter }));
+            return notes.map((n) => ({
+              path: n.path,
+              title: n.title,
+              content: n.content,
+              frontmatter: n.frontmatter,
+            }));
           },
           listFolders: async () => [],
           listNonMdFiles: async () => [],
@@ -77,7 +95,8 @@ export function buildIntegrationFeatureCommands(): Command[] {
       description: 'Enable or disable metadata extraction',
       category: 'Integration',
       action: async () => {
-        const { getExtractorConfig, updateExtractorConfig } = await import('@/features/metadata-extractor');
+        const { getExtractorConfig, updateExtractorConfig } =
+          await import('@/features/metadata-extractor');
         const enabled = !getExtractorConfig().enabled;
         updateExtractorConfig({ enabled });
         showToast(`Metadata Extractor: ${enabled ? 'on' : 'off'}`, 'info');
@@ -106,15 +125,18 @@ export function buildIntegrationFeatureCommands(): Command[] {
         const { get: getStore } = await import('svelte/store');
         const { currentVault } = await import('@/stores/vault/vault');
         const vault = getStore(currentVault);
-        if (!vault) { showToast('No vault open', 'error'); return; }
+        if (!vault) {
+          showToast('No vault open', 'error');
+          return;
+        }
         await runLinkTopics({
           scanNotes: async () => {
             const notes = await scanVault();
-            return notes.map(n => ({ path: n.path, content: n.content }));
+            return notes.map((n) => ({ path: n.path, content: n.content }));
           },
           scanFolder: async (folder: string) => {
             const notes = await listNotes(vault.root_path, folder);
-            return notes.map(n => ({ path: n.path, content: n.content }));
+            return notes.map((n) => ({ path: n.path, content: n.content }));
           },
           writeFile: writeNote,
           createFolder,
@@ -132,12 +154,15 @@ export function buildIntegrationFeatureCommands(): Command[] {
         const { get: getStore } = await import('svelte/store');
         const { currentVault } = await import('@/stores/vault/vault');
         const vault = getStore(currentVault);
-        if (!vault) { showToast('No vault open', 'error'); return; }
+        if (!vault) {
+          showToast('No vault open', 'error');
+          return;
+        }
         await runExtractWebLinks({
           scanNotes: async () => [],
           scanFolder: async (folder: string) => {
             const notes = await listNotes(vault.root_path, folder);
-            return notes.map(n => ({ path: n.path, content: n.content }));
+            return notes.map((n) => ({ path: n.path, content: n.content }));
           },
           writeFile: writeNote,
           createFolder,
@@ -163,12 +188,17 @@ export function buildIntegrationFeatureCommands(): Command[] {
       category: 'Calendar',
       action: async () => {
         const { notes } = await import('@/stores/vault/vault');
-        const { extractAllFrontmatterEvents, DEFAULT_FM_EVENT_CONFIG } = await import('@/features/calendar');
+        const { extractAllFrontmatterEvents, DEFAULT_FM_EVENT_CONFIG } =
+          await import('@/features/calendar');
         const { addCalendarEvent } = await import('@/features/calendar');
         const allNotes = get(notes);
         const mapped = allNotes
-          .filter(n => n.frontmatter)
-          .map(n => ({ path: n.path, title: n.title, frontmatter: n.frontmatter as Record<string, unknown> }));
+          .filter((n) => n.frontmatter)
+          .map((n) => ({
+            path: n.path,
+            title: n.title,
+            frontmatter: n.frontmatter as Record<string, unknown>,
+          }));
         const events = extractAllFrontmatterEvents(mapped, DEFAULT_FM_EVENT_CONFIG);
         for (const e of events) addCalendarEvent(e);
         showToast(`Found ${events.length} frontmatter events`, 'info');
@@ -185,8 +215,8 @@ export function buildIntegrationFeatureCommands(): Command[] {
         const stats = computeCalendarStats(items);
         showToast(
           `${stats.totalEvents} events, ${stats.completedCount} done (${stats.completionRate}%), ` +
-          `streak: ${stats.currentStreak}d, avg: ${stats.averageEventsPerDay}/day`,
-          'info',
+            `streak: ${stats.currentStreak}d, avg: ${stats.averageEventsPerDay}/day`,
+          'info'
         );
       },
     },
@@ -197,7 +227,7 @@ export function buildIntegrationFeatureCommands(): Command[] {
       category: 'Calendar',
       action: async () => {
         const { selectionMode } = await import('@/features/calendar');
-        selectionMode.update(v => !v);
+        selectionMode.update((v) => !v);
         showToast('Batch selection toggled', 'info');
       },
     },
@@ -208,8 +238,10 @@ export function buildIntegrationFeatureCommands(): Command[] {
       category: 'Calendar',
       action: async () => {
         const { undo, canUndo } = await import('@/features/calendar');
-        if (get(canUndo)) { undo(); showToast('Undone', 'info'); }
-        else showToast('Nothing to undo', 'warning');
+        if (get(canUndo)) {
+          undo();
+          showToast('Undone', 'info');
+        } else showToast('Nothing to undo', 'warning');
       },
     },
     {
@@ -219,8 +251,10 @@ export function buildIntegrationFeatureCommands(): Command[] {
       category: 'Calendar',
       action: async () => {
         const { redo, canRedo } = await import('@/features/calendar');
-        if (get(canRedo)) { redo(); showToast('Redone', 'info'); }
-        else showToast('Nothing to redo', 'warning');
+        if (get(canRedo)) {
+          redo();
+          showToast('Redone', 'info');
+        } else showToast('Nothing to redo', 'warning');
       },
     },
     {
@@ -252,7 +286,8 @@ export function buildIntegrationFeatureCommands(): Command[] {
       description: 'Make the graph banner taller',
       category: 'Knowledge',
       action: async () => {
-        const { getGraphBannerConfig, setGraphBannerHeight } = await import('@/features/graph-banner');
+        const { getGraphBannerConfig, setGraphBannerHeight } =
+          await import('@/features/graph-banner');
         const h = getGraphBannerConfig().height + 40;
         setGraphBannerHeight(h);
         showToast(`Banner height: ${Math.min(400, h)}px`, 'info');
@@ -264,7 +299,8 @@ export function buildIntegrationFeatureCommands(): Command[] {
       description: 'Make the graph banner shorter',
       category: 'Knowledge',
       action: async () => {
-        const { getGraphBannerConfig, setGraphBannerHeight } = await import('@/features/graph-banner');
+        const { getGraphBannerConfig, setGraphBannerHeight } =
+          await import('@/features/graph-banner');
         const h = getGraphBannerConfig().height - 40;
         setGraphBannerHeight(h);
         showToast(`Banner height: ${Math.max(80, h)}px`, 'info');
@@ -289,7 +325,9 @@ export function buildIntegrationFeatureCommands(): Command[] {
       category: 'Knowledge',
       action: async () => {
         const { sampleSmilesBlock } = await import('@/features/chem');
-        window.dispatchEvent(new CustomEvent('editor-insert', { detail: { text: sampleSmilesBlock() } }));
+        window.dispatchEvent(
+          new CustomEvent('editor-insert', { detail: { text: sampleSmilesBlock() } })
+        );
       },
     },
     {

@@ -17,14 +17,7 @@ export type PhotoOpType =
 
 export type VideoOpType = 'trim' | 'split' | 'speed' | 'filter' | 'text-overlay';
 
-export type FilterName =
-  | 'none'
-  | 'grayscale'
-  | 'sepia'
-  | 'vintage'
-  | 'warm'
-  | 'cool'
-  | 'vignette';
+export type FilterName = 'none' | 'grayscale' | 'sepia' | 'vintage' | 'warm' | 'cool' | 'vignette';
 
 export interface PhotoOperation {
   type: PhotoOpType;
@@ -56,37 +49,31 @@ export interface FilterPreset {
 
 /** Built-in filter presets — 7 total covering common photo styles. */
 export const FILTER_PRESETS: FilterPreset[] = [
-  { id: 'none',      name: 'Original',  cssFilter: '' },
-  { id: 'grayscale', name: 'B&W',       cssFilter: 'grayscale(1)' },
-  { id: 'sepia',     name: 'Sepia',     cssFilter: 'sepia(1)' },
-  { id: 'vintage',   name: 'Vintage',   cssFilter: 'sepia(0.3) contrast(1.1) brightness(0.9)' },
-  { id: 'warm',      name: 'Warm',      cssFilter: 'sepia(0.2) saturate(1.4) brightness(1.05)' },
-  { id: 'cool',      name: 'Cool',      cssFilter: 'hue-rotate(30deg) saturate(0.9)' },
-  { id: 'vignette',  name: 'Vignette',  cssFilter: 'brightness(0.85)' },
+  { id: 'none', name: 'Original', cssFilter: '' },
+  { id: 'grayscale', name: 'B&W', cssFilter: 'grayscale(1)' },
+  { id: 'sepia', name: 'Sepia', cssFilter: 'sepia(1)' },
+  { id: 'vintage', name: 'Vintage', cssFilter: 'sepia(0.3) contrast(1.1) brightness(0.9)' },
+  { id: 'warm', name: 'Warm', cssFilter: 'sepia(0.2) saturate(1.4) brightness(1.05)' },
+  { id: 'cool', name: 'Cool', cssFilter: 'hue-rotate(30deg) saturate(0.9)' },
+  { id: 'vignette', name: 'Vignette', cssFilter: 'brightness(0.85)' },
 ];
 
 /** CSS filter strings keyed by FilterName for direct lookup. */
 export const FILTER_PRESET_MAP: Record<FilterName, string> = {
-  none:      '',
+  none: '',
   grayscale: 'grayscale(1)',
-  sepia:     'sepia(1)',
-  vintage:   'sepia(0.3) contrast(1.1) brightness(0.9)',
-  warm:      'sepia(0.2) saturate(1.4) brightness(1.05)',
-  cool:      'hue-rotate(30deg) saturate(0.9)',
-  vignette:  'brightness(0.85)',
+  sepia: 'sepia(1)',
+  vintage: 'sepia(0.3) contrast(1.1) brightness(0.9)',
+  warm: 'sepia(0.2) saturate(1.4) brightness(1.05)',
+  cool: 'hue-rotate(30deg) saturate(0.9)',
+  vignette: 'brightness(0.85)',
 };
 
 // ── Image Converter types ───────────────────────────────────────────────
 
 export type ImageFormat = 'webp' | 'jpeg' | 'png';
 
-export type ResizeMode =
-  | 'width'
-  | 'height'
-  | 'longest-edge'
-  | 'shortest-edge'
-  | 'fit'
-  | 'fill';
+export type ResizeMode = 'width' | 'height' | 'longest-edge' | 'shortest-edge' | 'fit' | 'fill';
 
 export type FlipDirection = 'horizontal' | 'vertical';
 
@@ -125,7 +112,11 @@ export const DEFAULT_RENAME: RenameConfig = {
 };
 
 export const RENAME_VARIABLES = [
-  '{noteName}', '{fileName}', '{date}', '{time}', '{index}',
+  '{noteName}',
+  '{fileName}',
+  '{date}',
+  '{time}',
+  '{index}',
 ] as const;
 
 export const FORMAT_MIME_MAP: Record<ImageFormat, string> = {

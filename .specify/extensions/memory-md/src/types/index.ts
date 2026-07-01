@@ -16,7 +16,7 @@ export interface RetrievalConfig {
 
 export interface OptimizerConfig {
   enabled: boolean;
-  engine: "sqlite";
+  engine: 'sqlite';
   db_path: string;
   auto_index_on_memory_change: boolean;
   auto_index_on_doc_change: boolean;
@@ -47,7 +47,7 @@ export interface MemoryHubConfig {
   indexing: IndexingConfig;
 }
 
-export type MemorySourceType = "memory";
+export type MemorySourceType = 'memory';
 
 export interface MemoryEntryRecord {
   id: string;

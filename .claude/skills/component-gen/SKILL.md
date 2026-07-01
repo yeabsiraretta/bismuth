@@ -1,6 +1,6 @@
 ---
 name: component-gen
-description: "Generate UI components with UX principles baked in"
+description: 'Generate UI components with UX principles baked in'
 ---
 
 # Component Generation Skill
@@ -26,6 +26,7 @@ Before writing code:
 ## Component Type → Requirements
 
 ### Form
+
 - Max 7 visible fields (use multi-step for more)
 - Inline validation on blur
 - Required fields marked with *
@@ -34,6 +35,7 @@ Before writing code:
 - Min 44x44px touch targets
 
 ### Data Table
+
 - Max 5-7 visible columns
 - Sticky header for scroll context
 - Row actions in kebab menu (not inline)
@@ -41,6 +43,7 @@ Before writing code:
 - Pagination with count (not infinite scroll)
 
 ### Navigation
+
 - Max 7 top-level items
 - Group related items under expandable sections
 - Active state clearly visible
@@ -48,6 +51,7 @@ Before writing code:
 - Keyboard navigation (arrow keys, Enter)
 
 ### Modal
+
 - Single focus (one modal at a time)
 - Close button 44x44px minimum
 - Escape key closes
@@ -55,6 +59,7 @@ Before writing code:
 - aria-modal="true" and role="dialog"
 
 ### Settings
+
 - One section at a time (sidebar or tabs)
 - Current state visible (toggles, selected values)
 - Auto-save toggles, explicit Save for forms
@@ -63,17 +68,20 @@ Before writing code:
 ## UX Guardrails (Non-Negotiable)
 
 ### Cognitive Load
+
 - **Max 7±2 items** in any list, menu, or visible set
 - **Group** when exceeding 9 items
 - **Progressive disclosure** for advanced options
 
 ### Interaction
+
 - **Min 40x40px** for all interactive elements
 - **Min 44x44px** for primary actions
 - **Immediate feedback** on all user actions
 - **Confirmation** for destructive actions
 
 ### Accessibility
+
 - **Keyboard navigation** for all features
 - **ARIA labels** on icon-only buttons
 - **Focus indicators** visible (2px outline)
@@ -85,13 +93,13 @@ Before writing code:
 ```svelte
 <script lang="ts">
   // Props with UX constraints
-  export let items: Item[];  // Max 7-9 visible
+  export let items: Item[]; // Max 7-9 visible
   export let onAction: (item: Item) => void;
   export let disabled: boolean = false;
-  
+
   // State
   let selectedId: string | null = null;
-  
+
   // Ensure cognitive load limits
   $: visibleItems = items.slice(0, 7);
   $: hasMore = items.length > 7;
@@ -109,7 +117,7 @@ Before writing code:
       {item.label}
     </button>
   {/each}
-  
+
   {#if hasMore}
     <button class="min-h-[40px]" aria-label="Show more">
       More ({items.length - 7})
@@ -123,7 +131,7 @@ Before writing code:
     color: var(--text-normal);
     background: var(--background-primary);
   }
-  
+
   button:focus-visible {
     outline: 2px solid var(--interactive-accent);
     outline-offset: 2px;
@@ -148,6 +156,7 @@ After generating component:
 ## Bismuth-Specific Patterns
 
 ### Note Editor
+
 ```typescript
 // Auto-save with 500ms debounce
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -162,6 +171,7 @@ function handleChange(newContent: string) {
 ```
 
 ### File Tree
+
 ```svelte
 <!-- Max 7-9 top-level folders visible -->
 <nav aria-label="File tree">
@@ -172,6 +182,7 @@ function handleChange(newContent: string) {
 ```
 
 ### Wikilink Autocomplete
+
 ```svelte
 <!-- Recognition vs Recall: Show existing notes -->
 <Autocomplete

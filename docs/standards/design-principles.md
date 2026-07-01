@@ -5,6 +5,7 @@
 **Plain. Descriptive. Consistent.**
 
 Every design decision prioritizes:
+
 1. **Clarity over decoration** - Plain text labels, no unnecessary embellishments
 2. **Simplicity over complexity** - 2-3 colors maximum, high contrast
 3. **Consistency over variety** - Reuse components, standardize patterns
@@ -15,23 +16,18 @@ Every design decision prioritizes:
 ## Color Palette (Maximum 3 Colors)
 
 ### Primary Palette
+
 ```css
 /* Neutral Base (Gray Scale) */
---color-bg: #ffffff           /* Background */
---color-surface: #f8f9fa      /* Cards, panels */
---color-border: #dee2e6       /* Borders, dividers */
---color-text: #212529         /* Primary text */
---color-text-muted: #6c757d   /* Secondary text */
-
-/* Accent (Blue) */
---color-primary: #0d6efd      /* Primary actions, links */
---color-primary-hover: #0b5ed7
-
-/* Semantic (Minimal) */
---color-danger: #dc3545       /* Destructive actions only */
+--color-bg: #ffffff /* Background */ --color-surface: #f8f9fa /* Cards, panels */
+  --color-border: #dee2e6 /* Borders, dividers */ --color-text: #212529 /* Primary text */
+  --color-text-muted: #6c757d /* Secondary text */ /* Accent (Blue) */ --color-primary: #0d6efd
+  /* Primary actions, links */ --color-primary-hover: #0b5ed7 /* Semantic (Minimal) */
+  --color-danger: #dc3545 /* Destructive actions only */;
 ```
 
 ### Usage Rules
+
 - **Never use more than 3 colors** in a single view
 - **High contrast required**: Text must be WCAG AA compliant (4.5:1 minimum)
 - **No gradients, shadows, or effects** unless absolutely necessary
@@ -42,11 +38,14 @@ Every design decision prioritizes:
 ## Typography
 
 ### Font Stack
+
 ```css
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+font-family:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 ```
 
 ### Hierarchy (Plain Text Only)
+
 ```css
 /* Headings */
 h1: 1.5rem, font-weight: 600, color: var(--color-text)
@@ -63,6 +62,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 ### Rules
+
 - **No bold unless it's a heading or button**
 - **No italics** - use color differentiation instead
 - **No uppercase transformation** - write labels in sentence case
@@ -73,16 +73,15 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ## Spacing System
 
 ### Scale (8px base unit)
+
 ```css
---space-1: 0.25rem  /* 4px  - tight */
---space-2: 0.5rem   /* 8px  - small */
---space-3: 0.75rem  /* 12px - medium */
---space-4: 1rem     /* 16px - standard */
---space-6: 1.5rem   /* 24px - large */
---space-8: 2rem     /* 32px - extra large */
+--space-1: 0.25rem /* 4px  - tight */ --space-2: 0.5rem /* 8px  - small */ --space-3: 0.75rem
+  /* 12px - medium */ --space-4: 1rem /* 16px - standard */ --space-6: 1.5rem /* 24px - large */
+  --space-8: 2rem /* 32px - extra large */;
 ```
 
 ### Application
+
 - **Padding**: Use space-3 (12px) for buttons, space-4 (16px) for cards
 - **Margins**: Use space-4 (16px) between sections, space-2 (8px) between related items
 - **Gaps**: Use space-2 (8px) for inline elements, space-4 (16px) for blocks
@@ -94,6 +93,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ### Buttons
 
 **Primary Button** (Single action per view):
+
 ```svelte
 <button class="btn btn-primary">
   <Icon name="plus" size={16} />
@@ -102,6 +102,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Secondary Button** (Alternative actions):
+
 ```svelte
 <button class="btn">
   <Icon name="folder-open" size={16} />
@@ -110,6 +111,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Danger Button** (Destructive actions only):
+
 ```svelte
 <button class="btn btn-danger">
   <Icon name="trash" size={16} />
@@ -118,6 +120,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Styles**:
+
 ```css
 .btn {
   display: inline-flex;
@@ -157,6 +160,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ### Lists
 
 **Standard List** (No bullets, plain text):
+
 ```svelte
 <ul class="list">
   {#each items as item}
@@ -171,6 +175,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Styles**:
+
 ```css
 .list {
   list-style: none;
@@ -211,6 +216,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ### Forms
 
 **Input Field**:
+
 ```svelte
 <div class="form-group">
   <label class="form-label">Note name</label>
@@ -219,6 +225,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Styles**:
+
 ```css
 .form-group {
   margin-bottom: var(--space-4);
@@ -251,6 +258,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ### Modals
 
 **Structure**:
+
 ```svelte
 <div class="modal-overlay">
   <div class="modal">
@@ -265,6 +273,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ```
 
 **Styles**:
+
 ```css
 .modal-overlay {
   position: fixed;
@@ -308,6 +317,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 ## Icon Usage
 
 ### Rules
+
 - **16px default size** for inline icons
 - **20px for standalone** icons (toolbar, headers)
 - **Stroke width: 2** (consistent line thickness)
@@ -315,6 +325,7 @@ link: 0.875rem, font-weight: 400, color: var(--color-primary)
 - **No decorative icons** - every icon must have a function
 
 ### Standard Icons
+
 ```
 file          - Document/note
 folder        - Directory/vault
@@ -334,6 +345,7 @@ alert-circle  - Warning/error
 ## Layout Patterns
 
 ### Application Shell
+
 ```css
 .app {
   display: flex;
@@ -366,6 +378,7 @@ alert-circle  - Warning/error
 ```
 
 ### Grid (For canvas/dashboard)
+
 ```css
 .grid {
   display: grid;
@@ -379,6 +392,7 @@ alert-circle  - Warning/error
 ## Forbidden Patterns
 
 ### ❌ DO NOT USE
+
 - Gradients
 - Drop shadows (except modals: `box-shadow: 0 2px 8px rgba(0,0,0,0.1)`)
 - Rounded corners >4px
@@ -392,6 +406,7 @@ alert-circle  - Warning/error
 - Decorative icons
 
 ### ✅ DO USE
+
 - Plain text labels
 - High contrast colors
 - System fonts
@@ -406,11 +421,13 @@ alert-circle  - Warning/error
 ## Accessibility Requirements
 
 ### Contrast
+
 - **Text**: 4.5:1 minimum (WCAG AA)
 - **Large text**: 3:1 minimum
 - **Interactive elements**: 3:1 minimum
 
 ### Focus States
+
 ```css
 *:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -419,12 +436,14 @@ alert-circle  - Warning/error
 ```
 
 ### Keyboard Navigation
+
 - All interactive elements must be keyboard accessible
 - Tab order must be logical
 - Escape closes modals
 - Enter submits forms
 
 ### Screen Readers
+
 - Use semantic HTML (`<button>`, `<nav>`, `<main>`)
 - Add ARIA labels where needed
 - Announce state changes
@@ -434,6 +453,7 @@ alert-circle  - Warning/error
 ## Component Checklist
 
 Before creating a component:
+
 - [ ] Uses maximum 3 colors
 - [ ] Plain text labels (no decoration)
 - [ ] System font only
@@ -452,6 +472,7 @@ Before creating a component:
 ### Changes Required
 
 **Color Variables** (Update `App.svelte`):
+
 ```css
 :root {
   --color-bg: #ffffff;
@@ -466,22 +487,26 @@ Before creating a component:
 ```
 
 **Remove**:
+
 - `--bg-active: #e3f2fd` (use `--color-surface` instead)
 - `--success-bg`, `--warning-bg` (not needed)
 - All gradient backgrounds
 - Box shadows except modals
 
 **Typography** (Update all components):
+
 - Reduce font sizes (1.75rem → 1.5rem for h1)
 - Remove font-weight: 700 (use 600 max)
 - Standardize to 0.875rem body text
 
 **Spacing** (Update all components):
+
 - Replace arbitrary values with space scale
 - `padding: 1rem` → `padding: var(--space-4)`
 - `gap: 0.5rem` → `gap: var(--space-2)`
 
 **Components** (Update):
+
 - VaultPicker: Remove gradient, simplify
 - FileTree: Plain list, no active highlight color
 - Toolbar: Reduce button padding
@@ -492,6 +517,7 @@ Before creating a component:
 ## Examples
 
 ### Before (Current)
+
 ```svelte
 <div class="vault-picker" style="background: linear-gradient(...)">
   <h1 style="font-size: 2.5rem; font-weight: 700">Welcome to Bismuth</h1>
@@ -503,6 +529,7 @@ Before creating a component:
 ```
 
 ### After (Principles Applied)
+
 ```svelte
 <div class="vault-picker">
   <h1>Welcome to Bismuth</h1>
@@ -518,24 +545,28 @@ Before creating a component:
 ## Rationale
 
 **Why plain text?**
+
 - Faster to read
 - Easier to translate
 - Better for accessibility
 - Reduces cognitive load
 
 **Why 2-3 colors?**
+
 - Prevents visual clutter
 - Improves focus
 - Easier to maintain
 - Better for colorblind users
 
 **Why system fonts?**
+
 - Faster load times
 - Native OS feel
 - No licensing issues
 - Consistent across platforms
 
 **Why no effects?**
+
 - Reduces complexity
 - Improves performance
 - Easier to implement

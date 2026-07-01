@@ -125,7 +125,16 @@ export const DEFAULT_ANALYTICS_SETTINGS: AnalyticsSettings = {
 // ─── Cluster color palette ───────────────────────────────────────────────────
 
 export const CLUSTER_COLORS = [
-  '#4a9eff', '#ff6b6b', '#51cf66', '#fcc419',
-  '#cc5de8', '#ff922b', '#20c997', '#868e96',
-  '#f06595', '#339af0', '#a9e34b', '#f783ac',
+  '#4a9eff',
+  '#ff6b6b',
+  '#51cf66',
+  '#fcc419',
+  '#cc5de8',
+  '#ff922b',
+  '#20c997',
+  '#868e96',
+  '#f06595',
+  '#339af0',
+  '#a9e34b',
+  '#f783ac',
 ];

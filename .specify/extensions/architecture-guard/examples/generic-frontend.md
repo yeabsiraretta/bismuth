@@ -85,4 +85,3 @@ Summary:
 - Overall Risk: Medium
 - Recommended Next Step: Keep the screen implementation moving, then extract eligibility and mapping before duplicating the pattern in more UI surfaces.
 ```
-

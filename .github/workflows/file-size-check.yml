@@ -10,14 +10,14 @@ jobs:
   check-file-sizes:
     name: Enforce 300-line limit (Constitution VI)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Run file size checker
         run: bash scripts/check-file-sizes.sh
-      
+
       - name: Comment on PR (if failed)
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7

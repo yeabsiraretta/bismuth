@@ -19,15 +19,10 @@
     on:click={() => onToggleExpand(suggestion.note_title)}
     on:keydown={(e) => e.key === 'Enter' && onToggleExpand(suggestion.note_title)}
   >
-    <Icon
-      name={expanded ? 'chevron-down' : 'chevron-right'}
-      size={14}
-    />
+    <Icon name={expanded ? 'chevron-down' : 'chevron-right'} size={14} />
     <span class="note-title">{suggestion.note_title}</span>
     <span class="match-count"
-      >{suggestion.matches.length} match{suggestion.matches.length !== 1
-        ? 'es'
-        : ''}</span
+      >{suggestion.matches.length} match{suggestion.matches.length !== 1 ? 'es' : ''}</span
     >
     <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
     <div class="group-actions" on:click|stopPropagation>
@@ -47,21 +42,15 @@
   {#if expanded}
     <div class="match-list">
       {#each suggestion.matches as match, i}
-        <label
-          class="match-item"
-          class:selected={isMatchSelected(suggestion.note_title, i)}
-        >
+        <label class="match-item" class:selected={isMatchSelected(suggestion.note_title, i)}>
           <input
             type="checkbox"
             checked={isMatchSelected(suggestion.note_title, i)}
             on:change={() => onToggleMatch(suggestion.note_title, i)}
           />
           <span class="match-context">
-            …{match.context.slice(0, match.start > 50 ? 50 : match.start)}<mark
-              >{match.text}</mark
-            >{match.context.slice(
-              (match.start > 50 ? 50 : match.start) + match.text.length
-            )}…
+            …{match.context.slice(0, match.start > 50 ? 50 : match.start)}<mark>{match.text}</mark
+            >{match.context.slice((match.start > 50 ? 50 : match.start) + match.text.length)}…
           </span>
         </label>
       {/each}

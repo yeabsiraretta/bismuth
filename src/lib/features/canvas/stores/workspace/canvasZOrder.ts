@@ -86,9 +86,7 @@ export function sendBackward(): void {
 /**
  * Internal helper — applies a z_index mutation function to the canvas elements.
  */
-function mutateZOrder(
-  fn: (elements: CanvasElement[], selectedIds: string[]) => void,
-): void {
+function mutateZOrder(fn: (elements: CanvasElement[], selectedIds: string[]) => void): void {
   const ids = get(selectedElements);
   if (ids.length === 0) return;
 

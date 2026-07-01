@@ -16,24 +16,34 @@ function loadElements(): RpgElement[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveElements(elements: RpgElement[]): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(elements)); }
-  catch { log.warn('Failed to persist RPG elements'); }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(elements));
+  } catch {
+    log.warn('Failed to persist RPG elements');
+  }
 }
 
 export function loadCampaigns(): RpgCampaign[] {
   try {
     const raw = localStorage.getItem(CAMPAIGNS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveCampaigns(campaigns: RpgCampaign[]): void {
-  try { localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns)); }
-  catch { log.warn('Failed to persist RPG campaigns'); }
+  try {
+    localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
+  } catch {
+    log.warn('Failed to persist RPG campaigns');
+  }
 }
 
 // ─── Campaign CRUD ──────────────────────────────────────────────────────────
@@ -42,8 +52,10 @@ export function createCampaign(name: string, description: string = ''): RpgCampa
   const now = new Date().toISOString();
   const campaign: RpgCampaign = {
     id: generatePrefixedId('rpg-c'),
-    name, description,
-    createdAt: now, modifiedAt: now,
+    name,
+    description,
+    createdAt: now,
+    modifiedAt: now,
   };
   const all = loadCampaigns();
   all.push(campaign);
@@ -80,7 +92,7 @@ export function createElement(
   name: string,
   campaignId: string | null,
   parentId: string | null = null,
-  description: string = '',
+  description: string = ''
 ): RpgElement {
   const now = new Date().toISOString();
   const siblings = loadElements().filter(
@@ -88,9 +100,14 @@ export function createElement(
   );
   const element: RpgElement = {
     id: generatePrefixedId(`rpg-${type.slice(0, 3)}`),
-    type, name, campaignId, parentId, description,
+    type,
+    name,
+    campaignId,
+    parentId,
+    description,
     sortOrder: siblings.length,
-    createdAt: now, modifiedAt: now,
+    createdAt: now,
+    modifiedAt: now,
   };
   const all = loadElements();
   all.push(element);

@@ -2,10 +2,21 @@
  * Git IPC Commands — Version control operations
  */
 
-interface CommandContract<P, R> { params: P; result: R }
+interface CommandContract<P, R> {
+  params: P;
+  result: R;
+}
 
-interface FileStatus { path: string; status: string }
-interface CommitEntry { hash: string; message: string; author: string; timestamp: number }
+interface FileStatus {
+  path: string;
+  status: string;
+}
+interface CommitEntry {
+  hash: string;
+  message: string;
+  author: string;
+  timestamp: number;
+}
 
 export interface GitCommands {
   initialize_git_service: CommandContract<{ path: string }, void>;

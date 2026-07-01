@@ -7,8 +7,18 @@
 
 import { writable, derived, get } from 'svelte/store';
 import type { Note } from '@/types/data/vault';
-import type { DvPage, DvResult, DvLink, DvTask, DvSection } from '@/features/dataview/types/dataview';
-import { parseDocumentInlineFields, parseDocumentTasks, parseLineInlineFields } from '@/features/dataview/services/inlineFieldParser';
+import type {
+  DvPage,
+  DvResult,
+  DvLink,
+  DvTask,
+  DvSection,
+} from '@/features/dataview/types/dataview';
+import {
+  parseDocumentInlineFields,
+  parseDocumentTasks,
+  parseLineInlineFields,
+} from '@/features/dataview/services/inlineFieldParser';
 import { parseQuery } from '@/features/dataview/services/queryParser';
 import { executeQuery } from '@/features/dataview/services/queryEngine';
 import { queryCache } from '@/features/dataview/services/queryCache';
@@ -54,12 +64,25 @@ function parseSections(content: string, path: string): DvSection[] {
       while ((tg = TAG_RE.exec(text)) !== null) tags.push(tg[1]);
       tasks.push({ text, completed: tm[1] !== ' ', line: currentLine + j, path, tags });
     }
-    sections.push({ heading: currentHeading, level: currentLevel, line: currentLine, content: body, fields, tasks });
+    sections.push({
+      heading: currentHeading,
+      level: currentLevel,
+      line: currentLine,
+      content: body,
+      fields,
+      tasks,
+    });
   }
 
   for (let i = 0; i < lines.length; i++) {
-    if (i === 0 && lines[i] === '---') { inFrontmatter = true; continue; }
-    if (inFrontmatter) { if (lines[i] === '---') inFrontmatter = false; continue; }
+    if (i === 0 && lines[i] === '---') {
+      inFrontmatter = true;
+      continue;
+    }
+    if (inFrontmatter) {
+      if (lines[i] === '---') inFrontmatter = false;
+      continue;
+    }
     const hm = HEADING_RE.exec(lines[i]);
     if (hm) {
       flush();

@@ -8,11 +8,11 @@
   export let title: string = '';
 
   const PALETTE: Record<ColorScheme, string[]> = {
-    green:  ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#059669'],
-    blue:   ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#2563eb'],
+    green: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5', '#059669'],
+    blue: ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#2563eb'],
     purple: ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe', '#7c3aed'],
     orange: ['#f97316', '#fb923c', '#fdba74', '#fed7aa', '#ffedd5', '#ea580c'],
-    red:    ['#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee2e2', '#dc2626'],
+    red: ['#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee2e2', '#dc2626'],
   };
 
   $: counts = countListValues(points);
@@ -30,9 +30,12 @@
     });
   })();
 
-  $: conicGradient = slices.length > 0
-    ? slices.map(s => `${s.color} ${s.start.toFixed(1)}% ${(s.start + s.pct).toFixed(1)}%`).join(', ')
-    : 'var(--background-modifier-border) 0% 100%';
+  $: conicGradient =
+    slices.length > 0
+      ? slices
+          .map((s) => `${s.color} ${s.start.toFixed(1)}% ${(s.start + s.pct).toFixed(1)}%`)
+          .join(', ')
+      : 'var(--background-modifier-border) 0% 100%';
 </script>
 
 <div class="pie-card">
@@ -73,17 +76,80 @@
 </div>
 
 <style>
-  .pie-card { padding: var(--spacing-s); }
-  .card-title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); margin: 0 0 var(--spacing-s); }
-  .pie-layout { display: flex; align-items: center; gap: var(--spacing-m); }
-  .pie-chart { width: 120px; height: 120px; border-radius: 50%; flex-shrink: 0; position: relative; }
-  .pie-chart.doughnut { display: flex; align-items: center; justify-content: center; }
-  .doughnut-hole { width: 60%; height: 60%; border-radius: 50%; background: var(--background-primary); display: flex; align-items: center; justify-content: center; }
-  .doughnut-total { font-size: 16px; font-weight: 700; color: var(--text-normal); }
-  .pie-legend { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
-  .legend-item { display: flex; align-items: center; gap: var(--spacing-xs); }
-  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-  .legend-label { font-size: 11px; color: var(--text-normal); text-transform: capitalize; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .legend-label.more { color: var(--text-muted); font-style: italic; }
-  .legend-count { font-size: 10px; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+  .pie-card {
+    padding: var(--spacing-s);
+  }
+  .card-title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0 0 var(--spacing-s);
+  }
+  .pie-layout {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+  }
+  .pie-chart {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .pie-chart.doughnut {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .doughnut-hole {
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background: var(--background-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .doughnut-total {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-normal);
+  }
+  .pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .legend-label {
+    font-size: 11px;
+    color: var(--text-normal);
+    text-transform: capitalize;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .legend-label.more {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .legend-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
 </style>

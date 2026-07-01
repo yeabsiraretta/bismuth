@@ -41,6 +41,7 @@ main (protected)
 **Purpose**: Production-ready code only
 
 **Protection Rules**:
+
 - ✅ Requires 2 approvals
 - ✅ All CI checks must pass
 - ✅ Signed commits required
@@ -56,6 +57,7 @@ main (protected)
 **Purpose**: Integration branch for all features
 
 **Protection Rules**:
+
 - ✅ Requires 1 approval
 - ✅ All CI checks must pass
 - ✅ Signed commits required
@@ -70,11 +72,13 @@ main (protected)
 **Naming**: `feature/<user-story>-<short-description>`
 
 **Examples**:
+
 - `feature/US1-vault-editor`
 - `feature/US15-navigator`
 - `feature/US2-wikilinks-graph`
 
 **Workflow**:
+
 ```bash
 # Create feature branch from develop
 git checkout develop
@@ -98,6 +102,7 @@ git push origin feature/US1-vault-editor
 **Naming**: `bugfix/<issue-number>-<short-description>`
 
 **Examples**:
+
 - `bugfix/123-search-crash`
 - `bugfix/456-memory-leak`
 
@@ -108,10 +113,12 @@ git push origin feature/US1-vault-editor
 **Naming**: `hotfix/v<version>-<description>`
 
 **Examples**:
+
 - `hotfix/v0.1.1-security-patch`
 - `hotfix/v0.2.1-data-corruption`
 
 **Workflow**:
+
 ```bash
 # Create from main
 git checkout main
@@ -139,10 +146,12 @@ git push origin develop
 **Naming**: `release/v<version>`
 
 **Examples**:
+
 - `release/v0.1.0`
 - `release/v0.2.0`
 
 **Workflow**:
+
 ```bash
 # Create from develop
 git checkout develop
@@ -182,19 +191,19 @@ git push origin develop
 
 ### Commit Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `feat` | New feature | `feat(US1): add vault editor` |
-| `fix` | Bug fix | `fix(search): resolve indexing crash` |
-| `docs` | Documentation only | `docs: update API documentation` |
-| `style` | Code style (no logic change) | `style: format with prettier` |
-| `refactor` | Code refactoring | `refactor(vault): extract service layer` |
-| `perf` | Performance improvement | `perf(search): optimize index queries` |
-| `test` | Add/update tests | `test(vault): add integration tests` |
-| `build` | Build system changes | `build: update dependencies` |
-| `ci` | CI configuration | `ci: add caching to workflows` |
-| `chore` | Other changes | `chore(deps): update rust to 1.76` |
-| `revert` | Revert previous commit | `revert: revert "feat: add feature X"` |
+| Type       | Description                  | Example                                  |
+| ---------- | ---------------------------- | ---------------------------------------- |
+| `feat`     | New feature                  | `feat(US1): add vault editor`            |
+| `fix`      | Bug fix                      | `fix(search): resolve indexing crash`    |
+| `docs`     | Documentation only           | `docs: update API documentation`         |
+| `style`    | Code style (no logic change) | `style: format with prettier`            |
+| `refactor` | Code refactoring             | `refactor(vault): extract service layer` |
+| `perf`     | Performance improvement      | `perf(search): optimize index queries`   |
+| `test`     | Add/update tests             | `test(vault): add integration tests`     |
+| `build`    | Build system changes         | `build: update dependencies`             |
+| `ci`       | CI configuration             | `ci: add caching to workflows`           |
+| `chore`    | Other changes                | `chore(deps): update rust to 1.76`       |
+| `revert`   | Revert previous commit       | `revert: revert "feat: add feature X"`   |
 
 ### Scope Examples
 
@@ -205,6 +214,7 @@ git push origin develop
 ### Commit Message Rules
 
 ✅ **Good commits**:
+
 ```bash
 feat(US1): implement CodeMirror 6 integration
 fix(search): prevent index corruption on concurrent writes
@@ -214,6 +224,7 @@ perf(graph): optimize rendering for 10k+ nodes
 ```
 
 ❌ **Bad commits** (will be rejected):
+
 ```bash
 fixed stuff
 WIP
@@ -255,6 +266,7 @@ Husky runs these checks automatically before every commit:
 ### 1. Lint-staged (Frontend)
 
 Runs on staged files only:
+
 - **ESLint**: Fixes and checks TypeScript/Svelte files
 - **Prettier**: Formats all staged files
 - **Rustfmt**: Formats Rust files
@@ -289,6 +301,7 @@ git commit --no-verify -m "emergency fix"
 ### 1. Create Pull Request
 
 **Title**: Follow commit message format
+
 ```
 feat(US1): implement vault editor
 ```
@@ -298,6 +311,7 @@ feat(US1): implement vault editor
 ### 2. Automated Checks
 
 GitHub Actions will run:
+
 - ✅ Rust checks (format, clippy, tests) on all platforms
 - ✅ Frontend checks (ESLint, Prettier, type-check, tests)
 - ✅ E2E tests on all platforms
@@ -309,6 +323,7 @@ GitHub Actions will run:
 ### 3. Code Review
 
 **For `develop` branch**:
+
 - Minimum 1 approval required
 - Reviewers check:
   - Code quality and readability
@@ -318,6 +333,7 @@ GitHub Actions will run:
   - Documentation completeness
 
 **For `main` branch**:
+
 - Minimum 2 approvals required
 - Additional checks:
   - Breaking changes justified
@@ -328,11 +344,13 @@ GitHub Actions will run:
 ### 4. Merge Strategy
 
 **Feature → Develop**: Squash and merge
+
 - Combines all commits into one
 - Keeps develop history clean
 - Preserves original commits in feature branch
 
 **Release → Main**: Merge commit
+
 - Preserves release history
 - Maintains traceability
 - Creates clear version boundaries
@@ -390,6 +408,7 @@ For critical bugs in production:
 **Problem**: Commit rejected due to formatting/linting errors
 
 **Solution**:
+
 ```bash
 # Fix Rust formatting
 cd src-tauri && cargo fmt --all
@@ -411,12 +430,14 @@ git commit -m "your message"
 **Problem**: Tests pass locally but fail in CI
 
 **Common causes**:
+
 - Platform-specific issues (test on Linux/macOS/Windows)
 - Missing dependencies in CI environment
 - Race conditions in tests
 - Hardcoded paths
 
 **Solution**:
+
 ```bash
 # Run tests in CI mode locally
 pnpm test --ci
@@ -431,6 +452,7 @@ cargo test --all-features
 **Problem**: Cannot merge PR due to conflicts
 
 **Solution**:
+
 ```bash
 # Update your branch with latest develop
 git checkout feature/your-branch
@@ -451,6 +473,7 @@ git push --force-with-lease origin feature/your-branch
 **Problem**: Commit message doesn't follow conventional format
 
 **Solution**:
+
 ```bash
 # Amend last commit message
 git commit --amend
@@ -465,6 +488,7 @@ git commit -m "feat(scope): proper message"
 **Problem**: Cannot push to `main` or `develop`
 
 **Solution**: You shouldn't push directly! Create a PR instead:
+
 ```bash
 # Push to feature branch
 git push origin feature/your-branch
@@ -477,6 +501,7 @@ git push origin feature/your-branch
 ### 1. Keep Commits Atomic
 
 Each commit should represent one logical change:
+
 ```bash
 # Good: One feature per commit
 git commit -m "feat(US1): add vault editor"
@@ -528,6 +553,7 @@ git commit -m "your message"
 ### 5. Update Documentation
 
 When adding features:
+
 - Update `README.md` if user-facing
 - Update `CHANGELOG.md`
 - Add inline code documentation

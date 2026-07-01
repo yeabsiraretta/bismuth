@@ -15,7 +15,10 @@ const baseDef: ComponentDefinition = {
     {
       id: 'el1',
       element_type: 'rectangle',
-      x: 0, y: 0, width: 120, height: 40,
+      x: 0,
+      y: 0,
+      width: 120,
+      height: 40,
       rotation: 0,
       properties: { fill: '#333' },
       layer_id: 'default',
@@ -27,7 +30,10 @@ const baseDef: ComponentDefinition = {
     {
       id: 'el2',
       element_type: 'text',
-      x: 10, y: 10, width: 100, height: 20,
+      x: 10,
+      y: 10,
+      width: 100,
+      height: 20,
       rotation: 0,
       properties: { text: 'Click me' },
       layer_id: 'default',
@@ -52,8 +58,10 @@ function makeInstance(overrides: Record<string, unknown> = {}): CanvasElement {
   return {
     id: 'inst1',
     element_type: 'component_instance',
-    x: 200, y: 100,
-    width: 120, height: 40,
+    x: 200,
+    y: 100,
+    width: 120,
+    height: 40,
     rotation: 0,
     properties: { definitionId: 'comp1', overrides },
     layer_id: 'default',
@@ -121,7 +129,9 @@ describe('componentResolver', () => {
     it('adds a new override to instance properties', () => {
       const instance = makeInstance();
       const result = applyOverride(instance, 'text', 'New Label');
-      expect((result as { overrides: Record<string, unknown> }).overrides['text']).toBe('New Label');
+      expect((result as { overrides: Record<string, unknown> }).overrides['text']).toBe(
+        'New Label'
+      );
     });
 
     it('updates existing override', () => {

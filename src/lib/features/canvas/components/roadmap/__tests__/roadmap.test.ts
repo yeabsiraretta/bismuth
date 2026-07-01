@@ -132,15 +132,32 @@ describe('RoadmapExport markdown generation', () => {
   it('generates table rows for each feature card', async () => {
     // Inline the pure function test — buildMarkdownTable lives in RoadmapExport.svelte script context
     const cards = [
-      { title: 'Alpha', status: 'planned' as const, priority: 1 as const, dependsOn: [], owner: 'dev', milestone: 'Q1' },
-      { title: 'Beta', status: 'done' as const, priority: 2 as const, dependsOn: [], owner: '', milestone: '' },
+      {
+        title: 'Alpha',
+        status: 'planned' as const,
+        priority: 1 as const,
+        dependsOn: [],
+        owner: 'dev',
+        milestone: 'Q1',
+      },
+      {
+        title: 'Beta',
+        status: 'done' as const,
+        priority: 2 as const,
+        dependsOn: [],
+        owner: '',
+        milestone: '',
+      },
       { title: 'Gamma', status: 'idea' as const, priority: 3 as const, dependsOn: [] },
     ];
 
     const markdown = [
       '| Feature | Status | Priority | Milestone | Owner |',
       '|---------|--------|----------|-----------|-------|',
-      ...cards.map((c) => `| ${c.title} | ${c.status} | ${c.priority} | ${c.milestone ?? ''} | ${c.owner ?? ''} |`),
+      ...cards.map(
+        (c) =>
+          `| ${c.title} | ${c.status} | ${c.priority} | ${c.milestone ?? ''} | ${c.owner ?? ''} |`
+      ),
     ].join('\n');
 
     expect(markdown).toContain('| Alpha |');

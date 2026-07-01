@@ -57,7 +57,13 @@ export function parseCodeBlockParams(fenceLine: string): CodeBlockParams {
     }
     if (firstToken && !rmdMatch) {
       // First token could be language if it's a bare word before any params
-      if (!result.language && !['title', 'fold', 'ln', 'hl', 'unwrap', 'wrap', 'ignore', 'ref', 'reference'].includes(key) && !val) {
+      if (
+        !result.language &&
+        !['title', 'fold', 'ln', 'hl', 'unwrap', 'wrap', 'ignore', 'ref', 'reference'].includes(
+          key
+        ) &&
+        !val
+      ) {
         result.language = key;
         firstToken = false;
         continue;
@@ -132,15 +138,24 @@ export function resolveHighlightSpec(spec: string, codeLines: string[]): Set<num
     if (part.startsWith('/') && part.endsWith('/') && part.length > 2) {
       try {
         const re = new RegExp(part.slice(1, -1));
-        codeLines.forEach((line, idx) => { if (re.test(line)) result.add(idx); });
-      } catch { /* invalid regex, skip */ }
+        codeLines.forEach((line, idx) => {
+          if (re.test(line)) result.add(idx);
+        });
+      } catch {
+        /* invalid regex, skip */
+      }
       continue;
     }
 
     // Quoted text: 'text' or "text"
-    if ((part.startsWith("'") && part.endsWith("'")) || (part.startsWith('"') && part.endsWith('"'))) {
+    if (
+      (part.startsWith("'") && part.endsWith("'")) ||
+      (part.startsWith('"') && part.endsWith('"'))
+    ) {
       const search = part.slice(1, -1);
-      codeLines.forEach((line, idx) => { if (line.includes(search)) result.add(idx); });
+      codeLines.forEach((line, idx) => {
+        if (line.includes(search)) result.add(idx);
+      });
       continue;
     }
 
@@ -164,7 +179,9 @@ export function resolveHighlightSpec(spec: string, codeLines: string[]): Set<num
     }
 
     // Plain text search
-    codeLines.forEach((line, idx) => { if (line.includes(part)) result.add(idx); });
+    codeLines.forEach((line, idx) => {
+      if (line.includes(part)) result.add(idx);
+    });
   }
 
   return result;
@@ -182,13 +199,21 @@ function splitHighlightSpec(spec: string): string[] {
 
     if (inRegex) {
       current += ch;
-      if (ch === '/') { inRegex = false; parts.push(current); current = ''; }
+      if (ch === '/') {
+        inRegex = false;
+        parts.push(current);
+        current = '';
+      }
       continue;
     }
 
     if (inQuote) {
       current += ch;
-      if (ch === inQuote) { inQuote = null; parts.push(current); current = ''; }
+      if (ch === inQuote) {
+        inQuote = null;
+        parts.push(current);
+        current = '';
+      }
       continue;
     }
 
@@ -198,8 +223,16 @@ function splitHighlightSpec(spec: string): string[] {
       continue;
     }
 
-    if ((ch === "'" || ch === '"') && !current) { inQuote = ch; current += ch; continue; }
-    if (ch === '/' && !current) { inRegex = true; current += ch; continue; }
+    if ((ch === "'" || ch === '"') && !current) {
+      inQuote = ch;
+      current += ch;
+      continue;
+    }
+    if (ch === '/' && !current) {
+      inRegex = true;
+      current += ch;
+      continue;
+    }
 
     current += ch;
   }
@@ -217,7 +250,7 @@ export function resolveHighlightGroups(
   codeLines: string[],
   altHighlights: AltHighlight[],
   defaultColor: string,
-  isDark: boolean,
+  isDark: boolean
 ): HighlightGroup[] {
   const groups: HighlightGroup[] = [];
 
@@ -227,7 +260,7 @@ export function resolveHighlightGroups(
 
     let color = defaultColor;
     if (name !== 'hl') {
-      const alt = altHighlights.find(a => a.name === name);
+      const alt = altHighlights.find((a) => a.name === name);
       if (alt) color = isDark ? alt.darkColor : alt.lightColor;
     }
 
@@ -243,7 +276,7 @@ export function resolveHighlightGroups(
 export function isLanguageExcluded(lang: string, excluded: string[]): boolean {
   if (!lang) return false;
   const lower = lang.toLowerCase();
-  return excluded.some(pattern => {
+  return excluded.some((pattern) => {
     const p = pattern.toLowerCase().trim();
     if (p.includes('*')) {
       const re = new RegExp('^' + p.replace(/\*/g, '.*') + '$');

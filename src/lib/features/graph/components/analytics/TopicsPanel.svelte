@@ -1,7 +1,9 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
   import {
-    clusters, selectedClusterId, modularity,
+    clusters,
+    selectedClusterId,
+    modularity,
     selectCluster,
   } from '../../stores/analyticsStore';
 
@@ -33,7 +35,10 @@
               {cluster.nodeIds.length} nodes · density {(cluster.density * 100).toFixed(0)}%
             </span>
           </div>
-          <Icon name={$selectedClusterId === cluster.id ? 'chevron-down' : 'chevron-right'} size={12} />
+          <Icon
+            name={$selectedClusterId === cluster.id ? 'chevron-down' : 'chevron-right'}
+            size={12}
+          />
         </button>
 
         {#if $selectedClusterId === cluster.id}
@@ -58,23 +63,112 @@
 </div>
 
 <style>
-  .topics-panel { padding: var(--spacing-s); }
-  .panel-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-s); }
-  .section-title { font-size: 12px; font-weight: 600; margin: 0; color: var(--text-normal); }
-  .modularity-badge { font-size: 10px; color: var(--text-muted); background: var(--background-secondary); padding: 2px 6px; border-radius: var(--radius-s); font-family: var(--font-monospace); }
-  .empty { font-size: 11px; color: var(--text-muted); padding: var(--spacing-m); text-align: center; }
-  .cluster-list { display: flex; flex-direction: column; gap: 2px; }
-  .cluster-item { display: flex; align-items: center; gap: var(--spacing-xs); width: 100%; padding: 6px 8px; border: none; background: none; border-radius: var(--radius-s); cursor: pointer; text-align: left; color: var(--text-normal); }
-  .cluster-item:hover { background: var(--background-modifier-hover); }
-  .cluster-item.selected { background: var(--background-modifier-hover); }
-  .cluster-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .cluster-info { flex: 1; min-width: 0; }
-  .cluster-label { display: block; font-size: 11px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .cluster-meta { display: block; font-size: 9px; color: var(--text-muted); }
-  .cluster-detail { padding: 6px 8px 6px 28px; }
-  .detail-section { margin-bottom: 6px; }
-  .detail-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .concept-pills { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
-  .concept-pill { font-size: 10px; padding: 1px 6px; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-normal); background: var(--background-secondary); }
-  .detail-stats { display: flex; gap: var(--spacing-s); font-size: 9px; color: var(--text-muted); }
+  .topics-panel {
+    padding: var(--spacing-s);
+  }
+  .panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-s);
+  }
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-normal);
+  }
+  .modularity-badge {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--background-secondary);
+    padding: 2px 6px;
+    border-radius: var(--radius-s);
+    font-family: var(--font-monospace);
+  }
+  .empty {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: var(--spacing-m);
+    text-align: center;
+  }
+  .cluster-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .cluster-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: 6px 8px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    text-align: left;
+    color: var(--text-normal);
+  }
+  .cluster-item:hover {
+    background: var(--background-modifier-hover);
+  }
+  .cluster-item.selected {
+    background: var(--background-modifier-hover);
+  }
+  .cluster-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .cluster-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .cluster-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cluster-meta {
+    display: block;
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+  .cluster-detail {
+    padding: 6px 8px 6px 28px;
+  }
+  .detail-section {
+    margin-bottom: 6px;
+  }
+  .detail-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .concept-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 3px;
+  }
+  .concept-pill {
+    font-size: 10px;
+    padding: 1px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-normal);
+    background: var(--background-secondary);
+  }
+  .detail-stats {
+    display: flex;
+    gap: var(--spacing-s);
+    font-size: 9px;
+    color: var(--text-muted);
+  }
 </style>

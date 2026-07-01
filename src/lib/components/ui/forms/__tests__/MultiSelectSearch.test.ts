@@ -28,7 +28,9 @@ describe('MultiSelectSearch', () => {
     const { component } = render(MultiSelectSearch, {
       props: { options: opts, value: ['a'], onChange, label: 'Test' },
     });
-    await (component as unknown as { $set: (props: Record<string, unknown>) => Promise<void> }).$set({ value: ['a'] });
+    await (
+      component as unknown as { $set: (props: Record<string, unknown>) => Promise<void> }
+    ).$set({ value: ['a'] });
     expect(onChange).not.toHaveBeenCalled();
   });
 
@@ -43,7 +45,13 @@ describe('MultiSelectSearch', () => {
 
   it('waitForInput: shows no options until typed', () => {
     const { container } = render(MultiSelectSearch, {
-      props: { options: opts, value: [], onChange: vi.fn(), label: 'Test', resultsBehavior: 'waitForInput' },
+      props: {
+        options: opts,
+        value: [],
+        onChange: vi.fn(),
+        label: 'Test',
+        resultsBehavior: 'waitForInput',
+      },
     });
     const optItems = container.querySelectorAll('.ms-option');
     expect(optItems.length).toBe(0);

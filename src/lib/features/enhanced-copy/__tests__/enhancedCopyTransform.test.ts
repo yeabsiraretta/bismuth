@@ -71,29 +71,26 @@ describe('transformCallouts', () => {
   });
 
   it('converts type to strong', () => {
-    expect(transformCallouts('> [!info] Important note', 'type-to-strong'))
-      .toBe('> **Info** Important note');
+    expect(transformCallouts('> [!info] Important note', 'type-to-strong')).toBe(
+      '> **Info** Important note'
+    );
   });
 
   it('converts type to strong without title', () => {
-    expect(transformCallouts('> [!warning]', 'type-to-strong'))
-      .toBe('> **Warning**');
+    expect(transformCallouts('> [!warning]', 'type-to-strong')).toBe('> **Warning**');
   });
 
   it('strips type to plain blockquote', () => {
-    expect(transformCallouts('> [!info] Important note', 'blockquote'))
-      .toBe('> Important note');
+    expect(transformCallouts('> [!info] Important note', 'blockquote')).toBe('> Important note');
   });
 
   it('strips type to plain blockquote without title', () => {
-    expect(transformCallouts('> [!note]', 'blockquote'))
-      .toBe('>');
+    expect(transformCallouts('> [!note]', 'blockquote')).toBe('>');
   });
 
   it('handles multiple callouts', () => {
     const text = '> [!info] A\n> [!warning] B';
-    expect(transformCallouts(text, 'type-to-strong'))
-      .toBe('> **Info** A\n> **Warning** B');
+    expect(transformCallouts(text, 'type-to-strong')).toBe('> **Info** A\n> **Warning** B');
   });
 });
 
@@ -151,18 +148,21 @@ describe('addStrictLineBreaks', () => {
 
 describe('applyRegexRules', () => {
   it('applies a simple replacement', () => {
-    expect(applyRegexRules('hello world', [{ pattern: 'world', flags: '', replacement: 'there' }]))
-      .toBe('hello there');
+    expect(
+      applyRegexRules('hello world', [{ pattern: 'world', flags: '', replacement: 'there' }])
+    ).toBe('hello there');
   });
 
   it('applies global flag', () => {
-    expect(applyRegexRules('a b a', [{ pattern: 'a', flags: 'g', replacement: 'x' }]))
-      .toBe('x b x');
+    expect(applyRegexRules('a b a', [{ pattern: 'a', flags: 'g', replacement: 'x' }])).toBe(
+      'x b x'
+    );
   });
 
   it('skips invalid regex', () => {
-    expect(applyRegexRules('text', [{ pattern: '(invalid', flags: '', replacement: '' }]))
-      .toBe('text');
+    expect(applyRegexRules('text', [{ pattern: '(invalid', flags: '', replacement: '' }])).toBe(
+      'text'
+    );
   });
 
   it('applies multiple rules in order', () => {

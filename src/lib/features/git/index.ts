@@ -7,17 +7,10 @@
 export type { FileStatus } from './services/git';
 
 // Stores
-export {
-  gitState,
-  modifiedCount,
-  refreshGitStatus,
-} from './stores/git';
+export { gitState, modifiedCount, refreshGitStatus } from './stores/git';
 
 // Services
-export {
-  getCurrentBranch,
-  getGitStatus,
-} from './services/git';
+export { getCurrentBranch, getGitStatus } from './services/git';
 
 // Components
 export { default as GitPanel } from './components/GitPanel.svelte';

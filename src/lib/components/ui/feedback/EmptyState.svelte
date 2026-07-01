@@ -31,7 +31,10 @@
     gap: var(--spacing-s);
   }
 
-  .empty-state-icon { color: var(--text-faint); opacity: 0.6; }
+  .empty-state-icon {
+    color: var(--text-faint);
+    opacity: 0.6;
+  }
 
   .empty-state-title {
     margin: 0;
@@ -60,5 +63,7 @@
     transition: background-color var(--transition-fast);
   }
 
-  .empty-state-action:hover { background: var(--background-modifier-hover); }
+  .empty-state-action:hover {
+    background: var(--background-modifier-hover);
+  }
 </style>

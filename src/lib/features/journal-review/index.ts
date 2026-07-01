@@ -6,36 +6,60 @@
 
 // Types
 export type {
-  ReviewUnit, ReviewTimeSpan, ReviewEntry, ReviewGroup,
-  ReviewDisplayOptions, ReviewConfig,
+  ReviewUnit,
+  ReviewTimeSpan,
+  ReviewEntry,
+  ReviewGroup,
+  ReviewDisplayOptions,
+  ReviewConfig,
 } from './types/review';
 export { DEFAULT_TIME_SPANS, DEFAULT_REVIEW_CONFIG } from './types/review';
 
 // Services — Frontmatter
 export {
-  parseFrontmatter, extractBody, extractCreatedDate,
-  parseFlexibleDate, extractPreview, extractTags,
-  extractTitle, generateCreatedFrontmatter, ensureCreatedField,
+  parseFrontmatter,
+  extractBody,
+  extractCreatedDate,
+  parseFlexibleDate,
+  extractPreview,
+  extractTags,
+  extractTitle,
+  generateCreatedFrontmatter,
+  ensureCreatedField,
   getFileType,
 } from './services/reviewFrontmatter';
 
 // Services — Matcher
 export type { VaultNote } from './services/reviewMatcher';
 export {
-  subtractSpan, getTargetDates, datesMatchWithMargin, sameMonthDay,
-  formatTimeSpanLabel, humanizeTimeAgo, timeAgoFromDate,
-  buildReviewEntry, matchNotesToTimeSpans, shouldExcludeFile,
+  subtractSpan,
+  getTargetDates,
+  datesMatchWithMargin,
+  sameMonthDay,
+  formatTimeSpanLabel,
+  humanizeTimeAgo,
+  timeAgoFromDate,
+  buildReviewEntry,
+  matchNotesToTimeSpans,
+  shouldExcludeFile,
   pickRandomNote,
 } from './services/reviewMatcher';
 
 // Stores
 export type { ReviewState } from './stores/reviewStore';
 export {
-  reviewConfig, updateReviewConfig,
-  reviewState, reviewGroups, reviewRandomNote,
-  reviewLoading, reviewTotalEntries,
-  runReview, refreshRandomNote, clearReview,
-  scheduleMidnightRefresh, clearMidnightRefresh,
+  reviewConfig,
+  updateReviewConfig,
+  reviewState,
+  reviewGroups,
+  reviewRandomNote,
+  reviewLoading,
+  reviewTotalEntries,
+  runReview,
+  refreshRandomNote,
+  clearReview,
+  scheduleMidnightRefresh,
+  clearMidnightRefresh,
 } from './stores/reviewStore';
 
 // Components

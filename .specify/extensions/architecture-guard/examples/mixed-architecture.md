@@ -105,4 +105,3 @@ Summary:
 - Overall Risk: High
 - Recommended Next Step: Prioritize the shared status contract before adding more subscription states or consumers.
 ```
-

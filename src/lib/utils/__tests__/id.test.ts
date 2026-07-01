@@ -4,9 +4,7 @@ import { generateId, generatePrefixedId } from '../id';
 describe('generateId', () => {
   it('returns a valid UUID v4 format', () => {
     const id = generateId();
-    expect(id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-    );
+    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
   });
 
   it('generates unique IDs on successive calls', () => {
@@ -28,9 +26,7 @@ describe('generatePrefixedId', () => {
   it('contains a UUID after the prefix', () => {
     const id = generatePrefixedId('grp');
     const uuid = id.slice('grp_'.length);
-    expect(uuid).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-    );
+    expect(uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
   });
 
   it('generates unique prefixed IDs', () => {

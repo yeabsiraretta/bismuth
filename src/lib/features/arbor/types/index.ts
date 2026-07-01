@@ -81,22 +81,24 @@ export function generateBlockId(): string {
 
 /** Get root blocks (no parent). */
 export function getRootBlocks(blocks: ArborBlock[]): ArborBlock[] {
-  return blocks.filter(b => b.parentId === null).sort((a, b) => a.order - b.order);
+  return blocks.filter((b) => b.parentId === null).sort((a, b) => a.order - b.order);
 }
 
 /** Get children of a block, sorted by order. */
 export function getChildren(blocks: ArborBlock[], parentId: string): ArborBlock[] {
-  return blocks.filter(b => b.parentId === parentId).sort((a, b) => a.order - b.order);
+  return blocks.filter((b) => b.parentId === parentId).sort((a, b) => a.order - b.order);
 }
 
 /** Get the ancestry chain from a block up to root. */
 export function getAncestors(blocks: ArborBlock[], blockId: string): ArborBlock[] {
   const ancestors: ArborBlock[] = [];
-  let current = blocks.find(b => b.id === blockId);
+  let current = blocks.find((b) => b.id === blockId);
   while (current && current.parentId) {
-    const parent = blocks.find(b => b.id === current!.parentId);
-    if (parent) { ancestors.unshift(parent); current = parent; }
-    else break;
+    const parent = blocks.find((b) => b.id === current!.parentId);
+    if (parent) {
+      ancestors.unshift(parent);
+      current = parent;
+    } else break;
   }
   return ancestors;
 }

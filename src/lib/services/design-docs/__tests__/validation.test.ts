@@ -53,7 +53,19 @@ describe('isValidEnvelope', () => {
 describe('isValidTokenPayload', () => {
   it('accepts valid token payload', () => {
     const payload = {
-      collections: [{ name: 'colors', tokens: [{ name: 'primary', type: 'color', values: { default: '#000' }, css_var: '--color-primary' }] }],
+      collections: [
+        {
+          name: 'colors',
+          tokens: [
+            {
+              name: 'primary',
+              type: 'color',
+              values: { default: '#000' },
+              css_var: '--color-primary',
+            },
+          ],
+        },
+      ],
     };
     expect(isValidTokenPayload(payload)).toBe(true);
   });
@@ -99,13 +111,21 @@ describe('isValidLayoutPayload', () => {
   });
 
   it('rejects invalid type', () => {
-    expect(isValidLayoutPayload({ layout_name: 'Main', type: 'table', breakpoints: {}, regions: [] })).toBe(false);
+    expect(
+      isValidLayoutPayload({ layout_name: 'Main', type: 'table', breakpoints: {}, regions: [] })
+    ).toBe(false);
   });
 });
 
 describe('isValidFlowPayload', () => {
   it('accepts valid flow payload', () => {
-    const payload = { flow_name: 'Login', description: '', steps: [], error_paths: [], components_used: [] };
+    const payload = {
+      flow_name: 'Login',
+      description: '',
+      steps: [],
+      error_paths: [],
+      components_used: [],
+    };
     expect(isValidFlowPayload(payload)).toBe(true);
   });
 
@@ -116,7 +136,13 @@ describe('isValidFlowPayload', () => {
 
 describe('isValidThemePayload', () => {
   it('accepts valid theme payload', () => {
-    const payload = { theme_name: 'dark', extends: 'tokens.json', attribute: 'data-theme="dark"', overrides: {}, css_output_path: 'x.css' };
+    const payload = {
+      theme_name: 'dark',
+      extends: 'tokens.json',
+      attribute: 'data-theme="dark"',
+      overrides: {},
+      css_output_path: 'x.css',
+    };
     expect(isValidThemePayload(payload)).toBe(true);
   });
 
@@ -127,7 +153,13 @@ describe('isValidThemePayload', () => {
 
 describe('isValidPagePayload', () => {
   it('accepts valid page payload', () => {
-    const payload = { page_name: 'Home', route: '/', layout: 'main', components: [], responsive_variants: {} };
+    const payload = {
+      page_name: 'Home',
+      route: '/',
+      layout: 'main',
+      components: [],
+      responsive_variants: {},
+    };
     expect(isValidPagePayload(payload)).toBe(true);
   });
 

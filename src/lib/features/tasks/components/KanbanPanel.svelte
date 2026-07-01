@@ -41,11 +41,17 @@
             </div>
             <div class="column-items">
               {#each column.cards as task}
-                <div class="task-card" class:done={task.status === 'done'} class:cancelled={task.status === 'cancelled'}>
+                <div
+                  class="task-card"
+                  class:done={task.status === 'done'}
+                  class:cancelled={task.status === 'cancelled'}
+                >
                   <span class="task-text">{task.text}</span>
                   <div class="card-meta">
                     {#if task.status === 'inprogress' || task.status === 'onhold' || task.status === 'cancelled'}
-                      <span class="task-status status-{task.status}">{task.status === 'inprogress' ? 'active' : task.status}</span>
+                      <span class="task-status status-{task.status}"
+                        >{task.status === 'inprogress' ? 'active' : task.status}</span
+                      >
                     {/if}
                     {#if task.priority && task.priority !== 'none'}
                       <span class="task-priority priority-{task.priority}">{task.priority}</span>
@@ -142,19 +148,58 @@
     border-radius: 3px;
   }
 
-  .task-priority.priority-critical { color: var(--text-error); background: color-mix(in srgb, var(--text-error) 10%, transparent); }
-  .task-priority.priority-high { color: var(--text-error); background: color-mix(in srgb, var(--text-error) 10%, transparent); }
-  .task-priority.priority-medium { color: var(--text-warning, #f59e0b); background: color-mix(in srgb, var(--text-warning, #f59e0b) 10%, transparent); }
-  .task-priority.priority-low { color: var(--text-muted); background: var(--background-modifier-hover); }
+  .task-priority.priority-critical {
+    color: var(--text-error);
+    background: color-mix(in srgb, var(--text-error) 10%, transparent);
+  }
+  .task-priority.priority-high {
+    color: var(--text-error);
+    background: color-mix(in srgb, var(--text-error) 10%, transparent);
+  }
+  .task-priority.priority-medium {
+    color: var(--text-warning, #f59e0b);
+    background: color-mix(in srgb, var(--text-warning, #f59e0b) 10%, transparent);
+  }
+  .task-priority.priority-low {
+    color: var(--text-muted);
+    background: var(--background-modifier-hover);
+  }
 
-  .card-meta { display: flex; gap: 4px; flex-wrap: wrap; }
-  .task-card.done .task-text { text-decoration: line-through; color: var(--text-muted); }
-  .task-card.cancelled .task-text { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+  .card-meta {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .task-card.done .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  .task-card.cancelled .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
 
-  .task-status { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; padding: 1px 4px; border-radius: 3px; width: fit-content; }
-  .task-status.status-inprogress { color: var(--text-accent, #3b82f6); background: color-mix(in srgb, var(--text-accent, #3b82f6) 12%, transparent); }
-  .task-status.status-onhold { color: var(--text-warning, #f59e0b); background: color-mix(in srgb, var(--text-warning, #f59e0b) 12%, transparent); }
-  .task-status.status-cancelled { color: var(--text-error, #ef4444); background: color-mix(in srgb, var(--text-error, #ef4444) 12%, transparent); }
+  .task-status {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 1px 4px;
+    border-radius: 3px;
+    width: fit-content;
+  }
+  .task-status.status-inprogress {
+    color: var(--text-accent, #3b82f6);
+    background: color-mix(in srgb, var(--text-accent, #3b82f6) 12%, transparent);
+  }
+  .task-status.status-onhold {
+    color: var(--text-warning, #f59e0b);
+    background: color-mix(in srgb, var(--text-warning, #f59e0b) 12%, transparent);
+  }
+  .task-status.status-cancelled {
+    color: var(--text-error, #ef4444);
+    background: color-mix(in srgb, var(--text-error, #ef4444) 12%, transparent);
+  }
 
   .empty-state {
     display: flex;

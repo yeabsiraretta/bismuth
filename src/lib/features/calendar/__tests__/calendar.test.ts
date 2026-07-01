@@ -30,11 +30,11 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
 
 describe('EventChip category color resolution', () => {
   const categories = [
-    { id: 'work',     name: 'Work',     color: '#dc2626' },
+    { id: 'work', name: 'Work', color: '#dc2626' },
     { id: 'personal', name: 'Personal', color: '#16a34a' },
-    { id: 'health',   name: 'Health',   color: '#d97706' },
-    { id: 'study',    name: 'Study',    color: '#2563eb' },
-    { id: 'other',    name: 'Other',    color: '#6b7280' },
+    { id: 'health', name: 'Health', color: '#d97706' },
+    { id: 'study', name: 'Study', color: '#2563eb' },
+    { id: 'other', name: 'Other', color: '#6b7280' },
   ];
 
   function resolveCategoryColor(event: CalendarEvent): string | null {
@@ -96,8 +96,8 @@ describe('RecurrenceEditor weekly every-2-weeks rule', () => {
       recurring: { frequency: 'weekly', interval: 2 },
     });
 
-    const start = new Date(2026, 0, 1);  // 2026-01-01
-    const end   = new Date(2026, 1, 28); // 2026-02-28
+    const start = new Date(2026, 0, 1); // 2026-01-01
+    const end = new Date(2026, 1, 28); // 2026-02-28
 
     const expanded = expandRecurringEvents([event], start, end);
     const dates = expanded.map((e) => e.date);
@@ -123,7 +123,7 @@ describe('RecurrenceEditor weekly every-2-weeks rule', () => {
     });
 
     const start = new Date(2026, 0, 1);
-    const end   = new Date(2026, 1, 28);
+    const end = new Date(2026, 1, 28);
 
     const expanded = expandRecurringEvents([event], start, end);
     const dates = expanded.map((e) => e.date);
@@ -146,7 +146,7 @@ describe('RecurrenceEditor weekly every-2-weeks rule', () => {
     });
 
     const start = new Date(2026, 0, 5);
-    const end   = new Date(2026, 0, 25);
+    const end = new Date(2026, 0, 25);
 
     const expanded = expandRecurringEvents([event], start, end);
     const dates = expanded.map((e) => e.date);

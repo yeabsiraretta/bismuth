@@ -203,6 +203,7 @@ Synthesizes findings into a professional **Whitebox Security Assessment Report**
 ```
 
 Use this when you need to provide a formal report to stakeholders, clients, or compliance auditors. It produces:
+
 - **Executive Summary**: High-level risk assessment and business impact for stakeholders.
 - **Detailed Technical Findings**: Full exploit scenarios, CVSS scoring, and code-level remediation.
 - **Methodology**: Transparency on the whitebox approach and tools used.
@@ -280,16 +281,16 @@ Every generated report starts with a YAML frontmatter block before the `# SECURI
 
 ### Frontmatter Fields
 
-| Field | Purpose |
-|---|---|
-| `document_type` | Always `security-review`. Lets indexers skip non-review files. |
-| `review_type` | Which command produced this doc (`audit`, `branch`, `staged`, `plan`, `tasks`, `followup`). |
-| `assessment_date` | ISO 8601 date. Supports time-based filtering. |
-| `overall_risk` | Highest active severity tier. Primary routing signal. |
-| `critical_count` … `low_count` | Per-severity finding counts. Enables precise SQL queries. |
-| `owasp_categories` | OWASP Top 10 2025 codes with at least one finding. Topic-based filtering. |
-| `cwe_ids` | CWE identifiers in the document. |
-| `field_summaries` | Static schema dictionary — copied verbatim into every document so any reader understands all field definitions without consulting external docs. |
+| Field                          | Purpose                                                                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `document_type`                | Always `security-review`. Lets indexers skip non-review files.                                                                                   |
+| `review_type`                  | Which command produced this doc (`audit`, `branch`, `staged`, `plan`, `tasks`, `followup`).                                                      |
+| `assessment_date`              | ISO 8601 date. Supports time-based filtering.                                                                                                    |
+| `overall_risk`                 | Highest active severity tier. Primary routing signal.                                                                                            |
+| `critical_count` … `low_count` | Per-severity finding counts. Enables precise SQL queries.                                                                                        |
+| `owasp_categories`             | OWASP Top 10 2025 codes with at least one finding. Topic-based filtering.                                                                        |
+| `cwe_ids`                      | CWE identifiers in the document.                                                                                                                 |
+| `field_summaries`              | Static schema dictionary — copied verbatim into every document so any reader understands all field definitions without consulting external docs. |
 
 Full field definitions, types, ranges, and examples are in [field-registry.md](field-registry.md).
 
@@ -300,10 +301,10 @@ After generating a report, each prompt also outputs a proposed **INDEX.md routin
 ```markdown
 ## Security Reviews
 
-| Document | Type | Date | Risk | Findings | OWASP |
-|---|---|---|---|---|---|
-| docs/security-reviews/2026-05-07-auth.md | audit | 2026-05-07 | HIGH | C:2 H:4 M:6 L:4 | A01,A05,A07 |
-| docs/security-reviews/2026-04-15-api.md | branch | 2026-04-15 | MODERATE | C:0 H:1 M:3 L:2 | A02,A09 |
+| Document                                 | Type   | Date       | Risk     | Findings        | OWASP       |
+| ---------------------------------------- | ------ | ---------- | -------- | --------------- | ----------- |
+| docs/security-reviews/2026-05-07-auth.md | audit  | 2026-05-07 | HIGH     | C:2 H:4 M:6 L:4 | A01,A05,A07 |
+| docs/security-reviews/2026-04-15-api.md  | branch | 2026-04-15 | MODERATE | C:0 H:1 M:3 L:2 | A02,A09     |
 ```
 
 With this table in place, the LLM reads only `INDEX.md` during planning and loads only the documents whose risk/type/category matches the current task. This is the primary token reduction mechanism — no SQLite required.

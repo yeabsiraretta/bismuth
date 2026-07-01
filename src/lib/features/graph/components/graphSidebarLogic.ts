@@ -36,14 +36,14 @@ export const DEFAULT_GRAPH_SETTINGS: GraphSettings = {
 /** Fetches graph data and computes summary stats. */
 export async function loadGraphStats(): Promise<{ data: GraphData; stats: GraphStats }> {
   try {
-    const data = await getGraphData() as unknown as GraphData;
+    const data = (await getGraphData()) as unknown as GraphData;
     const linkedIds = new Set<string>();
     for (const edge of data.edges) {
       linkedIds.add(edge.from);
       linkedIds.add(edge.to);
     }
-    const orphanCount = data.nodes.filter(n => !linkedIds.has(n.id)).length;
-    const tagNodes = data.nodes.filter(n => n.node_type === 'tag');
+    const orphanCount = data.nodes.filter((n) => !linkedIds.has(n.id)).length;
+    const tagNodes = data.nodes.filter((n) => n.node_type === 'tag');
     const typeBreakdown: Record<string, number> = {};
     for (const node of data.nodes) {
       const t = node.node_type || 'unknown';
@@ -71,8 +71,8 @@ export async function loadGraphStats(): Promise<{ data: GraphData; stats: GraphS
 /** Extracts tag-type node labels from graph data. */
 export function extractTags(data: GraphData): string[] {
   return data.nodes
-    .filter(n => n.node_type === 'tag')
-    .map(n => n.label)
+    .filter((n) => n.node_type === 'tag')
+    .map((n) => n.label)
     .sort();
 }
 

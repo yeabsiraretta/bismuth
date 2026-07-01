@@ -1,4 +1,5 @@
 Review completed work using:
+
 - spec, plan, tasks
 - implementation diff
 - tests or verification
@@ -8,6 +9,7 @@ Review completed work using:
 Capture is manual and human-approved. Show proposed durable entries and matching `{memory_root}/INDEX.md` rows first, then ask for approval before writing.
 
 Update durable memory only when a lesson is:
+
 - durable
 - actionable
 - non-obvious
@@ -16,6 +18,7 @@ Update durable memory only when a lesson is:
 - concise
 
 Every entry must explain:
+
 - why this is durable
 - what future mistake it prevents
 - what evidence supports it

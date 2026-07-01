@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  createEventFromPreset, presetToFrontmatter,
-} from '../eventPresets';
+import { createEventFromPreset, presetToFrontmatter } from '../eventPresets';
 import type { EventPreset } from '../../types/prisma';
 
 const meetingPreset: EventPreset = {

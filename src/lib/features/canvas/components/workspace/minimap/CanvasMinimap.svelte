@@ -21,7 +21,12 @@
   $: elements = $currentCanvas?.elements ?? [];
   $: bounds = calculateMinimapBounds(elements);
   $: vpRect = bounds
-    ? viewportToMinimap($viewport, bounds, { width: MINIMAP_W, height: MINIMAP_H }, { width: canvasWidth, height: canvasHeight })
+    ? viewportToMinimap(
+        $viewport,
+        bounds,
+        { width: MINIMAP_W, height: MINIMAP_H },
+        { width: canvasWidth, height: canvasHeight }
+      )
     : null;
 
   function getElementScale(bounds: MinimapBounds): number {
@@ -48,7 +53,9 @@
     const localX = clientX - rect.left;
     const localY = clientY - rect.top;
     const target = minimapToViewport(
-      localX, localY, bounds,
+      localX,
+      localY,
+      bounds,
       { width: MINIMAP_W, height: MINIMAP_H },
       { width: canvasWidth, height: canvasHeight },
       $viewport.scale
@@ -79,7 +86,11 @@
 
 {#if elements.length > 5}
   <div class="minimap-wrapper" class:collapsed>
-    <button class="minimap-toggle" on:click={() => (collapsed = !collapsed)} aria-label="Toggle minimap">
+    <button
+      class="minimap-toggle"
+      on:click={() => (collapsed = !collapsed)}
+      aria-label="Toggle minimap"
+    >
       {collapsed ? '◱' : '◳'}
     </button>
 
@@ -98,15 +109,22 @@
           {#each elements as el (el.id)}
             {@const r = getElementRect(el, bounds)}
             <rect
-              x={r.x} y={r.y} width={r.w} height={r.h}
-              fill="var(--text-muted)" opacity="0.3" rx="1"
+              x={r.x}
+              y={r.y}
+              width={r.w}
+              height={r.h}
+              fill="var(--text-muted)"
+              opacity="0.3"
+              rx="1"
             />
           {/each}
 
           {#if vpRect}
             <rect
-              x={vpRect.x} y={vpRect.y}
-              width={vpRect.width} height={vpRect.height}
+              x={vpRect.x}
+              y={vpRect.y}
+              width={vpRect.width}
+              height={vpRect.height}
               fill="none"
               stroke="var(--interactive-accent)"
               stroke-width="1.5"
@@ -136,11 +154,16 @@
     border-radius: var(--radius-s, 4px);
     color: var(--text-muted);
     font-size: 14px;
-    width: 26px; height: 26px;
+    width: 26px;
+    height: 26px;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .minimap-toggle:hover { background: var(--color-surface-hover); }
+  .minimap-toggle:hover {
+    background: var(--color-surface-hover);
+  }
   .minimap-canvas {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -148,5 +171,7 @@
     cursor: crosshair;
     overflow: hidden;
   }
-  .collapsed .minimap-canvas { display: none; }
+  .collapsed .minimap-canvas {
+    display: none;
+  }
 </style>

@@ -3,18 +3,18 @@
  * resolves semantic prefixes, detects images and blur markers.
  */
 import type { MarginNote, PrefixConfig, MarginDirection } from '../types';
-import {
-  MARGIN_ANY_RE, MARGIN_IMG_RE, BLUR_SUFFIX_RE, DEFAULT_PREFIXES,
-} from '../types';
+import { MARGIN_ANY_RE, MARGIN_IMG_RE, BLUR_SUFFIX_RE, DEFAULT_PREFIXES } from '../types';
 
 let nextId = 0;
-function genId(): string { return `mn-${Date.now().toString(36)}-${nextId++}`; }
+function genId(): string {
+  return `mn-${Date.now().toString(36)}-${nextId++}`;
+}
 
 // ─── Prefix resolution ──────────────────────────────────────────────────────
 
 export function resolvePrefix(
   text: string,
-  prefixes: PrefixConfig[] = DEFAULT_PREFIXES,
+  prefixes: PrefixConfig[] = DEFAULT_PREFIXES
 ): { prefix: PrefixConfig | null; cleanText: string } {
   for (const p of prefixes) {
     if (text.startsWith(p.symbol + ' ') || text.startsWith(p.symbol)) {
@@ -50,7 +50,7 @@ export function stripBlurSuffix(text: string): string {
 export function parseMarginNotes(
   content: string,
   filePath: string,
-  prefixes: PrefixConfig[] = DEFAULT_PREFIXES,
+  prefixes: PrefixConfig[] = DEFAULT_PREFIXES
 ): MarginNote[] {
   const notes: MarginNote[] = [];
   const lines = content.split('\n');
@@ -107,7 +107,7 @@ export function insertMarginNote(
   content: string,
   line: number,
   text: string,
-  direction: MarginDirection = 'right',
+  direction: MarginDirection = 'right'
 ): string {
   const lines = content.split('\n');
   const idx = Math.max(0, Math.min(line - 1, lines.length - 1));
@@ -120,7 +120,7 @@ export function insertMarginNote(
 /** Wrap selected text with margin note syntax */
 export function wrapWithMarginNote(
   selectedText: string,
-  direction: MarginDirection = 'right',
+  direction: MarginDirection = 'right'
 ): string {
   const dirChar = direction === 'right' ? '>' : '<';
   return `%%${dirChar} ${selectedText} %%`;
@@ -142,22 +142,20 @@ export interface FileMarginNotes {
 /** Parse margin notes from multiple files */
 export function parseMultipleFiles(
   files: { path: string; content: string }[],
-  prefixes: PrefixConfig[] = DEFAULT_PREFIXES,
+  prefixes: PrefixConfig[] = DEFAULT_PREFIXES
 ): FileMarginNotes[] {
   return files
-    .map(f => ({
+    .map((f) => ({
       filePath: f.path,
       title: f.path.split('/').pop()?.replace('.md', '') ?? f.path,
       notes: parseMarginNotes(f.content, f.path, prefixes),
     }))
-    .filter(f => f.notes.length > 0);
+    .filter((f) => f.notes.length > 0);
 }
 
 // ─── Grouping helpers ────────────────────────────────────────────────────────
 
-export function groupByColor(
-  notes: MarginNote[],
-): Map<string, MarginNote[]> {
+export function groupByColor(notes: MarginNote[]): Map<string, MarginNote[]> {
   const groups = new Map<string, MarginNote[]>();
   for (const note of notes) {
     const key = note.prefix?.label ?? 'Default';
@@ -167,9 +165,7 @@ export function groupByColor(
   return groups;
 }
 
-export function groupByFile(
-  notes: MarginNote[],
-): Map<string, MarginNote[]> {
+export function groupByFile(notes: MarginNote[]): Map<string, MarginNote[]> {
   const groups = new Map<string, MarginNote[]>();
   for (const note of notes) {
     const key = note.filePath;

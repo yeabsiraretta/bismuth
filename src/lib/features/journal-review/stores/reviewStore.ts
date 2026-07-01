@@ -6,10 +6,7 @@ import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
 import type { ReviewConfig, ReviewGroup, ReviewEntry } from '../types/review';
 import { DEFAULT_REVIEW_CONFIG } from '../types/review';
-import {
-  matchNotesToTimeSpans, pickRandomNote,
-  type VaultNote,
-} from '../services/reviewMatcher';
+import { matchNotesToTimeSpans, pickRandomNote, type VaultNote } from '../services/reviewMatcher';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 
@@ -19,7 +16,9 @@ function loadConfig(): ReviewConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_REVIEW_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_REVIEW_CONFIG };
 }
 
@@ -27,9 +26,13 @@ const _config = writable<ReviewConfig>(loadConfig());
 export const reviewConfig = { subscribe: _config.subscribe };
 
 export function updateReviewConfig(patch: Partial<ReviewConfig>): void {
-  _config.update(c => {
+  _config.update((c) => {
     const updated = { ...c, ...patch };
-    try { localStorage.setItem(CONFIG_KEY, JSON.stringify(updated)); } catch { /* ignore */ }
+    try {
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(updated));
+    } catch {
+      /* ignore */
+    }
     log.debug('[reviewStore] Config updated', patch);
     return updated;
   });
@@ -59,11 +62,11 @@ const _state = writable<ReviewState>({ ...INITIAL_STATE });
 export const reviewState = { subscribe: _state.subscribe };
 
 // Derived
-export const reviewGroups = derived(_state, s => s.groups);
-export const reviewRandomNote = derived(_state, s => s.randomNote);
-export const reviewLoading = derived(_state, s => s.loading);
-export const reviewTotalEntries = derived(_state, s =>
-  s.groups.reduce((sum, g) => sum + g.entries.length, 0),
+export const reviewGroups = derived(_state, (s) => s.groups);
+export const reviewRandomNote = derived(_state, (s) => s.randomNote);
+export const reviewLoading = derived(_state, (s) => s.loading);
+export const reviewTotalEntries = derived(_state, (s) =>
+  s.groups.reduce((sum, g) => sum + g.entries.length, 0)
 );
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
@@ -73,7 +76,7 @@ export function runReview(notes: VaultNote[], referenceDate?: Date): void {
   const config = get(_config);
   const refDate = referenceDate ?? new Date();
 
-  _state.update(s => ({ ...s, loading: true, error: null }));
+  _state.update((s) => ({ ...s, loading: true, error: null }));
 
   try {
     const groups = matchNotesToTimeSpans(notes, config, refDate);
@@ -100,7 +103,7 @@ export function runReview(notes: VaultNote[], referenceDate?: Date): void {
       _notifyNewEntries(totalEntries);
     }
   } catch (err) {
-    _state.update(s => ({
+    _state.update((s) => ({
       ...s,
       loading: false,
       error: `Review failed: ${err}`,
@@ -113,7 +116,7 @@ export function runReview(notes: VaultNote[], referenceDate?: Date): void {
 export function refreshRandomNote(notes: VaultNote[]): void {
   const config = get(_config);
   const randomNote = pickRandomNote(notes, config);
-  _state.update(s => ({ ...s, randomNote }));
+  _state.update((s) => ({ ...s, randomNote }));
 }
 
 /** Clear all review results */
@@ -165,8 +168,15 @@ export function clearMidnightRefresh(): void {
 
 function _notifyNewEntries(count: number): void {
   try {
-    window.dispatchEvent(new CustomEvent('journal-review-notify', {
-      detail: { count, message: `${count} note${count !== 1 ? 's' : ''} from this day in history` },
-    }));
-  } catch { /* ignore in test env */ }
+    window.dispatchEvent(
+      new CustomEvent('journal-review-notify', {
+        detail: {
+          count,
+          message: `${count} note${count !== 1 ? 's' : ''} from this day in history`,
+        },
+      })
+    );
+  } catch {
+    /* ignore in test env */
+  }
 }

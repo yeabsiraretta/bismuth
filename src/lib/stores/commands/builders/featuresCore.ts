@@ -69,7 +69,9 @@ export function buildCoreFeatureCommands(actions: DefaultCommandActions): Comman
       description: 'Open Smart Templates using the current text selection as context',
       category: 'Templates',
       action: async () => {
-        window.dispatchEvent(new CustomEvent('smart-template:open', { detail: { useSelection: true } }));
+        window.dispatchEvent(
+          new CustomEvent('smart-template:open', { detail: { useSelection: true } })
+        );
       },
     },
     {
@@ -109,7 +111,10 @@ export function buildCoreFeatureCommands(actions: DefaultCommandActions): Comman
       action: async () => {
         const { getXpSummary } = await import('@/features/gamify');
         const s = getXpSummary();
-        showToast(`Lv ${s.level} · ${s.totalXp.toLocaleString()} XP · +${s.todayXp} today · ${s.streak}d streak`, 'info');
+        showToast(
+          `Lv ${s.level} · ${s.totalXp.toLocaleString()} XP · +${s.todayXp} today · ${s.streak}d streak`,
+          'info'
+        );
       },
     },
     {

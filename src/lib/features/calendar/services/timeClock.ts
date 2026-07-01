@@ -17,7 +17,9 @@ function loadClocks(): ClockRecord[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 /** All clock records. */
@@ -25,19 +27,19 @@ export const clockRecords = writable<ClockRecord[]>(loadClocks());
 
 /** Derived: currently running clocks. */
 export const activeClocks = derived(clockRecords, ($records) =>
-  $records.filter(r => r.status === 'running'),
+  $records.filter((r) => r.status === 'running')
 );
 
 /** Derived: stopped clock records (for timeline display). */
 export const completedClocks = derived(clockRecords, ($records) =>
-  $records.filter(r => r.status === 'stopped'),
+  $records.filter((r) => r.status === 'stopped')
 );
 
 /** Derived: clock records as CalendarEvents for timeline display. */
 export const clockEvents = derived(completedClocks, ($clocks): CalendarEvent[] =>
   $clocks
-    .filter(c => c.stoppedAt !== null && c.durationMinutes !== null)
-    .map(c => {
+    .filter((c) => c.stoppedAt !== null && c.durationMinutes !== null)
+    .map((c) => {
       const started = new Date(c.startedAt);
       const date = `${started.getFullYear()}-${String(started.getMonth() + 1).padStart(2, '0')}-${String(started.getDate()).padStart(2, '0')}`;
       const startMinute = started.getHours() * 60 + started.getMinutes();
@@ -55,13 +57,16 @@ export const clockEvents = derived(completedClocks, ($clocks): CalendarEvent[] =
         readonly: true,
         color: 'var(--color-warning, #d97706)',
       };
-    }),
+    })
 );
 
 // Persist clocks
-clockRecords.subscribe(records => {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
-  catch (e) { log.warn('Failed to persist clock records', { error: String(e) }); }
+clockRecords.subscribe((records) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  } catch (e) {
+    log.warn('Failed to persist clock records', { error: String(e) });
+  }
 });
 
 /** Start a clock for a task. */
@@ -69,7 +74,7 @@ export function startClock(
   taskText: string,
   sourcePath: string,
   sourceLine: number,
-  project?: string,
+  project?: string
 ): string {
   const id = generateId();
   const record: ClockRecord = {
@@ -83,7 +88,7 @@ export function startClock(
     durationMinutes: null,
     project,
   };
-  clockRecords.update(records => [...records, record]);
+  clockRecords.update((records) => [...records, record]);
   log.info('Clock started', { id, taskText });
   return id;
 }
@@ -91,8 +96,8 @@ export function startClock(
 /** Stop a running clock. */
 export function stopClock(id: string): void {
   const now = new Date();
-  clockRecords.update(records =>
-    records.map(r => {
+  clockRecords.update((records) =>
+    records.map((r) => {
       if (r.id !== id || r.status !== 'running') return r;
       const started = new Date(r.startedAt);
       const duration = Math.round((now.getTime() - started.getTime()) / 60000);
@@ -102,26 +107,26 @@ export function stopClock(id: string): void {
         status: 'stopped' as const,
         durationMinutes: duration,
       };
-    }),
+    })
   );
   log.info('Clock stopped', { id });
 }
 
 /** Cancel a running clock (discard the record). */
 export function cancelClock(id: string): void {
-  clockRecords.update(records =>
-    records.map(r =>
+  clockRecords.update((records) =>
+    records.map((r) =>
       r.id === id && r.status === 'running'
         ? { ...r, status: 'cancelled' as const, stoppedAt: new Date().toISOString() }
-        : r,
-    ),
+        : r
+    )
   );
   log.info('Clock cancelled', { id });
 }
 
 /** Delete a clock record. */
 export function deleteClock(id: string): void {
-  clockRecords.update(records => records.filter(r => r.id !== id));
+  clockRecords.update((records) => records.filter((r) => r.id !== id));
 }
 
 /** Get elapsed minutes for a running clock. */
@@ -144,6 +149,6 @@ export function formatDuration(minutes: number): string {
 export function getTodayTrackedMinutes(records: ClockRecord[]): number {
   const today = new Date().toISOString().slice(0, 10);
   return records
-    .filter(r => r.status === 'stopped' && r.startedAt.startsWith(today))
+    .filter((r) => r.status === 'stopped' && r.startedAt.startsWith(today))
     .reduce((sum, r) => sum + (r.durationMinutes ?? 0), 0);
 }

@@ -15,14 +15,7 @@ export interface InlineField {
 }
 
 /** Supported runtime value types for fields. */
-export type DvValue =
-  | string
-  | number
-  | boolean
-  | Date
-  | null
-  | DvLink
-  | DvValue[];
+export type DvValue = string | number | boolean | Date | null | DvLink | DvValue[];
 
 /** An internal link reference. */
 export interface DvLink {
@@ -142,12 +135,7 @@ export interface DvSortClause {
 
 // ─── Expressions ─────────────────────────────────────────────────────────────
 
-export type DvExpr =
-  | DvFieldRef
-  | DvLiteral
-  | DvBinaryExpr
-  | DvUnaryExpr
-  | DvFunctionCall;
+export type DvExpr = DvFieldRef | DvLiteral | DvBinaryExpr | DvUnaryExpr | DvFunctionCall;
 
 export interface DvFieldRef {
   type: 'field';
@@ -161,9 +149,7 @@ export interface DvLiteral {
 }
 
 export type DvBinaryOp =
-  | '=' | '!=' | '>' | '<' | '>=' | '<='
-  | 'and' | 'or' | 'contains'
-  | '+' | '-' | '*' | '/' | '%';
+  '=' | '!=' | '>' | '<' | '>=' | '<=' | 'and' | 'or' | 'contains' | '+' | '-' | '*' | '/' | '%';
 
 export interface DvBinaryExpr {
   type: 'binary';

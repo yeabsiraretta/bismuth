@@ -1,5 +1,5 @@
 ---
-description: "Launch the interactive wireframe viewer in a browser"
+description: 'Launch the interactive wireframe viewer in a browser'
 ---
 
 # speckit.wireframe.view
@@ -13,6 +13,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - `--port N` — override default port 3000
 - `--no-open` — start the server but don't auto-open the browser
 - `--rebuild-manifest` — regenerate the wireframes-manifest.json before launching

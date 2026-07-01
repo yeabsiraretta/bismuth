@@ -4,10 +4,26 @@
  */
 
 // Types
-export type { GraphData, GraphNode, GraphEdge, GraphSettings, NodeColors, SmartConnection, ConnectionMode, SmartGraphSettings } from './types';
+export type {
+  GraphData,
+  GraphNode,
+  GraphEdge,
+  GraphSettings,
+  NodeColors,
+  SmartConnection,
+  ConnectionMode,
+  SmartGraphSettings,
+} from './types';
 
 // Services
-export type { Mention, BacklinksData, OutgoingLinksData, NodePosition, LayoutSettings, ConceptSuggestion } from './services/graph';
+export type {
+  Mention,
+  BacklinksData,
+  OutgoingLinksData,
+  NodePosition,
+  LayoutSettings,
+  ConceptSuggestion,
+} from './services/graph';
 export {
   getGraphData,
   getBacklinks,
@@ -41,38 +57,90 @@ export type { GraphSessionState } from './stores/graphSession';
 
 // Analytics types
 export type {
-  NodeMetrics, TopicCluster, StructuralGap, Bigram,
-  GraphAnalyticsResult, ConceptNode, ConceptEdge,
-  ConceptMode, LinkMode, AnalyticsSettings,
+  NodeMetrics,
+  TopicCluster,
+  StructuralGap,
+  Bigram,
+  GraphAnalyticsResult,
+  ConceptNode,
+  ConceptEdge,
+  ConceptMode,
+  LinkMode,
+  AnalyticsSettings,
 } from './types/analytics';
 export { DEFAULT_ANALYTICS_SETTINGS, CLUSTER_COLORS } from './types/analytics';
 
 // Analytics services
-export { betweennessCentrality, detectCommunities, detectGaps, extractBigrams, analyzeGraph } from './services/graphAnalytics';
-export { extractWikilinks, extractConcepts, conceptFrequencies, topConcepts, buildConceptGraph, buildMultiSourceGraph } from './services/conceptExtractor';
+export {
+  betweennessCentrality,
+  detectCommunities,
+  detectGaps,
+  extractBigrams,
+  analyzeGraph,
+} from './services/graphAnalytics';
+export {
+  extractWikilinks,
+  extractConcepts,
+  conceptFrequencies,
+  topConcepts,
+  buildConceptGraph,
+  buildMultiSourceGraph,
+} from './services/conceptExtractor';
 export type { ContentSource } from './services/conceptExtractor';
 
 // Analytics store
 export {
-  analyticsSettings, analyticsResult, analyticsLoading,
-  selectedClusterId, selectedGapIdx, analyticsTab,
-  highlightedNodes, clusters, gaps, topMetrics, modularity, bigrams,
-  selectedCluster, selectedGap, clusterNodeMap,
-  runAnalysis, selectCluster, selectGap, setAnalyticsTab,
-  updateAnalyticsSettings, clearAnalytics,
+  analyticsSettings,
+  analyticsResult,
+  analyticsLoading,
+  selectedClusterId,
+  selectedGapIdx,
+  analyticsTab,
+  highlightedNodes,
+  clusters,
+  gaps,
+  topMetrics,
+  modularity,
+  bigrams,
+  selectedCluster,
+  selectedGap,
+  clusterNodeMap,
+  runAnalysis,
+  selectCluster,
+  selectGap,
+  setAnalyticsTab,
+  updateAnalyticsSettings,
+  clearAnalytics,
 } from './stores/analyticsStore';
 
 // 3D Graph types
 export type {
-  NodeShape3D, NodeAppearance3D, SimNode3D, Camera3D,
-  Graph3DSettings, Graph3DColorGroup, FocusState3D,
+  NodeShape3D,
+  NodeAppearance3D,
+  SimNode3D,
+  Camera3D,
+  Graph3DSettings,
+  Graph3DColorGroup,
+  FocusState3D,
 } from './types/graph3d';
-export { DEFAULT_CAMERA, DEFAULT_3D_SETTINGS, DEFAULT_3D_NODE_COLORS, EMPTY_FOCUS } from './types/graph3d';
+export {
+  DEFAULT_CAMERA,
+  DEFAULT_3D_SETTINGS,
+  DEFAULT_3D_NODE_COLORS,
+  EMPTY_FOCUS,
+} from './types/graph3d';
 
 // 3D Graph utils
 export {
-  initNodes3D, tickForces3D, projectNode, projectAllNodes,
-  hitTestNode3D, getAppearanceForType, getNodeColor3D, getNodeRadius3D, getNeighborIds,
+  initNodes3D,
+  tickForces3D,
+  projectNode,
+  projectAllNodes,
+  hitTestNode3D,
+  getAppearanceForType,
+  getNodeColor3D,
+  getNodeRadius3D,
+  getNeighborIds,
 } from './utils/simulation3d';
 
 // 3D Graph session

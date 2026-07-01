@@ -1,10 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import {
-  formatDate, expandVariables, sanitizePath,
-  resolveRootPath, findOverride,
-  isExcludedPath, isExcludedExtension,
-  buildAttachmentPath, buildContext,
-  extractNoteName, extractDir, extractParent,
+  formatDate,
+  expandVariables,
+  sanitizePath,
+  resolveRootPath,
+  findOverride,
+  isExcludedPath,
+  isExcludedExtension,
+  buildAttachmentPath,
+  buildContext,
+  extractNoteName,
+  extractDir,
+  extractParent,
 } from '../services/pathResolver';
 import { DEFAULT_ATTACHMENT_CONFIG } from '../types';
 import type { AttachmentOverride, AttachmentPathContext } from '../types';
@@ -23,8 +30,7 @@ const mkCtx = (overrides?: Partial<AttachmentPathContext>): AttachmentPathContex
 
 describe('formatDate', () => {
   it('formats all components', () => {
-    expect(formatDate(fixedDate, 'YYYYMMDDHHmmssSSS'))
-      .toBe('20260115143045123');
+    expect(formatDate(fixedDate, 'YYYYMMDDHHmmssSSS')).toBe('20260115143045123');
   });
   it('handles partial formats', () => {
     expect(formatDate(fixedDate, 'YYYY-MM-DD')).toBe('2026-01-15');
@@ -35,7 +41,8 @@ describe('expandVariables', () => {
   it('expands all supported variables', () => {
     const result = expandVariables(
       '${notepath}/${notename}/${parent}-${originalname}-${md5}-${date}',
-      mkCtx(), 'YYYYMMDD',
+      mkCtx(),
+      'YYYYMMDD'
     );
     expect(result).toBe('notes/projects/hello-world/projects-screenshot-abc123def456-20260115');
   });
@@ -60,20 +67,49 @@ describe('resolveRootPath', () => {
     expect(resolveRootPath(cfg, '/vault/notes', '/vault')).toBe('/vault');
   });
   it('fixed mode uses fixedRoot', () => {
-    const cfg = { ...DEFAULT_ATTACHMENT_CONFIG, rootPathMode: 'fixed' as const, fixedRoot: 'media' };
+    const cfg = {
+      ...DEFAULT_ATTACHMENT_CONFIG,
+      rootPathMode: 'fixed' as const,
+      fixedRoot: 'media',
+    };
     expect(resolveRootPath(cfg, '/vault/notes', '/vault')).toBe('/vault/media');
   });
   it('subfolder mode uses note dir + subfolder', () => {
-    const cfg = { ...DEFAULT_ATTACHMENT_CONFIG, rootPathMode: 'subfolder' as const, subfolderName: 'assets' };
+    const cfg = {
+      ...DEFAULT_ATTACHMENT_CONFIG,
+      rootPathMode: 'subfolder' as const,
+      subfolderName: 'assets',
+    };
     expect(resolveRootPath(cfg, '/vault/notes', '/vault')).toBe('/vault/notes/assets');
   });
 });
 
 describe('findOverride', () => {
   const overrides: AttachmentOverride[] = [
-    { id: '1', targetPath: '/vault/notes/hello.md', targetType: 'file', attachmentPath: 'fp', attachmentFormat: 'ff', dateFormat: '' },
-    { id: '2', targetPath: '/vault/notes', targetType: 'folder', attachmentPath: 'dp', attachmentFormat: 'df', dateFormat: '' },
-    { id: '3', targetPath: 'pdf', targetType: 'extension', attachmentPath: 'ep', attachmentFormat: 'ef', dateFormat: '' },
+    {
+      id: '1',
+      targetPath: '/vault/notes/hello.md',
+      targetType: 'file',
+      attachmentPath: 'fp',
+      attachmentFormat: 'ff',
+      dateFormat: '',
+    },
+    {
+      id: '2',
+      targetPath: '/vault/notes',
+      targetType: 'folder',
+      attachmentPath: 'dp',
+      attachmentFormat: 'df',
+      dateFormat: '',
+    },
+    {
+      id: '3',
+      targetPath: 'pdf',
+      targetType: 'extension',
+      attachmentPath: 'ep',
+      attachmentFormat: 'ef',
+      dateFormat: '',
+    },
   ];
 
   it('file override takes priority', () => {
@@ -128,7 +164,11 @@ describe('buildAttachmentPath', () => {
   });
 
   it('builds correct full path with fixed mode', () => {
-    const cfg = { ...DEFAULT_ATTACHMENT_CONFIG, rootPathMode: 'fixed' as const, fixedRoot: 'media' };
+    const cfg = {
+      ...DEFAULT_ATTACHMENT_CONFIG,
+      rootPathMode: 'fixed' as const,
+      fixedRoot: 'media',
+    };
     const ctx = mkCtx({ notePath: '/vault/notes' });
     const result = buildAttachmentPath(cfg, [], ctx, '.png', '/vault');
     expect(result).toContain('/vault/media');

@@ -81,7 +81,9 @@ export function getFootnoteSectionHeading(): string {
 export function setFootnoteSectionHeading(heading: string): void {
   try {
     localStorage.setItem('bismuth-footnote-heading', heading);
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }
 
 /**
@@ -170,7 +172,7 @@ export function insertNamedFootnote(view: EditorView): boolean {
   if (nearRef) {
     // Check if detail already exists
     const lines = view.state.doc.toString().split('\n');
-    const hasDetail = lines.some(l => l.startsWith(`[^${nearRef}]: `));
+    const hasDetail = lines.some((l) => l.startsWith(`[^${nearRef}]: `));
     if (hasDetail) {
       return jumpToDetail(view, nearRef);
     }

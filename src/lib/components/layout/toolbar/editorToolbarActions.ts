@@ -17,7 +17,7 @@ export const activeBreadcrumbs = derived(
   [activeEditorTabId, editorTabs, currentVault],
   ([$activeId, $tabs, $vault]) => {
     if ($activeId) {
-      const tab = $tabs.find(t => t.id === $activeId);
+      const tab = $tabs.find((t) => t.id === $activeId);
       if (tab) return buildBreadcrumbs(tab.path);
     }
     return $vault ? [$vault.name] : [];
@@ -40,7 +40,12 @@ export type FormatAction =
   | 'code'
   | 'code-block'
   | 'heading'
-  | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
   | 'link'
   | 'image'
   | 'quote'

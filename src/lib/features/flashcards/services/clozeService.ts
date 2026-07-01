@@ -13,7 +13,8 @@ export const CLOZE_HIGHLIGHT_RE = /==(.+?)==/g;
 export const CLOZE_CURLY_RE = /(?<!\{)\{(?!\{)([^{}]+)\}(?!\})/g;
 export const CLOZE_BOLD_RE = /\*\*([^*:]+)\*\*(?!:)/g;
 export const CLOZE_UNDERLINE_RE = /<u>(.+?)<\/u>/g;
-export const CLOZE_SPAN_RE = /<span\s+class="cloze-span"(?:\s+data-cloze-hint="([^"]*)")?\s*>(.+?)<\/span>/g;
+export const CLOZE_SPAN_RE =
+  /<span\s+class="cloze-span"(?:\s+data-cloze-hint="([^"]*)")?\s*>(.+?)<\/span>/g;
 
 /** A detected cloze region in the text. */
 export interface ClozeMatch {
@@ -141,7 +142,7 @@ export function noteHasTag(content: string, tag: string): boolean {
 export function getClozeBlank(
   text: string,
   hint: string | undefined,
-  hintConfig: ClozeHintConfig,
+  hintConfig: ClozeHintConfig
 ): string {
   if (hint) return hint;
   const generated = generateHint(text, hintConfig);

@@ -6,10 +6,17 @@ vi.mock('@/utils/logger', () => ({
 }));
 
 import {
-  symbolsEnabled, symbolRules, symbolRulesRaw,
-  toggleSymbols, setSymbolsEnabled,
-  toggleRule, addRule, removeRule, resetRules,
-  getRules, isEnabled,
+  symbolsEnabled,
+  symbolRules,
+  symbolRulesRaw,
+  toggleSymbols,
+  setSymbolsEnabled,
+  toggleRule,
+  addRule,
+  removeRule,
+  resetRules,
+  getRules,
+  isEnabled,
 } from '../stores/symbolStore';
 
 describe('symbolStore', () => {
@@ -40,8 +47,8 @@ describe('symbolStore', () => {
   it('has default rules loaded', () => {
     const rules = get(symbolRulesRaw);
     expect(rules.length).toBeGreaterThan(10);
-    expect(rules.some(r => r.trigger === '->')).toBe(true);
-    expect(rules.some(r => r.trigger === '<=>')).toBe(true);
+    expect(rules.some((r) => r.trigger === '->')).toBe(true);
+    expect(rules.some((r) => r.trigger === '<=>')).toBe(true);
   });
 
   it('symbolRules returns sorted (longest first)', () => {
@@ -53,14 +60,14 @@ describe('symbolStore', () => {
 
   it('toggleRule disables/enables a rule', () => {
     toggleRule('->');
-    expect(get(symbolRulesRaw).find(r => r.trigger === '->')?.enabled).toBe(false);
+    expect(get(symbolRulesRaw).find((r) => r.trigger === '->')?.enabled).toBe(false);
     toggleRule('->');
-    expect(get(symbolRulesRaw).find(r => r.trigger === '->')?.enabled).toBe(true);
+    expect(get(symbolRulesRaw).find((r) => r.trigger === '->')?.enabled).toBe(true);
   });
 
   it('addRule adds a custom rule', () => {
     addRule('!!', '\u203C');
-    expect(get(symbolRulesRaw).some(r => r.trigger === '!!')).toBe(true);
+    expect(get(symbolRulesRaw).some((r) => r.trigger === '!!')).toBe(true);
   });
 
   it('addRule ignores duplicate triggers', () => {
@@ -79,15 +86,15 @@ describe('symbolStore', () => {
   it('removeRule removes by trigger', () => {
     addRule('!!', '\u203C');
     removeRule('!!');
-    expect(get(symbolRulesRaw).some(r => r.trigger === '!!')).toBe(false);
+    expect(get(symbolRulesRaw).some((r) => r.trigger === '!!')).toBe(false);
   });
 
   it('resetRules restores defaults', () => {
     addRule('!!', '\u203C');
     toggleRule('->');
     resetRules();
-    expect(get(symbolRulesRaw).some(r => r.trigger === '!!')).toBe(false);
-    expect(get(symbolRulesRaw).find(r => r.trigger === '->')?.enabled).toBe(true);
+    expect(get(symbolRulesRaw).some((r) => r.trigger === '!!')).toBe(false);
+    expect(get(symbolRulesRaw).find((r) => r.trigger === '->')?.enabled).toBe(true);
   });
 
   it('getRules returns sorted non-reactively', () => {

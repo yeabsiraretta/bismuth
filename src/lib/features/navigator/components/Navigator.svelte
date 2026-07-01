@@ -6,8 +6,13 @@
   import NavShortcuts from './NavShortcuts.svelte';
   import { navigatorStore, togglePane, setFilterQuery } from '../stores/navigator';
   import {
-    navigateBack, navigateForward, canGoBack, canGoForward,
-    toggleSearch, searchOpen, resetEphemeralState,
+    navigateBack,
+    navigateForward,
+    canGoBack,
+    canGoForward,
+    toggleSearch,
+    searchOpen,
+    resetEphemeralState,
   } from '../stores/navigatorActions';
   import { onMount } from 'svelte';
   import { loadNavigatorState } from '../stores/navigator';
@@ -94,7 +99,7 @@
       <button
         class="icon-btn"
         class:active={$navigatorStore.activeTab === 'folders'}
-        on:click={() => navigatorStore.update(s => ({ ...s, activeTab: 'folders' }))}
+        on:click={() => navigatorStore.update((s) => ({ ...s, activeTab: 'folders' }))}
         title="Folders"
       >
         <Icon name="folder" size={14} />
@@ -102,7 +107,7 @@
       <button
         class="icon-btn"
         class:active={$navigatorStore.activeTab === 'tags'}
-        on:click={() => navigatorStore.update(s => ({ ...s, activeTab: 'tags' }))}
+        on:click={() => navigatorStore.update((s) => ({ ...s, activeTab: 'tags' }))}
         title="Tags"
       >
         <Icon name="tag" size={14} />
@@ -110,7 +115,7 @@
       <button
         class="icon-btn"
         class:active={$navigatorStore.activeTab === 'properties'}
-        on:click={() => navigatorStore.update(s => ({ ...s, activeTab: 'properties' }))}
+        on:click={() => navigatorStore.update((s) => ({ ...s, activeTab: 'properties' }))}
         title="Properties"
       >
         <Icon name="sliders" size={14} />
@@ -196,9 +201,17 @@
     cursor: pointer;
   }
 
-  .icon-btn:hover:not(:disabled) { background: var(--interactive-hover); color: var(--text-normal); }
-  .icon-btn.active { color: var(--interactive-accent); }
-  .icon-btn:disabled { opacity: 0.3; cursor: default; }
+  .icon-btn:hover:not(:disabled) {
+    background: var(--interactive-hover);
+    color: var(--text-normal);
+  }
+  .icon-btn.active {
+    color: var(--interactive-accent);
+  }
+  .icon-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
 
   .navigator-body {
     display: flex;

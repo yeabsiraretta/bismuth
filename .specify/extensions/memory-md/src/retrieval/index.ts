@@ -1,16 +1,18 @@
-import path from "path";
-import { MemoryDatabase, loadAllEntries, searchFts } from "../db";
-import { MemoryEntryRecord, MemoryHubConfig, SearchResult, SynthesisSectionItem } from "../types";
-import { normalizeWhitespace, uniqueSorted, wordCount } from "../utils/text";
+import path from 'path';
+import { MemoryDatabase, loadAllEntries, searchFts } from '../db';
+import { MemoryEntryRecord, MemoryHubConfig, SearchResult, SynthesisSectionItem } from '../types';
+import { normalizeWhitespace, uniqueSorted, wordCount } from '../utils/text';
 
 // Over-fetch factor: retrieve more FTS candidates than the final limit so that
 // the multi-signal scoring pass can re-rank and pick the best subset.
 const FTS_OVER_FETCH_FACTOR = 5;
 
 function queryTerms(query: string): string[] {
-  return normalizeWhitespace(query)
-    .toLowerCase()
-    .match(/\b[\p{L}\p{N}_-]+\b/gu) ?? [];
+  return (
+    normalizeWhitespace(query)
+      .toLowerCase()
+      .match(/\b[\p{L}\p{N}_-]+\b/gu) ?? []
+  );
 }
 
 function recencyScore(updatedAt: string): number {
@@ -38,27 +40,27 @@ export function scoreResult(result: SearchResult, query: string): SearchResult {
   const terms = queryTerms(query);
   const haystack = [
     result.source_path,
-    result.section_heading ?? "",
-    result.content_summary ?? "",
-    result.snippet ?? "",
-    result.tags ?? "",
-  ].join(" ");
+    result.section_heading ?? '',
+    result.content_summary ?? '',
+    result.snippet ?? '',
+    result.tags ?? '',
+  ].join(' ');
 
   const fts = baseFtsScore(result.fts_rank);
-  const tagScore = containsQueryTerm(result.tags ?? "", terms) * 0.35;
-  const headingScore = containsQueryTerm(result.section_heading ?? "", terms) * 0.25;
+  const tagScore = containsQueryTerm(result.tags ?? '', terms) * 0.35;
+  const headingScore = containsQueryTerm(result.section_heading ?? '', terms) * 0.25;
   const pathScore = containsQueryTerm(result.source_path, terms) * 0.2;
   const contentScore = containsQueryTerm(haystack, terms) * 0.1;
   const recency = recencyScore(result.updated_at) * 0.1;
   const score = fts + tagScore + headingScore + pathScore + contentScore + recency;
 
   const reason: string[] = [];
-  if (tagScore > 0) reason.push("tag match");
-  if (headingScore > 0) reason.push("heading match");
-  if (pathScore > 0) reason.push("path match");
-  if (contentScore > 0) reason.push("content match");
-  if (recency > 0) reason.push("recent");
-  if (fts > 0) reason.push("fts");
+  if (tagScore > 0) reason.push('tag match');
+  if (headingScore > 0) reason.push('heading match');
+  if (pathScore > 0) reason.push('path match');
+  if (contentScore > 0) reason.push('content match');
+  if (recency > 0) reason.push('recent');
+  if (fts > 0) reason.push('fts');
 
   return {
     ...result,
@@ -71,16 +73,18 @@ export function searchMemoryEntries(
   db: MemoryDatabase,
   query: string,
   config: MemoryHubConfig,
-  limit = config.retrieval.max_memory_results,
+  limit = config.retrieval.max_memory_results
 ): SearchResult[] {
   // max_index_entries caps how many FTS candidates we fetch before re-ranking.
   const ftsCandidateLimit = config.retrieval.max_index_entries * FTS_OVER_FETCH_FACTOR;
   const normalizedQuery = buildFtsQuery(query);
-  const candidates = searchFts(db, normalizedQuery, ftsCandidateLimit).map((candidate) => scoreResult(candidate, query));
+  const candidates = searchFts(db, normalizedQuery, ftsCandidateLimit).map((candidate) =>
+    scoreResult(candidate, query)
+  );
 
   const deduped = new Map<string, SearchResult>();
   for (const candidate of candidates) {
-    const key = `${candidate.source_path}::${candidate.section_heading ?? ""}`;
+    const key = `${candidate.source_path}::${candidate.section_heading ?? ''}`;
     const existing = deduped.get(key);
     if (!existing || existing.score < candidate.score) {
       deduped.set(key, candidate);
@@ -96,7 +100,9 @@ function buildFtsQuery(query: string): string {
   const terms = queryTerms(query);
   // Use OR to find documents with ANY of the terms, then rely on scoring
   // and bm25 ranking to surface the most relevant (highest term overlap).
-  return terms.length > 0 ? terms.map((term) => `"${term.replace(/"/g, "")}"`).join(" OR ") : query.trim();
+  return terms.length > 0
+    ? terms.map((term) => `"${term.replace(/"/g, '')}"`).join(' OR ')
+    : query.trim();
 }
 
 export function entryToSynthesisItem(entry: SearchResult, label: string): SynthesisSectionItem {
@@ -105,9 +111,9 @@ export function entryToSynthesisItem(entry: SearchResult, label: string): Synthe
     title: entry.section_heading ?? path.basename(entry.source_path),
     sourcePath: entry.source_path,
     sectionHeading: entry.section_heading ?? path.basename(entry.source_path),
-    summary: entry.content_summary ?? "",
-    snippet: entry.snippet ?? "",
-    tags: uniqueSorted((entry.tags ?? "").split(",").filter(Boolean)),
+    summary: entry.content_summary ?? '',
+    snippet: entry.snippet ?? '',
+    tags: uniqueSorted((entry.tags ?? '').split(',').filter(Boolean)),
     lineStart: entry.line_start,
     lineEnd: entry.line_end,
   };

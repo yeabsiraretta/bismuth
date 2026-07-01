@@ -34,7 +34,7 @@ export function buildRagMessages(
   query: string,
   context: RagContext,
   config: RagConfig,
-  history: AgentMessage[] = [],
+  history: AgentMessage[] = []
 ): AgentMessage[] {
   const systemMsg: AgentMessage = {
     id: 'rag-system',
@@ -43,9 +43,7 @@ export function buildRagMessages(
     createdAt: new Date().toISOString(),
   };
 
-  const historyMsgs = history
-    .filter(m => m.role !== 'system')
-    .slice(-10);
+  const historyMsgs = history.filter((m) => m.role !== 'system').slice(-10);
 
   const userMsg: AgentMessage = {
     id: `rag-user-${Date.now()}`,
@@ -63,8 +61,9 @@ export function buildRagMessages(
 export function formatCitationFooter(context: RagContext): string {
   if (context.citations.length === 0) return '';
 
-  const lines = context.citations.map(c =>
-    `[${c.index}] **${c.noteTitle}** (${c.notePath}) — ${c.source} search, score: ${c.score.toFixed(2)}`
+  const lines = context.citations.map(
+    (c) =>
+      `[${c.index}] **${c.noteTitle}** (${c.notePath}) — ${c.source} search, score: ${c.score.toFixed(2)}`
   );
 
   return '\n\n---\n**Sources:**\n' + lines.join('\n');

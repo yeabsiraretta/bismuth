@@ -87,7 +87,10 @@ describe('buildSmartGraph', () => {
   });
 
   it('filters connections below minRelevance', () => {
-    const { nodes } = buildSmartGraph('c.md', 'C', connections, { ...baseSettings, minRelevance: 0.6 });
+    const { nodes } = buildSmartGraph('c.md', 'C', connections, {
+      ...baseSettings,
+      minRelevance: 0.6,
+    });
     expect(nodes).toHaveLength(2); // center + note1 only
   });
 
@@ -108,7 +111,10 @@ describe('buildSmartGraph', () => {
       { path: 'doc.md#heading2', score: 0.9, isBlock: true, label: 'Doc > H2' },
       { path: 'other.md', score: 0.5, isBlock: false, label: 'Other' },
     ];
-    const { nodes, edges } = buildSmartGraph('c.md', 'C', blockConns, { ...baseSettings, connectionMode: 'note' });
+    const { nodes, edges } = buildSmartGraph('c.md', 'C', blockConns, {
+      ...baseSettings,
+      connectionMode: 'note',
+    });
     // doc.md should appear once with highest score (0.9)
     expect(nodes).toHaveLength(3); // center + doc.md + other.md
     const docEdge = edges.find((e) => e.to === 'doc.md');
@@ -120,7 +126,10 @@ describe('buildSmartGraph', () => {
       { path: 'doc.md#h1', score: 0.7, isBlock: true, label: 'Doc > H1' },
       { path: 'doc.md#h2', score: 0.9, isBlock: true, label: 'Doc > H2' },
     ];
-    const { nodes } = buildSmartGraph('c.md', 'C', blockConns, { ...baseSettings, connectionMode: 'block' });
+    const { nodes } = buildSmartGraph('c.md', 'C', blockConns, {
+      ...baseSettings,
+      connectionMode: 'block',
+    });
     expect(nodes).toHaveLength(3); // center + 2 blocks
   });
 });

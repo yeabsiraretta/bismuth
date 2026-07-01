@@ -1,4 +1,12 @@
-import { getAllTags, getTagStats, renameTagService as renameTag, mergeTagsService as mergeTags, createTagPage, type TagInfo, type TagStats } from '@/features/tag';
+import {
+  getAllTags,
+  getTagStats,
+  renameTagService as renameTag,
+  mergeTagsService as mergeTags,
+  createTagPage,
+  type TagInfo,
+  type TagStats,
+} from '@/features/tag';
 import { get } from 'svelte/store';
 import { currentVault } from '@/stores/vault/vault';
 import { log } from '@/utils/logger';

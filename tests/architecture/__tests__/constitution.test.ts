@@ -38,7 +38,10 @@ function run(cmd: string): string {
 }
 
 function lines(output: string): string[] {
-  return output.split('\n').map((l) => l.trim()).filter(Boolean);
+  return output
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
 }
 
 function countImplFiles(dir: string): number {
@@ -46,19 +49,28 @@ function countImplFiles(dir: string): number {
   try {
     return readdirSync(dir).filter((f) => {
       if (f === 'index.ts' || f === 'mod.rs') return false;
-      if (f.startsWith('__tests__') || f.endsWith('.test.ts') || f.endsWith('.spec.ts') || f.endsWith('_tests.rs')) return false;
+      if (
+        f.startsWith('__tests__') ||
+        f.endsWith('.test.ts') ||
+        f.endsWith('.spec.ts') ||
+        f.endsWith('_tests.rs')
+      )
+        return false;
       return statSync(join(dir, f)).isFile();
     }).length;
-  } catch { return 0; }
+  } catch {
+    return 0;
+  }
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
 
 describe('Architecture Constitution Compliance', () => {
-
   describe('Layer Boundaries (P0)', () => {
     it('stores must not import from @tauri-apps', () => {
-      const raw = run(`grep -rn "from '@tauri-apps" src/lib/stores --include="*.ts" | grep -v "__tests__" | grep -v "\\.test\\." | grep -v "\\.spec\\."`);
+      const raw = run(
+        `grep -rn "from '@tauri-apps" src/lib/stores --include="*.ts" | grep -v "__tests__" | grep -v "\\.test\\." | grep -v "\\.spec\\."`
+      );
       expect(lines(raw)).toEqual([]);
     });
 
@@ -70,13 +82,19 @@ describe('Architecture Constitution Compliance', () => {
     });
 
     it('utils must not import stores or services', () => {
-      const stores = run(`grep -rn "from '@/stores" src/lib/utils --include="*.ts" | grep -v "__tests__"`);
-      const services = run(`grep -rn "from '@/services" src/lib/utils --include="*.ts" | grep -v "__tests__"`);
+      const stores = run(
+        `grep -rn "from '@/stores" src/lib/utils --include="*.ts" | grep -v "__tests__"`
+      );
+      const services = run(
+        `grep -rn "from '@/services" src/lib/utils --include="*.ts" | grep -v "__tests__"`
+      );
       expect([...lines(stores), ...lines(services)]).toEqual([]);
     });
 
     it('services must not import stores', () => {
-      const raw = run(`grep -rn "from '@/stores" src/lib/services --include="*.ts" | grep -v "__tests__"`);
+      const raw = run(
+        `grep -rn "from '@/stores" src/lib/services --include="*.ts" | grep -v "__tests__"`
+      );
       expect(lines(raw)).toEqual([]);
     });
   });
@@ -103,14 +121,14 @@ describe('Architecture Constitution Compliance', () => {
 
   describe('Folder Density', () => {
     it('no frontend directory exceeds 8 implementation files', () => {
-      const dirs = lines(run(
-        `find src/lib -type d ! -path "*/__tests__*" ! -path "*/node_modules/*"`
-      ));
+      const dirs = lines(
+        run(`find src/lib -type d ! -path "*/__tests__*" ! -path "*/node_modules/*"`)
+      );
       const violations: string[] = [];
       for (const dir of dirs) {
         const abs = dir.startsWith('/') ? dir : join(repoRoot, dir);
         const count = countImplFiles(abs);
-        if (count > 8 && !KNOWN_DENSE_DIRS.some(k => dir.endsWith(k))) {
+        if (count > 8 && !KNOWN_DENSE_DIRS.some((k) => dir.endsWith(k))) {
           violations.push(`${dir}: ${count} files`);
         }
       }
@@ -119,9 +137,9 @@ describe('Architecture Constitution Compliance', () => {
     });
 
     it('no Rust directory exceeds 12 implementation files', () => {
-      const dirs = lines(run(
-        `find src-tauri/src -type d ! -path "*/__tests__*" ! -path "*/node_modules/*"`
-      ));
+      const dirs = lines(
+        run(`find src-tauri/src -type d ! -path "*/__tests__*" ! -path "*/node_modules/*"`)
+      );
       const violations: string[] = [];
       for (const dir of dirs) {
         const abs = dir.startsWith('/') ? dir : join(repoRoot, dir);
@@ -167,8 +185,8 @@ describe('Architecture Constitution Compliance', () => {
     it('no cross-feature internal path imports', () => {
       const raw = run(
         `grep -rn "from '@/features/[^']*/" src/lib ` +
-        `--include="*.ts" --include="*.svelte" ` +
-        `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\."`
+          `--include="*.ts" --include="*.svelte" ` +
+          `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\."`
       );
       const violations: string[] = [];
       for (const line of lines(raw)) {
@@ -200,9 +218,9 @@ describe('Architecture Constitution Compliance', () => {
     it('no raw console.log/error/debug in source (use logger)', () => {
       const raw = run(
         `grep -rn "console\\." src/lib --include="*.ts" --include="*.svelte" ` +
-        `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\." ` +
-        `| grep -v "utils/logger/" | grep -v "console\\.warn" ` +
-        `| grep -E "console\\.(log|info|error|debug)"`
+          `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\." ` +
+          `| grep -v "utils/logger/" | grep -v "console\\.warn" ` +
+          `| grep -E "console\\.(log|info|error|debug)"`
       );
       const violations = lines(raw);
       if (violations.length > 0) console.log('Raw console usage:', violations.slice(0, 5));

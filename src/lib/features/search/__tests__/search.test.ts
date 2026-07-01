@@ -16,7 +16,10 @@ describe('search service', () => {
     it('calls invoke with query', async () => {
       vi.mocked(invoke).mockResolvedValue([]);
       await searchVault('typescript');
-      expect(invoke).toHaveBeenCalledWith('search_vault', { query: 'typescript', filters: undefined });
+      expect(invoke).toHaveBeenCalledWith('search_vault', {
+        query: 'typescript',
+        filters: undefined,
+      });
     });
 
     it('passes filters when provided', async () => {
@@ -43,7 +46,10 @@ describe('search service', () => {
     it('calls invoke with path and query', async () => {
       vi.mocked(invoke).mockResolvedValue([]);
       await searchInFile('/vault/note.md', 'pattern');
-      expect(invoke).toHaveBeenCalledWith('search_in_file', { path: '/vault/note.md', query: 'pattern' });
+      expect(invoke).toHaveBeenCalledWith('search_in_file', {
+        path: '/vault/note.md',
+        query: 'pattern',
+      });
     });
 
     it('returns file matches', async () => {

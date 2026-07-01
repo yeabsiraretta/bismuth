@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { currentCanvas, viewport, selectedFlowLink, selectFlowLink, clearFlowLinkSelection } from '@/features/canvas/stores';
+  import {
+    currentCanvas,
+    viewport,
+    selectedFlowLink,
+    selectFlowLink,
+    clearFlowLinkSelection,
+  } from '@/features/canvas/stores';
   import { removeFlowLink } from '@/features/canvas/stores';
   import type { CanvasElement, FlowLink } from '@/features/canvas/types';
 
@@ -51,8 +57,8 @@
     const dx = targetX - cx;
     const dy = targetY - cy;
 
-    const scaleX = Math.abs(dx) > 0 ? (el.width / 2) / Math.abs(dx) : Infinity;
-    const scaleY = Math.abs(dy) > 0 ? (el.height / 2) / Math.abs(dy) : Infinity;
+    const scaleX = Math.abs(dx) > 0 ? el.width / 2 / Math.abs(dx) : Infinity;
+    const scaleY = Math.abs(dy) > 0 ? el.height / 2 / Math.abs(dy) : Infinity;
     const scale = Math.min(scaleX, scaleY, 1);
 
     return {
@@ -110,7 +116,10 @@
     {#each linkPaths as { link, x1, y1, x2, y2 } (link.id)}
       <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
       <line
-        {x1} {y1} {x2} {y2}
+        {x1}
+        {y1}
+        {x2}
+        {y2}
         stroke="transparent"
         stroke-width={12 / $viewport.scale}
         class="link-hit-area"
@@ -119,9 +128,12 @@
       />
       <!-- Visible link line -->
       <line
-        {x1} {y1} {x2} {y2}
+        {x1}
+        {y1}
+        {x2}
+        {y2}
         stroke={$selectedFlowLink === link.id ? 'var(--interactive-accent)' : 'var(--text-muted)'}
-        stroke-width={(($selectedFlowLink === link.id) ? 3 : 2) / $viewport.scale}
+        stroke-width={($selectedFlowLink === link.id ? 3 : 2) / $viewport.scale}
         marker-end="url(#flow-arrow)"
         class="link-line"
         class:selected={$selectedFlowLink === link.id}
@@ -160,7 +172,9 @@
 
   .link-line {
     pointer-events: none;
-    transition: stroke var(--transition-fast), stroke-width var(--transition-fast);
+    transition:
+      stroke var(--transition-fast),
+      stroke-width var(--transition-fast);
   }
 
   .link-line.selected {

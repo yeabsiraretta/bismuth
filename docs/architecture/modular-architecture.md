@@ -7,21 +7,25 @@ Bismuth is designed with **extreme modularity** as a core principle. Every featu
 ## Core Principles
 
 ### 1. Feature Isolation
+
 - Each feature is a separate module with clear boundaries
 - No direct dependencies between features
 - Communication through well-defined interfaces only
 
 ### 2. Gated Impact
+
 - Feature changes affect only that feature
 - Breaking changes are contained within module boundaries
 - System remains stable when features are disabled
 
 ### 3. Plugin Architecture
+
 - Features are essentially plugins
 - Can be loaded/unloaded at runtime
 - Configuration-driven feature flags
 
 ### 4. Interface-Driven Design
+
 - Features depend on interfaces, not implementations
 - Core provides stable contracts
 - Features implement or consume contracts
@@ -123,50 +127,50 @@ src/features/
 pub trait Feature: Send + Sync {
     /// Unique feature identifier
     fn id(&self) -> &'static str;
-    
+
     /// Human-readable feature name
     fn name(&self) -> &str;
-    
+
     /// Feature version (follows semver)
     fn version(&self) -> &str;
-    
+
     /// Features this feature depends on
     fn dependencies(&self) -> Vec<&'static str> {
         vec![]
     }
-    
+
     /// Features this feature conflicts with
     fn conflicts(&self) -> Vec<&'static str> {
         vec![]
     }
-    
+
     /// Initialize the feature
     async fn initialize(&mut self, context: &FeatureContext) -> Result<()>;
-    
+
     /// Shutdown the feature
     async fn shutdown(&mut self) -> Result<()>;
-    
+
     /// Check if feature is enabled
     fn is_enabled(&self) -> bool;
-    
+
     /// Enable the feature
     async fn enable(&mut self) -> Result<()>;
-    
+
     /// Disable the feature
     async fn disable(&mut self) -> Result<()>;
-    
+
     /// Get feature configuration schema
     fn config_schema(&self) -> serde_json::Value;
-    
+
     /// Register Tauri commands
     fn register_commands(&self) -> Vec<Box<dyn Command>>;
-    
+
     /// Register event handlers
     fn register_event_handlers(&self) -> Vec<Box<dyn EventHandler>>;
-    
+
     /// Register UI components
     fn register_ui_components(&self) -> Vec<UiComponent>;
-    
+
     /// Health check
     async fn health_check(&self) -> HealthStatus;
 }
@@ -189,19 +193,19 @@ impl Feature for VaultFeature {
     fn id(&self) -> &'static str {
         "vault"
     }
-    
+
     fn name(&self) -> &str {
         "Vault Management"
     }
-    
+
     fn version(&self) -> &str {
         "0.1.0"
     }
-    
+
     fn dependencies(&self) -> Vec<&'static str> {
         vec![] // No dependencies - core feature
     }
-    
+
     async fn initialize(&mut self, context: &FeatureContext) -> Result<()> {
         // Initialize vault service
         self.service = Some(VaultService::new(
@@ -209,13 +213,13 @@ impl Feature for VaultFeature {
             context.filesystem.clone(),
             self.config.clone(),
         )?);
-        
+
         // Register event listeners
         context.events.subscribe("vault:created", self.on_vault_created);
-        
+
         Ok(())
     }
-    
+
     async fn shutdown(&mut self) -> Result<()> {
         // Clean shutdown
         if let Some(service) = self.service.take() {
@@ -223,23 +227,23 @@ impl Feature for VaultFeature {
         }
         Ok(())
     }
-    
+
     fn is_enabled(&self) -> bool {
         self.enabled
     }
-    
+
     async fn enable(&mut self) -> Result<()> {
         self.enabled = true;
         // Additional enable logic
         Ok(())
     }
-    
+
     async fn disable(&mut self) -> Result<()> {
         self.enabled = false;
         // Additional disable logic
         Ok(())
     }
-    
+
     fn register_commands(&self) -> Vec<Box<dyn Command>> {
         vec![
             Box::new(CreateVaultCommand),
@@ -247,14 +251,14 @@ impl Feature for VaultFeature {
             Box::new(CloseVaultCommand),
         ]
     }
-    
+
     fn register_event_handlers(&self) -> Vec<Box<dyn EventHandler>> {
         vec![
             Box::new(VaultCreatedHandler),
             Box::new(VaultClosedHandler),
         ]
     }
-    
+
     fn register_ui_components(&self) -> Vec<UiComponent> {
         vec![
             UiComponent {
@@ -295,30 +299,30 @@ impl FeatureRegistry {
             dependency_graph: Arc::new(RwLock::new(DependencyGraph::new())),
         }
     }
-    
+
     /// Register a feature
     pub async fn register(&self, feature: Box<dyn Feature>) -> Result<()> {
         let id = feature.id().to_string();
-        
+
         // Check for conflicts
         self.check_conflicts(&feature).await?;
-        
+
         // Add to dependency graph
         self.dependency_graph
             .write()
             .await
             .add_node(id.clone(), feature.dependencies());
-        
+
         // Store feature
         self.features.write().await.insert(id, feature);
-        
+
         Ok(())
     }
-    
+
     /// Initialize all features in dependency order
     pub async fn initialize_all(&self, context: &FeatureContext) -> Result<()> {
         let order = self.dependency_graph.read().await.topological_sort()?;
-        
+
         for feature_id in order {
             if let Some(feature) = self.features.write().await.get_mut(&feature_id) {
                 if feature.is_enabled() {
@@ -326,23 +330,23 @@ impl FeatureRegistry {
                 }
             }
         }
-        
+
         Ok(())
     }
-    
+
     /// Shutdown all features in reverse dependency order
     pub async fn shutdown_all(&self) -> Result<()> {
         let order = self.dependency_graph.read().await.reverse_topological_sort()?;
-        
+
         for feature_id in order {
             if let Some(feature) = self.features.write().await.get_mut(&feature_id) {
                 feature.shutdown().await?;
             }
         }
-        
+
         Ok(())
     }
-    
+
     /// Enable a feature and its dependencies
     pub async fn enable_feature(&self, feature_id: &str) -> Result<()> {
         // Get dependency chain
@@ -350,7 +354,7 @@ impl FeatureRegistry {
             .read()
             .await
             .get_dependencies(feature_id)?;
-        
+
         // Enable dependencies first
         for dep_id in deps {
             if let Some(dep) = self.features.write().await.get_mut(&dep_id) {
@@ -359,15 +363,15 @@ impl FeatureRegistry {
                 }
             }
         }
-        
+
         // Enable the feature
         if let Some(feature) = self.features.write().await.get_mut(feature_id) {
             feature.enable().await?;
         }
-        
+
         Ok(())
     }
-    
+
     /// Disable a feature and dependents
     pub async fn disable_feature(&self, feature_id: &str) -> Result<()> {
         // Get dependents (features that depend on this one)
@@ -375,7 +379,7 @@ impl FeatureRegistry {
             .read()
             .await
             .get_dependents(feature_id)?;
-        
+
         // Disable dependents first
         for dependent_id in dependents {
             if let Some(dependent) = self.features.write().await.get_mut(&dependent_id) {
@@ -384,19 +388,19 @@ impl FeatureRegistry {
                 }
             }
         }
-        
+
         // Disable the feature
         if let Some(feature) = self.features.write().await.get_mut(feature_id) {
             feature.disable().await?;
         }
-        
+
         Ok(())
     }
-    
+
     /// Check for conflicts
     async fn check_conflicts(&self, feature: &Box<dyn Feature>) -> Result<()> {
         let features = self.features.read().await;
-        
+
         for conflict_id in feature.conflicts() {
             if features.contains_key(conflict_id) {
                 return Err(anyhow::anyhow!(
@@ -406,7 +410,7 @@ impl FeatureRegistry {
                 ));
             }
         }
-        
+
         Ok(())
     }
 }
@@ -437,17 +441,17 @@ impl DependencyGraph {
             nodes: HashMap::new(),
         }
     }
-    
+
     pub fn add_node(&mut self, id: String, dependencies: Vec<&'static str>) {
         let deps: Vec<String> = dependencies.iter().map(|s| s.to_string()).collect();
-        
+
         // Add node
         self.nodes.insert(id.clone(), Node {
             id: id.clone(),
             dependencies: deps.clone(),
             dependents: vec![],
         });
-        
+
         // Update dependents
         for dep_id in deps {
             if let Some(dep_node) = self.nodes.get_mut(&dep_id) {
@@ -455,13 +459,13 @@ impl DependencyGraph {
             }
         }
     }
-    
+
     /// Topological sort for initialization order
     pub fn topological_sort(&self) -> Result<Vec<String>> {
         let mut in_degree: HashMap<String, usize> = HashMap::new();
         let mut queue: VecDeque<String> = VecDeque::new();
         let mut result: Vec<String> = Vec::new();
-        
+
         // Calculate in-degrees
         for (id, node) in &self.nodes {
             in_degree.insert(id.clone(), node.dependencies.len());
@@ -469,11 +473,11 @@ impl DependencyGraph {
                 queue.push_back(id.clone());
             }
         }
-        
+
         // Process queue
         while let Some(id) = queue.pop_front() {
             result.push(id.clone());
-            
+
             if let Some(node) = self.nodes.get(&id) {
                 for dependent_id in &node.dependents {
                     if let Some(degree) = in_degree.get_mut(dependent_id) {
@@ -485,22 +489,22 @@ impl DependencyGraph {
                 }
             }
         }
-        
+
         // Check for cycles
         if result.len() != self.nodes.len() {
             return Err(anyhow::anyhow!("Circular dependency detected"));
         }
-        
+
         Ok(result)
     }
-    
+
     /// Reverse topological sort for shutdown order
     pub fn reverse_topological_sort(&self) -> Result<Vec<String>> {
         let mut sorted = self.topological_sort()?;
         sorted.reverse();
         Ok(sorted)
     }
-    
+
     /// Get all dependencies of a feature (transitive)
     pub fn get_dependencies(&self, feature_id: &str) -> Result<Vec<String>> {
         let mut visited = HashSet::new();
@@ -508,7 +512,7 @@ impl DependencyGraph {
         self.collect_dependencies(feature_id, &mut visited, &mut result)?;
         Ok(result)
     }
-    
+
     fn collect_dependencies(
         &self,
         feature_id: &str,
@@ -518,19 +522,19 @@ impl DependencyGraph {
         if visited.contains(feature_id) {
             return Ok(());
         }
-        
+
         visited.insert(feature_id.to_string());
-        
+
         if let Some(node) = self.nodes.get(feature_id) {
             for dep_id in &node.dependencies {
                 self.collect_dependencies(dep_id, visited, result)?;
                 result.push(dep_id.clone());
             }
         }
-        
+
         Ok(())
     }
-    
+
     /// Get all dependents of a feature (transitive)
     pub fn get_dependents(&self, feature_id: &str) -> Result<Vec<String>> {
         let mut visited = HashSet::new();
@@ -538,7 +542,7 @@ impl DependencyGraph {
         self.collect_dependents(feature_id, &mut visited, &mut result)?;
         Ok(result)
     }
-    
+
     fn collect_dependents(
         &self,
         feature_id: &str,
@@ -548,16 +552,16 @@ impl DependencyGraph {
         if visited.contains(feature_id) {
             return Ok(());
         }
-        
+
         visited.insert(feature_id.to_string());
-        
+
         if let Some(node) = self.nodes.get(feature_id) {
             for dependent_id in &node.dependents {
                 result.push(dependent_id.clone());
                 self.collect_dependents(dependent_id, visited, result)?;
             }
         }
-        
+
         Ok(())
     }
 }
@@ -576,16 +580,16 @@ use serde::{Deserialize, Serialize};
 pub struct VaultConfig {
     /// Enable vault feature
     pub enabled: bool,
-    
+
     /// Maximum number of open vaults
     pub max_open_vaults: usize,
-    
+
     /// Auto-save interval (milliseconds)
     pub auto_save_interval: u64,
-    
+
     /// Enable crash recovery
     pub crash_recovery: bool,
-    
+
     /// Vault file extensions
     pub file_extensions: Vec<String>,
 }
@@ -702,7 +706,7 @@ impl EventBus {
             handlers: Arc::new(RwLock::new(HashMap::new())),
         }
     }
-    
+
     /// Subscribe to an event
     pub async fn subscribe<F>(&self, event_type: &str, handler: F)
     where
@@ -714,16 +718,16 @@ impl EventBus {
             .or_insert_with(Vec::new)
             .push(Arc::new(handler));
     }
-    
+
     /// Publish an event
     pub async fn publish(&self, event: Event) {
         let handlers = self.handlers.read().await;
-        
+
         if let Some(event_handlers) = handlers.get(&event.event_type) {
             for handler in event_handlers {
                 let event_clone = event.clone();
                 let handler_clone = Arc::clone(handler);
-                
+
                 tokio::spawn(async move {
                     handler_clone(event_clone).await;
                 });
@@ -782,26 +786,25 @@ interface ComponentDefinition {
 
 class ComponentRegistry {
   private components: Map<string, ComponentDefinition> = new Map();
-  
+
   register(component: ComponentDefinition): void {
     this.components.set(component.id, component);
   }
-  
+
   unregister(id: string): void {
     this.components.delete(id);
   }
-  
+
   get(id: string): ComponentDefinition | undefined {
     return this.components.get(id);
   }
-  
+
   getAll(): ComponentDefinition[] {
     return Array.from(this.components.values());
   }
-  
+
   getByRoute(route: string): ComponentDefinition | undefined {
-    return Array.from(this.components.values())
-      .find(c => c.route === route);
+    return Array.from(this.components.values()).find((c) => c.route === route);
   }
 }
 
@@ -815,21 +818,21 @@ export const componentRegistry = new ComponentRegistry();
 <script lang="ts">
   import { onMount } from 'svelte';
   import { componentRegistry } from '$lib/core/ComponentRegistry';
-  
+
   export let componentId: string;
-  
+
   let Component: any = null;
   let loading = true;
   let error: Error | null = null;
-  
+
   onMount(async () => {
     try {
       const definition = componentRegistry.get(componentId);
-      
+
       if (!definition) {
         throw new Error(`Component '${componentId}' not found`);
       }
-      
+
       // Dynamic import
       const module = await import(`../features/${definition.path}`);
       Component = module.default;
@@ -871,7 +874,7 @@ impl FeatureFlags {
             flags: Arc::new(RwLock::new(HashMap::new())),
         }
     }
-    
+
     /// Check if a feature is enabled
     pub async fn is_enabled(&self, feature_id: &str) -> bool {
         self.flags
@@ -881,24 +884,24 @@ impl FeatureFlags {
             .copied()
             .unwrap_or(false)
     }
-    
+
     /// Enable a feature
     pub async fn enable(&self, feature_id: &str) {
         self.flags.write().await.insert(feature_id.to_string(), true);
     }
-    
+
     /// Disable a feature
     pub async fn disable(&self, feature_id: &str) {
         self.flags.write().await.insert(feature_id.to_string(), false);
     }
-    
+
     /// Toggle a feature
     pub async fn toggle(&self, feature_id: &str) {
         let mut flags = self.flags.write().await;
         let current = flags.get(feature_id).copied().unwrap_or(false);
         flags.insert(feature_id.to_string(), !current);
     }
-    
+
     /// Load flags from configuration
     pub async fn load_from_config(&self, config: &Config) {
         let mut flags = self.flags.write().await;
@@ -933,18 +936,18 @@ if feature_flags.is_enabled("wikilinks").await {
 async fn test_vault_feature_isolation() {
     let registry = FeatureRegistry::new();
     let context = create_test_context().await;
-    
+
     // Register only vault feature
     let vault_feature = Box::new(VaultFeature::default());
     registry.register(vault_feature).await.unwrap();
-    
+
     // Initialize
     registry.initialize_all(&context).await.unwrap();
-    
+
     // Test vault functionality in isolation
     let vault = create_vault("test").await.unwrap();
     assert!(vault.is_open());
-    
+
     // Shutdown
     registry.shutdown_all().await.unwrap();
 }
@@ -953,21 +956,21 @@ async fn test_vault_feature_isolation() {
 async fn test_feature_can_be_disabled() {
     let registry = FeatureRegistry::new();
     let context = create_test_context().await;
-    
+
     // Register features
     registry.register(Box::new(VaultFeature::default())).await.unwrap();
     registry.register(Box::new(WikilinksFeature::default())).await.unwrap();
-    
+
     // Initialize
     registry.initialize_all(&context).await.unwrap();
-    
+
     // Disable wikilinks
     registry.disable_feature("wikilinks").await.unwrap();
-    
+
     // Vault should still work
     let vault = create_vault("test").await.unwrap();
     assert!(vault.is_open());
-    
+
     // Wikilinks should not work
     let result = resolve_wikilink("[[test]]").await;
     assert!(result.is_err());
@@ -995,7 +998,7 @@ impl FeatureMigration {
             _ => Ok(()),
         }
     }
-    
+
     async fn migrate_0_1_to_0_2(&self, context: &MigrationContext) -> Result<()> {
         // Feature-specific migration logic
         // Only affects this feature's data
@@ -1008,42 +1011,53 @@ impl FeatureMigration {
 
 ### Feature Documentation Template
 
-```markdown
+````markdown
 # Feature: [Feature Name]
 
 ## Overview
+
 Brief description of the feature.
 
 ## Dependencies
+
 - Core features required
 - Optional features that enhance this feature
 
 ## Configuration
+
 ```toml
 [features.feature_name]
 option1 = value1
 option2 = value2
 ```
+````
 
 ## API
+
 ### Commands
+
 - `feature:command1` - Description
 - `feature:command2` - Description
 
 ### Events
+
 - `feature:event1` - Emitted when...
 - `feature:event2` - Emitted when...
 
 ## UI Components
+
 - `FeatureComponent1` - Description
 - `FeatureComponent2` - Description
 
 ## Testing
+
 How to test this feature in isolation.
 
 ## Migration
+
 Breaking changes and migration guides.
-```
+
+````
 
 ## Best Practices
 
@@ -1097,9 +1111,10 @@ src/core/interfaces/ISearch.rs
 - Requires: vault, filesystem
 - Optional: wikilinks (for link search)
 - Conflicts: none
-```
+````
 
 ### 2. Implementation Phase
+
 ```bash
 # Create feature structure
 src/features/search/
@@ -1119,6 +1134,7 @@ registry.register(Box::new(SearchFeature::default()))
 ```
 
 ### 3. Testing Phase
+
 ```bash
 # Unit tests
 cargo test --package bismuth-search
@@ -1131,6 +1147,7 @@ cargo test --test search_isolation
 ```
 
 ### 4. Documentation Phase
+
 ```bash
 # Feature documentation
 docs/features/search.md
@@ -1143,6 +1160,7 @@ docs/user-guide/search.md
 ```
 
 ### 5. Release Phase
+
 ```bash
 # Feature flag in config
 [features.search]
@@ -1172,7 +1190,7 @@ This modular architecture ensures:
 ✅ **Clear Dependencies** - Explicit dependency management  
 ✅ **Event-Driven** - Loose coupling between features  
 ✅ **Graceful Degradation** - App works with features disabled  
-✅ **Production Ready** - Battle-tested patterns  
+✅ **Production Ready** - Battle-tested patterns
 
 **Result**: A maintainable, scalable codebase where features can be developed, tested, and deployed independently with minimal risk to the overall application.
 

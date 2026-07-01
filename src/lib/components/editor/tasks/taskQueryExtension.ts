@@ -5,12 +5,7 @@
  * and renders results as a widget decoration below the code block.
  */
 
-import {
-  Decoration,
-  EditorView,
-  ViewPlugin,
-  WidgetType,
-} from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin, WidgetType } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { executeTaskQuery } from '@/features/tasks';
@@ -29,9 +24,7 @@ class TaskQueryWidget extends WidgetType {
   private error: string | null = null;
   private loading = true;
 
-  constructor(
-    private query: string,
-  ) {
+  constructor(private query: string) {
     super();
   }
 
@@ -89,10 +82,14 @@ function renderResult(result: TaskQueryResult): string {
       html += `<div class="tq-group-header">${escapeHtml(group.name)} <span class="tq-count">(${group.count})</span></div>`;
     }
     for (const task of group.tasks) {
-      const statusIcon = task.status === 'done' ? '&#10003;'
-        : task.status === 'cancelled' ? '&#215;'
-        : task.status === 'inprogress' ? '/'
-        : '&#9675;';
+      const statusIcon =
+        task.status === 'done'
+          ? '&#10003;'
+          : task.status === 'cancelled'
+            ? '&#215;'
+            : task.status === 'inprogress'
+              ? '/'
+              : '&#9675;';
       const doneClass = task.status === 'done' ? ' tq-done' : '';
       const cancelledClass = task.status === 'cancelled' ? ' tq-cancelled' : '';
 
@@ -104,7 +101,7 @@ function renderResult(result: TaskQueryResult): string {
         meta += `<span class="tq-date">Due: ${task.due_date}</span>`;
       }
       if (!result.display.hidden_fields.includes('Tags') && task.tags.length > 0) {
-        meta += task.tags.map(t => `<span class="tq-tag">#${escapeHtml(t)}</span>`).join('');
+        meta += task.tags.map((t) => `<span class="tq-tag">#${escapeHtml(t)}</span>`).join('');
       }
 
       const text = result.display.short_mode
@@ -122,7 +119,6 @@ function renderResult(result: TaskQueryResult): string {
   html += `<div class="tq-footer">${result.total_count} task${result.total_count !== 1 ? 's' : ''}</div>`;
   return html;
 }
-
 
 function findTasksBlocks(view: EditorView): TasksBlock[] {
   const blocks: TasksBlock[] = [];
@@ -181,11 +177,7 @@ export function taskQueryExtension(contextPath?: string) {
               widget.setResult(cached);
             }
           }
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         this.decorations = builder.finish();
@@ -216,6 +208,6 @@ export function taskQueryExtension(contextPath?: string) {
     },
     {
       decorations: (v) => v.decorations,
-    },
+    }
   );
 }

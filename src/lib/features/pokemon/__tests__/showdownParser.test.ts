@@ -10,7 +10,7 @@ import itemsJson from '../../../config/pokemon/gen9-items.json';
 
 const pokedex = pokedexJson as unknown as Record<string, PokemonSpecies>;
 const movesDb = movesJson as Record<string, Move>;
-const itemsDb  = itemsJson as Record<string, Item>;
+const itemsDb = itemsJson as Record<string, Item>;
 
 const FULL_PASTE = `
 Garchomp @ Choice Band

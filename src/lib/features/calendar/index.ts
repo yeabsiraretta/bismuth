@@ -6,18 +6,37 @@
 
 // Types
 export type {
-  CalendarCategory, CalendarEvent, CalendarViewMode, CalendarItemType,
-  RecurrenceRule, IcsFeedConfig, IcsEvent, ClockRecord, ClockStatus,
-  PlannerEntry, PlannerSettings,
+  CalendarCategory,
+  CalendarEvent,
+  CalendarViewMode,
+  CalendarItemType,
+  RecurrenceRule,
+  IcsFeedConfig,
+  IcsEvent,
+  ClockRecord,
+  ClockStatus,
+  PlannerEntry,
+  PlannerSettings,
 } from './types';
 export { DEFAULT_CALENDAR_CATEGORIES, DEFAULT_PLANNER_SETTINGS } from './types';
 
 // Prisma types
 export type {
-  FrontmatterEventConfig, FrontmatterEvent, EventPreset,
-  BatchAction, BatchOperation, UndoEntry, UndoActionType,
-  DayCapacity, CategoryStat, CalendarStats, StatsTimeRange,
-  GanttTask, GanttGroup, SmartCategoryRule, PrismaSettings,
+  FrontmatterEventConfig,
+  FrontmatterEvent,
+  EventPreset,
+  BatchAction,
+  BatchOperation,
+  UndoEntry,
+  UndoActionType,
+  DayCapacity,
+  CategoryStat,
+  CalendarStats,
+  StatsTimeRange,
+  GanttTask,
+  GanttGroup,
+  SmartCategoryRule,
+  PrismaSettings,
 } from './types/prisma';
 export { DEFAULT_FM_EVENT_CONFIG, DEFAULT_PRISMA_SETTINGS } from './types/prisma';
 
@@ -76,16 +95,14 @@ export {
 } from './services/plannerParser';
 
 // Services — Planner loader
-export {
-  loadPlannerEvents,
-  startPlannerSync,
-  stopPlannerSync,
-} from './services/plannerLoader';
+export { loadPlannerEvents, startPlannerSync, stopPlannerSync } from './services/plannerLoader';
 
 // Services — Frontmatter events
 export {
-  parseFrontmatterDate, computeDuration,
-  extractFrontmatterEvent, extractAllFrontmatterEvents,
+  parseFrontmatterDate,
+  computeDuration,
+  extractFrontmatterEvent,
+  extractAllFrontmatterEvents,
   applySmartCategories,
 } from './services/frontmatterEvents';
 export type { NoteWithFrontmatter } from './services/frontmatterEvents';
@@ -93,29 +110,57 @@ export type { NoteWithFrontmatter } from './services/frontmatterEvents';
 // Services — Event presets
 export {
   eventPresets,
-  createEventFromPreset, presetToFrontmatter,
-  addPreset, removePreset, updatePreset, resetPresets, getPreset,
+  createEventFromPreset,
+  presetToFrontmatter,
+  addPreset,
+  removePreset,
+  updatePreset,
+  resetPresets,
+  getPreset,
 } from './services/eventPresets';
 
 // Services — Calendar stats
 export {
-  filterEventsByRange, computeCategoryBreakdown,
-  computeStreaks, findBusiestDay, computeCalendarStats,
+  filterEventsByRange,
+  computeCategoryBreakdown,
+  computeStreaks,
+  findBusiestDay,
+  computeCalendarStats,
 } from './services/calendarStats';
 
 // Stores — Batch ops & undo
 export {
-  selectedEventIds, selectionMode, selectedCount,
-  toggleEventSelection, selectEvent, deselectEvent, clearSelection, selectAll,
-  undoStack, redoStack, canUndo, canRedo, undo, redo,
-  batchDelete, batchComplete, batchDuplicate, batchShift, batchMove,
-  trackedAdd, trackedDelete, trackedUpdate,
+  selectedEventIds,
+  selectionMode,
+  selectedCount,
+  toggleEventSelection,
+  selectEvent,
+  deselectEvent,
+  clearSelection,
+  selectAll,
+  undoStack,
+  redoStack,
+  canUndo,
+  canRedo,
+  undo,
+  redo,
+  batchDelete,
+  batchComplete,
+  batchDuplicate,
+  batchShift,
+  batchMove,
+  trackedAdd,
+  trackedDelete,
+  trackedUpdate,
 } from './stores/batchOps';
 
 // Stores — Capacity
 export {
-  todayCapacity, weekCapacity, weekTotals,
-  formatCapacityTime, utilizationColor,
+  todayCapacity,
+  weekCapacity,
+  weekTotals,
+  formatCapacityTime,
+  utilizationColor,
 } from './stores/capacityStore';
 
 // Stores — Heatmap

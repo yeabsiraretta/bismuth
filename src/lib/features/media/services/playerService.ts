@@ -46,13 +46,13 @@ export function parseTimestamp(ts: string): number {
 /** Parse SRT timestamp format (HH:MM:SS,mmm). */
 function parseSrtTime(ts: string): number {
   const [time, ms] = ts.split(',');
-  return parseTimestamp(time) + (parseInt(ms || '0', 10) / 1000);
+  return parseTimestamp(time) + parseInt(ms || '0', 10) / 1000;
 }
 
 /** Parse VTT timestamp format (HH:MM:SS.mmm or MM:SS.mmm). */
 function parseVttTime(ts: string): number {
   const [time, ms] = ts.split('.');
-  return parseTimestamp(time) + (parseInt(ms || '0', 10) / 1000);
+  return parseTimestamp(time) + parseInt(ms || '0', 10) / 1000;
 }
 
 // ─── Media URL / path parsing ────────────────────────────────────────────────
@@ -100,9 +100,22 @@ export function parseMediaSource(urlOrPath: string): MediaSource | null {
 
   const isRemote = /^https?:\/\//.test(urlOrPath);
   const playableUrl = isRemote ? cleanUrl : `file://${cleanUrl}`;
-  const title = cleanUrl.split('/').pop()?.replace(/\.[^.]+$/, '') ?? 'Untitled';
+  const title =
+    cleanUrl
+      .split('/')
+      .pop()
+      ?.replace(/\.[^.]+$/, '') ?? 'Untitled';
 
-  return { url: urlOrPath, playableUrl, type, title, startTime: start, endTime: end, loop, autoplay };
+  return {
+    url: urlOrPath,
+    playableUrl,
+    type,
+    title,
+    startTime: start,
+    endTime: end,
+    loop,
+    autoplay,
+  };
 }
 
 // ─── Transcript parsing ──────────────────────────────────────────────────────
@@ -112,7 +125,7 @@ export function parseSrt(content: string): TranscriptCue[] {
   const blocks = content.trim().split(/\n\n+/);
   const cues: TranscriptCue[] = [];
   for (const block of blocks) {
-    const lines = block.split('\n').filter(l => l.trim());
+    const lines = block.split('\n').filter((l) => l.trim());
     if (lines.length < 3) continue;
     const index = parseInt(lines[0], 10);
     if (isNaN(index)) continue;
@@ -123,7 +136,10 @@ export function parseSrt(content: string): TranscriptCue[] {
       index,
       startTime: parseSrtTime(timeMatch[1]),
       endTime: parseSrtTime(timeMatch[2]),
-      text: lines.slice(2).join(' ').replace(/<[^>]+>/g, ''),
+      text: lines
+        .slice(2)
+        .join(' ')
+        .replace(/<[^>]+>/g, ''),
     });
   }
   return cues;
@@ -200,7 +216,7 @@ export function parseTimestampLink(text: string): TimestampLink | null {
 /** Capture the current frame of a video element as a data URL. */
 export function captureVideoFrame(
   video: HTMLVideoElement,
-  sourceMedia: string,
+  sourceMedia: string
 ): ScreenshotCapture | null {
   if (!video.videoWidth || !video.videoHeight) return null;
   const canvas = document.createElement('canvas');

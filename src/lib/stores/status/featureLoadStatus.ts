@@ -30,7 +30,7 @@ const activeTimers = new Map<string, ReturnType<typeof setInterval>>();
 function startElapsedTimer(featureId: string): void {
   stopElapsedTimer(featureId);
   const interval = setInterval(() => {
-    featureStatuses.update(map => {
+    featureStatuses.update((map) => {
       const entry = map.get(featureId);
       if (!entry || entry.state !== 'loading' || !entry.startedAt) return map;
       const next = new Map(map);
@@ -60,7 +60,7 @@ function stopElapsedTimer(featureId: string): void {
 /** Mark a feature as loading and register a status bar item. */
 export function markLoading(featureId: string): void {
   const now = performance.now();
-  featureStatuses.update(map => {
+  featureStatuses.update((map) => {
     const next = new Map(map);
     next.set(featureId, { state: 'loading', elapsedMs: 0, startedAt: now });
     return next;
@@ -82,7 +82,7 @@ export function markLoaded(featureId: string): void {
   stopElapsedTimer(featureId);
   const entry = get(featureStatuses).get(featureId);
   const elapsed = entry?.startedAt ? Math.round(performance.now() - entry.startedAt) : 0;
-  featureStatuses.update(map => {
+  featureStatuses.update((map) => {
     const next = new Map(map);
     next.set(featureId, { state: 'loaded', elapsedMs: elapsed });
     return next;
@@ -96,7 +96,7 @@ export function markError(featureId: string, error: string): void {
   stopElapsedTimer(featureId);
   const entry = get(featureStatuses).get(featureId);
   const elapsed = entry?.startedAt ? Math.round(performance.now() - entry.startedAt) : 0;
-  featureStatuses.update(map => {
+  featureStatuses.update((map) => {
     const next = new Map(map);
     next.set(featureId, { state: 'error', elapsedMs: elapsed, error });
     return next;
@@ -113,7 +113,7 @@ export function markError(featureId: string, error: string): void {
 /** Mark a feature as unloaded (removed from cache). */
 export function markUnloaded(featureId: string): void {
   stopElapsedTimer(featureId);
-  featureStatuses.update(map => {
+  featureStatuses.update((map) => {
     const next = new Map(map);
     next.set(featureId, { state: 'unloaded', elapsedMs: 0 });
     return next;
@@ -124,7 +124,7 @@ export function markUnloaded(featureId: string): void {
 /** Reset a feature back to idle. */
 export function markIdle(featureId: string): void {
   stopElapsedTimer(featureId);
-  featureStatuses.update(map => {
+  featureStatuses.update((map) => {
     const next = new Map(map);
     next.delete(featureId);
     return next;
@@ -139,19 +139,17 @@ export function getFeatureLoadState(featureId: string): FeatureLoadState {
 // ---- Derived stores ----
 
 /** All currently loading features. */
-export const loadingFeatures = derived(featureStatuses, $map =>
-  [...$map.entries()].filter(([, s]) => s.state === 'loading').map(([id]) => id),
+export const loadingFeatures = derived(featureStatuses, ($map) =>
+  [...$map.entries()].filter(([, s]) => s.state === 'loading').map(([id]) => id)
 );
 
 /** Number of currently loading features. */
-export const loadingCount = derived(loadingFeatures, $f => $f.length);
+export const loadingCount = derived(loadingFeatures, ($f) => $f.length);
 
 /** All loaded features. */
-export const loadedFeatures = derived(featureStatuses, $map =>
-  [...$map.entries()].filter(([, s]) => s.state === 'loaded').map(([id]) => id),
+export const loadedFeatures = derived(featureStatuses, ($map) =>
+  [...$map.entries()].filter(([, s]) => s.state === 'loaded').map(([id]) => id)
 );
 
 /** Reactive map for UI consumption. */
-export const featureLoadStates = derived(featureStatuses, $map =>
-  Object.fromEntries($map),
-);
+export const featureLoadStates = derived(featureStatuses, ($map) => Object.fromEntries($map));

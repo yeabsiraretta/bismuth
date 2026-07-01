@@ -106,7 +106,7 @@ export function getLevelFromXp(totalXp: number): number {
 
 /** Get the tier for a given level. */
 export function getTierForLevel(level: number): Tier {
-  return TIERS.find(t => level >= t.minLevel && level <= t.maxLevel) || TIERS[0];
+  return TIERS.find((t) => level >= t.minLevel && level <= t.maxLevel) || TIERS[0];
 }
 
 /** XP values for different activities */
@@ -138,45 +138,219 @@ export interface Achievement {
 
 export const ACHIEVEMENTS: Achievement[] = [
   // XP milestones
-  { id: 'xp_100', name: 'Getting Started', description: 'Earn 100 XP', icon: 'target', condition: p => p.totalXp >= 100 },
-  { id: 'xp_500', name: 'Getting Warmed Up', description: 'Earn 500 XP', icon: 'zap', condition: p => p.totalXp >= 500 },
-  { id: 'xp_2000', name: 'In the Zone', description: 'Earn 2,000 XP', icon: 'zap', condition: p => p.totalXp >= 2000 },
-  { id: 'xp_5000', name: 'Veteran', description: 'Earn 5,000 XP', icon: 'award', condition: p => p.totalXp >= 5000 },
-  { id: 'xp_10000', name: 'Established', description: 'Earn 10,000 XP', icon: 'star', condition: p => p.totalXp >= 10000 },
-  { id: 'xp_25000', name: 'Distinguished', description: 'Earn 25,000 XP', icon: 'shield', condition: p => p.totalXp >= 25000 },
-  { id: 'xp_50000', name: 'Eminent', description: 'Earn 50,000 XP', icon: 'crown', condition: p => p.totalXp >= 50000 },
+  {
+    id: 'xp_100',
+    name: 'Getting Started',
+    description: 'Earn 100 XP',
+    icon: 'target',
+    condition: (p) => p.totalXp >= 100,
+  },
+  {
+    id: 'xp_500',
+    name: 'Getting Warmed Up',
+    description: 'Earn 500 XP',
+    icon: 'zap',
+    condition: (p) => p.totalXp >= 500,
+  },
+  {
+    id: 'xp_2000',
+    name: 'In the Zone',
+    description: 'Earn 2,000 XP',
+    icon: 'zap',
+    condition: (p) => p.totalXp >= 2000,
+  },
+  {
+    id: 'xp_5000',
+    name: 'Veteran',
+    description: 'Earn 5,000 XP',
+    icon: 'award',
+    condition: (p) => p.totalXp >= 5000,
+  },
+  {
+    id: 'xp_10000',
+    name: 'Established',
+    description: 'Earn 10,000 XP',
+    icon: 'star',
+    condition: (p) => p.totalXp >= 10000,
+  },
+  {
+    id: 'xp_25000',
+    name: 'Distinguished',
+    description: 'Earn 25,000 XP',
+    icon: 'shield',
+    condition: (p) => p.totalXp >= 25000,
+  },
+  {
+    id: 'xp_50000',
+    name: 'Eminent',
+    description: 'Earn 50,000 XP',
+    icon: 'crown',
+    condition: (p) => p.totalXp >= 50000,
+  },
 
   // Activity counts
-  { id: 'tasks_10', name: 'Task Slayer', description: 'Complete 10 tasks', icon: 'check-square', condition: p => countActivities(p, 'task_completed') >= 10 },
-  { id: 'tasks_50', name: 'Completionist', description: 'Complete 50 tasks', icon: 'award', condition: p => countActivities(p, 'task_completed') >= 50 },
-  { id: 'tasks_200', name: 'Relentless', description: 'Complete 200 tasks', icon: 'trending-up', condition: p => countActivities(p, 'task_completed') >= 200 },
-  { id: 'notes_10', name: 'First Ideas', description: 'Create 10 notes', icon: 'file-text', condition: p => countActivities(p, 'note_created') >= 10 },
-  { id: 'notes_50', name: 'Zettelkasten', description: 'Create 50 notes', icon: 'layers', condition: p => countActivities(p, 'note_created') >= 50 },
-  { id: 'notes_200', name: 'Grand Archive', description: 'Create 200 notes', icon: 'book', condition: p => countActivities(p, 'note_created') >= 200 },
-  { id: 'writing_5k', name: 'Wordsmith', description: 'Write 5,000 words', icon: 'edit-3', condition: p => p.wordCountPeak >= 5000 },
-  { id: 'writing_25k', name: 'Marathon Writer', description: 'Write 25,000 words', icon: 'edit-3', condition: p => p.wordCountPeak >= 25000 },
+  {
+    id: 'tasks_10',
+    name: 'Task Slayer',
+    description: 'Complete 10 tasks',
+    icon: 'check-square',
+    condition: (p) => countActivities(p, 'task_completed') >= 10,
+  },
+  {
+    id: 'tasks_50',
+    name: 'Completionist',
+    description: 'Complete 50 tasks',
+    icon: 'award',
+    condition: (p) => countActivities(p, 'task_completed') >= 50,
+  },
+  {
+    id: 'tasks_200',
+    name: 'Relentless',
+    description: 'Complete 200 tasks',
+    icon: 'trending-up',
+    condition: (p) => countActivities(p, 'task_completed') >= 200,
+  },
+  {
+    id: 'notes_10',
+    name: 'First Ideas',
+    description: 'Create 10 notes',
+    icon: 'file-text',
+    condition: (p) => countActivities(p, 'note_created') >= 10,
+  },
+  {
+    id: 'notes_50',
+    name: 'Zettelkasten',
+    description: 'Create 50 notes',
+    icon: 'layers',
+    condition: (p) => countActivities(p, 'note_created') >= 50,
+  },
+  {
+    id: 'notes_200',
+    name: 'Grand Archive',
+    description: 'Create 200 notes',
+    icon: 'book',
+    condition: (p) => countActivities(p, 'note_created') >= 200,
+  },
+  {
+    id: 'writing_5k',
+    name: 'Wordsmith',
+    description: 'Write 5,000 words',
+    icon: 'edit-3',
+    condition: (p) => p.wordCountPeak >= 5000,
+  },
+  {
+    id: 'writing_25k',
+    name: 'Marathon Writer',
+    description: 'Write 25,000 words',
+    icon: 'edit-3',
+    condition: (p) => p.wordCountPeak >= 25000,
+  },
 
   // Streaks
-  { id: 'streak_3', name: 'On a Roll', description: '3-day streak', icon: 'activity', condition: p => p.streak >= 3 },
-  { id: 'streak_7', name: 'Week Warrior', description: '7-day streak', icon: 'star', condition: p => p.streak >= 7 },
-  { id: 'streak_30', name: 'Monthly Master', description: '30-day streak', icon: 'shield', condition: p => p.streak >= 30 },
-  { id: 'streak_100', name: 'Centurion', description: '100-day streak', icon: 'crown', condition: p => p.streak >= 100 },
+  {
+    id: 'streak_3',
+    name: 'On a Roll',
+    description: '3-day streak',
+    icon: 'activity',
+    condition: (p) => p.streak >= 3,
+  },
+  {
+    id: 'streak_7',
+    name: 'Week Warrior',
+    description: '7-day streak',
+    icon: 'star',
+    condition: (p) => p.streak >= 7,
+  },
+  {
+    id: 'streak_30',
+    name: 'Monthly Master',
+    description: '30-day streak',
+    icon: 'shield',
+    condition: (p) => p.streak >= 30,
+  },
+  {
+    id: 'streak_100',
+    name: 'Centurion',
+    description: '100-day streak',
+    icon: 'crown',
+    condition: (p) => p.streak >= 100,
+  },
 
   // First actions
-  { id: 'first_task', name: 'First Steps', description: 'Complete your first task', icon: 'play', condition: p => countActivities(p, 'task_completed') >= 1 },
-  { id: 'first_note', name: 'First Idea', description: 'Create your first note', icon: 'file-plus', condition: p => countActivities(p, 'note_created') >= 1 },
-  { id: 'first_milestone', name: 'Milestone Unlocked', description: 'Complete a milestone', icon: 'flag', condition: p => countActivities(p, 'milestone') >= 1 },
-  { id: 'first_session', name: 'Deep Focus', description: 'Earn a writing session bonus', icon: 'eye', condition: p => countActivities(p, 'writing_session') >= 1 },
+  {
+    id: 'first_task',
+    name: 'First Steps',
+    description: 'Complete your first task',
+    icon: 'play',
+    condition: (p) => countActivities(p, 'task_completed') >= 1,
+  },
+  {
+    id: 'first_note',
+    name: 'First Idea',
+    description: 'Create your first note',
+    icon: 'file-plus',
+    condition: (p) => countActivities(p, 'note_created') >= 1,
+  },
+  {
+    id: 'first_milestone',
+    name: 'Milestone Unlocked',
+    description: 'Complete a milestone',
+    icon: 'flag',
+    condition: (p) => countActivities(p, 'milestone') >= 1,
+  },
+  {
+    id: 'first_session',
+    name: 'Deep Focus',
+    description: 'Earn a writing session bonus',
+    icon: 'eye',
+    condition: (p) => countActivities(p, 'writing_session') >= 1,
+  },
 
   // Level-based
-  { id: 'level_5', name: 'Awakened', description: 'Reach Level 5', icon: 'activity', condition: p => getLevelFromXp(p.totalXp) >= 5 },
-  { id: 'level_10', name: 'Kindled', description: 'Reach Level 10', icon: 'zap', condition: p => getLevelFromXp(p.totalXp) >= 10 },
-  { id: 'level_20', name: 'Risen', description: 'Reach Level 20', icon: 'trending-up', condition: p => getLevelFromXp(p.totalXp) >= 20 },
-  { id: 'level_30', name: 'Luminary', description: 'Reach Level 30', icon: 'sun', condition: p => getLevelFromXp(p.totalXp) >= 30 },
-  { id: 'level_50', name: 'Dragon', description: 'Reach Level 50', icon: 'shield', condition: p => getLevelFromXp(p.totalXp) >= 50 },
-  { id: 'level_60', name: 'Nova', description: 'Reach Level 60', icon: 'crown', condition: p => getLevelFromXp(p.totalXp) >= 60 },
+  {
+    id: 'level_5',
+    name: 'Awakened',
+    description: 'Reach Level 5',
+    icon: 'activity',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 5,
+  },
+  {
+    id: 'level_10',
+    name: 'Kindled',
+    description: 'Reach Level 10',
+    icon: 'zap',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 10,
+  },
+  {
+    id: 'level_20',
+    name: 'Risen',
+    description: 'Reach Level 20',
+    icon: 'trending-up',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 20,
+  },
+  {
+    id: 'level_30',
+    name: 'Luminary',
+    description: 'Reach Level 30',
+    icon: 'sun',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 30,
+  },
+  {
+    id: 'level_50',
+    name: 'Dragon',
+    description: 'Reach Level 50',
+    icon: 'shield',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 50,
+  },
+  {
+    id: 'level_60',
+    name: 'Nova',
+    description: 'Reach Level 60',
+    icon: 'crown',
+    condition: (p) => getLevelFromXp(p.totalXp) >= 60,
+  },
 ];
 
 function countActivities(profile: QuestProfile, type: ActivityType): number {
-  return profile.activityLog.filter(a => a.type === type).length;
+  return profile.activityLog.filter((a) => a.type === type).length;
 }

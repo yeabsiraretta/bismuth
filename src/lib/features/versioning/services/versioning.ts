@@ -18,9 +18,12 @@ import type { DiffMetrics, VersionEntry } from '../types/versioning';
  */
 export async function computeDiffMetrics(
   oldContent: string,
-  newContent: string,
+  newContent: string
 ): Promise<DiffMetrics> {
-  log.debug('Versioning: computeDiffMetrics', { oldLen: oldContent.length, newLen: newContent.length });
+  log.debug('Versioning: computeDiffMetrics', {
+    oldLen: oldContent.length,
+    newLen: newContent.length,
+  });
   return ipcCall<DiffMetrics>('compute_version_diff_metrics', {
     oldContent,
     newContent,
@@ -32,10 +35,7 @@ export async function computeDiffMetrics(
  *
  * Delegates to the Rust `bump_version` command.
  */
-export async function bumpVersion(
-  currentVersion: string,
-  metrics: DiffMetrics,
-): Promise<string> {
+export async function bumpVersion(currentVersion: string, metrics: DiffMetrics): Promise<string> {
   log.debug('Versioning: bumpVersion', { currentVersion });
   return ipcCall<string>('bump_version', { currentVersion, metrics });
 }
@@ -51,7 +51,7 @@ export async function saveDiff(
   fileId: string,
   oldContent: string,
   newContent: string,
-  version: string,
+  version: string
 ): Promise<VersionEntry> {
   log.debug('Versioning: saveDiff', { fileId, version });
   return ipcCall<VersionEntry>('save_note_version', {
@@ -66,10 +66,7 @@ export async function saveDiff(
 /**
  * List stored versions for `fileId`, newest-first, capped at 50.
  */
-export async function listVersions(
-  vaultRoot: string,
-  fileId: string,
-): Promise<VersionEntry[]> {
+export async function listVersions(vaultRoot: string, fileId: string): Promise<VersionEntry[]> {
   log.debug('Versioning: listVersions', { fileId });
   return ipcCall<VersionEntry[]>('list_note_versions', { vaultRoot, fileId });
 }
@@ -83,7 +80,7 @@ export async function listVersions(
 export async function getNoteDiff(
   vaultRoot: string,
   fileId: string,
-  version: string,
+  version: string
 ): Promise<string> {
   log.debug('Versioning: getNoteDiff', { fileId, version });
   return ipcCall<string>('get_note_diff', { vaultRoot, fileId, version });

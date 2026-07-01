@@ -8,12 +8,7 @@ export type { BreadcrumbSegment, BreadcrumbContext } from './types';
 export { PARENT_KEYS, PREV_KEYS, NEXT_KEYS } from './types';
 
 // Services
-export {
-  buildTrail,
-  buildContext,
-  parseWikilinkValue,
-  resolveSiblings,
-} from './breadcrumbService';
+export { buildTrail, buildContext, parseWikilinkValue, resolveSiblings } from './breadcrumbService';
 
 // Stores
 export { breadcrumbContext } from './breadcrumbStore';

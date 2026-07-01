@@ -1,8 +1,5 @@
 import { writable, derived, get } from 'svelte/store';
-import {
-  openOrCreatePeriodicNote,
-  getPeriodicNotesForRange,
-} from '../services/periodic';
+import { openOrCreatePeriodicNote, getPeriodicNotesForRange } from '../services/periodic';
 import { openNote } from '@/appNavigation';
 import type { PeriodType, PeriodicSettings } from '../types';
 import { DEFAULT_PERIODIC_SETTINGS } from '../types/defaults';
@@ -14,7 +11,9 @@ function loadSettings(): PeriodicSettings {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return { ...DEFAULT_PERIODIC_SETTINGS, ...JSON.parse(stored) };
-  } catch (e) { log.warn('Failed to load periodic settings from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load periodic settings from localStorage', { error: String(e) });
+  }
   return { ...DEFAULT_PERIODIC_SETTINGS };
 }
 
@@ -41,11 +40,21 @@ export function navigatePrevious(): void {
   const type = get(activePeriodType);
   const date = new Date(get(activeDate));
   switch (type) {
-    case 'daily': date.setDate(date.getDate() - 1); break;
-    case 'weekly': date.setDate(date.getDate() - 7); break;
-    case 'monthly': date.setMonth(date.getMonth() - 1); break;
-    case 'quarterly': date.setMonth(date.getMonth() - 3); break;
-    case 'yearly': date.setFullYear(date.getFullYear() - 1); break;
+    case 'daily':
+      date.setDate(date.getDate() - 1);
+      break;
+    case 'weekly':
+      date.setDate(date.getDate() - 7);
+      break;
+    case 'monthly':
+      date.setMonth(date.getMonth() - 1);
+      break;
+    case 'quarterly':
+      date.setMonth(date.getMonth() - 3);
+      break;
+    case 'yearly':
+      date.setFullYear(date.getFullYear() - 1);
+      break;
   }
   activeDate.set(date.toISOString().slice(0, 10));
 }
@@ -55,11 +64,21 @@ export function navigateNext(): void {
   const type = get(activePeriodType);
   const date = new Date(get(activeDate));
   switch (type) {
-    case 'daily': date.setDate(date.getDate() + 1); break;
-    case 'weekly': date.setDate(date.getDate() + 7); break;
-    case 'monthly': date.setMonth(date.getMonth() + 1); break;
-    case 'quarterly': date.setMonth(date.getMonth() + 3); break;
-    case 'yearly': date.setFullYear(date.getFullYear() + 1); break;
+    case 'daily':
+      date.setDate(date.getDate() + 1);
+      break;
+    case 'weekly':
+      date.setDate(date.getDate() + 7);
+      break;
+    case 'monthly':
+      date.setMonth(date.getMonth() + 1);
+      break;
+    case 'quarterly':
+      date.setMonth(date.getMonth() + 3);
+      break;
+    case 'yearly':
+      date.setFullYear(date.getFullYear() + 1);
+      break;
   }
   activeDate.set(date.toISOString().slice(0, 10));
 }
@@ -115,8 +134,10 @@ export async function fetchNotesForMonth(year: number, month: number): Promise<v
 }
 
 /** Persist settings on change */
-periodicSettings.subscribe(settings => {
+periodicSettings.subscribe((settings) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-  } catch (e) { log.warn('Failed to persist periodic settings to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist periodic settings to localStorage', { error: String(e) });
+  }
 });

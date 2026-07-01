@@ -26,17 +26,20 @@ Throughout this command, complex analysis steps offer **optional sub-agent deleg
 **Syntax: `[OPTIONAL SUB-AGENT DELEGATION]`**
 
 When you see this marker in a step:
+
 - LLM assesses complexity: file count, lines of code, decision count, etc.
 - LLM decides: Handle inline (fast path) OR delegate to sub-agent (thorough path)
 - Inline preferred: Simple codebases, small changes, quick turnaround
 - Sub-agent preferred: Large codebases, complex analysis, refactors, deep synthesis
 
 **Decision criteria:**
+
 - Inline: < 50 files AND < 10,000 lines
 - Sub-agent: ≥ 50 files OR ≥ 10,000 lines OR > 20 memory documents
 - LLM override: Explicit `--inline` or `--delegate` flags override auto-detection
 
 **Sub-agents available when provided by the host environment or project:**
+
 - `/speckit.memory-md.plan-with-memory` — Memory synthesis and filtering
 - Custom project commands such as `/analyze-sonar-violations` for SonarLint scanning
 
@@ -47,11 +50,13 @@ This pattern enables flexibility: fast execution for typical PRs, powerful execu
 ## Framework-Agnostic vs Framework-Aware Review
 
 **Framework-Agnostic Foundation** (always applied):
+
 - Universal boundary concepts (Entry, App, Domain, Data, External)
 - Core governance principles apply to any architecture
 - Violations are framework-independent
 
 **Framework-Aware Annotations** (if preset installed):
+
 - If project used preset during init (e.g., Laravel, Django, NestJS):
   - Review vocabulary becomes framework-specific
   - Patterns are mapped to framework conventions
@@ -59,6 +64,7 @@ This pattern enables flexibility: fast execution for typical PRs, powerful execu
   - BUT underlying violations remain identical
 
 **Coexistence Model**:
+
 - Review always starts framework-agnostic
 - If preset detected in `.specify/presets/` or the Constitution: Enhance with framework vocabulary
 - Violations list remains the same; explanation becomes framework-native
@@ -79,39 +85,42 @@ This pattern enables flexibility: fast execution for typical PRs, powerful execu
 Review any available artifacts from these common locations. **IMPORTANT**: You MUST read these files explicitly using your file-reading tools (absolute or relative paths). Do not rely solely on workspace search or semantic indexers, as these files are often in `.gitignore` and may be excluded from default context:
 
 1. **Governance & Security Constitution**:
-    - `.specify/memory/constitution.md`
-    - `.specify/memory/security_constitution.md`
+   - `.specify/memory/constitution.md`
+   - `.specify/memory/security_constitution.md`
 
 2. **Architecture Constitution**:
-    - `.specify/memory/architecture_constitution.md`
+   - `.specify/memory/architecture_constitution.md`
 
 3. **flash-mem Optimizer (Recommended)**:
 
-    #### SQLite / MCP Flow (Required for `flash-mem`)
-    Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP tools to retrieve context. Do not read the `.md` memory files directly, as they are only backups.
+   #### SQLite / MCP Flow (Required for `flash-mem`)
 
-    1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "architecture constraints boundaries dependencies coupling abstractions"`.
-    2. **Read Synthesis**: Read `specs/<feature>/memory-synthesis.md` to identify the "Why" behind the current design.
-    3. **Token Report**: Execute the `speckit_memory_token_report` MCP tool provided by `flash-mem` with `feature: "<feature>"` and display the token savings in the report.
+   Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP tools to retrieve context. Do not read the `.md` memory files directly, as they are only backups.
 
-    #### Markdown-Only Flow (Fallback)
-    If `flash-mem` is unavailable, you **MUST** read these files explicitly using your file-reading tools (absolute or relative paths). Do not rely solely on workspace search or semantic indexers, as these files are often in `.gitignore`:
+   1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "architecture constraints boundaries dependencies coupling abstractions"`.
+   2. **Read Synthesis**: Read `specs/<feature>/memory-synthesis.md` to identify the "Why" behind the current design.
+   3. **Token Report**: Execute the `speckit_memory_token_report` MCP tool provided by `flash-mem` with `feature: "<feature>"` and display the token savings in the report.
 
-    - `docs/memory/INDEX.md` (Read this first to identify relevant source sections)
-    - `docs/memory/` for durable repository memory (Read only the sections identified in the index)
-    - `.specify/memory/` for project-wide architecture rules and standards
-    - `specs/<feature>/memory.md` for active feature memory
-    - `specs/<feature>/memory-synthesis.md` for the concise working summary
-    - `specs/<feature>/security-constraints.md` for security boundaries
-    - `.github/copilot-instructions.md` for repo-scoped Copilot guidance
+   #### Markdown-Only Flow (Fallback)
+
+   If `flash-mem` is unavailable, you **MUST** read these files explicitly using your file-reading tools (absolute or relative paths). Do not rely solely on workspace search or semantic indexers, as these files are often in `.gitignore`:
+
+   - `docs/memory/INDEX.md` (Read this first to identify relevant source sections)
+   - `docs/memory/` for durable repository memory (Read only the sections identified in the index)
+   - `.specify/memory/` for project-wide architecture rules and standards
+   - `specs/<feature>/memory.md` for active feature memory
+   - `specs/<feature>/memory-synthesis.md` for the concise working summary
+   - `specs/<feature>/security-constraints.md` for security boundaries
+   - `.github/copilot-instructions.md` for repo-scoped Copilot guidance
 
 4. **Implementation Context**:
-    - `spec.md`, `plan.md`, `tasks.md`, `data-model.md`
-    - The detected `changed_files` and their respective directories.
+   - `spec.md`, `plan.md`, `tasks.md`, `data-model.md`
+   - The detected `changed_files` and their respective directories.
 
 ## Semantic Modeling
 
 Before analysis, build internal representations (do not output these):
+
 1. **Boundary Model**: Map the expected boundaries (Entry, Application, Domain, Data, External) vs. actual directory structure.
 2. **Contract Inventory**: Identify shared data shapes, API signatures, and event structures.
 3. **Task-Implementation Map**: Map `tasks.md` IDs to specific code files and check completion status.
@@ -120,6 +129,7 @@ Before analysis, build internal representations (do not output these):
 ## Review Principles
 
 Use these core principles to detect drift:
+
 - **Validation Boundaries**: External input must be validated before reaching core logic.
 - **Contract Fidelity**: Shapes should be expressed through contracts at shared boundaries.
 - **Entry Point Delegation**: Controllers/Handlers must delegate business logic to services/domain.
@@ -131,6 +141,7 @@ Use these core principles to detect drift:
 ## Detection Scope
 
 Detect violations such as:
+
 - **Intent Divergence**: Implementation deviates fundamentally from `spec.md` or `plan.md` intent.
 - **Hallucinated Abstractions**: Plan mentions an abstraction (e.g., Repository) that is missing in code.
 - **Boundary Erosion**: Business logic leaking into entry points or UI.
@@ -149,7 +160,7 @@ Detect violations such as:
    - If `security-constraints.md` or `security_constitution.md` is breached, log it as a critical violation.
    - Cross-reference architecture decisions with security trust boundaries.
 7. **Performance Scan (if mode=performance)**: Skip violations; focus on optimizations.
-7b. **Code Quality Scan (SonarLint)**: If `mode=architecture`, optionally scan for coupling/complexity violations.
+   7b. **Code Quality Scan (SonarLint)**: If `mode=architecture`, optionally scan for coupling/complexity violations.
 8. **Generate Refactors**: Produce structured tasks for each confirmed violation.
 
 ---
@@ -170,11 +181,13 @@ When the extension is installed, load the bundle from `.specify/extensions/archi
 ### Scope-Based Delegation (Hybrid Model)
 
 **Inline Execution** (default for small codebases):
+
 - Changed files < 50 files
 - Total lines < 10,000
 - Process directly, no sub-agent
 
 **[OPTIONAL SUB-AGENT DELEGATION]**:
+
 - If changed files ≥ 50 OR total lines ≥ 10,000:
   - Consider delegating to sub-agent for parallel rule scanning
   - Suggested sub-agent: Custom `/analyze-sonar-violations` if the project defines it; otherwise use inline scanning
@@ -184,6 +197,7 @@ When the extension is installed, load the bundle from `.specify/extensions/archi
 ### Procedure
 
 **If inline**:
+
 1. **Load Rules**: Read the installed extension bundle at `.specify/extensions/architecture-guard/.github/sonar-rules/sonarlint-rules.json` first; if running from the extension source checkout, use `.github/sonar-rules/sonarlint-rules.json`
 2. **Scan Changed Files**: Simulate or invoke SonarLint logic on `changed_files` list
 3. **Filter Results**: Keep only CRITICAL/HIGH severity findings related to complexity, coupling, structure
@@ -192,18 +206,19 @@ When the extension is installed, load the bundle from `.specify/extensions/archi
 6. **Categorize**: Group findings by rule category (Brain Overload, Dependency Coupling, Structure Drift, Performance Anti-patterns)
 
 **If delegated to sub-agent**:
+
 - Sub-agent receives rules JSON + changed files list
 - Returns structured violations (organized by category and severity)
 - Main agent integrates into architecture report
 
 ### Interpretation Guide
 
-| SonarLint Category | Architecture Signal |
-|---|---|
-| Brain Overload (high complexity) | Hidden boundaries; function does too much |
-| Dependency Coupling (tight dependencies) | Cross-module leakage; missing abstraction |
-| Structure Drift (inconsistent patterns) | Boundary erosion; inconsistent contracts |
-| Performance Anti-patterns | Possible architectural misuse (e.g., N+1 queries from wrong layer) |
+| SonarLint Category                       | Architecture Signal                                                |
+| ---------------------------------------- | ------------------------------------------------------------------ |
+| Brain Overload (high complexity)         | Hidden boundaries; function does too much                          |
+| Dependency Coupling (tight dependencies) | Cross-module leakage; missing abstraction                          |
+| Structure Drift (inconsistent patterns)  | Boundary erosion; inconsistent contracts                           |
+| Performance Anti-patterns                | Possible architectural misuse (e.g., N+1 queries from wrong layer) |
 
 ### Output Integration
 
@@ -214,8 +229,8 @@ Add a new section in the report (see Output Format below):
 
 Findings that correlate with architecture concerns:
 
-| Rule | Severity | File | Issue |
-|---|---|---|---|
+| Rule       | Severity        | File        | Issue                                      |
+| ---------- | --------------- | ----------- | ------------------------------------------ |
 | [Rule Key] | [HIGH/CRITICAL] | [File:Line] | [Issue summary + recommended boundary fix] |
 ```
 
@@ -230,6 +245,7 @@ Every violation MUST cite evidence or explicitly note its absence. Evidence can 
 - **Absence**: Missing implementation like `Task references Repository pattern but no repo/ folder exists`
 
 **Absence Evidence** is acceptable for CRITICAL violations only. Example:
+
 - "Constitution requires data access abstraction but `repositories/` folder does not exist"
 
 For all other violations, cite specific code locations, line numbers, or patterns. Vague claims like "business logic is leaking" without specific evidence are insufficient.
@@ -249,56 +265,66 @@ Return only this structure:
 
 # Architecture Review Report
 
-| ID | Category | Severity | Location(s) | Summary | Evidence/Rationale |
-|:---|:---|:---|:---|:---|:---|
-| V1 | Constitution | CRITICAL | `.specify/memory/architecture_constitution.md` | Violation of [Principle Name] | [Evidence from code/plan] |
+| ID  | Category     | Severity | Location(s)                                    | Summary                       | Evidence/Rationale        |
+| :-- | :----------- | :------- | :--------------------------------------------- | :---------------------------- | :------------------------ |
+| V1  | Constitution | CRITICAL | `.specify/memory/architecture_constitution.md` | Violation of [Principle Name] | [Evidence from code/plan] |
 
 ### Task Synchronization
+
 - **Status**: [Synced / Drifted]
 - **Missing Implementations**: [Files referenced in tasks but missing/empty]
 - **Pending Tasks**: [Incomplete tasks blocking architecture]
 
 ### Metrics
+
 - **Constitution Compliance**: [e.g. 90%]
 - **Boundary Integrity**: [e.g. Strong / Eroded]
 - **Architectural Risk**: [LOW / MEDIUM / HIGH / CRITICAL]
 
 ### Refactor Tasks
+
 [Refactor Task]
-- **Title**: 
+
+- **Title**:
 - **Priority**: [Based on Severity]
-- **Reason**: 
-- **Suggested Fix**: 
+- **Reason**:
+- **Suggested Fix**:
 
 ---
 
 (Only if `mode=performance`)
+
 ### Performance Insights
-- **Suggestion**: 
-- **Trade-off**: 
+
+- **Suggestion**:
+- **Trade-off**:
 
 (Only if `mode=architecture` and SonarLint findings detected)
+
 ### Code Quality Findings (SonarLint)
 
 Findings that correlate with architecture concerns:
 
-| Rule | Severity | File | Issue | Architecture Signal |
-|:---|:---|:---|:---|:---|
-| `brain-overload::...` | HIGH | src/service/checkout.ts:45 | Function has 8 parameters | Hidden boundary: pricing logic should be in dedicated module |
+| Rule                  | Severity | File                       | Issue                     | Architecture Signal                                          |
+| :-------------------- | :------- | :------------------------- | :------------------------ | :----------------------------------------------------------- |
+| `brain-overload::...` | HIGH     | src/service/checkout.ts:45 | Function has 8 parameters | Hidden boundary: pricing logic should be in dedicated module |
 
 **Note**: Pure style violations (formatting, naming) are filtered out. Only findings related to complexity, coupling, and structure are included.
 
 ---
 
 (Only if `mode=architecture` and Constitution drift is cross-cutting)
+
 ### Constitution Update Proposal
-- **Current Rule**: 
-- **Proposed Change**: 
-- **Rationale**: 
+
+- **Current Rule**:
+- **Proposed Change**:
+- **Rationale**:
 
 ---
 
 ### Action Plan
+
 1. **Critical Fixes**: Address Constitution and Security violations first.
 2. **Architecture Alignment**: Resolve boundary erosion and contract mismatches.
 3. **Code Quality**: Address SonarLint findings that map to architectural concerns (if any).
@@ -311,4 +337,5 @@ Findings that correlate with architecture concerns:
 If framework preset guidance exists, it is **mandatory** to use it to map generic principles to framework primitives and detect stack-specific anti-patterns.
 
 Preset path:
+
 - `.specify/presets/architecture-guard-preset.md`

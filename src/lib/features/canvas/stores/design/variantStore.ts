@@ -68,10 +68,7 @@ export function addAxis(
 /**
  * Removes an axis from a component definition, cleaning up related variants.
  */
-export function removeAxis(
-  definition: ComponentDefinition,
-  axisId: string
-): ComponentDefinition {
+export function removeAxis(definition: ComponentDefinition, axisId: string): ComponentDefinition {
   const axes = (definition.variantAxes ?? []).filter((a) => a.id !== axisId);
   const variants = (definition.variants ?? []).map((v) => {
     const { [axisId]: _removedAxis, ...rest } = v.selections;
@@ -153,9 +150,7 @@ export function resolveVariant(
 
   const variants = definition.variants ?? [];
   const match = variants.find((v) => {
-    return Object.entries(v.selections).every(
-      ([axisId, value]) => selections[axisId] === value
-    );
+    return Object.entries(v.selections).every(([axisId, value]) => selections[axisId] === value);
   });
 
   const result = match?.overrides ?? [];
@@ -179,9 +174,7 @@ export function applyOverrides(
 /**
  * Returns all possible variant combinations for a component.
  */
-export function getAllCombinations(
-  definition: ComponentDefinition
-): VariantSelections[] {
+export function getAllCombinations(definition: ComponentDefinition): VariantSelections[] {
   const axes = definition.variantAxes ?? [];
   if (axes.length === 0) return [];
 

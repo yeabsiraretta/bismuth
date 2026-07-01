@@ -15,10 +15,7 @@ export async function importImage(
   return invoke('import_image', { sourcePath, language, vaultRoot });
 }
 
-export async function cleanupOcrTemp(
-  stagedPath: string,
-  vaultRoot: string
-): Promise<void> {
+export async function cleanupOcrTemp(stagedPath: string, vaultRoot: string): Promise<void> {
   log.info('[ocr] cleanupOcrTemp', { stagedPath });
   return invoke('cleanup_ocr_temp', { stagedPath, vaultRoot });
 }

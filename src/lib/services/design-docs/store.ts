@@ -4,7 +4,12 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import type { DesignDocument, DocumentType, DesignDocumentMeta, DesignDocumentAny } from '@/types/design-documents';
+import type {
+  DesignDocument,
+  DocumentType,
+  DesignDocumentMeta,
+  DesignDocumentAny,
+} from '@/types/design-documents';
 import { saveVersion } from '@/services/design-docs/versionStore';
 import { log } from '@/utils/logger';
 
@@ -31,7 +36,10 @@ function getFilePath(type: DocumentType, id: string): string {
 }
 
 /** Read a design document by type and ID. */
-export async function readDocument<T>(type: DocumentType, id: string): Promise<DesignDocument<T> | null> {
+export async function readDocument<T>(
+  type: DocumentType,
+  id: string
+): Promise<DesignDocument<T> | null> {
   try {
     const path = getFilePath(type, id);
     const text = await invoke<string>('design_doc_read', { path });
@@ -45,7 +53,11 @@ export async function readDocument<T>(type: DocumentType, id: string): Promise<D
 export async function writeDocument(doc: DesignDocumentAny): Promise<boolean> {
   try {
     const path = getFilePath(doc.document_type, doc.document_id);
-    const versionedDoc = { ...doc, modified_at: new Date().toISOString(), version: doc.version + 1 };
+    const versionedDoc = {
+      ...doc,
+      modified_at: new Date().toISOString(),
+      version: doc.version + 1,
+    };
     const content = JSON.stringify(versionedDoc, null, 2);
     await invoke('design_doc_write', { path, content });
     await saveVersion(versionedDoc);
@@ -60,7 +72,10 @@ export async function writeDocument(doc: DesignDocumentAny): Promise<boolean> {
 /** List all documents, optionally filtered by type. */
 export async function listDocuments(type?: DocumentType): Promise<DesignDocumentMeta[]> {
   try {
-    return await invoke<DesignDocumentMeta[]>('design_doc_list', { basePath: BASE_DIR, docType: type ?? null });
+    return await invoke<DesignDocumentMeta[]>('design_doc_list', {
+      basePath: BASE_DIR,
+      docType: type ?? null,
+    });
   } catch {
     return [];
   }

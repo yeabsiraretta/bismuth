@@ -18,7 +18,7 @@ const statusItems = writable<Map<string, StatusItem>>(new Map());
 
 /** Register a new status item or replace an existing one with the same ID */
 export function registerStatusItem(item: StatusItem): void {
-  statusItems.update(items => {
+  statusItems.update((items) => {
     const next = new Map(items);
     next.set(item.id, { visible: true, priority: 100, ...item });
     return next;
@@ -27,7 +27,7 @@ export function registerStatusItem(item: StatusItem): void {
 
 /** Remove a status item by ID */
 export function removeStatusItem(id: string): void {
-  statusItems.update(items => {
+  statusItems.update((items) => {
     const next = new Map(items);
     next.delete(id);
     return next;
@@ -36,7 +36,7 @@ export function removeStatusItem(id: string): void {
 
 /** Update properties of an existing status item */
 export function updateStatusItem(id: string, updates: Partial<Omit<StatusItem, 'id'>>): void {
-  statusItems.update(items => {
+  statusItems.update((items) => {
     const existing = items.get(id);
     if (!existing) return items;
     const next = new Map(items);
@@ -53,31 +53,34 @@ export function clearStatusItems(): void {
 /** Sort items by priority (lower first), then by insertion order */
 function sortItems(items: StatusItem[]): StatusItem[] {
   return items
-    .filter(item => item.visible !== false)
+    .filter((item) => item.visible !== false)
     .sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100));
 }
 
 /** Derived store: all visible items in the left region */
-export const statusItemsLeft = derived(statusItems, $items =>
-  sortItems([...$items.values()].filter(i => i.position === 'left'))
+export const statusItemsLeft = derived(statusItems, ($items) =>
+  sortItems([...$items.values()].filter((i) => i.position === 'left'))
 );
 
 /** Derived store: all visible items in the center region */
-export const statusItemsCenter = derived(statusItems, $items =>
-  sortItems([...$items.values()].filter(i => i.position === 'center'))
+export const statusItemsCenter = derived(statusItems, ($items) =>
+  sortItems([...$items.values()].filter((i) => i.position === 'center'))
 );
 
 /** Derived store: all visible items in the right region */
-export const statusItemsRight = derived(statusItems, $items =>
-  sortItems([...$items.values()].filter(i => i.position === 'right'))
+export const statusItemsRight = derived(statusItems, ($items) =>
+  sortItems([...$items.values()].filter((i) => i.position === 'right'))
 );
 
 /** Read-only access to all items (for debugging/testing) */
-export const allStatusItems = derived(statusItems, $items => [...$items.values()]);
+export const allStatusItems = derived(statusItems, ($items) => [...$items.values()]);
 
 /** Reorder status items in a given position by updating priorities */
-export function reorderStatusItems(position: 'left' | 'center' | 'right', orderedIds: string[]): void {
-  statusItems.update(items => {
+export function reorderStatusItems(
+  position: 'left' | 'center' | 'right',
+  orderedIds: string[]
+): void {
+  statusItems.update((items) => {
     const next = new Map(items);
     orderedIds.forEach((id, index) => {
       const item = next.get(id);
@@ -103,7 +106,9 @@ function saveStatusOrder(): void {
   }
   try {
     localStorage.setItem(STATUS_ORDER_KEY, JSON.stringify(order));
-  } catch (e) { log.warn('Failed to save status order to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to save status order to localStorage', { error: String(e) });
+  }
 }
 
 /** Load saved order from localStorage and apply to items */
@@ -112,7 +117,7 @@ export function loadStatusOrder(): void {
     const saved = localStorage.getItem(STATUS_ORDER_KEY);
     if (!saved) return;
     const order = JSON.parse(saved) as Record<string, number>;
-    statusItems.update(items => {
+    statusItems.update((items) => {
       const next = new Map(items);
       for (const [id, priority] of Object.entries(order)) {
         const item = next.get(id);
@@ -122,5 +127,7 @@ export function loadStatusOrder(): void {
       }
       return next;
     });
-  } catch (e) { log.warn('Failed to load status order from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load status order from localStorage', { error: String(e) });
+  }
 }

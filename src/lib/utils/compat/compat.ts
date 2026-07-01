@@ -45,10 +45,12 @@ export function getAppVersion(): string {
 function isEnvelope(obj: unknown): obj is VersionEnvelope {
   if (!obj || typeof obj !== 'object') return false;
   const o = obj as Record<string, unknown>;
-  return typeof o['schemaId'] === 'string' &&
+  return (
+    typeof o['schemaId'] === 'string' &&
     typeof o['schemaVersion'] === 'number' &&
     typeof o['writerVersion'] === 'string' &&
-    'data' in o;
+    'data' in o
+  );
 }
 
 // ─── Versioned read ───────────────────────────────────────────────────────────
@@ -104,11 +106,13 @@ function readEnvelope<T>(
   envelope: VersionEnvelope,
   key: string,
   fallback: T,
-  def: ReturnType<typeof schemaRegistry.get>,
+  def: ReturnType<typeof schemaRegistry.get>
 ): { data: T; result: CompatCheckResult } {
   // Check forward-compatibility: can THIS app version read the data?
   if (envelope.minReaderVersion && compareSemver(APP_VERSION, envelope.minReaderVersion) < 0) {
-    log.warn(`N-1 compat: "${key}" requires reader >= ${envelope.minReaderVersion}, we are ${APP_VERSION}`);
+    log.warn(
+      `N-1 compat: "${key}" requires reader >= ${envelope.minReaderVersion}, we are ${APP_VERSION}`
+    );
     return {
       data: fallback,
       result: { compatible: false, reason: 'version_too_new', envelope },
@@ -122,7 +126,9 @@ function readEnvelope<T>(
   if (def && envelope.schemaVersion < def.currentVersion) {
     data = runMigrations(data, key, envelope.schemaVersion, def.currentVersion);
     migrationsApplied = def.currentVersion - envelope.schemaVersion;
-    log.info(`N-1 compat: migrated "${key}" from v${envelope.schemaVersion} → v${def.currentVersion}`);
+    log.info(
+      `N-1 compat: migrated "${key}" from v${envelope.schemaVersion} → v${def.currentVersion}`
+    );
   }
 
   return {
@@ -159,14 +165,22 @@ export function versionedWrite<T>(key: string, data: T): void {
 
 // ─── Migration runner ─────────────────────────────────────────────────────────
 
-function runMigrations(data: unknown, schemaId: string, fromVersion: number, toVersion: number): unknown {
+function runMigrations(
+  data: unknown,
+  schemaId: string,
+  fromVersion: number,
+  toVersion: number
+): unknown {
   const migrations = schemaRegistry.getMigrations(schemaId, fromVersion, toVersion);
   let current = data;
   for (let i = 0; i < migrations.length; i++) {
     try {
       current = migrations[i](current);
     } catch (err) {
-      log.error(`N-1 compat: migration v${fromVersion + i} → v${fromVersion + i + 1} failed for "${schemaId}"`, err);
+      log.error(
+        `N-1 compat: migration v${fromVersion + i} → v${fromVersion + i + 1} failed for "${schemaId}"`,
+        err
+      );
       const def = schemaRegistry.get(schemaId);
       return def ? def.defaultValue() : current;
     }
@@ -200,9 +214,9 @@ export function getCompatSummary(): {
   return {
     appVersion: APP_VERSION,
     registeredSchemas: schemaRegistry.ids().length,
-    schemasWithData: entries.filter(r => r.envelope || r.migrationsApplied).length,
-    schemasNeedingMigration: entries.filter(r => (r.migrationsApplied ?? 0) > 0).length,
-    incompatibleSchemas: entries.filter(r => !r.compatible).length,
+    schemasWithData: entries.filter((r) => r.envelope || r.migrationsApplied).length,
+    schemasNeedingMigration: entries.filter((r) => (r.migrationsApplied ?? 0) > 0).length,
+    incompatibleSchemas: entries.filter((r) => !r.compatible).length,
   };
 }
 

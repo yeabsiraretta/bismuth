@@ -5,7 +5,11 @@
 import { writable, derived, get } from 'svelte/store';
 import type { CodeEditorConfig } from '../types';
 import { DEFAULT_CODE_EDITOR_CONFIG } from '../types';
-import { loadCodeEditorConfig, saveCodeEditorConfig, isCodeFile } from '../services/languageDetector';
+import {
+  loadCodeEditorConfig,
+  saveCodeEditorConfig,
+  isCodeFile,
+} from '../services/languageDetector';
 import { log } from '@/utils/logger';
 
 /** Current code editor configuration. */
@@ -65,7 +69,11 @@ export function removeExtension(ext: string): void {
 }
 
 /** Open a code block for editing in the modal. */
-export function editCodeBlock(code: string, language: string, onSave: (newCode: string) => void): void {
+export function editCodeBlock(
+  code: string,
+  language: string,
+  onSave: (newCode: string) => void
+): void {
   activeCodeBlock.set({ code, language, onSave });
   codeBlockModalOpen.set(true);
   log.debug('Code block edit opened', { language, lines: code.split('\n').length });

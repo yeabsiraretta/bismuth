@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  BacklinkCache, hashContent, extractWikilinks, extractMarkdownLinks,
+  BacklinkCache,
+  hashContent,
+  extractWikilinks,
+  extractMarkdownLinks,
 } from '../services/backlinkCache';
 import type { NoteInput } from '../services/backlinkCache';
 
@@ -87,7 +90,7 @@ describe('BacklinkCache', () => {
 
     const backlinksA = cache.getBacklinksForFile('a.md');
     expect(backlinksA.length).toBeGreaterThanOrEqual(1);
-    expect(backlinksA.some(b => b.sourcePath === 'b.md')).toBe(true);
+    expect(backlinksA.some((b) => b.sourcePath === 'b.md')).toBe(true);
   });
 
   it('resolves title-based lookups', () => {
@@ -95,7 +98,7 @@ describe('BacklinkCache', () => {
     cache.buildFromNotes(makeNotes());
 
     const backlinksB = cache.getBacklinksForFile('b.md');
-    expect(backlinksB.some(b => b.sourcePath === 'a.md')).toBe(true);
+    expect(backlinksB.some((b) => b.sourcePath === 'a.md')).toBe(true);
   });
 
   it('counts backlinks correctly', () => {
@@ -110,7 +113,7 @@ describe('BacklinkCache', () => {
     cache.buildFromNotes(makeNotes());
 
     const backlinksA = cache.getBacklinksForFile('a.md');
-    expect(backlinksA.some(b => b.source === 'markdown')).toBe(true);
+    expect(backlinksA.some((b) => b.source === 'markdown')).toBe(true);
   });
 
   it('returns stats', () => {
@@ -129,12 +132,14 @@ describe('BacklinkCache', () => {
     cache.buildFromNotes(makeNotes());
 
     const changed = cache.updateFile({
-      path: 'c.md', title: 'Note C', content: 'Now links to [[Note A]]',
+      path: 'c.md',
+      title: 'Note C',
+      content: 'Now links to [[Note A]]',
     });
     expect(changed).toBe(true);
 
     const backlinksA = cache.getBacklinksForFile('a.md');
-    expect(backlinksA.some(b => b.sourcePath === 'c.md')).toBe(true);
+    expect(backlinksA.some((b) => b.sourcePath === 'c.md')).toBe(true);
   });
 
   it('skips update when content unchanged', () => {
@@ -179,7 +184,7 @@ describe('BacklinkCache', () => {
     ]);
 
     const backlinksB = cache.getBacklinksForFile('b.md');
-    expect(backlinksB.some(b => b.source === 'frontmatter')).toBe(true);
+    expect(backlinksB.some((b) => b.source === 'frontmatter')).toBe(true);
   });
 
   it('handles canvas links', () => {
@@ -197,6 +202,6 @@ describe('BacklinkCache', () => {
     ]);
 
     const backlinks = cache.getBacklinksForFile('target.md');
-    expect(backlinks.some(b => b.source === 'canvas' && b.sourcePath === 'my.canvas')).toBe(true);
+    expect(backlinks.some((b) => b.source === 'canvas' && b.sourcePath === 'my.canvas')).toBe(true);
   });
 });

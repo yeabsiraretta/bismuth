@@ -22,11 +22,13 @@ test.describe('Flow Preview Navigation (T063)', () => {
 
   test('T063-02: flow preview mode activates via toolbar button', async ({ page }) => {
     // Toolbar button for preview — try multiple selector strategies
-    const previewBtn = page.locator(
-      '[data-testid="flow-preview"], [aria-label*="Preview"], [title*="Preview"], button:has-text("Preview")'
-    ).first();
+    const previewBtn = page
+      .locator(
+        '[data-testid="flow-preview"], [aria-label*="Preview"], [title*="Preview"], button:has-text("Preview")'
+      )
+      .first();
 
-    if (!await previewBtn.isVisible({ timeout: 2000 })) {
+    if (!(await previewBtn.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Preview toolbar button not found');
       return;
     }
@@ -40,11 +42,13 @@ test.describe('Flow Preview Navigation (T063)', () => {
   });
 
   test('T063-03: flow preview exits on Escape key', async ({ page }) => {
-    const previewBtn = page.locator(
-      '[data-testid="flow-preview"], [aria-label*="Preview"], [title*="Preview"], button:has-text("Preview")'
-    ).first();
+    const previewBtn = page
+      .locator(
+        '[data-testid="flow-preview"], [aria-label*="Preview"], [title*="Preview"], button:has-text("Preview")'
+      )
+      .first();
 
-    if (!await previewBtn.isVisible({ timeout: 2000 })) {
+    if (!(await previewBtn.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Preview toolbar button not found');
       return;
     }
@@ -53,7 +57,7 @@ test.describe('Flow Preview Navigation (T063)', () => {
     await page.waitForTimeout(300);
 
     const overlay = page.locator('.flow-preview-overlay');
-    if (!await overlay.isVisible({ timeout: 2000 })) {
+    if (!(await overlay.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Preview overlay did not appear — no frames may be present');
       return;
     }
@@ -82,11 +86,11 @@ test.describe('Flow Preview Navigation (T063)', () => {
   });
 
   test('T063-05: hotspot click in preview transitions to linked frame', async ({ page }) => {
-    const previewBtn = page.locator(
-      '[data-testid="flow-preview"], [aria-label*="Preview"], button:has-text("Preview")'
-    ).first();
+    const previewBtn = page
+      .locator('[data-testid="flow-preview"], [aria-label*="Preview"], button:has-text("Preview")')
+      .first();
 
-    if (!await previewBtn.isVisible({ timeout: 2000 })) {
+    if (!(await previewBtn.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Preview button not found');
       return;
     }
@@ -95,7 +99,7 @@ test.describe('Flow Preview Navigation (T063)', () => {
     await page.waitForTimeout(400);
 
     const overlay = page.locator('.flow-preview-overlay');
-    if (!await overlay.isVisible({ timeout: 2000 })) {
+    if (!(await overlay.isVisible({ timeout: 2000 }))) {
       test.skip(true, 'Preview overlay not visible — no frames present');
       return;
     }

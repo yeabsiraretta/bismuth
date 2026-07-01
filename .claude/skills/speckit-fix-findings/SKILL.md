@@ -55,6 +55,7 @@ Note: `/speckit.analyze` outputs a Markdown report to the conversation. This ext
 Read `ANALYSIS` and extract all findings. A finding is any issue, inconsistency, gap, or recommendation identified by the analysis.
 
 Categorize each finding by severity:
+
 - **Critical**: Spec violations, missing implementations, broken contracts
 - **Warning**: Inconsistencies, partial implementations, drift from spec
 - **Info**: Style suggestions, minor improvements, documentation gaps
@@ -71,6 +72,7 @@ For each actionable finding, prioritized by severity (Critical first, then Warni
 4. Record what was fixed
 
 **Constraints — these are non-negotiable:**
+
 - All fixes MUST align with `spec.md` and `plan.md` — never contradict the spec
 - If a finding is ambiguous or requires a design decision, **skip it** and mark as "deferred — requires human decision"
 - Do NOT modify spec artifacts (`spec.md`, `plan.md`, `tasks.md`) — only fix implementation code
@@ -108,16 +110,20 @@ Create or update `FINDINGS_LOG` with a complete audit trail:
 ## Iteration 1
 
 ### Findings Identified
+
 - [Critical] {description} — {file}:{line}
 - [Warning] {description} — {file}:{line}
 
 ### Fixes Applied
+
 - Fixed {description} in `{file}` — {what changed}
 
 ### Findings Deferred
+
 - [Warning] {description} — Reason: {why deferred}
 
 ## Iteration 2
+
 ...
 ```
 
@@ -140,9 +146,9 @@ If any findings were deferred, list them so the user can address them manually.
 
 ## Output Files
 
-| File | Description |
-|------|-------------|
-| `FEATURE_DIR/analysis.md` | Latest analysis results (updated each iteration) |
+| File                            | Description                                               |
+| ------------------------------- | --------------------------------------------------------- |
+| `FEATURE_DIR/analysis.md`       | Latest analysis results (updated each iteration)          |
 | `FEATURE_DIR/findings.fixed.md` | Complete log of all iterations, fixes, and deferred items |
 
 ## Notes

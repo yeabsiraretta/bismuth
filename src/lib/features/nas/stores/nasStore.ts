@@ -57,11 +57,7 @@ export async function loadNasConfig(vaultPath: string): Promise<void> {
  * Stores config (without password) and transitions status to 'disconnected' on success.
  * Password is passed directly and never stored in this store.
  */
-export async function connectNas(
-  url: string,
-  username: string,
-  password: string,
-): Promise<void> {
+export async function connectNas(url: string, username: string, password: string): Promise<void> {
   try {
     const result = await nasService.connectWebDav(url, username, password);
     if (result.success) {
@@ -108,9 +104,7 @@ export async function syncNow(): Promise<void> {
     }
 
     // Update lastSync in config
-    nasConfig.update((c) =>
-      c ? { ...c, lastSync: new Date().toISOString() } : c,
-    );
+    nasConfig.update((c) => (c ? { ...c, lastSync: new Date().toISOString() } : c));
 
     log.info('nasStore: sync complete', result as unknown as Record<string, unknown>);
   } catch (err) {
@@ -132,7 +126,7 @@ export async function syncNow(): Promise<void> {
  */
 export async function resolveConflict(
   filePath: string,
-  resolution: 'local' | 'remote',
+  resolution: 'local' | 'remote'
 ): Promise<void> {
   try {
     await nasService.applyChange(resolution === 'local' ? 'put' : 'get', filePath);
@@ -168,10 +162,7 @@ export async function disconnectNas(): Promise<void> {
  * Update the NAS config (e.g., toggle offlineModeEnabled).
  * Writes the updated config to disk.
  */
-export async function updateConfig(
-  vaultPath: string,
-  updates: Partial<NasConfig>,
-): Promise<void> {
+export async function updateConfig(vaultPath: string, updates: Partial<NasConfig>): Promise<void> {
   const current = get(nasConfig);
   if (!current) return;
   const updated = { ...current, ...updates };

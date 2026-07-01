@@ -1,28 +1,55 @@
 import { describe, it, expect } from 'vitest';
 import {
-  totalLoggedHours, logTime, timeBasedProgress, setProgress,
-  isOverdue, daysUntilDue,
-  subtaskProgress, subtaskCounts,
-  formatHours, formatDate, formatDateShort,
+  totalLoggedHours,
+  logTime,
+  timeBasedProgress,
+  setProgress,
+  isOverdue,
+  daysUntilDue,
+  subtaskProgress,
+  subtaskCounts,
+  formatHours,
+  formatDate,
+  formatDateShort,
 } from '../services/timeTracking';
 import type { PMTask } from '../types';
 
 function mockTask(overrides: Partial<PMTask> = {}): PMTask {
   return {
-    id: 'task-1', path: 'p/t.md', title: 'Test', description: '',
-    type: 'task', status: 'todo', priority: 'medium',
-    startDate: null, dueDate: null, progress: 0,
-    timeEstimate: null, timeLogs: [], assignees: [], tags: [],
-    parentId: null, subtaskIds: [], dependencies: [],
-    recurrence: null, customFields: {}, archived: false,
-    createdAt: '2026-01-01', updatedAt: '2026-01-01',
+    id: 'task-1',
+    path: 'p/t.md',
+    title: 'Test',
+    description: '',
+    type: 'task',
+    status: 'todo',
+    priority: 'medium',
+    startDate: null,
+    dueDate: null,
+    progress: 0,
+    timeEstimate: null,
+    timeLogs: [],
+    assignees: [],
+    tags: [],
+    parentId: null,
+    subtaskIds: [],
+    dependencies: [],
+    recurrence: null,
+    customFields: {},
+    archived: false,
+    createdAt: '2026-01-01',
+    updatedAt: '2026-01-01',
     ...overrides,
   };
 }
 
 describe('totalLoggedHours', () => {
   it('sums time logs', () => {
-    const task = mockTask({ timeLogs: [{ date: '2026-01-01', hours: 2 }, { date: '2026-01-02', hours: 3.5 }] });
+    const task = mockTask({
+      timeLogs: [
+        { date: '2026-01-01', hours: 2 },
+        { date: '2026-01-02', hours: 3.5 },
+      ],
+    });
     expect(totalLoggedHours(task)).toBe(5.5);
   });
 

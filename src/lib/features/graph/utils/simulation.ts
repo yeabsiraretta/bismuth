@@ -90,7 +90,7 @@ export function initNodes(
   width: number,
   height: number,
   existingNodes?: SimNode[],
-  bloom = false,
+  bloom = false
 ): SimNode[] {
   const counts = new Map<string, number>();
   edges.forEach((e) => {

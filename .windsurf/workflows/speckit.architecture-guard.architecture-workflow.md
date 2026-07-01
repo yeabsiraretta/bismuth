@@ -3,9 +3,9 @@ description: Run a single architecture workflow that prefers memory-first contex
   and can incorporate security review when available.
 ---
 
-
 <!-- Extension: architecture-guard -->
 <!-- Config: .specify/extensions/architecture-guard/ -->
+
 # Architecture Workflow Command
 
 You are running `architecture-guard` as the single orchestration entry point for architecture review.
@@ -79,6 +79,7 @@ All governance reports MUST follow this standard template:
 # Architecture Governance Report
 
 ## Input Summary
+
 - **Artifacts Scanned**: [list]
 - **Extensions Used**: [`flash-mem`: yes/no, Security Review: yes/no]
 - **Mode**: [architecture/performance]
@@ -87,18 +88,23 @@ All governance reports MUST follow this standard template:
 ## Findings
 
 ### Violations
+
 [Table format with: ID | Category | Severity | Location | Summary | Evidence]
 
 ### Refactor Tasks (if any)
+
 [Task list or "None"]
 
 ### Constitution Update Proposals (if any)
+
 [Proposals or "None"]
 
 ## Context Applied
+
 - **`flash-mem`**: [Used context or "Not available"]
 - **Security Review**: [Findings routed or "Not available"]
 
 ## Recommended Next Step
+
 [Single clear action]
 ```

@@ -14,7 +14,9 @@ export class DataviewResultWidget extends WidgetType {
   private error: string | null = null;
   private loading = true;
 
-  constructor(private query: string) { super(); }
+  constructor(private query: string) {
+    super();
+  }
 
   setResult(result: DvResult) {
     this.result = result;
@@ -33,7 +35,8 @@ export class DataviewResultWidget extends WidgetType {
     wrap.className = 'cm-dv-result';
 
     if (this.loading) {
-      wrap.innerHTML = '<div class="dv-loading"><span class="dv-spinner"></span> Querying vault…</div>';
+      wrap.innerHTML =
+        '<div class="dv-loading"><span class="dv-spinner"></span> Querying vault…</div>';
       return wrap;
     }
 
@@ -45,9 +48,15 @@ export class DataviewResultWidget extends WidgetType {
     if (!this.result) return wrap;
 
     switch (this.result.type) {
-      case 'table': wrap.appendChild(renderTable(this.result.headers, this.result.rows)); break;
-      case 'list': wrap.appendChild(renderList(this.result.items)); break;
-      case 'task': wrap.appendChild(renderTasks(this.result.tasks)); break;
+      case 'table':
+        wrap.appendChild(renderTable(this.result.headers, this.result.rows));
+        break;
+      case 'list':
+        wrap.appendChild(renderList(this.result.items));
+        break;
+      case 'task':
+        wrap.appendChild(renderTasks(this.result.tasks));
+        break;
     }
 
     // Footer
@@ -151,7 +160,9 @@ function renderTasks(tasks: DvTask[]): HTMLElement {
     if (task.tags.length > 0) {
       const tags = document.createElement('span');
       tags.className = 'dv-task-tags';
-      tags.innerHTML = task.tags.map((t) => `<span class="dv-tag">#${escapeHtml(t)}</span>`).join(' ');
+      tags.innerHTML = task.tags
+        .map((t) => `<span class="dv-tag">#${escapeHtml(t)}</span>`)
+        .join(' ');
       li.appendChild(tags);
     }
 

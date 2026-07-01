@@ -4,7 +4,13 @@
 
 export type { DesignDocument, DocumentType, CanvasSource, DesignDocumentMeta } from './envelope';
 export type { TokenPayload, TokenCollection, DesignToken } from './token';
-export type { ComponentPayload, ComponentProp, ComponentSlot, ComponentVariant, CodeConnect } from './component';
+export type {
+  ComponentPayload,
+  ComponentProp,
+  ComponentSlot,
+  ComponentVariant,
+  CodeConnect,
+} from './component';
 export type { LayoutPayload, LayoutBreakpoint, LayoutRegion } from './layout';
 export type { FlowPayload, FlowStep, FlowErrorPath } from './flow';
 export type { ThemePayload } from './theme';

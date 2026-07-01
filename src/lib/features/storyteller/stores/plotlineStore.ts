@@ -12,11 +12,11 @@ export const allSetups = writable<SetupPayoff[]>(svc.loadSetups());
 export const plotgridCells = writable<Record<string, PlotgridCell>>(svc.loadPlotgridCells());
 
 export const storyPlotlines = derived([allPlotlines, activeStoryId], ([$all, $id]) =>
-  $id ? $all.filter(p => p.storyId === $id) : [],
+  $id ? $all.filter((p) => p.storyId === $id) : []
 );
 
 export const unresolvedSetups = derived([allSetups, activeStoryId], ([$setups, $id]) =>
-  $id ? svc.getUnresolvedSetups($setups, $id) : [],
+  $id ? svc.getUnresolvedSetups($setups, $id) : []
 );
 
 // ─── Plotline actions ───────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ export function addPlotline(name: string, color = '#7c3aed'): Plotline {
   const storyId = get(activeStoryId);
   if (!storyId) throw new Error('No active story');
   const pl = svc.createPlotline(storyId, name, color);
-  allPlotlines.update(list => {
+  allPlotlines.update((list) => {
     const next = [...list, pl];
     svc.persistPlotlines(next);
     return next;
@@ -34,34 +34,38 @@ export function addPlotline(name: string, color = '#7c3aed'): Plotline {
 }
 
 export function editPlotline(updated: Plotline): void {
-  allPlotlines.update(list => {
-    const next = list.map(p => p.id === updated.id ? updated : p);
+  allPlotlines.update((list) => {
+    const next = list.map((p) => (p.id === updated.id ? updated : p));
     svc.persistPlotlines(next);
     return next;
   });
 }
 
 export function removePlotline(id: string): void {
-  allPlotlines.update(list => {
-    const next = list.filter(p => p.id !== id);
+  allPlotlines.update((list) => {
+    const next = list.filter((p) => p.id !== id);
     svc.persistPlotlines(next);
     return next;
   });
 }
 
 export function addSceneToPlotline(plotlineId: string, sceneId: string): void {
-  allPlotlines.update(list => {
-    const next = list.map(p => p.id === plotlineId && !p.sceneIds.includes(sceneId)
-      ? { ...p, sceneIds: [...p.sceneIds, sceneId] } : p);
+  allPlotlines.update((list) => {
+    const next = list.map((p) =>
+      p.id === plotlineId && !p.sceneIds.includes(sceneId)
+        ? { ...p, sceneIds: [...p.sceneIds, sceneId] }
+        : p
+    );
     svc.persistPlotlines(next);
     return next;
   });
 }
 
 export function removeSceneFromPlotline(plotlineId: string, sceneId: string): void {
-  allPlotlines.update(list => {
-    const next = list.map(p => p.id === plotlineId
-      ? { ...p, sceneIds: p.sceneIds.filter(id => id !== sceneId) } : p);
+  allPlotlines.update((list) => {
+    const next = list.map((p) =>
+      p.id === plotlineId ? { ...p, sceneIds: p.sceneIds.filter((id) => id !== sceneId) } : p
+    );
     svc.persistPlotlines(next);
     return next;
   });
@@ -73,7 +77,7 @@ export function addSetup(setupSceneId: string, description: string): SetupPayoff
   const storyId = get(activeStoryId);
   if (!storyId) throw new Error('No active story');
   const setup = svc.createSetup(storyId, setupSceneId, description);
-  allSetups.update(list => {
+  allSetups.update((list) => {
     const next = [...list, setup];
     svc.persistSetups(next);
     return next;
@@ -82,16 +86,16 @@ export function addSetup(setupSceneId: string, description: string): SetupPayoff
 }
 
 export function resolveSetup(setupId: string, payoffSceneId: string): void {
-  allSetups.update(list => {
-    const next = list.map(s => s.id === setupId ? { ...s, payoffSceneId, resolved: true } : s);
+  allSetups.update((list) => {
+    const next = list.map((s) => (s.id === setupId ? { ...s, payoffSceneId, resolved: true } : s));
     svc.persistSetups(next);
     return next;
   });
 }
 
 export function removeSetup(setupId: string): void {
-  allSetups.update(list => {
-    const next = list.filter(s => s.id !== setupId);
+  allSetups.update((list) => {
+    const next = list.filter((s) => s.id !== setupId);
     svc.persistSetups(next);
     return next;
   });
@@ -101,7 +105,7 @@ export function removeSetup(setupId: string): void {
 
 export function setPlotgridCell(sceneId: string, plotlineId: string, cell: PlotgridCell): void {
   const key = svc.getPlotgridCellKey(sceneId, plotlineId);
-  plotgridCells.update(cells => {
+  plotgridCells.update((cells) => {
     const next = { ...cells, [key]: cell };
     svc.persistPlotgridCells(next);
     return next;

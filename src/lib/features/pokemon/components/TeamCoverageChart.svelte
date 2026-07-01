@@ -7,11 +7,27 @@
   const chart = typeChartJson as Record<string, Record<string, number>>;
 
   const TYPES = [
-    'Normal','Fire','Water','Grass','Electric','Ice','Fighting','Poison',
-    'Ground','Flying','Psychic','Bug','Rock','Ghost','Dragon','Dark','Steel','Fairy'
+    'Normal',
+    'Fire',
+    'Water',
+    'Grass',
+    'Electric',
+    'Ice',
+    'Fighting',
+    'Poison',
+    'Ground',
+    'Flying',
+    'Psychic',
+    'Bug',
+    'Rock',
+    'Ghost',
+    'Dragon',
+    'Dark',
+    'Steel',
+    'Fairy',
   ] as const;
 
-  type PokemonType = typeof TYPES[number];
+  type PokemonType = (typeof TYPES)[number];
 
   interface Coverage {
     offensive: Record<PokemonType, number>;
@@ -109,7 +125,9 @@
     log.info('Team coverage chart exported as PNG');
   }
 
-  onMount(() => { if (canvas) drawChart(canvas, coverage); });
+  onMount(() => {
+    if (canvas) drawChart(canvas, coverage);
+  });
 </script>
 
 <div class="coverage-wrapper">
@@ -117,14 +135,49 @@
     <span class="title">Type Coverage</span>
     <button class="save-btn" on:click={saveAsPng} aria-label="Save chart as PNG">Save PNG</button>
   </div>
-  <canvas bind:this={canvas} width="420" height="220" class="chart-canvas" aria-label="Team type coverage chart"></canvas>
+  <canvas
+    bind:this={canvas}
+    width="420"
+    height="220"
+    class="chart-canvas"
+    aria-label="Team type coverage chart"
+  ></canvas>
 </div>
 
 <style>
-  .coverage-wrapper { display: flex; flex-direction: column; gap: var(--spacing-xs); padding: var(--spacing-s); }
-  .chart-header { display: flex; align-items: center; justify-content: space-between; }
-  .title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); }
-  .save-btn { padding: 4px 10px; background: var(--interactive-accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-s); font-size: var(--font-ui-smaller); cursor: pointer; min-height: 28px; }
-  .save-btn:hover { background: var(--interactive-accent-hover); }
-  .chart-canvas { width: 100%; max-width: 420px; border-radius: var(--radius-m); background: var(--background-secondary); }
+  .coverage-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-s);
+  }
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+  }
+  .save-btn {
+    padding: 4px 10px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-smaller);
+    cursor: pointer;
+    min-height: 28px;
+  }
+  .save-btn:hover {
+    background: var(--interactive-accent-hover);
+  }
+  .chart-canvas {
+    width: 100%;
+    max-width: 420px;
+    border-radius: var(--radius-m);
+    background: var(--background-secondary);
+  }
 </style>

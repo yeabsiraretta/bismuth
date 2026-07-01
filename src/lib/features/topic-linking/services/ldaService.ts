@@ -28,9 +28,7 @@ export function buildVocabulary(documents: CorpusDocument[]): {
     }
   }
 
-  const docWordIndices = documents.map(doc =>
-    doc.tokens.map(t => wordToIdx.get(t)!),
-  );
+  const docWordIndices = documents.map((doc) => doc.tokens.map((t) => wordToIdx.get(t)!));
 
   return { vocab, wordToIdx, docWordIndices };
 }
@@ -51,11 +49,7 @@ interface LdaState {
 }
 
 /** Initialize LDA state with random topic assignments. */
-export function initializeLda(
-  docWordIndices: number[][],
-  vocabSize: number,
-  K: number,
-): LdaState {
+export function initializeLda(docWordIndices: number[][], vocabSize: number, K: number): LdaState {
   const D = docWordIndices.length;
   const z: number[][] = [];
   const nw: number[][] = Array.from({ length: K }, () => new Array(vocabSize).fill(0));
@@ -86,7 +80,7 @@ export function gibbsIteration(
   vocabSize: number,
   K: number,
   alpha: number,
-  beta: number,
+  beta: number
 ): void {
   const betaSum = beta * vocabSize;
   const D = docWordIndices.length;
@@ -106,8 +100,7 @@ export function gibbsIteration(
       const probs = new Array(K);
       let probSum = 0;
       for (let k = 0; k < K; k++) {
-        const p = ((state.nw[k][w] + beta) / (state.nwSum[k] + betaSum)) *
-                  (state.nd[d][k] + alpha);
+        const p = ((state.nw[k][w] + beta) / (state.nwSum[k] + betaSum)) * (state.nd[d][k] + alpha);
         probs[k] = p;
         probSum += p;
       }
@@ -117,7 +110,10 @@ export function gibbsIteration(
       let newTopic = 0;
       for (let k = 0; k < K; k++) {
         r -= probs[k];
-        if (r <= 0) { newTopic = k; break; }
+        if (r <= 0) {
+          newTopic = k;
+          break;
+        }
       }
 
       // Increment counts
@@ -136,7 +132,7 @@ export function extractTopics(
   state: LdaState,
   vocab: string[],
   documents: CorpusDocument[],
-  config: LdaConfig,
+  config: LdaConfig
 ): Topic[] {
   const K = config.numTopics;
   const topics: Topic[] = [];
@@ -154,7 +150,7 @@ export function extractTopics(
 
     const keywords: TopicKeyword[] = wordWeights
       .slice(0, config.numWords)
-      .map(ww => ({ word: vocab[ww.idx], weight: ww.weight }));
+      .map((ww) => ({ word: vocab[ww.idx], weight: ww.weight }));
 
     // Document relevance
     const docs: TopicDocument[] = [];
@@ -171,7 +167,10 @@ export function extractTopics(
     }
     docs.sort((a, b) => b.probability - a.probability);
 
-    const label = keywords.slice(0, 3).map(kw => kw.word).join(', ');
+    const label = keywords
+      .slice(0, 3)
+      .map((kw) => kw.word)
+      .join(', ');
     topics.push({ id: k, label, keywords, documents: docs });
   }
 
@@ -181,10 +180,7 @@ export function extractTopics(
 // ─── Main LDA runner ───────────────────────────────────────────────────────────
 
 /** Run LDA on a corpus of documents. */
-export function runLda(
-  documents: CorpusDocument[],
-  config: LdaConfig,
-): Topic[] {
+export function runLda(documents: CorpusDocument[], config: LdaConfig): Topic[] {
   if (documents.length === 0) return [];
 
   const { vocab, docWordIndices } = buildVocabulary(documents);

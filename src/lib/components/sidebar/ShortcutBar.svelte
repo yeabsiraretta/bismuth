@@ -3,8 +3,7 @@
   import { navigatorStore, removeShortcut } from '@/features/navigator';
 
   export let onActivate:
-    | ((shortcut: { type: string; path: string; label: string }) => void)
-    | undefined = undefined;
+    ((shortcut: { type: string; path: string; label: string }) => void) | undefined = undefined;
 
   $: shortcuts = $navigatorStore.shortcuts;
 

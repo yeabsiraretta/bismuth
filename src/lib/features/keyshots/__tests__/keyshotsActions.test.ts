@@ -2,19 +2,32 @@ import { describe, it, expect } from 'vitest';
 import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import {
-  moveLineUp, moveLineDown,
-  duplicateLineUp, duplicateLineDown, duplicateSelection,
-  insertLineAbove, insertLineBelow,
-  joinLines, sortLines, reverseLines,
+  moveLineUp,
+  moveLineDown,
+  duplicateLineUp,
+  duplicateLineDown,
+  duplicateSelection,
+  insertLineAbove,
+  insertLineBelow,
+  joinLines,
+  sortLines,
+  reverseLines,
 } from '../services/keyshotsActions';
 import {
-  transformUppercase, transformLowercase, transformTitlecase,
-  toggleCase, toggleSnakecase, toggleKebabcase,
-  encodeUri, trimSelection,
+  transformUppercase,
+  transformLowercase,
+  transformTitlecase,
+  toggleCase,
+  toggleSnakecase,
+  toggleKebabcase,
+  encodeUri,
+  trimSelection,
   expandLineSelection,
-  addCursorUp, addCursorDown,
+  addCursorUp,
+  addCursorDown,
   insertCodeBlock,
-  indent, outdent,
+  indent,
+  outdent,
 } from '../services/keyshotsTransforms';
 
 function makeView(doc: string, anchor?: number, head?: number): EditorView {

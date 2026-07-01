@@ -98,13 +98,7 @@ describe('parseCodeBlockParams', () => {
 // ─── resolveHighlightSpec ───────────────────────────────────────────────────
 
 describe('resolveHighlightSpec', () => {
-  const lines = [
-    'const x = 1;',
-    'const y = 2;',
-    'function foo() {',
-    '  return x + y;',
-    '}',
-  ];
+  const lines = ['const x = 1;', 'const y = 2;', 'function foo() {', '  return x + y;', '}'];
 
   it('resolves single line number', () => {
     expect(resolveHighlightSpec('1', lines)).toEqual(new Set([0]));
@@ -154,9 +148,7 @@ describe('resolveHighlightGroups', () => {
   const lines = ['line A', 'line B', 'line C'];
 
   it('resolves groups with default color', () => {
-    const groups = resolveHighlightGroups(
-      { hl: '1,3' }, lines, [], '#ff0', true,
-    );
+    const groups = resolveHighlightGroups({ hl: '1,3' }, lines, [], '#ff0', true);
     expect(groups).toHaveLength(1);
     expect(groups[0].name).toBe('hl');
     expect(groups[0].lines).toEqual(new Set([0, 2]));
@@ -165,26 +157,28 @@ describe('resolveHighlightGroups', () => {
 
   it('uses alt highlight colors', () => {
     const groups = resolveHighlightGroups(
-      { error: '2' }, lines,
+      { error: '2' },
+      lines,
       [{ name: 'error', lightColor: '#fcc', darkColor: '#c33' }],
-      '#ff0', true,
+      '#ff0',
+      true
     );
     expect(groups[0].color).toBe('#c33');
   });
 
   it('uses light color when not dark', () => {
     const groups = resolveHighlightGroups(
-      { error: '2' }, lines,
+      { error: '2' },
+      lines,
       [{ name: 'error', lightColor: '#fcc', darkColor: '#c33' }],
-      '#ff0', false,
+      '#ff0',
+      false
     );
     expect(groups[0].color).toBe('#fcc');
   });
 
   it('skips groups with no matching lines', () => {
-    const groups = resolveHighlightGroups(
-      { hl: '99' }, lines, [], '#ff0', true,
-    );
+    const groups = resolveHighlightGroups({ hl: '99' }, lines, [], '#ff0', true);
     expect(groups).toHaveLength(0);
   });
 });

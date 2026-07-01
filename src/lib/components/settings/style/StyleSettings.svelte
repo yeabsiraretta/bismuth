@@ -17,7 +17,9 @@
       message: 'Reset all style overrides to defaults? This cannot be undone.',
       confirmLabel: 'Reset',
       variant: 'danger',
-      onConfirm: () => { resetAll(); },
+      onConfirm: () => {
+        resetAll();
+      },
     });
   }
 
@@ -49,10 +51,19 @@
   {/if}
 
   <div class="section-tabs">
-    <button class:active={activeSection === 'colors'} on:click={() => (activeSection = 'colors')}>Colors</button>
-    <button class:active={activeSection === 'typography'} on:click={() => (activeSection = 'typography')}>Typography</button>
-    <button class:active={activeSection === 'spacing'} on:click={() => (activeSection = 'spacing')}>Spacing</button>
-    <button class:active={activeSection === 'effects'} on:click={() => (activeSection = 'effects')}>Effects</button>
+    <button class:active={activeSection === 'colors'} on:click={() => (activeSection = 'colors')}
+      >Colors</button
+    >
+    <button
+      class:active={activeSection === 'typography'}
+      on:click={() => (activeSection = 'typography')}>Typography</button
+    >
+    <button class:active={activeSection === 'spacing'} on:click={() => (activeSection = 'spacing')}
+      >Spacing</button
+    >
+    <button class:active={activeSection === 'effects'} on:click={() => (activeSection = 'effects')}
+      >Effects</button
+    >
   </div>
 
   <div class="section-content">
@@ -74,7 +85,6 @@
     flex-direction: column;
     gap: var(--spacing-m);
   }
-
 
   .error-msg {
     font-size: var(--font-ui-small);

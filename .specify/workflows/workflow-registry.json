@@ -21,12 +21,7 @@
         "speckit.architecture-guard.governed-tasks",
         "speckit.architecture-guard.governed-implement"
       ],
-      "integrates_skills": [
-        "code-review",
-        "ux-review",
-        "component-gen",
-        "pict-test-designer"
-      ]
+      "integrates_skills": ["code-review", "ux-review", "component-gen", "pict-test-designer"]
     }
   }
 }

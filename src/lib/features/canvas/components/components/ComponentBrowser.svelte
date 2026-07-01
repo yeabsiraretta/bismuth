@@ -103,7 +103,14 @@
               <img src={safeThumbnail(comp.thumbnail)} alt={comp.name} class="card-thumb" />
             {:else}
               <div class="card-placeholder">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
                   <path d="M12 2L22 12L12 22L2 12Z" />
                 </svg>
               </div>
@@ -236,7 +243,9 @@
     border-radius: var(--radius-m);
     overflow: hidden;
     cursor: grab;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
     text-align: left;
     padding: 0;
   }

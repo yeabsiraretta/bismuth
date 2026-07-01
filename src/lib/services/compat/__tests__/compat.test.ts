@@ -3,16 +3,28 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
-  clear: vi.fn(() => { Object.keys(mockStorage).forEach((k) => delete mockStorage[k]); }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
+  clear: vi.fn(() => {
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+  }),
   length: 0,
   key: vi.fn(() => null),
 });
 
 vi.stubGlobal('crypto', { randomUUID: () => 'test-session' });
 
-import { parseSemver, compareSemver, versionedRead, versionedWrite, getAppVersion } from '../compat';
+import {
+  parseSemver,
+  compareSemver,
+  versionedRead,
+  versionedWrite,
+  getAppVersion,
+} from '../compat';
 import { schemaRegistry } from '../registry';
 import type { VersionEnvelope } from '../types';
 
@@ -149,7 +161,10 @@ describe('versionedRead', () => {
     };
     mockStorage['test-migrate'] = JSON.stringify(envelope);
 
-    const { data, result } = versionedRead<{ original: boolean; migrated: boolean }>('test-migrate', { original: false, migrated: false });
+    const { data, result } = versionedRead<{ original: boolean; migrated: boolean }>(
+      'test-migrate',
+      { original: false, migrated: false }
+    );
     expect(data.original).toBe(true);
     expect(data.migrated).toBe(true);
     expect(result.migrationsApplied).toBe(1);
@@ -182,7 +197,9 @@ describe('versionedRead', () => {
     };
     mockStorage['test-future'] = JSON.stringify(envelope);
 
-    const { data, result } = versionedRead<Record<string, unknown>>('test-future', { fallback: true });
+    const { data, result } = versionedRead<Record<string, unknown>>('test-future', {
+      fallback: true,
+    });
     expect(data).toEqual({ fallback: true });
     expect(result.compatible).toBe(false);
     expect(result.reason).toBe('version_too_new');

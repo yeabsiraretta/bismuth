@@ -9,7 +9,8 @@
   import type { OcrWord } from '../types/ocr';
 
   export let words: OcrWord[] = [];
-  export let onWordFocus: ((detail: { word: OcrWord; x: number; y: number }) => void) | undefined = undefined;
+  export let onWordFocus: ((detail: { word: OcrWord; x: number; y: number }) => void) | undefined =
+    undefined;
 
   function handleWordClick(e: MouseEvent, word: OcrWord) {
     if (word.confidence < 0.7) {
@@ -29,9 +30,11 @@
     <span
       class="ocr-word"
       class:ocr-low-confidence={isLowConfidence(word)}
-      title={isLowConfidence(word) ? `Low confidence: ${(word.confidence * 100).toFixed(0)}%` : undefined}
-      on:click={(e) => handleWordClick(e, word)}
-    >{word.text}</span>{#if i < words.length - 1}<span aria-hidden="true"> </span>{/if}
+      title={isLowConfidence(word)
+        ? `Low confidence: ${(word.confidence * 100).toFixed(0)}%`
+        : undefined}
+      on:click={(e) => handleWordClick(e, word)}>{word.text}</span
+    >{#if i < words.length - 1}<span aria-hidden="true"> </span>{/if}
   {/each}
 </span>
 

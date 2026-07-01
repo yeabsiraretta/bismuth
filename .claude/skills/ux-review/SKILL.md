@@ -1,6 +1,6 @@
 ---
 name: ux-review
-description: "Review UI components against 168 UX principles and detect smells"
+description: 'Review UI components against 168 UX principles and detect smells'
 ---
 
 # UX Review Skill
@@ -53,22 +53,27 @@ Review UI components, screens, or interfaces against Bismuth's UX principles fra
 ### Findings
 
 #### Critical Issues
+
 - **Cognitive Load (F.1.1.02)**: [specific issue]
   - **Impact**: [what happens]
   - **Fix**: [concrete remediation]
 
 #### Warnings
+
 - **Fitts's Law (F.4.1.01)**: [specific issue]
   - **Fix**: [remediation]
 
 #### Suggestions
+
 - **Progressive Disclosure (F.3.1.01)**: [opportunity]
   - **Fix**: [improvement]
 
 ### Strengths
+
 - [What's done well]
 
 ### Priority Fixes
+
 1. [Critical issue 1]
 2. [Warning 1]
 ```
@@ -76,11 +81,13 @@ Review UI components, screens, or interfaces against Bismuth's UX principles fra
 ## Bismuth-Specific Standards
 
 ### Component Sizing
+
 - Min button size: 40x40px
 - Min primary button: 44x44px
 - Min icon clickable area: 40x40px with padding
 
 ### Cognitive Load Limits
+
 - Sidebar navigation: Max 7 top-level items
 - Dropdown menus: Max 9 items (or categorize)
 - Toolbar buttons: Max 7 visible (rest in "More")
@@ -88,12 +95,14 @@ Review UI components, screens, or interfaces against Bismuth's UX principles fra
 - Tag list: Group after 9 tags
 
 ### Required Feedback
+
 - Auto-save: Show "Saved at HH:mm:ss"
 - Loading: Spinner or skeleton for >200ms operations
 - Errors: Specific message + remediation
 - Success: Confirmation for destructive actions
 
 ### Accessibility Requirements
+
 - All interactive elements keyboard accessible
 - ARIA labels on icon-only buttons
 - Focus indicators visible (2px outline)

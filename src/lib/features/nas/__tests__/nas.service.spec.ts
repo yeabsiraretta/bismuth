@@ -125,12 +125,14 @@ describe('isChangeJournalEntry', () => {
   });
 
   it('returns true for a delete entry without destPath', () => {
-    expect(isChangeJournalEntry({
-      op: 'delete',
-      path: 'notes/old.md',
-      timestamp: '2026-06-21T12:00:00Z',
-      synced: false,
-    })).toBe(true);
+    expect(
+      isChangeJournalEntry({
+        op: 'delete',
+        path: 'notes/old.md',
+        timestamp: '2026-06-21T12:00:00Z',
+        synced: false,
+      })
+    ).toBe(true);
   });
 
   it('returns false when op is an invalid value', () => {
@@ -191,7 +193,7 @@ async function contractConnectWebDav(
   url: string,
   username: string,
   password: string,
-  vaultPath: string,
+  vaultPath: string
 ) {
   return invoke('connect_webdav', { url, username, password, vaultPath });
 }
@@ -204,7 +206,9 @@ function contractOnSyncProgress(cb: (pct: number, filesRemaining: number) => voi
   let unlisten: () => void = () => undefined;
   listen<{ percent: number; files_remaining: number }>('nas://sync-progress', (evt) => {
     cb(evt.payload.percent, evt.payload.files_remaining);
-  }).then((fn) => { unlisten = fn; });
+  }).then((fn) => {
+    unlisten = fn;
+  });
   return () => unlisten();
 }
 
@@ -216,7 +220,9 @@ function contractOnSizeWarning(cb: (path: string, sizeMb: number) => void) {
   let unlisten: () => void = () => undefined;
   listen<{ path: string; size_mb: number }>('nas://size-warning', (evt) => {
     cb(evt.payload.path, evt.payload.size_mb);
-  }).then((fn) => { unlisten = fn; });
+  }).then((fn) => {
+    unlisten = fn;
+  });
   return () => unlisten();
 }
 
@@ -233,7 +239,7 @@ describe('nas.service — connectWebDav contract', () => {
       'https://192.168.1.100/dav',
       'admin',
       's3cr3t',
-      '/vault',
+      '/vault'
     );
 
     expect(invoke).toHaveBeenCalledWith('connect_webdav', {
@@ -248,9 +254,9 @@ describe('nas.service — connectWebDav contract', () => {
   it('propagates rejections from invoke', async () => {
     vi.mocked(invoke).mockRejectedValueOnce(new Error('network error'));
 
-    await expect(
-      contractConnectWebDav('https://host/dav', 'u', 'p', '/vault'),
-    ).rejects.toThrow('network error');
+    await expect(contractConnectWebDav('https://host/dav', 'u', 'p', '/vault')).rejects.toThrow(
+      'network error'
+    );
   });
 });
 
@@ -268,7 +274,8 @@ describe('nas.service — onSyncProgress contract', () => {
   });
 
   it('invokes the callback with percent and files_remaining from event payload', async () => {
-    let capturedHandler: ((evt: { payload: { percent: number; files_remaining: number } }) => void) | undefined;
+    let capturedHandler:
+      ((evt: { payload: { percent: number; files_remaining: number } }) => void) | undefined;
 
     vi.mocked(listen).mockImplementation((event, handler) => {
       if (event === 'nas://sync-progress') {
@@ -310,7 +317,8 @@ describe('nas.service — onSizeWarning contract', () => {
   });
 
   it('invokes the callback with path and size_mb from event payload', async () => {
-    let capturedHandler: ((evt: { payload: { path: string; size_mb: number } }) => void) | undefined;
+    let capturedHandler:
+      ((evt: { payload: { path: string; size_mb: number } }) => void) | undefined;
 
     vi.mocked(listen).mockImplementation((event, handler) => {
       if (event === 'nas://size-warning') {

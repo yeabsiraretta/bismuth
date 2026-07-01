@@ -41,9 +41,7 @@
               <div class="issue-item">
                 <p class="issue-message">{issue.message}</p>
                 {#if issue.suggestion !== null}
-                  <button class="fix-btn" on:click={() => handleApplyFix(issue)}>
-                    Fix
-                  </button>
+                  <button class="fix-btn" on:click={() => handleApplyFix(issue)}> Fix </button>
                 {/if}
               </div>
             {/each}
@@ -78,8 +76,14 @@
     font-size: var(--font-size-sm, 12px);
   }
 
-  .empty-title { margin: 0; font-weight: 600; }
-  .empty-desc { margin: 0; opacity: 0.7; }
+  .empty-title {
+    margin: 0;
+    font-weight: 600;
+  }
+  .empty-desc {
+    margin: 0;
+    opacity: 0.7;
+  }
 
   .severity-group {
     margin-bottom: var(--spacing-sm, 8px);

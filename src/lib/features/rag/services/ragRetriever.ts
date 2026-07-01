@@ -41,7 +41,7 @@ async function vectorSearch(query: string, topK: number): Promise<SimilarNote[]>
 async function graphExpand(
   seedPaths: string[],
   depth: number,
-  maxNodes: number,
+  maxNodes: number
 ): Promise<Map<string, number>> {
   const visited = new Map<string, number>();
   const queue: Array<{ path: string; depth: number; score: number }> = [];
@@ -61,7 +61,7 @@ async function graphExpand(
 
     try {
       const links = await invoke<GraphLink[]>('get_outgoing_links', { noteId: item.path });
-      for (const link of (links ?? [])) {
+      for (const link of links ?? []) {
         if (!visited.has(link.targetPath)) {
           queue.push({
             path: link.targetPath,
@@ -75,8 +75,10 @@ async function graphExpand(
     }
 
     try {
-      const backlinks = await invoke<Array<{ notePath: string }>>('get_backlinks', { noteId: item.path });
-      for (const bl of (backlinks ?? [])) {
+      const backlinks = await invoke<Array<{ notePath: string }>>('get_backlinks', {
+        noteId: item.path,
+      });
+      for (const bl of backlinks ?? []) {
         if (!visited.has(bl.notePath)) {
           queue.push({
             path: bl.notePath,
@@ -130,7 +132,10 @@ function extractExcerpt(content: string, query: string, maxLen: number = 300): s
   let bestIdx = 0;
   for (const term of terms) {
     const idx = lower.indexOf(term);
-    if (idx >= 0) { bestIdx = idx; break; }
+    if (idx >= 0) {
+      bestIdx = idx;
+      break;
+    }
   }
 
   const start = Math.max(0, bestIdx - 80);
@@ -147,10 +152,7 @@ function extractExcerpt(content: string, query: string, maxLen: number = 300): s
  * Retrieve context from the vault for a RAG query.
  * Returns assembled context text and source citations.
  */
-export async function retrieveContext(
-  query: string,
-  config: RagConfig,
-): Promise<RagContext> {
+export async function retrieveContext(query: string, config: RagConfig): Promise<RagContext> {
   const { searchMode, topK, maxContextTokens, graphDepth, excludeFolders } = config;
   const scoredPaths = new Map<string, { score: number; source: 'vector' | 'graph' }>();
 
@@ -158,27 +160,25 @@ export async function retrieveContext(
   if (searchMode === 'vector' || searchMode === 'hybrid') {
     const results = await vectorSearch(query, topK);
     for (const r of results) {
-      if (excludeFolders.some(f => r.path.startsWith(f))) continue;
+      if (excludeFolders.some((f) => r.path.startsWith(f))) continue;
       scoredPaths.set(r.path, { score: r.score, source: 'vector' });
     }
   }
 
   // 2. Graph expansion
   if (searchMode === 'graph' || searchMode === 'hybrid') {
-    const seeds = searchMode === 'hybrid'
-      ? [...scoredPaths.keys()].slice(0, 3)
-      : [];
+    const seeds = searchMode === 'hybrid' ? [...scoredPaths.keys()].slice(0, 3) : [];
 
     // For pure graph mode, do a vector search just to get seeds
     if (searchMode === 'graph') {
       const seedResults = await vectorSearch(query, 3);
-      seeds.push(...seedResults.map(r => r.path));
+      seeds.push(...seedResults.map((r) => r.path));
     }
 
     if (seeds.length > 0) {
       const graphNodes = await graphExpand(seeds, graphDepth, topK * 2);
       for (const [path, score] of graphNodes) {
-        if (excludeFolders.some(f => path.startsWith(f))) continue;
+        if (excludeFolders.some((f) => path.startsWith(f))) continue;
         const existing = scoredPaths.get(path);
         if (existing) {
           existing.score = Math.max(existing.score, score * 0.8);
@@ -190,9 +190,7 @@ export async function retrieveContext(
   }
 
   // 3. Sort by score, take topK
-  const ranked = [...scoredPaths.entries()]
-    .sort((a, b) => b[1].score - a[1].score)
-    .slice(0, topK);
+  const ranked = [...scoredPaths.entries()].sort((a, b) => b[1].score - a[1].score).slice(0, topK);
 
   // 4. Read content and build citations
   const citations: RagCitation[] = [];

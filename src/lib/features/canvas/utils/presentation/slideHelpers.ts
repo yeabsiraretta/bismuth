@@ -86,10 +86,7 @@ export function getSlideOrder(doc: CanvasDocument): string[] {
  * @param doc - Canvas document.
  * @param frameId - ID of the frame/slide to look up.
  */
-export function getSlideMetadata(
-  doc: CanvasDocument,
-  frameId: string
-): SlideMetadata | undefined {
+export function getSlideMetadata(doc: CanvasDocument, frameId: string): SlideMetadata | undefined {
   return doc.slideMetadata?.find((m) => m.frameId === frameId);
 }
 
@@ -115,9 +112,7 @@ export function defaultSlideMetadata(frameId: string): SlideMetadata {
  * @param type - Transition type discriminant.
  * @returns CSS class name string (non-empty for all valid types).
  */
-export function resolveTransitionClass(
-  type: SlideMetadata['transitionType']
-): string {
+export function resolveTransitionClass(type: SlideMetadata['transitionType']): string {
   const map: Record<SlideMetadata['transitionType'], string> = {
     instant: '',
     fade: 'slide-enter-fade',

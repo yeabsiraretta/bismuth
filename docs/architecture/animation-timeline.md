@@ -28,13 +28,13 @@ Non-animatable properties (discrete): `text`, `visibility`, `element_type`
 
 ## Easing Functions
 
-| Name | Description |
-| ---- | ----------- |
-| `linear` | Constant velocity |
-| `ease-in` | Accelerating from zero |
-| `ease-out` | Decelerating to zero |
-| `ease-in-out` | Accelerate then decelerate |
-| `spring` | Physics-based spring simulation |
+| Name           | Description                       |
+| -------------- | --------------------------------- |
+| `linear`       | Constant velocity                 |
+| `ease-in`      | Accelerating from zero            |
+| `ease-out`     | Decelerating to zero              |
+| `ease-in-out`  | Accelerate then decelerate        |
+| `spring`       | Physics-based spring simulation   |
 | `cubic-bezier` | Custom curve via 4 control points |
 
 ## State-to-State Mapping

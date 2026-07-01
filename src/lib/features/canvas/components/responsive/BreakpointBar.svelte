@@ -53,15 +53,67 @@
 </div>
 
 <style>
-  .breakpoint-bar { display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-xs) var(--spacing-sm); background: var(--bg-secondary); border-top: 1px solid var(--border); }
-  .breakpoint-segments { display: flex; gap: 2px; }
-  .segment { display: flex; flex-direction: column; align-items: center; padding: 4px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; }
-  .segment:hover { background: var(--bg-hover); }
-  .segment.active { background: var(--accent); color: var(--text-on-accent); border-color: var(--accent); }
-  .segment-name { font-size: var(--font-size-xs); font-weight: 500; }
-  .segment-width { font-size: 10px; opacity: 0.7; }
-  .custom-width { display: flex; align-items: center; gap: 2px; margin-left: auto; }
-  .custom-width input { width: 60px; padding: 2px 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: right; font-size: var(--font-size-sm); }
-  .unit { font-size: var(--font-size-sm); color: var(--text-muted); }
-  .clear-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 6px; }
+  .breakpoint-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+  }
+  .breakpoint-segments {
+    display: flex;
+    gap: 2px;
+  }
+  .segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+  }
+  .segment:hover {
+    background: var(--bg-hover);
+  }
+  .segment.active {
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border-color: var(--accent);
+  }
+  .segment-name {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+  }
+  .segment-width {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+  .custom-width {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+  }
+  .custom-width input {
+    width: 60px;
+    padding: 2px 4px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: right;
+    font-size: var(--font-size-sm);
+  }
+  .unit {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+  .clear-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px 6px;
+  }
 </style>

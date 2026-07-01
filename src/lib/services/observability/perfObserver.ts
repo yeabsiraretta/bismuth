@@ -14,11 +14,31 @@ export function startPerformanceObservers(): void {
   if (isRunning) return;
   isRunning = true;
 
-  try { observeLongTasks(); } catch (e) { log.debug('LongTask observer not supported', { error: String(e) }); }
-  try { observePaintTiming(); } catch (e) { log.debug('Paint timing observer not supported', { error: String(e) }); }
-  try { observeLayoutShift(); } catch (e) { log.debug('Layout shift observer not supported', { error: String(e) }); }
-  try { observeResourceTiming(); } catch (e) { log.debug('Resource timing observer not supported', { error: String(e) }); }
-  try { observeNavigationTiming(); } catch (e) { log.debug('Navigation timing observer not supported', { error: String(e) }); }
+  try {
+    observeLongTasks();
+  } catch (e) {
+    log.debug('LongTask observer not supported', { error: String(e) });
+  }
+  try {
+    observePaintTiming();
+  } catch (e) {
+    log.debug('Paint timing observer not supported', { error: String(e) });
+  }
+  try {
+    observeLayoutShift();
+  } catch (e) {
+    log.debug('Layout shift observer not supported', { error: String(e) });
+  }
+  try {
+    observeResourceTiming();
+  } catch (e) {
+    log.debug('Resource timing observer not supported', { error: String(e) });
+  }
+  try {
+    observeNavigationTiming();
+  } catch (e) {
+    log.debug('Navigation timing observer not supported', { error: String(e) });
+  }
 
   log.info('Performance observers started', { count: observers.length });
 }
@@ -26,7 +46,11 @@ export function startPerformanceObservers(): void {
 /** Stop all performance observers. */
 export function stopPerformanceObservers(): void {
   for (const obs of observers) {
-    try { obs.disconnect(); } catch (e) { log.debug('Failed to disconnect performance observer', { error: String(e) }); }
+    try {
+      obs.disconnect();
+    } catch (e) {
+      log.debug('Failed to disconnect performance observer', { error: String(e) });
+    }
   }
   observers = [];
   isRunning = false;
@@ -107,7 +131,8 @@ function observeResourceTiming() {
 }
 
 function observeNavigationTiming() {
-  const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+  const nav = performance.getEntriesByType('navigation')[0] as
+    PerformanceNavigationTiming | undefined;
   if (nav) {
     metrics.gauge('perf.ttfb_ms').set(Math.round(nav.responseStart - nav.requestStart));
     metrics.gauge('perf.dom_interactive_ms').set(Math.round(nav.domInteractive));

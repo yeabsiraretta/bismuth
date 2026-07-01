@@ -20,7 +20,9 @@ type PDFDocumentProxy = {
 
 type PDFPageProxy = {
   getViewport: (params: { scale: number }) => { width: number; height: number };
-  render: (params: { canvasContext: CanvasRenderingContext2D; viewport: unknown }) => { promise: Promise<void> };
+  render: (params: { canvasContext: CanvasRenderingContext2D; viewport: unknown }) => {
+    promise: Promise<void>;
+  };
   getTextContent: () => Promise<PDFTextContent>;
 };
 
@@ -28,7 +30,8 @@ type PDFTextContent = {
   items: Array<{ str: string; transform: number[] }>;
 };
 
-let pdfjs: { getDocument: (params: unknown) => { promise: Promise<PDFDocumentProxy> } } | null = null;
+let pdfjs: { getDocument: (params: unknown) => { promise: Promise<PDFDocumentProxy> } } | null =
+  null;
 
 /**
  * Loads the pdfjs-dist library. Called lazily on first use.
@@ -38,7 +41,10 @@ async function loadPdfJs(): Promise<typeof pdfjs> {
   try {
     const mod = await import(/* @vite-ignore */ 'pdfjs-dist');
     // Set worker source for pdfjs
-    const workerSrc = new URL(/* @vite-ignore */ 'pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href;
+    const workerSrc = new URL(
+      /* @vite-ignore */ 'pdfjs-dist/build/pdf.worker.min.mjs',
+      import.meta.url
+    ).href;
     mod.GlobalWorkerOptions.workerSrc = workerSrc;
     pdfjs = mod;
     log.info('PDF service: pdfjs-dist loaded');
@@ -90,7 +96,7 @@ export async function openPdf(source: string): Promise<{ numPages: number }> {
 export async function renderPage(
   canvas: HTMLCanvasElement,
   pageNumber: number,
-  scale: number = 1.5,
+  scale: number = 1.5
 ): Promise<PDFPageInfo> {
   if (!currentDoc) throw new Error('No PDF document loaded');
   if (pageNumber < 1 || pageNumber > currentDoc.numPages) {

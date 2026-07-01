@@ -74,7 +74,9 @@ describe('tasks service', () => {
 
     it('throws on failure', async () => {
       vi.mocked(invoke).mockRejectedValue('write error');
-      await expect(updateTaskStatus('/x', 1, 'open')).rejects.toThrow('Failed to update task status');
+      await expect(updateTaskStatus('/x', 1, 'open')).rejects.toThrow(
+        'Failed to update task status'
+      );
     });
   });
 
@@ -91,7 +93,12 @@ describe('tasks service', () => {
     });
 
     it('passes contextPath when provided', async () => {
-      vi.mocked(invoke).mockResolvedValue({ groups: [], total_count: 0, display: {}, explain: null });
+      vi.mocked(invoke).mockResolvedValue({
+        groups: [],
+        total_count: 0,
+        display: {},
+        explain: null,
+      });
       await executeTaskQuery('priority:high', '/vault/project.md');
       expect(invoke).toHaveBeenCalledWith('execute_task_query', {
         query: 'priority:high',

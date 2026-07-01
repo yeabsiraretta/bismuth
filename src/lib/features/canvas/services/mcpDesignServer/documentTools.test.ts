@@ -49,7 +49,9 @@ describe('handleGetDesignDocument', () => {
 
 describe('handleListDesignDocuments', () => {
   it('returns list of documents', async () => {
-    const mockMeta = [{ document_type: 'token', document_id: 'tok_001', name: 'T', version: 1, modified_at: '' }];
+    const mockMeta = [
+      { document_type: 'token', document_id: 'tok_001', name: 'T', version: 1, modified_at: '' },
+    ];
     vi.mocked(invoke).mockResolvedValue(mockMeta);
     const result = await handleListDesignDocuments({ type: 'token' });
     expect(result.success).toBe(true);

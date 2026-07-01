@@ -60,29 +60,52 @@
     <div class="setting-group">
       <h4>Index Status</h4>
       <div class="stats-grid">
-        <StatItem label="Total embeddings" value="{stats.total_embeddings}" />
+        <StatItem label="Total embeddings" value={stats.total_embeddings} />
         <StatItem label="Status" value="Ready" />
       </div>
     </div>
   {:else}
-    <EmptyState icon="cpu" title="Not initialized" description="Initialize to enable semantic search." />
+    <EmptyState
+      icon="cpu"
+      title="Not initialized"
+      description="Initialize to enable semantic search."
+    />
   {/if}
 
   <div class="setting-group">
     <h4>Actions</h4>
     <div class="action-row">
-      <Button variant="secondary" on:click={handleInitialize} loading={isInitializing} disabled={isInitializing}>
+      <Button
+        variant="secondary"
+        on:click={handleInitialize}
+        loading={isInitializing}
+        disabled={isInitializing}
+      >
         Initialize Embeddings
       </Button>
-      <Button variant="secondary" on:click={handleIndexAll} loading={isIndexing} disabled={isIndexing || !stats?.is_ready}>
+      <Button
+        variant="secondary"
+        on:click={handleIndexAll}
+        loading={isIndexing}
+        disabled={isIndexing || !stats?.is_ready}
+      >
         Re-index All Notes
       </Button>
     </div>
-    <span class="setting-hint">Re-indexing processes all vault notes. This may take a few minutes.</span>
+    <span class="setting-hint"
+      >Re-indexing processes all vault notes. This may take a few minutes.</span
+    >
   </div>
 </div>
 
 <style>
-  .stats-grid { display: flex; flex-direction: column; }
-  .action-row { display: flex; gap: var(--spacing-s); flex-wrap: wrap; }
+  .stats-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .action-row {
+    display: flex;
+    gap: var(--spacing-s);
+    flex-wrap: wrap;
+  }
 </style>

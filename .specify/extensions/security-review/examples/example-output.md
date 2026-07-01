@@ -1,7 +1,7 @@
 ---
 document_type: security-review
 review_type: audit
-assessment_date: "2026-04-02"
+assessment_date: '2026-04-02'
 codebase_analyzed: example-nodejs-api
 total_files_analyzed: 47
 total_findings: 18
@@ -15,22 +15,22 @@ owasp_categories: [A01, A02, A03, A04, A05, A07, A09]
 cwe_ids: [CWE-89, CWE-798, CWE-22, CWE-79, CWE-326, CWE-862]
 field_summaries:
   document_type: "Always 'security-review'. Allows indexers to skip non-review documents."
-  review_type: "Which command generated this document: audit, branch, staged, plan, tasks, or followup."
-  assessment_date: "ISO 8601 date the review was performed (YYYY-MM-DD)."
-  overall_risk: "Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL)."
-  critical_count: "Number of Critical findings (CVSS 9.0-10.0)."
-  high_count: "Number of High findings (CVSS 7.0-8.9)."
-  medium_count: "Number of Medium findings (CVSS 4.0-6.9)."
-  low_count: "Number of Low findings (CVSS 0.1-3.9)."
-  informational_count: "Number of Informational findings."
-  owasp_categories: "OWASP Top 10 2025 categories (A01-A10) that have at least one finding."
-  cwe_ids: "CWE identifiers referenced in this document."
-  finding_id: "Unique finding identifier (SEC-NNN) for cross-referencing and task linkage."
-  location: "File path and line number of the vulnerable code (path/to/file.ext:line)."
-  owasp_category: "OWASP Top 10 2025 category for this finding (AXX:2025-Name)."
-  cwe: "Common Weakness Enumeration identifier with short name (CWE-NNN: Name)."
-  cvss_score: "CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low."
-  spec_kit_task: "Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN)."
+  review_type: 'Which command generated this document: audit, branch, staged, plan, tasks, or followup.'
+  assessment_date: 'ISO 8601 date the review was performed (YYYY-MM-DD).'
+  overall_risk: 'Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL).'
+  critical_count: 'Number of Critical findings (CVSS 9.0-10.0).'
+  high_count: 'Number of High findings (CVSS 7.0-8.9).'
+  medium_count: 'Number of Medium findings (CVSS 4.0-6.9).'
+  low_count: 'Number of Low findings (CVSS 0.1-3.9).'
+  informational_count: 'Number of Informational findings.'
+  owasp_categories: 'OWASP Top 10 2025 categories (A01-A10) that have at least one finding.'
+  cwe_ids: 'CWE identifiers referenced in this document.'
+  finding_id: 'Unique finding identifier (SEC-NNN) for cross-referencing and task linkage.'
+  location: 'File path and line number of the vulnerable code (path/to/file.ext:line).'
+  owasp_category: 'OWASP Top 10 2025 category for this finding (AXX:2025-Name).'
+  cwe: 'Common Weakness Enumeration identifier with short name (CWE-NNN: Name).'
+  cvss_score: 'CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low.'
+  spec_kit_task: 'Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN).'
 ---
 
 # Example Security Review Report
@@ -93,11 +93,7 @@ User-supplied credentials are concatenated directly into SQL queries without par
 // src/auth/login.js:42-48
 async function authenticateUser(username, password) {
   const query =
-    "SELECT * FROM users WHERE username = '" +
-    username +
-    "' AND password = '" +
-    password +
-    "'";
+    "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
 
   const result = await db.query(query);
   return result.rows[0];
@@ -422,7 +418,7 @@ app.use((req, res, next) => {
       "img-src 'self' data: https:; " +
       "font-src 'self'; " +
       "connect-src 'self'; " +
-      "frame-ancestors 'none';",
+      "frame-ancestors 'none';"
   );
   next();
 });

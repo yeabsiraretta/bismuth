@@ -4,9 +4,24 @@
  */
 
 export type PokemonType =
-  | 'Normal' | 'Fire' | 'Water' | 'Grass' | 'Electric' | 'Ice'
-  | 'Fighting' | 'Poison' | 'Ground' | 'Flying' | 'Psychic' | 'Bug'
-  | 'Rock' | 'Ghost' | 'Dragon' | 'Dark' | 'Steel' | 'Fairy';
+  | 'Normal'
+  | 'Fire'
+  | 'Water'
+  | 'Grass'
+  | 'Electric'
+  | 'Ice'
+  | 'Fighting'
+  | 'Poison'
+  | 'Ground'
+  | 'Flying'
+  | 'Psychic'
+  | 'Bug'
+  | 'Rock'
+  | 'Ghost'
+  | 'Dragon'
+  | 'Dark'
+  | 'Steel'
+  | 'Fairy';
 
 export type MoveCategory = 'physical' | 'special' | 'status';
 
@@ -45,11 +60,31 @@ export interface Item {
 }
 
 export type Nature =
-  | 'Hardy' | 'Lonely' | 'Brave' | 'Adamant' | 'Naughty'
-  | 'Bold' | 'Docile' | 'Relaxed' | 'Impish' | 'Lax'
-  | 'Timid' | 'Hasty' | 'Serious' | 'Jolly' | 'Naive'
-  | 'Modest' | 'Mild' | 'Quiet' | 'Bashful' | 'Rash'
-  | 'Calm' | 'Gentle' | 'Sassy' | 'Careful' | 'Quirky';
+  | 'Hardy'
+  | 'Lonely'
+  | 'Brave'
+  | 'Adamant'
+  | 'Naughty'
+  | 'Bold'
+  | 'Docile'
+  | 'Relaxed'
+  | 'Impish'
+  | 'Lax'
+  | 'Timid'
+  | 'Hasty'
+  | 'Serious'
+  | 'Jolly'
+  | 'Naive'
+  | 'Modest'
+  | 'Mild'
+  | 'Quiet'
+  | 'Bashful'
+  | 'Rash'
+  | 'Calm'
+  | 'Gentle'
+  | 'Sassy'
+  | 'Careful'
+  | 'Quirky';
 
 export interface TeamSlot {
   species: PokemonSpecies | null;
@@ -88,27 +123,36 @@ export interface FieldConditions {
 export type TypeEffectiveness = Record<string, Record<string, number>>;
 
 /** Raw JSON shape for the pokedex config file */
-export type PokedexJson = Record<string, {
-  id: string;
-  name: string;
-  types: [string, string?];
-  baseStats: Stats;
-  abilities: string[];
-}>;
+export type PokedexJson = Record<
+  string,
+  {
+    id: string;
+    name: string;
+    types: [string, string?];
+    baseStats: Stats;
+    abilities: string[];
+  }
+>;
 
 /** Raw JSON shape for the moves config file */
-export type MovesJson = Record<string, {
-  id: string;
-  name: string;
-  type: string;
-  power: number | null;
-  category: string;
-  accuracy: number | null;
-}>;
+export type MovesJson = Record<
+  string,
+  {
+    id: string;
+    name: string;
+    type: string;
+    power: number | null;
+    category: string;
+    accuracy: number | null;
+  }
+>;
 
 /** Raw JSON shape for the items config file */
-export type ItemsJson = Record<string, {
-  id: string;
-  name: string;
-  effect: string;
-}>;
+export type ItemsJson = Record<
+  string,
+  {
+    id: string;
+    name: string;
+    effect: string;
+  }
+>;

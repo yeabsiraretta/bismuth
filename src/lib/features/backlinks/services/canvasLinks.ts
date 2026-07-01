@@ -23,10 +23,7 @@ interface CanvasData {
 // ─── Extraction ──────────────────────────────────────────────────────────────
 
 /** Extract all links from a canvas file's JSON content */
-export function extractCanvasLinks(
-  canvasPath: string,
-  jsonContent: string,
-): CanvasLink[] {
+export function extractCanvasLinks(canvasPath: string, jsonContent: string): CanvasLink[] {
   let data: CanvasData;
   try {
     data = JSON.parse(jsonContent);

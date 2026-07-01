@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  parseVimrc,
-  expandLeader,
-  extractLeader,
-  extractSetOptions,
-} from '../vimrcParser';
+import { parseVimrc, expandLeader, extractLeader, extractSetOptions } from '../vimrcParser';
 
 describe('parseVimrc', () => {
   it('parses blank and comment lines without error', () => {
@@ -35,7 +30,7 @@ describe('parseVimrc', () => {
   it('parses unmap commands', () => {
     const result = parseVimrc('unmap j\nnunmap k\niunmap jk\nvunmap <');
     expect(result.commands).toHaveLength(4);
-    expect(result.commands.map(c => c.type)).toEqual(['unmap', 'nunmap', 'iunmap', 'vunmap']);
+    expect(result.commands.map((c) => c.type)).toEqual(['unmap', 'nunmap', 'iunmap', 'vunmap']);
   });
 
   it('parses exmap commands', () => {

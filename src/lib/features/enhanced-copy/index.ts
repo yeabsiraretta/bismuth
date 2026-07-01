@@ -5,20 +5,32 @@
 
 // Types
 export type {
-  LinkMode, FootnoteMode, CalloutMode, CopyViewScope,
-  RegexRule, EnhancedCopyConfig,
+  LinkMode,
+  FootnoteMode,
+  CalloutMode,
+  CopyViewScope,
+  RegexRule,
+  EnhancedCopyConfig,
 } from './types';
 export { DEFAULT_ENHANCED_COPY_CONFIG } from './types';
 
 // Services
 export {
-  transformLinks, transformFootnotes, transformCallouts,
-  removeHighlights, convertWikilinks, convertTabsToSpaces,
-  addStrictLineBreaks, applyRegexRules, enhancedCopyTransform,
+  transformLinks,
+  transformFootnotes,
+  transformCallouts,
+  removeHighlights,
+  convertWikilinks,
+  convertTabsToSpaces,
+  addStrictLineBreaks,
+  applyRegexRules,
+  enhancedCopyTransform,
 } from './services/enhancedCopyTransform';
 
 // Store
 export {
-  enhancedCopyConfig, updateEnhancedCopyConfig,
-  resetEnhancedCopyConfig, enhancedCopy,
+  enhancedCopyConfig,
+  updateEnhancedCopyConfig,
+  resetEnhancedCopyConfig,
+  enhancedCopy,
 } from './stores/enhancedCopyStore';

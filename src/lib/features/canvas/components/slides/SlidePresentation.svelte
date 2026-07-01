@@ -54,7 +54,9 @@
     if (!cls) return;
     transitionClass = cls;
     if (transitionTimer) clearTimeout(transitionTimer);
-    transitionTimer = setTimeout(() => { transitionClass = ''; }, slideMeta.transitionDuration + 50);
+    transitionTimer = setTimeout(() => {
+      transitionClass = '';
+    }, slideMeta.transitionDuration + 50);
   }
 
   function handleSelectSlide(detail: { frameId: string }) {
@@ -72,10 +74,24 @@
   function handleKeydown(e: KeyboardEvent) {
     if (!show) return;
     switch (e.key) {
-      case ' ': case 'ArrowRight': e.preventDefault(); if (doc) nextSlide(doc); break;
-      case 'ArrowLeft': e.preventDefault(); if (doc) prevSlide(doc); break;
-      case 'Escape': e.preventDefault(); exitPresentation(); break;
-      case 'f': case 'F': e.preventDefault(); toggleFullscreen(); break;
+      case ' ':
+      case 'ArrowRight':
+        e.preventDefault();
+        if (doc) nextSlide(doc);
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        if (doc) prevSlide(doc);
+        break;
+      case 'Escape':
+        e.preventDefault();
+        exitPresentation();
+        break;
+      case 'f':
+      case 'F':
+        e.preventDefault();
+        toggleFullscreen();
+        break;
     }
   }
 
@@ -90,7 +106,9 @@
     else document.documentElement.requestFullscreen().catch(() => {});
   }
 
-  onMount(() => { window.addEventListener('keydown', handleKeydown); });
+  onMount(() => {
+    window.addEventListener('keydown', handleKeydown);
+  });
   onDestroy(() => {
     window.removeEventListener('keydown', handleKeydown);
     if (transitionTimer) clearTimeout(transitionTimer);
@@ -109,7 +127,8 @@
       </div>
       <div class="slide-indicator" aria-live="polite">
         {#if doc.slideMetadata}
-          Slide {(doc.slideMetadata.findIndex(m => m.frameId === frameId) + 1)} of {doc.slideMetadata.length}
+          Slide {doc.slideMetadata.findIndex((m) => m.frameId === frameId) + 1} of {doc
+            .slideMetadata.length}
         {/if}
       </div>
     </div>
@@ -131,8 +150,8 @@
         class="expand-panel-btn"
         on:click={() => (rightPanelVisible = true)}
         title="Show presenter panel"
-        aria-label="Expand presenter panel"
-      >&lsaquo;</button>
+        aria-label="Expand presenter panel">&lsaquo;</button
+      >
     {/if}
   </div>
 {/if}
@@ -164,15 +183,53 @@
     justify-content: center;
   }
 
-  :global(.slide-enter-fade) { animation: slideEnterFade var(--slide-transition-duration, 300ms) ease forwards; }
-  :global(.slide-enter-slide-left) { animation: slideEnterLeft var(--slide-transition-duration, 300ms) ease forwards; }
-  :global(.slide-enter-slide-right) { animation: slideEnterRight var(--slide-transition-duration, 300ms) ease forwards; }
-  :global(.slide-enter-scale) { animation: slideEnterScale var(--slide-transition-duration, 300ms) ease forwards; }
+  :global(.slide-enter-fade) {
+    animation: slideEnterFade var(--slide-transition-duration, 300ms) ease forwards;
+  }
+  :global(.slide-enter-slide-left) {
+    animation: slideEnterLeft var(--slide-transition-duration, 300ms) ease forwards;
+  }
+  :global(.slide-enter-slide-right) {
+    animation: slideEnterRight var(--slide-transition-duration, 300ms) ease forwards;
+  }
+  :global(.slide-enter-scale) {
+    animation: slideEnterScale var(--slide-transition-duration, 300ms) ease forwards;
+  }
 
-  @keyframes slideEnterFade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideEnterLeft { from { transform: translateX(100%); } to { transform: translateX(0); } }
-  @keyframes slideEnterRight { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-  @keyframes slideEnterScale { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes slideEnterFade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes slideEnterLeft {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideEnterRight {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideEnterScale {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 
   .slide-indicator {
     position: absolute;
@@ -211,8 +268,14 @@
 
   @media print {
     .expand-panel-btn,
-    .slide-indicator { display: none; }
-    .slide-presentation { position: static; }
-    .slide-stage { page-break-after: always; }
+    .slide-indicator {
+      display: none;
+    }
+    .slide-presentation {
+      position: static;
+    }
+    .slide-stage {
+      page-break-after: always;
+    }
   }
 </style>

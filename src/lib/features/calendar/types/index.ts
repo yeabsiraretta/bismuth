@@ -195,9 +195,9 @@ export const DEFAULT_PLANNER_SETTINGS: PlannerSettings = {
 
 /** Default calendar categories shipped with Bismuth. */
 export const DEFAULT_CALENDAR_CATEGORIES: CalendarCategory[] = [
-  { id: 'work',     name: 'Work',     color: 'var(--interactive-accent, #dc2626)' },
+  { id: 'work', name: 'Work', color: 'var(--interactive-accent, #dc2626)' },
   { id: 'personal', name: 'Personal', color: 'var(--color-success, #16a34a)' },
-  { id: 'health',   name: 'Health',   color: 'var(--color-warning, #d97706)' },
-  { id: 'study',    name: 'Study',    color: 'var(--color-info, #2563eb)' },
-  { id: 'other',    name: 'Other',    color: 'var(--text-muted, #6b7280)' },
+  { id: 'health', name: 'Health', color: 'var(--color-warning, #d97706)' },
+  { id: 'study', name: 'Study', color: 'var(--color-info, #2563eb)' },
+  { id: 'other', name: 'Other', color: 'var(--text-muted, #6b7280)' },
 ];

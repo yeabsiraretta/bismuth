@@ -82,7 +82,7 @@ export function loadPresets(): void {
 /** Persist user presets (non-default) to localStorage */
 function persistPresets(): void {
   const all = get(layoutPresets);
-  const userOnly = all.filter(p => !p.isDefault);
+  const userOnly = all.filter((p) => !p.isDefault);
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(userOnly));
   } catch {
@@ -105,7 +105,7 @@ export function savePreset(name: string): LayoutPreset {
     rightActiveTab: state.rightActiveTab,
     viewportMode: mode,
   };
-  layoutPresets.update(presets => [...presets, preset]);
+  layoutPresets.update((presets) => [...presets, preset]);
   activePresetId.set(preset.id);
   persistPresets();
   log.info('Layout preset saved', { name, id: preset.id });
@@ -115,10 +115,10 @@ export function savePreset(name: string): LayoutPreset {
 /** Apply a preset to the current layout */
 export function applyPreset(presetId: string): void {
   const all = get(layoutPresets);
-  const preset = all.find(p => p.id === presetId);
+  const preset = all.find((p) => p.id === presetId);
   if (!preset) return;
 
-  layoutStore.update(state => ({
+  layoutStore.update((state) => ({
     ...state,
     leftSidebarVisible: preset.leftSidebarVisible,
     rightSidebarVisible: preset.rightSidebarVisible,
@@ -135,10 +135,10 @@ export function applyPreset(presetId: string): void {
 /** Delete a user preset (cannot delete defaults) */
 export function deletePreset(presetId: string): boolean {
   const all = get(layoutPresets);
-  const preset = all.find(p => p.id === presetId);
+  const preset = all.find((p) => p.id === presetId);
   if (!preset || preset.isDefault) return false;
 
-  layoutPresets.update(presets => presets.filter(p => p.id !== presetId));
+  layoutPresets.update((presets) => presets.filter((p) => p.id !== presetId));
   if (get(activePresetId) === presetId) {
     activePresetId.set(null);
   }
@@ -150,11 +150,11 @@ export function deletePreset(presetId: string): boolean {
 /** Rename a user preset */
 export function renamePreset(presetId: string, newName: string): boolean {
   const all = get(layoutPresets);
-  const preset = all.find(p => p.id === presetId);
+  const preset = all.find((p) => p.id === presetId);
   if (!preset || preset.isDefault) return false;
 
-  layoutPresets.update(presets =>
-    presets.map(p => p.id === presetId ? { ...p, name: newName } : p)
+  layoutPresets.update((presets) =>
+    presets.map((p) => (p.id === presetId ? { ...p, name: newName } : p))
   );
   persistPresets();
   return true;

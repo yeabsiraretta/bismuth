@@ -14,10 +14,7 @@
     events: typeof $allCalendarItems;
   }
 
-  function getUpcomingEvents(
-    items: typeof $allCalendarItems,
-    focus: Date,
-  ): DayGroup[] {
+  function getUpcomingEvents(items: typeof $allCalendarItems, focus: Date): DayGroup[] {
     const today = formatDate(new Date());
     const startDate = formatDate(focus);
 
@@ -32,7 +29,7 @@
     const groups: DayGroup[] = [];
     for (const date of dates) {
       const dayEvents = items
-        .filter(e => e.date === date)
+        .filter((e) => e.date === date)
         .sort((a, b) => (a.startMinute ?? 0) - (b.startMinute ?? 0));
 
       if (dayEvents.length === 0) continue;
@@ -85,10 +82,13 @@
               class="list-event"
               class:selected={$selectedEventIds.has(event.id)}
               class:completed={event.completed}
-              on:click={() => $selectionMode ? toggleEventSelection(event.id) : null}
+              on:click={() => ($selectionMode ? toggleEventSelection(event.id) : null)}
             >
               <span class="event-time">{formatTime(event.startMinute)}</span>
-              <span class="event-dot" style="background: {event.color ?? 'var(--interactive-accent)'}"></span>
+              <span
+                class="event-dot"
+                style="background: {event.color ?? 'var(--interactive-accent)'}"
+              ></span>
               <span class="event-title">{event.title}</span>
               {#if event.durationMinutes}
                 <span class="event-duration">{event.durationMinutes}m</span>
@@ -120,8 +120,12 @@
     color: var(--text-muted);
   }
 
-  .day-group { margin-bottom: var(--spacing-md); }
-  .day-group.is-today .day-header { color: var(--interactive-accent); }
+  .day-group {
+    margin-bottom: var(--spacing-md);
+  }
+  .day-group.is-today .day-header {
+    color: var(--interactive-accent);
+  }
 
   .day-header {
     display: flex;
@@ -132,8 +136,14 @@
     margin-bottom: var(--spacing-xs);
   }
 
-  .day-name { font-weight: 600; font-size: var(--font-ui-small); }
-  .day-date { font-size: var(--font-smallest); color: var(--text-muted); }
+  .day-name {
+    font-weight: 600;
+    font-size: var(--font-ui-small);
+  }
+  .day-date {
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+  }
 
   .today-badge {
     font-size: 9px;
@@ -145,7 +155,11 @@
     letter-spacing: 0.5px;
   }
 
-  .day-events { display: flex; flex-direction: column; gap: 2px; }
+  .day-events {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
   .list-event {
     display: flex;
@@ -162,9 +176,17 @@
     color: var(--text-normal);
   }
 
-  .list-event:hover { background: var(--background-modifier-hover); }
-  .list-event.selected { background: var(--interactive-accent-hover); outline: 1px solid var(--interactive-accent); }
-  .list-event.completed .event-title { text-decoration: line-through; color: var(--text-muted); }
+  .list-event:hover {
+    background: var(--background-modifier-hover);
+  }
+  .list-event.selected {
+    background: var(--interactive-accent-hover);
+    outline: 1px solid var(--interactive-accent);
+  }
+  .list-event.completed .event-title {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
 
   .event-time {
     font-size: var(--font-smallest);
@@ -180,7 +202,10 @@
     flex-shrink: 0;
   }
 
-  .event-title { flex: 1; font-size: var(--font-ui-small); }
+  .event-title {
+    flex: 1;
+    font-size: var(--font-ui-small);
+  }
 
   .event-duration {
     font-size: var(--font-smallest);

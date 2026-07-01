@@ -12,7 +12,9 @@
       <input type="checkbox" bind:checked={versioningEnabled} />
       Enable version history
     </label>
-    <span class="setting-hint">Save a diff snapshot on each note save; view history in the Version History panel</span>
+    <span class="setting-hint"
+      >Save a diff snapshot on each note save; view history in the Version History panel</span
+    >
   </div>
 
   {#if versioningEnabled}
@@ -34,7 +36,10 @@
         <input type="checkbox" bind:checked={versioningLlmClassify} />
         LLM bump classification
       </label>
-      <span class="setting-hint">Use the AI agent (spec 040) to override the auto-detected semver bump type — requires AI Agent enabled</span>
+      <span class="setting-hint"
+        >Use the AI agent (spec 040) to override the auto-detected semver bump type — requires AI
+        Agent enabled</span
+      >
     </div>
   {/if}
 </div>

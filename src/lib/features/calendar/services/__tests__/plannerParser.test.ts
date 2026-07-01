@@ -132,7 +132,14 @@ No tasks at all.`;
 describe('plannerEntriesToEvents', () => {
   it('converts entries to CalendarEvents with correct fields', () => {
     const entries = [
-      { text: 'Meeting', completed: false, startTime: '10:00', endTime: '11:30', sourcePath: 'a.md', line: 2 },
+      {
+        text: 'Meeting',
+        completed: false,
+        startTime: '10:00',
+        endTime: '11:30',
+        sourcePath: 'a.md',
+        line: 2,
+      },
     ];
     const events = plannerEntriesToEvents(entries, '2024-01-15');
     expect(events).toHaveLength(1);
@@ -150,7 +157,15 @@ describe('plannerEntriesToEvents', () => {
 
   it('uses scheduledDate over passed date when present', () => {
     const entries = [
-      { text: 'Task', completed: false, startTime: '09:00', endTime: null, sourcePath: 'a.md', line: 1, scheduledDate: '2024-02-01' },
+      {
+        text: 'Task',
+        completed: false,
+        startTime: '09:00',
+        endTime: null,
+        sourcePath: 'a.md',
+        line: 1,
+        scheduledDate: '2024-02-01',
+      },
     ];
     const events = plannerEntriesToEvents(entries, '2024-01-15');
     expect(events[0].date).toBe('2024-02-01');
@@ -158,7 +173,14 @@ describe('plannerEntriesToEvents', () => {
 
   it('defaults to 60 minutes when no end time', () => {
     const entries = [
-      { text: 'Task', completed: false, startTime: '14:00', endTime: null, sourcePath: 'a.md', line: 1 },
+      {
+        text: 'Task',
+        completed: false,
+        startTime: '14:00',
+        endTime: null,
+        sourcePath: 'a.md',
+        line: 1,
+      },
     ];
     const events = plannerEntriesToEvents(entries, '2024-01-15');
     expect(events[0].durationMinutes).toBe(60);
@@ -166,7 +188,14 @@ describe('plannerEntriesToEvents', () => {
 
   it('handles overnight wrap (negative duration)', () => {
     const entries = [
-      { text: 'Night shift', completed: false, startTime: '23:00', endTime: '01:00', sourcePath: 'a.md', line: 1 },
+      {
+        text: 'Night shift',
+        completed: false,
+        startTime: '23:00',
+        endTime: '01:00',
+        sourcePath: 'a.md',
+        line: 1,
+      },
     ];
     const events = plannerEntriesToEvents(entries, '2024-01-15');
     expect(events[0].durationMinutes).toBe(120);
@@ -180,7 +209,13 @@ describe('plannerEntriesToEvents', () => {
 describe('parseScheduledTasks', () => {
   it('extracts timed tasks with scheduled dates', () => {
     const tasks = [
-      { text: '10:00 - 11:00 Review PR', source_path: 'tasks.md', line: 5, scheduled_date: '2024-01-15', status: 'open' },
+      {
+        text: '10:00 - 11:00 Review PR',
+        source_path: 'tasks.md',
+        line: 5,
+        scheduled_date: '2024-01-15',
+        status: 'open',
+      },
     ];
     const entries = parseScheduledTasks(tasks);
     expect(entries).toHaveLength(1);
@@ -202,14 +237,26 @@ describe('parseScheduledTasks', () => {
 
   it('skips tasks without time in text', () => {
     const tasks = [
-      { text: 'No time here', source_path: 'a.md', line: 1, scheduled_date: '2024-01-15', status: 'open' },
+      {
+        text: 'No time here',
+        source_path: 'a.md',
+        line: 1,
+        scheduled_date: '2024-01-15',
+        status: 'open',
+      },
     ];
     expect(parseScheduledTasks(tasks)).toHaveLength(0);
   });
 
   it('marks done tasks as completed', () => {
     const tasks = [
-      { text: '08:00 Done task', source_path: 'a.md', line: 1, scheduled_date: '2024-01-15', status: 'done' },
+      {
+        text: '08:00 Done task',
+        source_path: 'a.md',
+        line: 1,
+        scheduled_date: '2024-01-15',
+        status: 'done',
+      },
     ];
     const entries = parseScheduledTasks(tasks);
     expect(entries[0].completed).toBe(true);

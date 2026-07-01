@@ -21,12 +21,18 @@
 
   function formatDisplayDate(date: Date, type: string): string {
     switch (type) {
-      case 'daily': return formatDate(date, 'ddd, MMM D, YYYY');
-      case 'weekly': return `Week of ${formatDate(date, 'MMM D')}`;
-      case 'monthly': return formatDate(date, 'MMMM YYYY');
-      case 'quarterly': return `Q${Math.floor(date.getMonth() / 3) + 1} ${date.getFullYear()}`;
-      case 'yearly': return String(date.getFullYear());
-      default: return formatDate(date, 'MMM D, YYYY');
+      case 'daily':
+        return formatDate(date, 'ddd, MMM D, YYYY');
+      case 'weekly':
+        return `Week of ${formatDate(date, 'MMM D')}`;
+      case 'monthly':
+        return formatDate(date, 'MMMM YYYY');
+      case 'quarterly':
+        return `Q${Math.floor(date.getMonth() / 3) + 1} ${date.getFullYear()}`;
+      case 'yearly':
+        return String(date.getFullYear());
+      default:
+        return formatDate(date, 'MMM D, YYYY');
     }
   }
 
@@ -53,14 +59,14 @@
         <button
           class="shelf-btn"
           class:active={$activeShelfId === null}
-          on:click={() => activeShelfId.set(null)}
-        >All</button>
+          on:click={() => activeShelfId.set(null)}>All</button
+        >
         {#each $shelves as shelf (shelf.id)}
           <button
             class="shelf-btn"
             class:active={$activeShelfId === shelf.id}
-            on:click={() => activeShelfId.set(shelf.id)}
-          >{shelf.name}</button>
+            on:click={() => activeShelfId.set(shelf.id)}>{shelf.name}</button
+          >
         {/each}
       </div>
     {/if}
@@ -80,13 +86,23 @@
 
     {#if $activeJournal}
       <div class="date-navigator">
-        <button class="nav-btn" on:click={() => navigateJournal('prev')} title="Previous" aria-label="Previous period">
+        <button
+          class="nav-btn"
+          on:click={() => navigateJournal('prev')}
+          title="Previous"
+          aria-label="Previous period"
+        >
           <Icon name="chevron-left" size={16} />
         </button>
         <span class="date-display">
           {formatDisplayDate($activeJournalDate, $activeJournal.type)}
         </span>
-        <button class="nav-btn" on:click={() => navigateJournal('next')} title="Next" aria-label="Next period">
+        <button
+          class="nav-btn"
+          on:click={() => navigateJournal('next')}
+          title="Next"
+          aria-label="Next period"
+        >
           <Icon name="chevron-right" size={16} />
         </button>
       </div>
@@ -102,10 +118,7 @@
       </button>
     {/if}
 
-    <JournalMiniCalendar
-      date={$activeJournalDate}
-      onDayClick={handleDayClick}
-    />
+    <JournalMiniCalendar date={$activeJournalDate} onDayClick={handleDayClick} />
 
     <div class="quick-actions">
       <button class="quick-btn" on:click={openTodaysDailyNote} title="Open today's daily note">
@@ -117,54 +130,142 @@
 </div>
 
 <style>
-  .journal-panel { display: flex; flex-direction: column; height: 100%; }
-  .panel-body { padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+  .journal-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .panel-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
 
   .shelf-bar {
-    display: flex; gap: 2px; flex-wrap: wrap;
-    padding: 2px; background: var(--panel-bg-alt, #181825); border-radius: 6px;
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    padding: 2px;
+    background: var(--panel-bg-alt, #181825);
+    border-radius: 6px;
   }
   .shelf-btn {
-    padding: 4px 8px; border: none; border-radius: 4px; background: none;
-    color: var(--text-muted); cursor: pointer; font-size: 10px; font-weight: 500;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
   }
-  .shelf-btn:hover { color: var(--text-primary); }
-  .shelf-btn.active { background: var(--interactive-accent, #6366f1); color: white; }
+  .shelf-btn:hover {
+    color: var(--text-primary);
+  }
+  .shelf-btn.active {
+    background: var(--interactive-accent, #6366f1);
+    color: white;
+  }
 
   .journal-switcher {
-    display: flex; gap: 2px; flex-wrap: wrap;
-    background: var(--panel-bg-alt, #181825); border-radius: 6px; padding: 2px;
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    background: var(--panel-bg-alt, #181825);
+    border-radius: 6px;
+    padding: 2px;
   }
   .journal-btn {
-    flex: 1; min-width: 60px; padding: 6px 4px; border: none; border-radius: 4px;
-    background: none; color: var(--text-muted); cursor: pointer;
-    font-size: 11px; font-weight: 500; white-space: nowrap;
+    flex: 1;
+    min-width: 60px;
+    padding: 6px 4px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
   }
-  .journal-btn:hover { color: var(--text-primary); }
-  .journal-btn.active { background: var(--interactive-accent, #6366f1); color: white; }
+  .journal-btn:hover {
+    color: var(--text-primary);
+  }
+  .journal-btn.active {
+    background: var(--interactive-accent, #6366f1);
+    color: white;
+  }
 
-  .date-navigator { display: flex; align-items: center; gap: 8px; justify-content: center; }
-  .nav-btn {
-    background: none; border: none; padding: 4px; border-radius: 4px;
-    cursor: pointer; color: var(--text-muted); display: flex; align-items: center;
+  .date-navigator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
   }
-  .nav-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
-  .date-display { font-size: 13px; font-weight: 500; flex: 1; text-align: center; }
+  .nav-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+  }
+  .nav-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+  }
+  .date-display {
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    text-align: center;
+  }
 
   .open-note-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 10px 16px; border: none; border-radius: 6px;
-    background: var(--interactive-accent, #6366f1); color: white;
-    cursor: pointer; font-size: 12px; font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--interactive-accent, #6366f1);
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
   }
-  .open-note-btn:hover { opacity: 0.9; }
-  .open-note-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .open-note-btn:hover {
+    opacity: 0.9;
+  }
+  .open-note-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-  .quick-actions { display: flex; gap: 8px; }
-  .quick-btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;
-    background: none; color: var(--text-primary); cursor: pointer; font-size: 11px;
+  .quick-actions {
+    display: flex;
+    gap: 8px;
   }
-  .quick-btn:hover { background: var(--hover-bg); }
+  .quick-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .quick-btn:hover {
+    background: var(--hover-bg);
+  }
 </style>

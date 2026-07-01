@@ -86,7 +86,9 @@
         <div class="finished-message">Done</div>
       {:else if word}
         <div class="rsvp-word">
-          <span class="orp-before">{orpBefore}</span><span class="orp-char">{orpChar}</span><span class="orp-after">{orpAfter}</span>
+          <span class="orp-before">{orpBefore}</span><span class="orp-char">{orpChar}</span><span
+            class="orp-after">{orpAfter}</span
+          >
         </div>
         <div class="orp-guide">
           <div class="guide-line"></div>
@@ -111,7 +113,11 @@
             <Icon name="chevron-left" size={16} />
           </button>
 
-          <button class="ctrl-btn play-btn" on:click={togglePlayPause} title={isPlaying ? 'Pause' : 'Play'}>
+          <button
+            class="ctrl-btn play-btn"
+            on:click={togglePlayPause}
+            title={isPlaying ? 'Pause' : 'Play'}
+          >
             <Icon name={isPlaying ? 'pause' : 'play'} size={18} />
           </button>
 
@@ -133,7 +139,12 @@
 
           <span class="time-info">{remaining}s left</span>
 
-          <button class="focus-btn" class:active={$readerConfig.focusMode} on:click={toggleFocusMode} title="Toggle focus mode (F)">
+          <button
+            class="focus-btn"
+            class:active={$readerConfig.focusMode}
+            on:click={toggleFocusMode}
+            title="Toggle focus mode (F)"
+          >
             <Icon name="eye" size={14} />
           </button>
         </div>
@@ -154,7 +165,9 @@
     background: var(--background-primary);
     padding: var(--spacing-xl);
   }
-  .speed-reader-overlay.focus-mode { cursor: none; }
+  .speed-reader-overlay.focus-mode {
+    cursor: none;
+  }
   .close-btn {
     position: absolute;
     top: var(--spacing-m);
@@ -167,7 +180,9 @@
     border-radius: var(--radius-s);
     transition: color var(--transition-fast);
   }
-  .close-btn:hover { color: var(--text-normal); }
+  .close-btn:hover {
+    color: var(--text-normal);
+  }
   .rsvp-container {
     display: flex;
     flex-direction: column;
@@ -185,18 +200,37 @@
     white-space: nowrap;
     user-select: none;
   }
-  .rsvp-word.placeholder { font-size: 1.2rem; color: var(--text-muted); }
-  .orp-before { color: var(--text-normal); }
-  .orp-char { color: var(--interactive-accent); font-weight: bold; }
-  .orp-after { color: var(--text-normal); }
+  .rsvp-word.placeholder {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+  }
+  .orp-before {
+    color: var(--text-normal);
+  }
+  .orp-char {
+    color: var(--interactive-accent);
+    font-weight: bold;
+  }
+  .orp-after {
+    color: var(--text-normal);
+  }
   .orp-guide {
     display: flex;
     align-items: center;
     width: 200px;
     gap: 0;
   }
-  .guide-line { flex: 1; height: 1px; background: var(--border-color); }
-  .guide-marker { width: 6px; height: 6px; background: var(--interactive-accent); border-radius: 50%; }
+  .guide-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+  .guide-marker {
+    width: 6px;
+    height: 6px;
+    background: var(--interactive-accent);
+    border-radius: 50%;
+  }
   .finished-message {
     font-size: 2rem;
     color: var(--status-added);
@@ -220,7 +254,11 @@
     border-radius: 2px;
     overflow: hidden;
   }
-  .progress-fill { height: 100%; background: var(--interactive-accent); transition: width 0.1s; }
+  .progress-fill {
+    height: 100%;
+    background: var(--interactive-accent);
+    transition: width 0.1s;
+  }
   .controls-row {
     display: flex;
     align-items: center;
@@ -239,8 +277,14 @@
     cursor: pointer;
     transition: all var(--transition-fast);
   }
-  .ctrl-btn:hover { border-color: var(--interactive-accent); color: var(--text-normal); }
-  .play-btn { width: 44px; height: 44px; }
+  .ctrl-btn:hover {
+    border-color: var(--interactive-accent);
+    color: var(--text-normal);
+  }
+  .play-btn {
+    width: 44px;
+    height: 44px;
+  }
   .info-row {
     display: flex;
     align-items: center;
@@ -248,22 +292,54 @@
     font-size: var(--font-smallest);
     color: var(--text-faint);
   }
-  .wpm-control { display: flex; align-items: center; gap: var(--spacing-xs); }
+  .wpm-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
   .wpm-btn {
-    width: 20px; height: 20px;
-    border: 1px solid var(--border-color); border-radius: var(--radius-s);
-    background: none; color: var(--text-muted); cursor: pointer;
-    font-size: 12px; display: flex; align-items: center; justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .wpm-btn:hover { border-color: var(--interactive-accent); }
-  .wpm-display { font-weight: var(--font-medium); min-width: 64px; text-align: center; }
-  .position-info { opacity: 0.7; }
-  .time-info { opacity: 0.7; }
+  .wpm-btn:hover {
+    border-color: var(--interactive-accent);
+  }
+  .wpm-display {
+    font-weight: var(--font-medium);
+    min-width: 64px;
+    text-align: center;
+  }
+  .position-info {
+    opacity: 0.7;
+  }
+  .time-info {
+    opacity: 0.7;
+  }
   .focus-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 24px; height: 24px; border: none; border-radius: var(--radius-s);
-    background: none; color: var(--text-muted); cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--radius-s);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
   }
-  .focus-btn:hover { color: var(--text-normal); }
-  .focus-btn.active { color: var(--interactive-accent); }
+  .focus-btn:hover {
+    color: var(--text-normal);
+  }
+  .focus-btn.active {
+    color: var(--interactive-accent);
+  }
 </style>

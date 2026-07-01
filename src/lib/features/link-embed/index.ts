@@ -3,16 +3,14 @@
  */
 
 // Types
-export type {
-  LinkEmbedData, LinkEmbedParser, LinkEmbedSettings,
-} from './types';
-export {
-  DEFAULT_LINK_EMBED_SETTINGS, parseLinkEmbedBlock, serializeLinkEmbedData,
-} from './types';
+export type { LinkEmbedData, LinkEmbedParser, LinkEmbedSettings } from './types';
+export { DEFAULT_LINK_EMBED_SETTINGS, parseLinkEmbedBlock, serializeLinkEmbedData } from './types';
 
 // Services
 export {
-  fetchLinkMetadata, buildEmbedCodeBlock, buildMarkdownLinkFromEmbed,
+  fetchLinkMetadata,
+  buildEmbedCodeBlock,
+  buildMarkdownLinkFromEmbed,
   clearLinkEmbedCache,
 } from './services/linkEmbedService';
 

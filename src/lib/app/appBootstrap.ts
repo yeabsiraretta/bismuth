@@ -51,7 +51,10 @@ export async function initializeApp(callbacks: AppCallbacks): Promise<void> {
   ]);
 
   // Record startup metric before deferring non-critical work
-  const _win = typeof window !== 'undefined' ? (window as Window & { __bismuth_init_start?: number }) : undefined;
+  const _win =
+    typeof window !== 'undefined'
+      ? (window as Window & { __bismuth_init_start?: number })
+      : undefined;
   if (_win && typeof _win.__bismuth_init_start === 'number') {
     const duration = Math.round(performance.now() - _win.__bismuth_init_start);
     delete _win.__bismuth_init_start; // Clear so re-init (HMR / vault switch) won't accumulate
@@ -73,39 +76,50 @@ export async function initializeApp(callbacks: AppCallbacks): Promise<void> {
   }
 
   // Phase 4 — Deferred: non-critical work runs after the UI is interactive
-  const deferWork = typeof requestIdleCallback === 'function'
-    ? requestIdleCallback
-    : (cb: () => void) => setTimeout(cb, 50);
+  const deferWork =
+    typeof requestIdleCallback === 'function'
+      ? requestIdleCallback
+      : (cb: () => void) => setTimeout(cb, 50);
 
   deferWork(() => {
     seedDesignCanvasIfAbsent().catch((e) => log.debug('Design canvas seeding skipped', e));
 
     if (vaultAfterInit?.root_path) {
-      import('@/features/nas').then(({ loadNasConfig }) => {
-        loadNasConfig(vaultAfterInit.root_path).catch(() => {});
-      }).catch((e) => log.debug('NAS feature not loaded', e));
+      import('@/features/nas')
+        .then(({ loadNasConfig }) => {
+          loadNasConfig(vaultAfterInit.root_path).catch(() => {});
+        })
+        .catch((e) => log.debug('NAS feature not loaded', e));
     }
 
-    import('@/features/changelog').then((m) => {
-      m.setupChangelogAutoUpdate();
-      changelogCleanup = m.cleanupChangelogListeners;
-    }).catch((e) => log.warn('Failed to initialize changelog auto-update', e));
+    import('@/features/changelog')
+      .then((m) => {
+        m.setupChangelogAutoUpdate();
+        changelogCleanup = m.cleanupChangelogListeners;
+      })
+      .catch((e) => log.warn('Failed to initialize changelog auto-update', e));
 
-    import('@/features/lazyloader').then(({ runLazyLoader }) => {
-      runLazyLoader().catch((e) => log.debug('Lazy loader run skipped', e));
-    }).catch(() => {
-      // Fallback: if lazy loader module fails, use the old preload path
-      preloadPreviouslyUsedFeatures();
-    });
+    import('@/features/lazyloader')
+      .then(({ runLazyLoader }) => {
+        runLazyLoader().catch((e) => log.debug('Lazy loader run skipped', e));
+      })
+      .catch(() => {
+        // Fallback: if lazy loader module fails, use the old preload path
+        preloadPreviouslyUsedFeatures();
+      });
     startPerformanceObservers();
 
-    import('@/features/uri').then(({ startUriListener }) => {
-      startUriListener().catch((e) => log.debug('URI listener setup skipped', e));
-    }).catch((e) => log.debug('URI feature not loaded', e));
+    import('@/features/uri')
+      .then(({ startUriListener }) => {
+        startUriListener().catch((e) => log.debug('URI listener setup skipped', e));
+      })
+      .catch((e) => log.debug('URI feature not loaded', e));
 
-    import('@/features/backup').then(({ runStartupBackup }) => {
-      runStartupBackup().catch((e) => log.debug('Startup backup skipped', e));
-    }).catch((e) => log.debug('Backup feature not loaded', e));
+    import('@/features/backup')
+      .then(({ runStartupBackup }) => {
+        runStartupBackup().catch((e) => log.debug('Startup backup skipped', e));
+      })
+      .catch((e) => log.debug('Backup feature not loaded', e));
 
     applyStartupAction().catch(() => {});
   });
@@ -114,7 +128,7 @@ export async function initializeApp(callbacks: AppCallbacks): Promise<void> {
 /** Apply the saved theme if one is configured. Separated for parallel execution. */
 async function applyStartupTheme(
   currentSettings: BismuthSettings,
-  vault: Vault | null,
+  vault: Vault | null
 ): Promise<void> {
   if (!currentSettings.activeThemePath || !vault?.root_path) return;
   try {
@@ -133,10 +147,12 @@ export function cleanupApp(): void {
   changelogCleanup?.();
   stopPerformanceObservers();
   import('@/features/uri').then(({ stopUriListener }) => stopUriListener()).catch(() => {});
-  import('@/features/backup').then(({ runQuitBackup, stopInterval }) => {
-    runQuitBackup().catch(() => {});
-    stopInterval();
-  }).catch(() => {});
+  import('@/features/backup')
+    .then(({ runQuitBackup, stopInterval }) => {
+      runQuitBackup().catch(() => {});
+      stopInterval();
+    })
+    .catch(() => {});
 }
 
 export async function handleNewNote(): Promise<void> {
@@ -150,7 +166,12 @@ export async function handleNewNote(): Promise<void> {
 
 export async function handlePublish(): Promise<void> {
   const { triggerPublish } = await import('@/features/publishing');
-  await triggerPublish({ output_dir: '.bismuth/publish', base_url: '/', theme: 'default', target: 'local' });
+  await triggerPublish({
+    output_dir: '.bismuth/publish',
+    base_url: '/',
+    theme: 'default',
+    target: 'local',
+  });
 }
 
 export async function handleDailyNote(): Promise<void> {
@@ -169,10 +190,19 @@ export async function handlePublishMark(): Promise<void> {
 async function seedDesignCanvasIfAbsent(): Promise<void> {
   const vault = get(currentVault);
   if (!vault?.root_path) return;
-  const { refreshCanvasList, canvasList, createNewCanvas, saveCurrentCanvas, currentCanvas, setCurrentCanvas } = await import('@/features/canvas/stores');
+  const {
+    refreshCanvasList,
+    canvasList,
+    createNewCanvas,
+    saveCurrentCanvas,
+    currentCanvas,
+    setCurrentCanvas,
+  } = await import('@/features/canvas/stores');
   await refreshCanvasList().catch(() => {});
   const canvases = get(canvasList);
-  const alreadySeeded = canvases.some((c) => c.id === BISMUTH_DESIGN_CANVAS.id || c.name === BISMUTH_DESIGN_CANVAS.name);
+  const alreadySeeded = canvases.some(
+    (c) => c.id === BISMUTH_DESIGN_CANVAS.id || c.name === BISMUTH_DESIGN_CANVAS.name
+  );
   if (alreadySeeded) return;
   await createNewCanvas(BISMUTH_DESIGN_CANVAS.name);
   const created = get(currentCanvas);
@@ -201,7 +231,9 @@ async function applyStartupAction(): Promise<void> {
   const cfg = svelteGet(homepageConfig);
 
   // Start tracking recent file opens for home tab
-  import('@/features/hometab').then(({ setupRecentTracking }) => setupRecentTracking()).catch(() => {});
+  import('@/features/hometab')
+    .then(({ setupRecentTracking }) => setupRecentTracking())
+    .catch(() => {});
 
   switch (cfg.option) {
     case 'home':
@@ -215,7 +247,7 @@ async function applyStartupAction(): Promise<void> {
       break;
     case 'random': {
       const { notes: notesStore } = await import('@/stores/vault/vault');
-      const allNotes = svelteGet(notesStore).filter(n => n.path.endsWith('.md'));
+      const allNotes = svelteGet(notesStore).filter((n) => n.path.endsWith('.md'));
       if (allNotes.length > 0) {
         const pick = allNotes[Math.floor(Math.random() * allNotes.length)];
         openNote(pick.path);

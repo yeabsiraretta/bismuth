@@ -10,7 +10,12 @@ import {
 import type { ClozeAutoConvert, ClozeHintConfig } from '../types/cloze';
 
 const ALL_ON: ClozeAutoConvert = { highlights: true, bold: true, underline: true, curly: true };
-const ONLY_HIGHLIGHTS: ClozeAutoConvert = { highlights: true, bold: false, underline: false, curly: false };
+const ONLY_HIGHLIGHTS: ClozeAutoConvert = {
+  highlights: true,
+  bold: false,
+  underline: false,
+  curly: false,
+};
 
 describe('findClozes', () => {
   it('finds ==highlighted== text', () => {
@@ -49,7 +54,10 @@ describe('findClozes', () => {
   });
 
   it('finds spans with hints', () => {
-    const matches = findClozes('<span class="cloze-span" data-cloze-hint="a...">answer</span>', ALL_ON);
+    const matches = findClozes(
+      '<span class="cloze-span" data-cloze-hint="a...">answer</span>',
+      ALL_ON
+    );
     expect(matches).toHaveLength(1);
     expect(matches[0].hint).toBe('a...');
   });
@@ -96,7 +104,9 @@ describe('wrapCloze', () => {
   });
 
   it('wraps text with hint', () => {
-    expect(wrapCloze('answer', 'a...')).toBe('<span class="cloze-span" data-cloze-hint="a...">answer</span>');
+    expect(wrapCloze('answer', 'a...')).toBe(
+      '<span class="cloze-span" data-cloze-hint="a...">answer</span>'
+    );
   });
 });
 
@@ -111,7 +121,9 @@ describe('unwrapClozes', () => {
   });
 
   it('removes spans with hints', () => {
-    expect(unwrapClozes('<span class="cloze-span" data-cloze-hint="h">answer</span>')).toBe('answer');
+    expect(unwrapClozes('<span class="cloze-span" data-cloze-hint="h">answer</span>')).toBe(
+      'answer'
+    );
   });
 
   it('leaves non-cloze text unchanged', () => {
@@ -170,7 +182,11 @@ describe('noteHasTag', () => {
 
 describe('getClozeBlank', () => {
   const noHintConfig: ClozeHintConfig = { mode: 'none', firstLetterCount: 1, percentage: 20 };
-  const firstLetterConfig: ClozeHintConfig = { mode: 'first-letters', firstLetterCount: 2, percentage: 20 };
+  const firstLetterConfig: ClozeHintConfig = {
+    mode: 'first-letters',
+    firstLetterCount: 2,
+    percentage: 20,
+  };
 
   it('uses explicit hint if provided', () => {
     expect(getClozeBlank('answer', 'hint!', noHintConfig)).toBe('hint!');

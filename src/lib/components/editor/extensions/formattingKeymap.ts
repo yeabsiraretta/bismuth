@@ -45,7 +45,7 @@ function wrapSelection(view: EditorView, prefix: string, suffix: string): boolea
       changes: { from: range.from, to: range.to, insert: replacement },
       range: EditorSelection.range(
         range.from + prefix.length,
-        range.from + prefix.length + (selected || 'text').length,
+        range.from + prefix.length + (selected || 'text').length
       ),
     };
   });

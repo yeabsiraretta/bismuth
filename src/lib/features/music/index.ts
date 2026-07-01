@@ -18,11 +18,7 @@ export type {
   StemJob,
 } from './types/music';
 
-export {
-  isMusicDocument,
-  isAudioTrack,
-  isMidiTrack,
-} from './types/music';
+export { isMusicDocument, isAudioTrack, isMidiTrack } from './types/music';
 
 // Stores
 export {
@@ -96,50 +92,90 @@ export { abcNotationExtension } from './services/abcExtension';
 
 // Types — Chord sheets
 export type {
-  ChordInstrument, ChordToken, ChordLine, ChordLineType, ChordSheet,
-  ChordFingering, ChordDefinition, ChordSheetConfig,
+  ChordInstrument,
+  ChordToken,
+  ChordLine,
+  ChordLineType,
+  ChordSheet,
+  ChordFingering,
+  ChordDefinition,
+  ChordSheetConfig,
 } from './types/chords';
 export {
-  NOTE_NAMES_SHARP, NOTE_NAMES_FLAT, NOTE_TO_INDEX,
-  INSTRUMENT_STRING_COUNTS, INSTRUMENT_TUNINGS,
+  NOTE_NAMES_SHARP,
+  NOTE_NAMES_FLAT,
+  NOTE_TO_INDEX,
+  INSTRUMENT_STRING_COUNTS,
+  INSTRUMENT_TUNINGS,
   DEFAULT_CHORD_CONFIG,
 } from './types/chords';
 
 // Services — Chord sheets
 export {
-  parseChordSymbol, extractChords, isChordLine, classifyLine,
-  parseChordBlock, findChordBlocks, sampleChordSheet,
+  parseChordSymbol,
+  extractChords,
+  isChordLine,
+  classifyLine,
+  parseChordBlock,
+  findChordBlocks,
+  sampleChordSheet,
 } from './services/chords/chordParser';
 export {
-  transposeNote, transposeChord, transposeChordLine,
-  transposeLines, transposeLabel, transposeOptions,
+  transposeNote,
+  transposeChord,
+  transposeChordLine,
+  transposeLines,
+  transposeLabel,
+  transposeOptions,
 } from './services/chords/chordTranspose';
 export {
-  lookupChord, parseCustomShape, renderChordDiagramSvg, getUniqueChords,
+  lookupChord,
+  parseCustomShape,
+  renderChordDiagramSvg,
+  getUniqueChords,
 } from './services/chords/chordDiagrams';
 export { ChordSheetWidget } from './services/chords/chordWidget';
 export { chordSheetExtension } from './services/chords/chordExtension';
 
 // Types — Audio player
 export type {
-  AudioBookmark, AudioPlayerStatus, AudioPlayerState,
-  AudioPlayerBlock, AudioPlayerConfig,
+  AudioBookmark,
+  AudioPlayerStatus,
+  AudioPlayerState,
+  AudioPlayerBlock,
+  AudioPlayerConfig,
 } from './types/audioPlayer';
 export { INITIAL_PLAYER_STATE, DEFAULT_AUDIO_PLAYER_CONFIG } from './types/audioPlayer';
 
 // Stores — Audio player
 export {
-  audioPlayerState, playerStatus, playerPosition, playerDuration,
-  playerVolume, playerBookmarks, playerFile, playerWaveform,
-  loadAudio, playAudio, pauseAudio, stopAudio,
-  seekAudio, setPlayerVolume, setPlaybackRate, togglePlayback,
-  addBookmark, removeBookmark, setBlockBookmarks,
+  audioPlayerState,
+  playerStatus,
+  playerPosition,
+  playerDuration,
+  playerVolume,
+  playerBookmarks,
+  playerFile,
+  playerWaveform,
+  loadAudio,
+  playAudio,
+  pauseAudio,
+  stopAudio,
+  seekAudio,
+  setPlayerVolume,
+  setPlaybackRate,
+  togglePlayback,
+  addBookmark,
+  removeBookmark,
+  setBlockBookmarks,
 } from './stores/audioPlayerStore';
 
 // Services — Audio player
 export {
-  parseTimestamp, formatTimestamp,
-  parseAudioPlayerBlock, findAudioPlayerBlocks,
+  parseTimestamp,
+  formatTimestamp,
+  parseAudioPlayerBlock,
+  findAudioPlayerBlocks,
   sampleAudioPlayerBlock,
 } from './services/audioPlayer/audioPlayerParser';
 export { AudioPlayerWidget } from './services/audioPlayer/audioPlayerWidget';

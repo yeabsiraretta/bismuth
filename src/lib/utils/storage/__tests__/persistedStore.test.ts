@@ -33,12 +33,16 @@ describe('createPersistedStore', () => {
 
   it('applies migration function to stored data', () => {
     localStorage.setItem('test-key', JSON.stringify({ old_field: 'hello' }));
-    const store = createPersistedStore('test-key', { name: 'default' }, {
-      migrate: (raw) => {
-        const data = raw as { old_field?: string };
-        return { name: data.old_field ?? 'default' };
-      },
-    });
+    const store = createPersistedStore(
+      'test-key',
+      { name: 'default' },
+      {
+        migrate: (raw) => {
+          const data = raw as { old_field?: string };
+          return { name: data.old_field ?? 'default' };
+        },
+      }
+    );
     expect(get(store)).toEqual({ name: 'hello' });
   });
 

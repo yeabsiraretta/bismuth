@@ -2,8 +2,24 @@
   import typeChartJson from '@/config/pokemon/gen9-types.json';
 
   const TYPES = [
-    'Normal','Fire','Water','Grass','Electric','Ice','Fighting','Poison',
-    'Ground','Flying','Psychic','Bug','Rock','Ghost','Dragon','Dark','Steel','Fairy'
+    'Normal',
+    'Fire',
+    'Water',
+    'Grass',
+    'Electric',
+    'Ice',
+    'Fighting',
+    'Poison',
+    'Ground',
+    'Flying',
+    'Psychic',
+    'Bug',
+    'Rock',
+    'Ghost',
+    'Dragon',
+    'Dark',
+    'Steel',
+    'Fairy',
   ] as const;
 
   const chart = typeChartJson as Record<string, Record<string, number>>;
@@ -11,16 +27,16 @@
   let selectedRow: string | null = null;
 
   function cellClass(val: number): string {
-    if (val === 0)    return 'immune';
-    if (val === 2)    return 'super';
-    if (val === 0.5)  return 'resist';
+    if (val === 0) return 'immune';
+    if (val === 2) return 'super';
+    if (val === 0.5) return 'resist';
     return 'neutral';
   }
 
   function cellLabel(val: number): string {
-    if (val === 0)    return '0';
-    if (val === 2)    return '2';
-    if (val === 0.5)  return '½';
+    if (val === 0) return '0';
+    if (val === 2) return '2';
+    if (val === 0.5) return '½';
     return '';
   }
 
@@ -51,7 +67,7 @@
           >
             <th class="header-cell atk-header">{atkType}</th>
             {#each TYPES as defType}
-              {@const val = (chart[atkType]?.[defType] ?? 1)}
+              {@const val = chart[atkType]?.[defType] ?? 1}
               <td class="cell {cellClass(val)}" title="{atkType} → {defType}: {val}x">
                 {cellLabel(val)}
               </td>
@@ -125,7 +141,9 @@
     cursor: pointer;
     user-select: none;
   }
-  .atk-header:hover { background: var(--background-modifier-hover); }
+  .atk-header:hover {
+    background: var(--background-modifier-hover);
+  }
   .cell {
     text-align: center;
     width: 28px;
@@ -134,12 +152,29 @@
     font-size: 10px;
     color: var(--text-on-accent);
   }
-  .neutral  { background: var(--background-primary-alt); color: var(--text-muted); }
-  .super    { background: #22c55e; color: #fff; }
-  .resist   { background: #ef4444; color: #fff; }
-  .immune   { background: #111827; color: #6b7280; }
-  .row-selected td { outline: 2px solid var(--interactive-accent); outline-offset: -1px; }
-  .row-dimmed td   { opacity: 0.3; }
+  .neutral {
+    background: var(--background-primary-alt);
+    color: var(--text-muted);
+  }
+  .super {
+    background: #22c55e;
+    color: #fff;
+  }
+  .resist {
+    background: #ef4444;
+    color: #fff;
+  }
+  .immune {
+    background: #111827;
+    color: #6b7280;
+  }
+  .row-selected td {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -1px;
+  }
+  .row-dimmed td {
+    opacity: 0.3;
+  }
   .row-hint {
     font-size: var(--font-ui-smaller);
     color: var(--text-muted);

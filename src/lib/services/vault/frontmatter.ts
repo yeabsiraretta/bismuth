@@ -8,9 +8,7 @@ import { invoke } from '@tauri-apps/api/core';
  */
 
 /** Gets the frontmatter of a note by reading it from the backend. */
-export async function getFrontmatter(
-  path: string
-): Promise<Record<string, unknown>> {
+export async function getFrontmatter(path: string): Promise<Record<string, unknown>> {
   const note = await invoke<{ frontmatter: Record<string, unknown> }>('read_note', { path });
   return note.frontmatter;
 }
@@ -36,4 +34,3 @@ export async function batchSetFrontmatterField(
 ): Promise<number> {
   return invoke<number>('batch_update_frontmatter_field', { paths, key, value });
 }
-

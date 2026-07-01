@@ -3,7 +3,11 @@
  * Reads `export let` for props, `<slot>` for slots, and var() references for token bindings.
  */
 
-import type { ComponentPayload, ComponentProp, ComponentSlot } from '@/types/design-documents/component';
+import type {
+  ComponentPayload,
+  ComponentProp,
+  ComponentSlot,
+} from '@/types/design-documents/component';
 
 /** Parse a Svelte component file and extract a ComponentPayload. */
 export function reflectComponentFromSvelte(
@@ -90,7 +94,8 @@ function extractDescription(content: string): string {
 
 /** Infer prop type from type hint or default value. */
 function inferType(typeHint?: string, defaultValue?: string): ComponentProp['type'] {
-  if (typeHint === 'boolean' || defaultValue === 'true' || defaultValue === 'false') return 'boolean';
+  if (typeHint === 'boolean' || defaultValue === 'true' || defaultValue === 'false')
+    return 'boolean';
   if (typeHint === 'number' || (defaultValue && /^\d+$/.test(defaultValue.trim()))) return 'number';
   return 'string';
 }

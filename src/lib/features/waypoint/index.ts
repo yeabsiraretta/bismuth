@@ -11,12 +11,7 @@ export type {
   FolderNoteInfo,
   WaypointConfig,
 } from './types/waypoint';
-export {
-  DEFAULT_WAYPOINT_CONFIG,
-  beginMarker,
-  endMarker,
-  triggerComment,
-} from './types/waypoint';
+export { DEFAULT_WAYPOINT_CONFIG, beginMarker, endMarker, triggerComment } from './types/waypoint';
 
 // Services
 export {

@@ -28,10 +28,22 @@
     </div>
     <MenuDivider />
     <MenuItem icon="file" label="Open" on:click={() => handleAction('open')} />
-    <MenuItem icon="layout" label="Open in new pane" on:click={() => handleAction('open-new-pane')} />
+    <MenuItem
+      icon="layout"
+      label="Open in new pane"
+      on:click={() => handleAction('open-new-pane')}
+    />
     <MenuDivider />
-    <MenuItem icon="search" label="Show local graph" on:click={() => handleAction('show-local-graph')} />
-    <MenuItem icon="chevron-right" label="Show backlinks" on:click={() => handleAction('show-backlinks')} />
+    <MenuItem
+      icon="search"
+      label="Show local graph"
+      on:click={() => handleAction('show-local-graph')}
+    />
+    <MenuItem
+      icon="chevron-right"
+      label="Show backlinks"
+      on:click={() => handleAction('show-backlinks')}
+    />
     <MenuDivider />
     <MenuItem icon="edit" label="Rename" on:click={() => handleAction('rename')} />
     <MenuItem icon="trash" label="Delete" destructive on:click={() => handleAction('delete')} />

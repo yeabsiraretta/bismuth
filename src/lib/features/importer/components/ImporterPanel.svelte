@@ -23,8 +23,13 @@
   }
 
   function goBack() {
-    if (step === 'options') { step = 'source'; resetImporter(); }
-    else if (step === 'result') { step = 'source'; resetImporter(); }
+    if (step === 'options') {
+      step = 'source';
+      resetImporter();
+    } else if (step === 'result') {
+      step = 'source';
+      resetImporter();
+    }
   }
 
   async function handleStartImport() {
@@ -53,10 +58,7 @@
     <p class="importer-hint">Select the source format to import from:</p>
     <div class="source-grid">
       {#each IMPORT_SOURCES as source}
-        <button
-          class="source-card"
-          on:click={() => handleSelectSource(source.id)}
-        >
+        <button class="source-card" on:click={() => handleSelectSource(source.id)}>
           <Icon name={source.icon} size={24} />
           <span class="source-label">{source.label}</span>
           <span class="source-desc">{source.description}</span>
@@ -76,14 +78,14 @@
         {/each}
       </div>
     {/if}
-
   {:else if step === 'options'}
     <!-- Import options -->
     <div class="options-form">
       <div class="option-group">
         <span class="option-label">Source</span>
         <span class="option-value">
-          {IMPORT_SOURCES.find(s => s.id === $importOptions.source)?.label ?? $importOptions.source}
+          {IMPORT_SOURCES.find((s) => s.id === $importOptions.source)?.label ??
+            $importOptions.source}
         </span>
       </div>
 
@@ -158,16 +160,11 @@
         </div>
       {/if}
 
-      <button
-        class="import-btn"
-        on:click={handleStartImport}
-        disabled={$isImporting}
-      >
+      <button class="import-btn" on:click={handleStartImport} disabled={$isImporting}>
         <Icon name="download" size={16} />
         Select Files & Import
       </button>
     </div>
-
   {:else if step === 'progress'}
     <!-- Progress -->
     <div class="progress-section">
@@ -185,12 +182,15 @@
         <span class="progress-count">{$importProgress.current} / {$importProgress.total}</span>
       {/if}
     </div>
-
   {:else if step === 'result'}
     <!-- Result -->
     <div class="result-section">
       {#if $lastImportResult}
-        <div class="result-icon" class:success={$lastImportResult.failed === 0} class:error={$lastImportResult.imported === 0 && $lastImportResult.failed > 0}>
+        <div
+          class="result-icon"
+          class:success={$lastImportResult.failed === 0}
+          class:error={$lastImportResult.imported === 0 && $lastImportResult.failed > 0}
+        >
           <Icon name={$lastImportResult.failed === 0 ? 'check' : 'alert-circle'} size={32} />
         </div>
 
@@ -221,7 +221,9 @@
           {/if}
         </div>
 
-        <span class="result-duration">Completed in {($lastImportResult.durationMs / 1000).toFixed(1)}s</span>
+        <span class="result-duration"
+          >Completed in {($lastImportResult.durationMs / 1000).toFixed(1)}s</span
+        >
 
         {#if $lastImportResult.errors.length > 0}
           <details class="error-details">

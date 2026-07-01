@@ -28,10 +28,18 @@
     {/if}
 
     <div class="mastery-summary">
-      <div class="mastery-bar" role="progressbar" aria-valuenow={progress.masteredPercent} aria-valuemin={0} aria-valuemax={100}>
+      <div
+        class="mastery-bar"
+        role="progressbar"
+        aria-valuenow={progress.masteredPercent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
         <div class="mastery-fill" style="width:{progress.masteredPercent}%"></div>
       </div>
-      <span class="mastery-label">{progress.masteredTopics}/{progress.totalTopics} mastered ({progress.masteredPercent}%)</span>
+      <span class="mastery-label"
+        >{progress.masteredTopics}/{progress.totalTopics} mastered ({progress.masteredPercent}%)</span
+      >
     </div>
   </div>
 
@@ -49,7 +57,9 @@
                 on:change={() => toggleMastery(topic.notePath, topic.mastered)}
                 aria-label="Mark {topicName(topic.notePath)} as mastered"
               />
-              <span class="topic-name" class:mastered={topic.mastered}>{topicName(topic.notePath)}</span>
+              <span class="topic-name" class:mastered={topic.mastered}
+                >{topicName(topic.notePath)}</span
+              >
             </label>
             {#if topic.cardCount > 0}
               <span class="topic-cards">{topic.cardCount} cards</span>
@@ -67,24 +77,111 @@
 </div>
 
 <style>
-  .exam-progress { padding: var(--spacing-m); display: flex; flex-direction: column; gap: var(--spacing-m); }
-  .exam-header { display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .countdown { display: flex; align-items: baseline; gap: var(--spacing-xs); }
-  .countdown-num { font-size: 28px; font-weight: var(--font-bold); color: var(--interactive-accent); }
-  .countdown.urgent .countdown-num { color: #dc2626; }
-  .countdown-label { font-size: var(--font-smaller); color: var(--text-muted); }
-  .no-date { font-size: var(--font-smaller); color: var(--text-faint); }
-  .mastery-bar { height: 6px; background: var(--background-modifier-border); border-radius: 3px; overflow: hidden; }
-  .mastery-fill { height: 100%; background: var(--interactive-accent); border-radius: 3px; transition: width 0.4s; }
-  .mastery-label { font-size: var(--font-smallest); color: var(--text-muted); }
-  .section-heading { margin: 0 0 var(--spacing-xs); font-size: var(--font-smallest); font-weight: var(--font-semibold); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-  .topic-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-  .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 3px 0; }
-  .topic-label { display: flex; align-items: center; gap: var(--spacing-xs); cursor: pointer; flex: 1; min-width: 0; }
-  .topic-name { font-size: var(--font-smallest); color: var(--text-normal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .topic-name.mastered { text-decoration: line-through; color: var(--text-muted); }
-  .topic-cards { font-size: 10px; color: var(--text-faint); flex-shrink: 0; }
-  .empty-topics { text-align: center; padding: var(--spacing-l); }
-  .empty-topics p { margin: 0; font-size: var(--font-smaller); color: var(--text-muted); }
-  .hint { font-size: var(--font-smallest); color: var(--text-faint); }
+  .exam-progress {
+    padding: var(--spacing-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+  }
+  .exam-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .countdown {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+  }
+  .countdown-num {
+    font-size: 28px;
+    font-weight: var(--font-bold);
+    color: var(--interactive-accent);
+  }
+  .countdown.urgent .countdown-num {
+    color: #dc2626;
+  }
+  .countdown-label {
+    font-size: var(--font-smaller);
+    color: var(--text-muted);
+  }
+  .no-date {
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
+  }
+  .mastery-bar {
+    height: 6px;
+    background: var(--background-modifier-border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mastery-fill {
+    height: 100%;
+    background: var(--interactive-accent);
+    border-radius: 3px;
+    transition: width 0.4s;
+  }
+  .mastery-label {
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+  }
+  .section-heading {
+    margin: 0 0 var(--spacing-xs);
+    font-size: var(--font-smallest);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  .topic-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .topic-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+  }
+  .topic-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+  }
+  .topic-name {
+    font-size: var(--font-smallest);
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .topic-name.mastered {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  .topic-cards {
+    font-size: 10px;
+    color: var(--text-faint);
+    flex-shrink: 0;
+  }
+  .empty-topics {
+    text-align: center;
+    padding: var(--spacing-l);
+  }
+  .empty-topics p {
+    margin: 0;
+    font-size: var(--font-smaller);
+    color: var(--text-muted);
+  }
+  .hint {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+  }
 </style>

@@ -16,28 +16,33 @@ Build a minimal viable demo showcasing Bismuth's core value proposition:
 ### ✅ Must Have (Week 1)
 
 **1. Vault Management**
+
 - Open existing folder as vault
 - Scan markdown files
 - Display file list
 
 **2. Basic Editor**
+
 - Open markdown file
 - Edit with CodeMirror
 - Save changes (disk-first)
 - Syntax highlighting
 
 **3. Johnny.Decimal Basics**
+
 - Parse JD IDs from filenames (e.g., `15.52 Trip to NYC.md`)
 - Display JD badge on notes
 - Group by Area in sidebar (10-19, 20-29, etc.)
 - Category filter
 
 **4. Wikilinks**
+
 - Parse `[[wikilinks]]` in content
 - Click to navigate
 - Show backlinks panel
 
 **5. Simple Layout**
+
 - Sidebar (file tree + JD areas)
 - Note list (filtered)
 - Editor (CodeMirror)
@@ -46,19 +51,23 @@ Build a minimal viable demo showcasing Bismuth's core value proposition:
 ### 🎯 Nice to Have (Week 2)
 
 **6. JD Auto-Suggest**
+
 - Suggest next available ID in category
 - Show in "Create Note" dialog
 
 **7. Search**
+
 - Simple text search across files
 - Filter by JD category
 
 **8. Graph View**
+
 - Basic force-directed graph
 - Nodes = notes, edges = wikilinks
 - Click to navigate
 
 **9. Polish**
+
 - Keyboard shortcuts (Cmd+N, Cmd+P, etc.)
 - Loading states
 - Error handling
@@ -68,6 +77,7 @@ Build a minimal viable demo showcasing Bismuth's core value proposition:
 ## Tech Stack (Simplified)
 
 ### Frontend
+
 - **Framework**: Svelte 5 (simpler than React for demo)
 - **Editor**: CodeMirror 6 (lightweight, extensible)
 - **UI**: TailwindCSS (no component library for speed)
@@ -75,12 +85,14 @@ Build a minimal viable demo showcasing Bismuth's core value proposition:
 - **Graph**: force-graph (simple force-directed layout)
 
 ### Backend
+
 - **Desktop**: Tauri v2
 - **Language**: Rust
 - **File Parsing**: gray_matter (frontmatter), pulldown-cmark (markdown)
 - **Watcher**: notify (filesystem changes)
 
 ### No Database
+
 - Read files on demand
 - In-memory cache for current session
 - No SQLite, no complex indexing (yet)
@@ -132,6 +144,7 @@ bismuth/
 ### Week 1: Core Functionality
 
 #### Day 1: Project Setup
+
 - [x] Initialize Tauri + Svelte project
 - [ ] Set up TailwindCSS
 - [ ] Install CodeMirror 6
@@ -140,6 +153,7 @@ bismuth/
 **Deliverable**: App opens with empty layout
 
 #### Day 2: Vault Management
+
 - [ ] Tauri command: `open_vault(path)` → scan directory
 - [ ] Tauri command: `list_notes()` → return note list
 - [ ] Svelte store: `vault` (current vault path, notes)
@@ -148,6 +162,7 @@ bismuth/
 **Deliverable**: Open folder, see files in sidebar
 
 #### Day 3: Basic Editor
+
 - [ ] Tauri command: `read_note(path)` → return content
 - [ ] Tauri command: `write_note(path, content)` → save to disk
 - [ ] CodeMirror integration
@@ -156,6 +171,7 @@ bismuth/
 **Deliverable**: Open file, edit, save
 
 #### Day 4: Johnny.Decimal Parsing
+
 - [ ] Rust: Parse JD ID from filename (`15.52 Trip.md` → `{area: 10, category: 15, item: 52}`)
 - [ ] Add `jd_id`, `jd_area`, `jd_category` to Note struct
 - [ ] Svelte: Display JD badge on notes
@@ -164,6 +180,7 @@ bismuth/
 **Deliverable**: Notes show JD badges, grouped by area
 
 #### Day 5: Wikilink Parsing
+
 - [ ] Rust: Parse `[[wikilinks]]` from markdown content
 - [ ] Add `outgoing_links` to Note struct
 - [ ] Svelte: Compute backlinks (reverse index)
@@ -175,6 +192,7 @@ bismuth/
 ### Week 2: Enhancement & Polish
 
 #### Day 6: JD Auto-Suggest
+
 - [ ] Rust: `suggest_next_jd_id(category)` → scan existing, suggest next
 - [ ] Svelte: "Create Note" dialog
 - [ ] Show suggested ID
@@ -183,6 +201,7 @@ bismuth/
 **Deliverable**: Create note with auto-suggested JD ID
 
 #### Day 7: Simple Search
+
 - [ ] Rust: `search_notes(query)` → grep-like search
 - [ ] Svelte: Search input in sidebar
 - [ ] Filter note list by search results
@@ -191,6 +210,7 @@ bismuth/
 **Deliverable**: Search for text, see matching notes
 
 #### Day 8: Graph View
+
 - [ ] Svelte: Force-directed graph with `force-graph`
 - [ ] Nodes = notes (colored by JD area)
 - [ ] Edges = wikilinks
@@ -200,6 +220,7 @@ bismuth/
 **Deliverable**: Visual graph of note connections
 
 #### Day 9: Keyboard Shortcuts
+
 - [ ] Cmd+N: Create note
 - [ ] Cmd+P: Quick open (fuzzy search)
 - [ ] Cmd+F: Search
@@ -209,6 +230,7 @@ bismuth/
 **Deliverable**: Keyboard-driven workflow
 
 #### Day 10: Polish & Demo Prep
+
 - [ ] Loading states (spinner while scanning vault)
 - [ ] Error handling (file not found, permission denied)
 - [ ] Empty states (no vault open, no notes)
@@ -252,9 +274,10 @@ demo-vault/
 ```
 
 **Sample Note** (`21.01 Bismuth PKM.md`):
+
 ```markdown
 ---
-jd_id: "21.01"
+jd_id: '21.01'
 jd_area: 20
 jd_category: 21
 type: Project
@@ -300,11 +323,12 @@ A local-first personal knowledge management system combining [[Johnny.Decimal]] 
 ❌ **Export** - Not needed for demo  
 ❌ **Settings Panel** - Hardcoded defaults  
 ❌ **Themes** - Single light theme  
-❌ **Mobile** - Desktop only  
+❌ **Mobile** - Desktop only
 
 ### Can Add Later
 
 These are important but not for initial demo:
+
 - Full Zettelkasten workflow (timestamp IDs, note types)
 - Lightweight ontologies (concept extraction)
 - GraphRAG (multi-hop search)
@@ -360,21 +384,27 @@ These are important but not for initial demo:
 ## Demo Script (5 minutes)
 
 ### Minute 1: Introduction
+
 > "Bismuth is a local-first PKM that combines Johnny.Decimal organization with Zettelkasten linking. Let me show you how it works."
 
 ### Minute 2: Open Vault & JD Organization
+
 > "I'll open my demo vault. Notice how notes are automatically grouped by Johnny.Decimal areas: 10-19 Life Admin, 20-29 Projects, 30-39 Learning. Each note has a JD ID like 15.52 or 21.01."
 
 ### Minute 3: Edit & Wikilinks
+
 > "Let's open this note about Bismuth. I can edit it with full markdown support. Notice the wikilinks in double brackets? I can click them to navigate. The right panel shows backlinks—other notes that link here."
 
 ### Minute 4: Create Note & Auto-Suggest
+
 > "When I create a new note, Bismuth suggests the next available JD ID. I'm in the Travel category (15), and the last note was 15.53, so it suggests 15.54. This keeps my system organized without thinking."
 
 ### Minute 5: Search & Graph
+
 > "I can search across all notes. And here's the graph view—each node is a note, colored by JD area. Edges show wikilinks. This helps me see how my knowledge is connected."
 
 **Closing**:
+
 > "That's Bismuth—local-first, organized by Johnny.Decimal, connected by Zettelkasten. Your notes, your structure, your control."
 
 ---
@@ -401,16 +431,19 @@ These are important but not for initial demo:
 ## Resources Needed
 
 ### Development
+
 - **Time**: 2 weeks (80 hours)
 - **Tools**: VS Code, Rust toolchain, Node.js, pnpm
 - **Hardware**: Mac/Linux/Windows for testing
 
 ### Demo
+
 - **Sample Vault**: 20-30 markdown files with JD structure
 - **Recording**: Screen recording software (QuickTime, OBS)
 - **Presentation**: Slides or script
 
 ### Optional
+
 - **Feedback**: Google Form or Typeform for user feedback
 - **Analytics**: Simple usage tracking (optional)
 

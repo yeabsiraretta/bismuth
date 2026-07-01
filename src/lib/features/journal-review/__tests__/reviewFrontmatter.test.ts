@@ -1,8 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseFrontmatter, extractBody, extractCreatedDate,
-  parseFlexibleDate, extractPreview, extractTags,
-  extractTitle, generateCreatedFrontmatter, ensureCreatedField,
+  parseFrontmatter,
+  extractBody,
+  extractCreatedDate,
+  parseFlexibleDate,
+  extractPreview,
+  extractTags,
+  extractTitle,
+  generateCreatedFrontmatter,
+  ensureCreatedField,
   getFileType,
 } from '../services/reviewFrontmatter';
 

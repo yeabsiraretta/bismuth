@@ -44,7 +44,7 @@ describe('featureLoadStatus', () => {
         id: 'feature-load-graph',
         position: 'right',
         icon: 'loader',
-      }),
+      })
     );
   });
 

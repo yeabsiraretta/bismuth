@@ -73,7 +73,12 @@ describe('toast store', () => {
     toast.error('Error msg');
     const all = get(toasts);
     expect(all).toHaveLength(4);
-    expect(all.map((t: { type: string }) => t.type).sort()).toEqual(['error', 'info', 'success', 'warning']);
+    expect(all.map((t: { type: string }) => t.type).sort()).toEqual([
+      'error',
+      'info',
+      'success',
+      'warning',
+    ]);
   });
 
   it('should return unique IDs', () => {

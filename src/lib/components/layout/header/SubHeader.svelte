@@ -23,7 +23,9 @@
               {/if}
               <span class="breadcrumb-sep" aria-hidden="true">&#8250;</span>
             {:else}
-              <span class="breadcrumb-current bismuth-body-sm" aria-current="page">{crumb.label}</span>
+              <span class="breadcrumb-current bismuth-body-sm" aria-current="page"
+                >{crumb.label}</span
+              >
             {/if}
           </li>
         {/each}
@@ -53,32 +55,68 @@
 </section>
 
 <style>
-  .sub-header { display: flex; flex-direction: column; gap: var(--spacing-xs, 4px); }
+  .sub-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 4px);
+  }
 
   .breadcrumb-list {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 2px;
-    list-style: none; margin: 0; padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  .breadcrumb-item { display: flex; align-items: center; gap: 2px; }
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
 
   .breadcrumb-link {
-    color: var(--text-muted); text-decoration: none;
+    color: var(--text-muted);
+    text-decoration: none;
   }
-  .breadcrumb-link:hover { color: var(--interactive-accent); }
+  .breadcrumb-link:hover {
+    color: var(--interactive-accent);
+  }
 
-  .breadcrumb-current { color: var(--text-normal); }
-  .breadcrumb-sep { color: var(--text-muted); }
+  .breadcrumb-current {
+    color: var(--text-normal);
+  }
+  .breadcrumb-sep {
+    color: var(--text-muted);
+  }
 
   .sub-header-row {
-    display: flex; align-items: center;
-    justify-content: space-between; gap: var(--spacing-m, 12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-m, 12px);
   }
 
-  .sub-header-title { display: flex; align-items: center; gap: var(--spacing-s, 8px); flex: 1; min-width: 0; }
-  .sub-header-title h1 { margin: 0; }
+  .sub-header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s, 8px);
+    flex: 1;
+    min-width: 0;
+  }
+  .sub-header-title h1 {
+    margin: 0;
+  }
 
-  .sub-header-actions { display: flex; gap: var(--spacing-s, 8px); flex-shrink: 0; }
+  .sub-header-actions {
+    display: flex;
+    gap: var(--spacing-s, 8px);
+    flex-shrink: 0;
+  }
 
-  .sub-header-metadata { margin-top: var(--spacing-xs, 4px); }
+  .sub-header-metadata {
+    margin-top: var(--spacing-xs, 4px);
+  }
 </style>

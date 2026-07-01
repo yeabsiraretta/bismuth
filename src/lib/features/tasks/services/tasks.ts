@@ -15,10 +15,7 @@ export async function getAllTasks(): Promise<Task[]> {
 /**
  * Gets tasks matching the given filter and sort criteria.
  */
-export async function getTasksFiltered(
-  filter: TaskFilter,
-  sort?: TaskSort
-): Promise<Task[]> {
+export async function getTasksFiltered(filter: TaskFilter, sort?: TaskSort): Promise<Task[]> {
   try {
     return await invoke<Task[]>('get_tasks_filtered', { filter, sort });
   } catch (error) {

@@ -85,10 +85,17 @@ export function computeWordDiff(original: string, modified: string): DiffHunk[] 
   let li = 0;
 
   while (oi < origWords.length || mi < modWords.length) {
-    if (li < lcs.length && oi < origWords.length && mi < modWords.length
-        && origWords[oi] === lcs[li] && modWords[mi] === lcs[li]) {
+    if (
+      li < lcs.length &&
+      oi < origWords.length &&
+      mi < modWords.length &&
+      origWords[oi] === lcs[li] &&
+      modWords[mi] === lcs[li]
+    ) {
       hunks.push({ type: 'equal', text: origWords[oi] });
-      oi++; mi++; li++;
+      oi++;
+      mi++;
+      li++;
     } else if (li < lcs.length && oi < origWords.length && origWords[oi] !== lcs[li]) {
       hunks.push({ type: 'delete', text: origWords[oi] });
       oi++;
@@ -122,16 +129,19 @@ function longestCommonSubsequence(a: string[], b: string[]): string[] {
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+      dp[i][j] =
+        a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
     }
   }
 
   const result: string[] = [];
-  let i = m, j = n;
+  let i = m,
+    j = n;
   while (i > 0 && j > 0) {
     if (a[i - 1] === b[j - 1]) {
       result.unshift(a[i - 1]);
-      i--; j--;
+      i--;
+      j--;
     } else if (dp[i - 1][j] > dp[i][j - 1]) {
       i--;
     } else {

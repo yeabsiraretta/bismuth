@@ -20,7 +20,7 @@
         <button
           class="cv-type-chip"
           class:active={selectedType === t}
-          on:click={() => selectedType = selectedType === t ? '' : t}
+          on:click={() => (selectedType = selectedType === t ? '' : t)}
           style="--chip-color: {getPortentColor(t)}"
         >
           <Icon name={getPortentIcon(t)} size={14} />
@@ -37,9 +37,16 @@
         <button
           class="cv-state-btn"
           class:active={selectedLifecycle === state}
-          on:click={() => selectedLifecycle = state}
+          on:click={() => (selectedLifecycle = state)}
         >
-          <Icon name={state === 'captured' ? 'inbox' : state === 'organized' ? 'folder-check' : 'archive'} size={14} />
+          <Icon
+            name={state === 'captured'
+              ? 'inbox'
+              : state === 'organized'
+                ? 'folder-check'
+                : 'archive'}
+            size={14}
+          />
           <span>{state}</span>
         </button>
       {/each}

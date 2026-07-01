@@ -17,9 +17,18 @@ function applyCSS(s: BismuthSettings): void {
   root.style.setProperty('--editor-font-size', `${s.fontSize ?? 16}px`);
   root.style.setProperty('--editor-line-height', `${s.lineHeight ?? 1.6}`);
   root.style.setProperty('--editor-font-family', fontText);
-  root.style.setProperty('--font-sans', buildFontStack(fontInterface, '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'));
-  root.style.setProperty('--font-text', buildFontStack(fontText, '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'));
-  root.style.setProperty('--font-mono', buildFontStack(fontMono, '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace'));
+  root.style.setProperty(
+    '--font-sans',
+    buildFontStack(fontInterface, '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
+  );
+  root.style.setProperty(
+    '--font-text',
+    buildFontStack(fontText, '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif')
+  );
+  root.style.setProperty(
+    '--font-mono',
+    buildFontStack(fontMono, '"JetBrains Mono", "Fira Code", "Cascadia Code", monospace')
+  );
   root.style.setProperty('--font-text-size', `${s.fontSize ?? 16}px`);
   root.style.setProperty('--line-height-normal', `${s.lineHeight ?? 1.6}`);
   root.style.setProperty('--interactive-accent', s.accentColor || '#dc2626');

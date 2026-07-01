@@ -48,10 +48,10 @@ Before running, ensure you have completed:
 
 ### Output Files
 
-| File | Description |
-|------|-------------|
-| `specs/{branch}/analysis.md` | Latest analysis results (updated each iteration) |
-| `specs/{branch}/findings.fixed.md` | Complete log of all iterations and fixes |
+| File                               | Description                                      |
+| ---------------------------------- | ------------------------------------------------ |
+| `specs/{branch}/analysis.md`       | Latest analysis results (updated each iteration) |
+| `specs/{branch}/findings.fixed.md` | Complete log of all iterations and fixes         |
 
 ### Example Output
 

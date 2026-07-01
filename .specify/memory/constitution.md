@@ -13,11 +13,13 @@ Templates requiring updates:
 Follow-up TODOs:
 - None
 -->
+
 # Bismuth Constitution
 
 ## Core Principles
 
 ### I. Maintainable Code Quality
+
 All production code MUST be readable, cohesive, and consistent with existing project
 patterns. Implementations MUST reuse established utilities, components, and abstractions
 before introducing new ones. Duplicate logic MUST be extracted or explicitly justified
@@ -30,6 +32,7 @@ minimizing unnecessary surface area, enforcing focused modules, and making futur
 changes predictable.
 
 ### II. Comprehensive Testing Standards
+
 Every change MUST include appropriate automated tests for the affected behavior unless
 the change is documentation-only. The project MUST maintain at least 90% coverage across
 lines, branches, statements, and functions for all code files. Tests MUST pass before
@@ -38,6 +41,7 @@ exceptions require written justification and a follow-up remediation plan. Ratio
 high coverage and passing tests provide confidence that behavior is correct and stable.
 
 ### III. Consistent User Experience
+
 User-facing changes MUST preserve a consistent experience across flows, screens,
 messages, accessibility expectations, and platform conventions. Existing components,
 design tokens, copy patterns, and interaction models MUST be reused before creating new
@@ -48,6 +52,7 @@ Rationale: consistent UX reduces confusion and makes features feel integrated ra
 than bolted on.
 
 ### IV. Performance and Cross-Platform Reliability
+
 Features MUST define measurable performance expectations before implementation and MUST
 avoid unnecessary runtime, memory, dependency, and bundle-size costs. Generated code and
 automation MUST work across Windows, macOS, and Linux unless the feature specification
@@ -58,6 +63,7 @@ auto-save debounce 500ms. Rationale: performance and portability must be designe
 not repaired after delivery.
 
 ### V. Research-First Simplicity
+
 Before implementation, teams MUST deep dive the relevant concepts, constraints, and
 existing code paths. Plans MUST compare multiple viable approaches and select the most
 straightforward, readable, maintainable, and consistent solution. Complex solutions,
@@ -88,6 +94,7 @@ strict folder density prevents discovery friction, enforces separation of concer
 ensures each directory is scannable at a glance.
 
 ### VII. Specification-Driven Development
+
 All features MUST follow the Spec Kit lifecycle: specify → plan → tasks → implement.
 The project constitution (this file) MUST be loaded automatically before every lifecycle
 command via the memory-loader extension. Architecture drift MUST be detected after
@@ -100,6 +107,7 @@ Rationale: specification-driven development ensures features are designed before
 reviewed against governance, and tracked through completion.
 
 ### VIII. Design Token and Styling Architecture
+
 All visual styling MUST use CSS custom properties (design tokens) as the single source
 of truth. Components MUST use scoped CSS with `var()` token references — NOT inline
 utility classes for visual properties. Enforceable file paths, dark mode mechanism,
@@ -109,6 +117,7 @@ prevents drift between themes, ensures consistent styling, and makes global desi
 changes predictable.
 
 ### IX. Multi-Agent Governance
+
 The project supports multiple AI development agents (Windsurf/Cascade, Devin, Claude).
 All agents MUST operate under the same constitution and constraints. Agent-specific
 configuration MUST be kept in their respective directories (`.windsurf/`, `.devin/`,
@@ -120,6 +129,7 @@ Rationale: consistent governance across agents prevents conflicting implementati
 and ensures any agent can pick up work without violating project standards.
 
 ### X. Production Release Standards
+
 Before any tagged release, the codebase MUST pass a production readiness gate. This
 includes: passing all test coverage thresholds, zero linting errors (ESLint + stylelint),
 zero file-size violations, zero Rust clippy warnings, a clean `cargo audit`, a successful
@@ -183,6 +193,7 @@ preferences. Amendments require a documented rationale, an impact review for dep
 templates and workflows, and approval by project maintainers before adoption.
 
 Versioning follows semantic versioning:
+
 - MAJOR: Backward-incompatible governance changes, principle removals, or redefinitions.
 - MINOR: New principles, new required sections, or materially expanded governance.
 - PATCH: Clarifications, wording improvements, and non-semantic refinements.
@@ -195,6 +206,7 @@ as an approved exception with owner, reason, and remediation plan.
 **Version**: 1.5.0 | **Ratified**: 2026-05-25 | **Last Amended**: 2026-06-23
 
 **Related Documents**:
+
 - Architecture enforcement: `.specify/memory/architecture_constitution.md`
 - Security standards: `.specify/memory/security_constitution.md`
 - Memory workflow: `.specify/memory/workflow.md`

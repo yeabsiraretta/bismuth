@@ -64,7 +64,13 @@
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div class="inline-edit-overlay" on:keydown={handleKeydown} role="dialog" aria-label="Inline edit" tabindex="-1">
+<div
+  class="inline-edit-overlay"
+  on:keydown={handleKeydown}
+  role="dialog"
+  aria-label="Inline edit"
+  tabindex="-1"
+>
   <div class="inline-edit-modal">
     <div class="modal-header">
       <Icon name="edit-2" size={16} />
@@ -77,7 +83,9 @@
     {#if !result}
       <div class="selected-preview">
         <span class="preview-label">Selection:</span>
-        <pre class="preview-text">{selectedText.length > 200 ? selectedText.slice(0, 200) + '...' : selectedText}</pre>
+        <pre class="preview-text">{selectedText.length > 200
+            ? selectedText.slice(0, 200) + '...'
+            : selectedText}</pre>
       </div>
 
       <div class="input-row">
@@ -117,7 +125,13 @@
           <Icon name="check" size={14} />
           Apply
         </button>
-        <button class="action-btn action-btn--retry" on:click={() => { result = null; }} aria-label="Try again">
+        <button
+          class="action-btn action-btn--retry"
+          on:click={() => {
+            result = null;
+          }}
+          aria-label="Try again"
+        >
           <Icon name="refresh-cw" size={14} />
           Retry
         </button>
@@ -155,7 +169,7 @@
     background: var(--background-primary);
     border: 1px solid var(--background-modifier-border);
     border-radius: var(--radius-l, 12px);
-    box-shadow: var(--shadow-l, 0 8px 32px rgba(0,0,0,0.2));
+    box-shadow: var(--shadow-l, 0 8px 32px rgba(0, 0, 0, 0.2));
     overflow: hidden;
   }
 
@@ -174,16 +188,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px; height: 24px;
-    padding: 0; border: none;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
     background: transparent;
     border-radius: var(--radius-s);
     color: var(--text-muted);
     cursor: pointer;
   }
-  .close-btn:hover { background: var(--background-modifier-hover); }
+  .close-btn:hover {
+    background: var(--background-modifier-hover);
+  }
 
-  .selected-preview, .diff-preview {
+  .selected-preview,
+  .diff-preview {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -221,9 +240,19 @@
     font-family: var(--font-monospace, monospace);
     line-height: 1.5;
   }
-  .hunk-equal { color: var(--text-normal); }
-  .hunk-insert { background: rgba(0, 200, 100, 0.15); color: var(--text-success, #065f46); text-decoration: none; }
-  .hunk-delete { background: rgba(255, 60, 60, 0.15); color: var(--text-error, #991b1b); text-decoration: line-through; }
+  .hunk-equal {
+    color: var(--text-normal);
+  }
+  .hunk-insert {
+    background: rgba(0, 200, 100, 0.15);
+    color: var(--text-success, #065f46);
+    text-decoration: none;
+  }
+  .hunk-delete {
+    background: rgba(255, 60, 60, 0.15);
+    color: var(--text-error, #991b1b);
+    text-decoration: line-through;
+  }
 
   .input-row {
     display: flex;
@@ -238,33 +267,55 @@
     color: var(--text-normal);
     font-size: var(--font-ui-small, 13px);
   }
-  .edit-input:focus { border-color: var(--interactive-accent); outline: none; }
+  .edit-input:focus {
+    border-color: var(--interactive-accent);
+    outline: none;
+  }
   .submit-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px;
-    padding: 0; border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
     border-radius: var(--radius-s);
     background: var(--interactive-accent);
     color: var(--text-on-accent, #fff);
     cursor: pointer;
   }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .action-row {
     display: flex;
     gap: var(--spacing-s);
   }
   .action-btn {
-    display: flex; align-items: center; gap: 4px;
-    padding: 6px 12px; border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: none;
     border-radius: var(--radius-s);
     font-size: var(--font-ui-small, 13px);
     font-weight: var(--font-medium, 500);
     cursor: pointer;
   }
-  .action-btn--apply { background: var(--interactive-accent); color: var(--text-on-accent, #fff); }
-  .action-btn--retry { background: var(--background-modifier-border); color: var(--text-normal); }
-  .action-btn--cancel { background: transparent; color: var(--text-muted); }
+  .action-btn--apply {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+  }
+  .action-btn--retry {
+    background: var(--background-modifier-border);
+    color: var(--text-normal);
+  }
+  .action-btn--cancel {
+    background: transparent;
+    color: var(--text-muted);
+  }
 
   .edit-error {
     font-size: var(--font-ui-smaller, 12px);

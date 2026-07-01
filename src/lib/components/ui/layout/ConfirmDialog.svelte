@@ -31,7 +31,7 @@
     <p class="confirm-message">{message}</p>
     <div class="confirm-actions">
       <Button variant="secondary" on:click={handleClose} ariaLabel="Cancel">Cancel</Button>
-      <Button variant={variant} on:click={handleConfirm} ariaLabel={confirmLabel}>{confirmLabel}</Button>
+      <Button {variant} on:click={handleConfirm} ariaLabel={confirmLabel}>{confirmLabel}</Button>
     </div>
   </div>
 </Modal>

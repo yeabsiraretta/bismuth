@@ -160,16 +160,16 @@
 
 ### OWASP Desktop Application Security
 
-| Category | Bismuth Status | Notes |
-|----------|---------------|-------|
-| Input Validation | Enforced | Path validation in Tauri commands |
-| Authentication | N/A | Local-only app |
-| Session Management | N/A | No sessions |
-| Access Control | OS-level | Vault scoped |
-| Cryptography | Future | If encrypted notes added |
-| Error Handling | Enforced | No path leakage in UI |
-| Data Protection | Partial | Plaintext at rest, vault-scoped |
-| Communication | N/A | No network (yet) |
+| Category           | Bismuth Status | Notes                             |
+| ------------------ | -------------- | --------------------------------- |
+| Input Validation   | Enforced       | Path validation in Tauri commands |
+| Authentication     | N/A            | Local-only app                    |
+| Session Management | N/A            | No sessions                       |
+| Access Control     | OS-level       | Vault scoped                      |
+| Cryptography       | Future         | If encrypted notes added          |
+| Error Handling     | Enforced       | No path leakage in UI             |
+| Data Protection    | Partial        | Plaintext at rest, vault-scoped   |
+| Communication      | N/A            | No network (yet)                  |
 
 ### Supply Chain
 

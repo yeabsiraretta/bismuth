@@ -12,8 +12,10 @@ function makeFrame(id: string, x = 0, y = 0): CanvasElement {
   return {
     id,
     element_type: 'frame',
-    x, y,
-    width: 100, height: 80,
+    x,
+    y,
+    width: 100,
+    height: 80,
     rotation: 0,
     properties: {},
     layer_id: 'default',
@@ -24,7 +26,11 @@ function makeFrame(id: string, x = 0, y = 0): CanvasElement {
   };
 }
 
-function makeLink(from: string, to: string, opts?: { hotspotElementId?: string; label?: string }): FlowLink {
+function makeLink(
+  from: string,
+  to: string,
+  opts?: { hotspotElementId?: string; label?: string }
+): FlowLink {
   return {
     id: `link_${from}_${to}`,
     fromFrameId: from,

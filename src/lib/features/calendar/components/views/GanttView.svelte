@@ -13,10 +13,7 @@
     spanCols: number;
   }
 
-  function buildGanttData(
-    items: typeof $allCalendarItems,
-    focus: Date,
-  ): GanttGroup[] {
+  function buildGanttData(items: typeof $allCalendarItems, focus: Date): GanttGroup[] {
     const rangeStart = new Date(focus);
     rangeStart.setDate(rangeStart.getDate() - 7);
     const rangeEnd = new Date(focus);
@@ -26,9 +23,7 @@
     const endStr = formatDate(rangeEnd);
 
     // Filter events in range that have duration
-    const relevant = items.filter(e =>
-      e.date >= startStr && e.date <= endStr,
-    );
+    const relevant = items.filter((e) => e.date >= startStr && e.date <= endStr);
 
     // Group by project/category
     const groups = new Map<string, GanttTask[]>();
@@ -187,9 +182,14 @@
     color: var(--text-muted);
   }
 
-  .gantt-hint { font-size: var(--font-smallest); color: var(--text-faint); }
+  .gantt-hint {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+  }
 
-  .gantt-container { min-width: 800px; }
+  .gantt-container {
+    min-width: 800px;
+  }
 
   .gantt-header {
     display: grid;
@@ -215,11 +215,21 @@
     min-width: 24px;
   }
 
-  .gantt-date-col.today { background: var(--interactive-accent-hover); }
-  .gantt-date-col.weekend { background: var(--background-secondary); }
+  .gantt-date-col.today {
+    background: var(--interactive-accent-hover);
+  }
+  .gantt-date-col.weekend {
+    background: var(--background-secondary);
+  }
 
-  .month-label { font-size: 8px; color: var(--text-faint); text-transform: uppercase; }
-  .day-label { font-size: 10px; }
+  .month-label {
+    font-size: 8px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+  }
+  .day-label {
+    font-size: 10px;
+  }
 
   .gantt-group-header {
     padding: var(--spacing-xs) var(--spacing-sm);
@@ -251,8 +261,14 @@
     min-width: 24px;
   }
 
-  .gantt-cell.today { background: var(--interactive-accent-hover); opacity: 0.3; }
-  .gantt-cell.weekend { background: var(--background-secondary); opacity: 0.3; }
+  .gantt-cell.today {
+    background: var(--interactive-accent-hover);
+    opacity: 0.3;
+  }
+  .gantt-cell.weekend {
+    background: var(--background-secondary);
+    opacity: 0.3;
+  }
 
   .gantt-bar {
     position: absolute;

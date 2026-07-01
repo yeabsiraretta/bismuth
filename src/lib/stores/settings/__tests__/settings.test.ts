@@ -52,7 +52,7 @@ describe('settings store — set/update/reset/reload', () => {
     settings.set({ ...DEFAULT_SETTINGS, fontSize: 20 });
     expect(localStorage.setItem).toHaveBeenCalledWith(
       STORAGE_KEY,
-      expect.stringContaining('"fontSize":20'),
+      expect.stringContaining('"fontSize":20')
     );
   });
 
@@ -134,9 +134,8 @@ describe('settings store — loadSettings round-trip', () => {
   });
 
   it('saveSettings then loadSettings preserves all fields', async () => {
-    const { saveSettings, loadSettings } = await import(
-      '@/features/settings/services/settingsPersistence'
-    );
+    const { saveSettings, loadSettings } =
+      await import('@/features/settings/services/settingsPersistence');
     const { DEFAULT_SETTINGS } = await import('@/features/settings/types/settings.types');
     const custom = { ...DEFAULT_SETTINGS, fontSize: 19, accentColor: '#112233', wordWrap: false };
     saveSettings(custom);
@@ -174,9 +173,8 @@ describe('editorSettings derived store', () => {
   });
 
   it('reflects tabSize and insertSpaces from settings', async () => {
-    const { settings, editorSettings, DEFAULT_SETTINGS } = await import(
-      '@/features/settings/stores/settingsStore'
-    );
+    const { settings, editorSettings, DEFAULT_SETTINGS } =
+      await import('@/features/settings/stores/settingsStore');
     settings.set({ ...DEFAULT_SETTINGS, tabSize: 4, insertSpaces: false });
     const es = get(editorSettings);
     expect(es.tabSize).toBe(4);
@@ -184,9 +182,8 @@ describe('editorSettings derived store', () => {
   });
 
   it('reflects livePreviewMode from settings', async () => {
-    const { settings, editorSettings, DEFAULT_SETTINGS } = await import(
-      '@/features/settings/stores/settingsStore'
-    );
+    const { settings, editorSettings, DEFAULT_SETTINGS } =
+      await import('@/features/settings/stores/settingsStore');
     settings.set({ ...DEFAULT_SETTINGS, livePreviewMode: 'reading' });
     expect(get(editorSettings).livePreviewMode).toBe('reading');
   });

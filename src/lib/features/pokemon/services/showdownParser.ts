@@ -17,20 +17,52 @@ export interface ParseError {
 
 function makeEmptySlot(): TeamSlot {
   return {
-    species: null, item: null, ability: '',
-    nature: 'Hardy', evs: defaultEvs(), ivs: defaultIvs(),
-    moves: [null, null, null, null], level: 50,
+    species: null,
+    item: null,
+    ability: '',
+    nature: 'Hardy',
+    evs: defaultEvs(),
+    ivs: defaultIvs(),
+    moves: [null, null, null, null],
+    level: 50,
   };
 }
 
 const EV_STAT_MAP: Record<string, keyof Stats> = {
-  HP: 'hp', Atk: 'atk', Def: 'def', SpA: 'spa', SpD: 'spd', Spe: 'spe',
+  HP: 'hp',
+  Atk: 'atk',
+  Def: 'def',
+  SpA: 'spa',
+  SpD: 'spd',
+  Spe: 'spe',
 };
 
 const VALID_NATURES = new Set<string>([
-  'Hardy','Lonely','Brave','Adamant','Naughty','Bold','Docile','Relaxed',
-  'Impish','Lax','Timid','Hasty','Serious','Jolly','Naive','Modest','Mild',
-  'Quiet','Bashful','Rash','Calm','Gentle','Sassy','Careful','Quirky',
+  'Hardy',
+  'Lonely',
+  'Brave',
+  'Adamant',
+  'Naughty',
+  'Bold',
+  'Docile',
+  'Relaxed',
+  'Impish',
+  'Lax',
+  'Timid',
+  'Hasty',
+  'Serious',
+  'Jolly',
+  'Naive',
+  'Modest',
+  'Mild',
+  'Quiet',
+  'Bashful',
+  'Rash',
+  'Calm',
+  'Gentle',
+  'Sassy',
+  'Careful',
+  'Quirky',
 ]);
 
 function parseEvLine(line: string): Stats {
@@ -71,7 +103,10 @@ export function parseShowdownPaste(
 
   for (let i = 0; i < count; i++) {
     const slot = makeEmptySlot();
-    const lines = blocks[i].split('\n').map((l) => l.trim()).filter(Boolean);
+    const lines = blocks[i]
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
     if (lines.length === 0) continue;
 
     const firstLine = lines[0];
@@ -90,7 +125,10 @@ export function parseShowdownPaste(
 
     // Species lookup (optional)
     if (pokedex) {
-      const key = speciesRaw.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const key = speciesRaw
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
       const species = pokedex[key] ?? null;
       if (!species) warnings.push(`Unknown species: "${speciesRaw}" — slot ${i + 1} left empty.`);
       else slot.species = species;
@@ -98,7 +136,10 @@ export function parseShowdownPaste(
 
     // Item lookup (optional)
     if (itemRaw && itemsDb) {
-      const key = itemRaw.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const key = itemRaw
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
       const item = itemsDb[key] ?? null;
       if (!item) warnings.push(`Unknown item: "${itemRaw}" on slot ${i + 1}.`);
       else slot.item = item;
@@ -121,7 +162,10 @@ export function parseShowdownPaste(
       } else if (line.startsWith('- ') && moveIndex < 4) {
         const moveName = line.slice(2).trim();
         if (movesDb) {
-          const key = moveName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+          const key = moveName
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]/g, '');
           const move = movesDb[key] ?? null;
           if (!move) warnings.push(`Unknown move: "${moveName}" on slot ${i + 1}.`);
           slot.moves[moveIndex] = move;
@@ -129,7 +173,11 @@ export function parseShowdownPaste(
           // Without move DB: create a placeholder with name only for counting
           slot.moves[moveIndex] = {
             id: moveName.toLowerCase().replace(/\s+/g, '-'),
-            name: moveName, type: 'Normal', power: null, category: 'status', accuracy: null,
+            name: moveName,
+            type: 'Normal',
+            power: null,
+            category: 'status',
+            accuracy: null,
           };
         }
         moveIndex++;

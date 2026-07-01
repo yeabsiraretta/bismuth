@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseQuantity, parseIngredient, extractMetadata, parseRecipe,
-  scaleQuantity, formatQuantity,
+  parseQuantity,
+  parseIngredient,
+  extractMetadata,
+  parseRecipe,
+  scaleQuantity,
+  formatQuantity,
 } from '../services/recipeParser';
 
 describe('parseQuantity', () => {

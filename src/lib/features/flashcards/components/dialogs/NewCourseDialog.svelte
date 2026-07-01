@@ -47,7 +47,12 @@
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<div class="dialog-overlay" on:click|self={() => onCancel?.()} on:keydown={handleKeydown} role="presentation">
+<div
+  class="dialog-overlay"
+  on:click|self={() => onCancel?.()}
+  on:keydown={handleKeydown}
+  role="presentation"
+>
   <div
     class="dialog"
     role="dialog"
@@ -60,19 +65,34 @@
 
     <label class="field">
       <span class="field-label">Course name <span aria-hidden="true">*</span></span>
-      <input class="field-input" type="text" bind:value={name} placeholder="e.g. CompTIA Security+" />
+      <input
+        class="field-input"
+        type="text"
+        bind:value={name}
+        placeholder="e.g. CompTIA Security+"
+      />
       {#if errors.name}<span class="field-error">{errors.name}</span>{/if}
     </label>
 
     <label class="field">
       <span class="field-label">Subject <span aria-hidden="true">*</span></span>
-      <input class="field-input" type="text" bind:value={subject} placeholder="e.g. Cybersecurity" />
+      <input
+        class="field-input"
+        type="text"
+        bind:value={subject}
+        placeholder="e.g. Cybersecurity"
+      />
       {#if errors.subject}<span class="field-error">{errors.subject}</span>{/if}
     </label>
 
     <label class="field">
       <span class="field-label">Topic notes folder <span aria-hidden="true">*</span></span>
-      <input class="field-input" type="text" bind:value={folderPath} placeholder="e.g. Courses/Security+" />
+      <input
+        class="field-input"
+        type="text"
+        bind:value={folderPath}
+        placeholder="e.g. Courses/Security+"
+      />
       {#if errors.folderPath}<span class="field-error">{errors.folderPath}</span>{/if}
     </label>
 
@@ -97,17 +117,82 @@
 </div>
 
 <style>
-  .dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .dialog { background: var(--background-primary); border: 1px solid var(--border-color); border-radius: var(--radius-l); padding: var(--spacing-l); width: 360px; max-width: 90vw; display: flex; flex-direction: column; gap: var(--spacing-m); }
-  .dialog-title { margin: 0; font-size: var(--font-normal); font-weight: var(--font-semibold); }
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field-label { font-size: var(--font-smallest); font-weight: var(--font-medium); color: var(--text-muted); }
-  .field-input { padding: var(--spacing-xs) var(--spacing-s); border: 1px solid var(--border-color); border-radius: var(--radius-s); background: var(--background-modifier-form-field); color: var(--text-normal); font-size: var(--font-smaller); }
-  .field-input:focus { outline: none; border-color: var(--interactive-accent); }
-  .field-error { font-size: 10px; color: var(--text-error); }
-  .dialog-actions { display: flex; justify-content: flex-end; gap: var(--spacing-s); margin-top: var(--spacing-xs); }
-  .action-btn { padding: var(--spacing-xs) var(--spacing-m); font-size: var(--font-smaller); border-radius: var(--radius-s); cursor: pointer; border: 1px solid var(--border-color); }
-  .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .action-btn.secondary { background: var(--background-modifier-hover); color: var(--text-muted); }
-  .action-btn.primary { background: var(--interactive-accent); color: var(--text-on-accent); border-color: var(--interactive-accent); font-weight: var(--font-medium); }
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .dialog {
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-l);
+    padding: var(--spacing-l);
+    width: 360px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+  }
+  .dialog-title {
+    margin: 0;
+    font-size: var(--font-normal);
+    font-weight: var(--font-semibold);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field-label {
+    font-size: var(--font-smallest);
+    font-weight: var(--font-medium);
+    color: var(--text-muted);
+  }
+  .field-input {
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: var(--background-modifier-form-field);
+    color: var(--text-normal);
+    font-size: var(--font-smaller);
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--interactive-accent);
+  }
+  .field-error {
+    font-size: 10px;
+    color: var(--text-error);
+  }
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xs);
+  }
+  .action-btn {
+    padding: var(--spacing-xs) var(--spacing-m);
+    font-size: var(--font-smaller);
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+  }
+  .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .action-btn.secondary {
+    background: var(--background-modifier-hover);
+    color: var(--text-muted);
+  }
+  .action-btn.primary {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+    font-weight: var(--font-medium);
+  }
 </style>

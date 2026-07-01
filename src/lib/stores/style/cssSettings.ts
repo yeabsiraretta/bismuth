@@ -12,14 +12,19 @@ import {
 } from './cssSettingsApply';
 
 const STORAGE_KEY = 'bismuth-css-settings';
-const DEFAULT_STATE: CSSSettingsState = { values: {}, classToggles: {}, classSelects: {}, themedColors: {} };
+const DEFAULT_STATE: CSSSettingsState = {
+  values: {},
+  classToggles: {},
+  classSelects: {},
+  themedColors: {},
+};
 
 export const settingsBlocks = writable<SettingsBlock[]>([]);
 export const cssSettingsState = createPersistedStore<CSSSettingsState>(STORAGE_KEY, DEFAULT_STATE);
 export const cssSettingsLoading = writable(false);
 
 export const allSettings = derived(settingsBlocks, ($blocks) =>
-  $blocks.flatMap(b => b.settings.map(s => ({ ...s, blockId: b.id, blockName: b.name })))
+  $blocks.flatMap((b) => b.settings.map((s) => ({ ...s, blockId: b.id, blockName: b.name })))
 );
 
 export async function scanStyleSettings(): Promise<void> {
@@ -47,17 +52,27 @@ export function getSettingValue(blockId: string, setting: StyleSetting): string 
   return getDefaultValue(setting);
 }
 
-export function getThemedColorValue(settingId: string, mode: 'light' | 'dark', fallback: string): string {
+export function getThemedColorValue(
+  settingId: string,
+  mode: 'light' | 'dark',
+  fallback: string
+): string {
   const state = get(cssSettingsState);
   const entry = state.themedColors[settingId]?.[settingId];
   return entry?.[mode] || fallback;
 }
 
-export function setThemedColorValue(setting: StyleSetting, mode: 'light' | 'dark', value: string): void {
+export function setThemedColorValue(
+  setting: StyleSetting,
+  mode: 'light' | 'dark',
+  value: string
+): void {
   if (setting.type !== 'variable-themed-color') return;
-  cssSettingsState.update(s => {
+  cssSettingsState.update((s) => {
     if (!s.themedColors[setting.id]) {
-      s.themedColors[setting.id] = { [setting.id]: { light: setting['default-light'], dark: setting['default-dark'] } };
+      s.themedColors[setting.id] = {
+        [setting.id]: { light: setting['default-light'], dark: setting['default-dark'] },
+      };
     }
     s.themedColors[setting.id][setting.id][mode] = value;
     return s;
@@ -66,8 +81,12 @@ export function setThemedColorValue(setting: StyleSetting, mode: 'light' | 'dark
   if (currentTheme === mode) applySetting(setting, value);
 }
 
-export function setSettingValue(blockId: string, setting: StyleSetting, value: string | number | boolean): void {
-  cssSettingsState.update(state => {
+export function setSettingValue(
+  blockId: string,
+  setting: StyleSetting,
+  value: string | number | boolean
+): void {
+  cssSettingsState.update((state) => {
     if (!state.values[blockId]) state.values[blockId] = {};
     state.values[blockId][setting.id] = value;
     return state;
@@ -76,7 +95,7 @@ export function setSettingValue(blockId: string, setting: StyleSetting, value: s
 }
 
 export function resetSetting(blockId: string, setting: StyleSetting): void {
-  cssSettingsState.update(state => {
+  cssSettingsState.update((state) => {
     if (state.values[blockId]) delete state.values[blockId][setting.id];
     return state;
   });

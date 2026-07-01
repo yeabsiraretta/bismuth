@@ -63,12 +63,13 @@ let delay = editor::AUTO_SAVE_DELAY_MS;
 - `validation` - Helper functions
 
 **Example**:
+
 ```rust
 use crate::config::constants::filesystem;
 
 pub fn check_file_size(size: usize) {
     if size > filesystem::MAX_FILE_SIZE_BYTES {
-        log::warn!("File exceeds {}MB", 
+        log::warn!("File exceeds {}MB",
             filesystem::MAX_FILE_SIZE_BYTES / 1_000_000);
     }
 }
@@ -79,6 +80,7 @@ pub fn check_file_size(size: usize) {
 **Purpose**: Runtime user-configurable settings persisted to disk.
 
 **Structure**:
+
 ```rust
 pub struct AppSettings {
     pub editor: EditorSettings,
@@ -89,6 +91,7 @@ pub struct AppSettings {
 ```
 
 **Usage**:
+
 ```rust
 use crate::config::settings::AppSettings;
 
@@ -134,7 +137,7 @@ const minWidth = LAYOUT.SIDEBAR_MIN_WIDTH;
 import { validate } from '$lib/config/constants';
 
 if (validate.isFileTooLarge(fileSize)) {
-    // Handle large file
+  // Handle large file
 }
 
 const width = validate.clampSidebarWidth(userInput);
@@ -159,6 +162,7 @@ const width = validate.clampSidebarWidth(userInput);
 ### Backend
 
 1. **Add to `constants.rs`**:
+
 ```rust
 pub mod my_feature {
     /// Description of constant
@@ -167,6 +171,7 @@ pub mod my_feature {
 ```
 
 2. **Use in code**:
+
 ```rust
 use crate::config::constants::my_feature;
 
@@ -178,6 +183,7 @@ if value > my_feature::MY_CONSTANT {
 ### Frontend
 
 1. **Add to `constants.ts`**:
+
 ```typescript
 export const MY_FEATURE = {
   /** Description */
@@ -186,11 +192,12 @@ export const MY_FEATURE = {
 ```
 
 2. **Use in code**:
+
 ```typescript
 import { MY_FEATURE } from '$lib/config/constants';
 
 if (value > MY_FEATURE.MY_CONSTANT) {
-    // Handle
+  // Handle
 }
 ```
 
@@ -199,18 +206,20 @@ if (value > MY_FEATURE.MY_CONSTANT) {
 ### Backend
 
 1. **Add field to appropriate settings struct**:
+
 ```rust
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct EditorSettings {
     // ... existing fields
-    
+
     /// New setting description
     pub my_new_setting: bool,
 }
 ```
 
 2. **Update default implementation**:
+
 ```rust
 impl Default for EditorSettings {
     fn default() -> Self {
@@ -223,11 +232,12 @@ impl Default for EditorSettings {
 ```
 
 3. **Add validation if needed**:
+
 ```rust
 impl AppSettings {
     pub fn validate(&mut self) {
         // ... existing validation
-        
+
         // Validate new setting
         if self.editor.my_new_setting {
             // Apply constraints
@@ -245,6 +255,7 @@ Settings are loaded from backend via IPC. No frontend changes needed unless addi
 ### Sensitive Values
 
 **DO NOT** store sensitive values in constants or settings:
+
 - API keys
 - Passwords
 - Tokens
@@ -255,6 +266,7 @@ Use environment variables or secure credential storage instead.
 ### Path Validation
 
 Always validate paths before use:
+
 ```rust
 use crate::config::constants::security;
 
@@ -286,6 +298,7 @@ if !security::ALLOWED_NOTE_EXTENSIONS.contains(&ext) {
 ### 1. Use Constants Over Magic Numbers
 
 **Bad**:
+
 ```rust
 if file_size > 10_000_000 {
     // What is 10_000_000?
@@ -293,6 +306,7 @@ if file_size > 10_000_000 {
 ```
 
 **Good**:
+
 ```rust
 use crate::config::constants::filesystem;
 
@@ -394,6 +408,7 @@ When changing constants that affect persisted data:
 4. **Test with old settings files**
 
 Example:
+
 ```rust
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppSettings {

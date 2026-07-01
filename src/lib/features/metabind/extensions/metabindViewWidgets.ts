@@ -11,24 +11,24 @@ import type { ViewFieldDeclaration, ButtonDeclaration } from '../types/metabind'
 import { log } from '@/utils/logger';
 
 /** Callback for button actions. */
-export type ButtonActionCallback = (
-  view: EditorView,
-  action: string,
-  actionArgs: string,
-) => void;
+export type ButtonActionCallback = (view: EditorView, action: string, actionArgs: string) => void;
 
 // ─── VIEW widget ─────────────────────────────────────────────────────────────
 
 export class MetaBindViewWidget extends WidgetType {
   constructor(
     private decl: ViewFieldDeclaration,
-    private value: unknown,
-  ) { super(); }
+    private value: unknown
+  ) {
+    super();
+  }
 
   eq(other: MetaBindViewWidget): boolean {
-    return this.decl.property === other.decl.property
-      && this.decl.fieldType === other.decl.fieldType
-      && JSON.stringify(this.value) === JSON.stringify(other.value);
+    return (
+      this.decl.property === other.decl.property &&
+      this.decl.fieldType === other.decl.fieldType &&
+      JSON.stringify(this.value) === JSON.stringify(other.value)
+    );
   }
 
   toDOM(): HTMLElement {
@@ -37,22 +37,43 @@ export class MetaBindViewWidget extends WidgetType {
     wrap.setAttribute('data-mb-property', this.decl.property);
 
     switch (this.decl.fieldType) {
-      case 'text': this.renderText(wrap); break;
-      case 'number': this.renderNumber(wrap); break;
-      case 'boolean': this.renderBoolean(wrap); break;
-      case 'date': this.renderDate(wrap); break;
-      case 'list': this.renderList(wrap); break;
-      case 'tags': this.renderTags(wrap); break;
-      case 'link': this.renderLink(wrap); break;
-      case 'progress': this.renderProgress(wrap); break;
-      case 'rating': this.renderRating(wrap); break;
-      default: wrap.textContent = String(this.value ?? '');
+      case 'text':
+        this.renderText(wrap);
+        break;
+      case 'number':
+        this.renderNumber(wrap);
+        break;
+      case 'boolean':
+        this.renderBoolean(wrap);
+        break;
+      case 'date':
+        this.renderDate(wrap);
+        break;
+      case 'list':
+        this.renderList(wrap);
+        break;
+      case 'tags':
+        this.renderTags(wrap);
+        break;
+      case 'link':
+        this.renderLink(wrap);
+        break;
+      case 'progress':
+        this.renderProgress(wrap);
+        break;
+      case 'rating':
+        this.renderRating(wrap);
+        break;
+      default:
+        wrap.textContent = String(this.value ?? '');
     }
 
     return wrap;
   }
 
-  ignoreEvent(): boolean { return false; }
+  ignoreEvent(): boolean {
+    return false;
+  }
 
   // ─── Renderers ───────────────────────────────────────────────────────
 
@@ -87,7 +108,9 @@ export class MetaBindViewWidget extends WidgetType {
       try {
         const d = new Date(raw);
         span.textContent = d.toLocaleDateString();
-      } catch { span.textContent = raw; }
+      } catch {
+        span.textContent = raw;
+      }
     } else {
       span.textContent = raw;
     }
@@ -167,13 +190,17 @@ export class MetaBindViewWidget extends WidgetType {
 export class MetaBindButtonWidget extends WidgetType {
   constructor(
     private decl: ButtonDeclaration,
-    private onAction: ButtonActionCallback,
-  ) { super(); }
+    private onAction: ButtonActionCallback
+  ) {
+    super();
+  }
 
   eq(other: MetaBindButtonWidget): boolean {
-    return this.decl.label === other.decl.label
-      && this.decl.action === other.decl.action
-      && this.decl.actionArgs === other.decl.actionArgs;
+    return (
+      this.decl.label === other.decl.label &&
+      this.decl.action === other.decl.action &&
+      this.decl.actionArgs === other.decl.actionArgs
+    );
   }
 
   toDOM(view: EditorView): HTMLElement {
@@ -191,5 +218,7 @@ export class MetaBindButtonWidget extends WidgetType {
     return btn;
   }
 
-  ignoreEvent(): boolean { return true; }
+  ignoreEvent(): boolean {
+    return true;
+  }
 }

@@ -60,21 +60,38 @@ describe('filterGraphData', () => {
 
   it('returns all nodes when no filters applied', () => {
     const data = makeGraphData([nodeA, nodeB], [edge]);
-    const result = filterGraphData(data, { showOrphans: true, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      showOrphans: true,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.nodes).toHaveLength(2);
     expect(result.edges).toHaveLength(1);
   });
 
   it('filters by searchQuery', () => {
     const data = makeGraphData([nodeA, nodeB], [edge]);
-    const result = filterGraphData(data, { searchQuery: 'Note A', showOrphans: true, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      searchQuery: 'Note A',
+      showOrphans: true,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.nodes).toHaveLength(1);
     expect(result.nodes[0].id).toBe('a.md');
   });
 
   it('filters by node type', () => {
     const data = makeGraphData([nodeA, tagNode], []);
-    const result = filterGraphData(data, { types: ['tag'], showOrphans: true, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      types: ['tag'],
+      showOrphans: true,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.nodes).toHaveLength(1);
     expect(result.nodes[0].node_type).toBe('tag');
   });
@@ -82,7 +99,12 @@ describe('filterGraphData', () => {
   it('hides orphan nodes when showOrphans is false', () => {
     const orphan = makeNode('orphan.md', 'Orphan');
     const data = makeGraphData([nodeA, nodeB, orphan], [edge]);
-    const result = filterGraphData(data, { showOrphans: false, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      showOrphans: false,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.nodes.map((n) => n.id)).not.toContain('orphan.md');
   });
 
@@ -90,7 +112,13 @@ describe('filterGraphData', () => {
     const noteInFolder = makeNode('work/project.md', 'Project');
     const noteOther = makeNode('personal/diary.md', 'Diary');
     const data = makeGraphData([noteInFolder, noteOther], []);
-    const result = filterGraphData(data, { folder: 'work/', showOrphans: true, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      folder: 'work/',
+      showOrphans: true,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.nodes).toHaveLength(1);
     expect(result.nodes[0].id).toBe('work/project.md');
   });
@@ -100,7 +128,12 @@ describe('filterGraphData', () => {
     const edgeAB = makeEdge('a.md', 'b.md');
     const edgeBC = makeEdge('b.md', 'c.md');
     const data = makeGraphData([nodeA, nodeB, nodeC], [edgeAB, edgeBC]);
-    const result = filterGraphData(data, { showOrphans: true, isLocal: true, centerNode: 'a.md', depth: 1 });
+    const result = filterGraphData(data, {
+      showOrphans: true,
+      isLocal: true,
+      centerNode: 'a.md',
+      depth: 1,
+    });
     const ids = result.nodes.map((n) => n.id);
     expect(ids).toContain('a.md');
     expect(ids).toContain('b.md');
@@ -121,7 +154,13 @@ describe('filterGraphData', () => {
 
   it('removes edges whose endpoints were filtered out', () => {
     const data = makeGraphData([nodeA, nodeB], [edge]);
-    const result = filterGraphData(data, { searchQuery: 'Note A', showOrphans: true, isLocal: false, centerNode: null, depth: 1 });
+    const result = filterGraphData(data, {
+      searchQuery: 'Note A',
+      showOrphans: true,
+      isLocal: false,
+      centerNode: null,
+      depth: 1,
+    });
     expect(result.edges).toHaveLength(0);
   });
 });
@@ -180,13 +219,27 @@ describe('tickForces', () => {
 
 describe('getNodeRadius', () => {
   it('returns base radius for node with no connections', () => {
-    const node: SimNode = { ...makeNode('a.md', 'A'), x: 0, y: 0, vx: 0, vy: 0, connection_count: 0 };
+    const node: SimNode = {
+      ...makeNode('a.md', 'A'),
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      connection_count: 0,
+    };
     const r = getNodeRadius(node, DEFAULT_SETTINGS);
     expect(r).toBe(4 * DEFAULT_SETTINGS.nodeSize);
   });
 
   it('adds bonus for connected nodes, capped at 6', () => {
-    const node: SimNode = { ...makeNode('a.md', 'A'), x: 0, y: 0, vx: 0, vy: 0, connection_count: 20 };
+    const node: SimNode = {
+      ...makeNode('a.md', 'A'),
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      connection_count: 20,
+    };
     const r = getNodeRadius(node, DEFAULT_SETTINGS);
     expect(r).toBe(4 * DEFAULT_SETTINGS.nodeSize + 6);
   });
@@ -215,13 +268,17 @@ describe('getNodeColor', () => {
 
   it('applies custom color group when query matches label', () => {
     const node = makeNode('a.md', 'ProjectAlpha', 'note');
-    const result = getNodeColor(node, DEFAULT_NODE_COLORS, [{ query: 'ProjectAlpha', color: '#ff0000' }]);
+    const result = getNodeColor(node, DEFAULT_NODE_COLORS, [
+      { query: 'ProjectAlpha', color: '#ff0000' },
+    ]);
     expect(result).toBe('#ff0000');
   });
 
   it('supports path: prefix in color group query', () => {
     const node = makeNode('work/project.md', 'project', 'note');
-    const result = getNodeColor(node, DEFAULT_NODE_COLORS, [{ query: 'path:work/', color: '#00ff00' }]);
+    const result = getNodeColor(node, DEFAULT_NODE_COLORS, [
+      { query: 'path:work/', color: '#00ff00' },
+    ]);
     expect(result).toBe('#00ff00');
   });
 });
@@ -247,7 +304,10 @@ describe('exportGraphAsJSON', () => {
 
   beforeEach(() => {
     capturedBlob = null;
-    const createObjectURL = vi.fn((b: Blob) => { capturedBlob = b; return 'blob:mock'; });
+    const createObjectURL = vi.fn((b: Blob) => {
+      capturedBlob = b;
+      return 'blob:mock';
+    });
     const revokeObjectURL = vi.fn();
     vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
 
@@ -263,7 +323,7 @@ describe('exportGraphAsJSON', () => {
     exportGraphAsJSON(
       [{ id: 'a.md', label: 'A', node_type: 'note' }],
       [{ from: 'a.md', to: 'b.md', edge_type: 'wikilink' }],
-      'test-export.json',
+      'test-export.json'
     );
 
     expect(capturedBlob).not.toBeNull();

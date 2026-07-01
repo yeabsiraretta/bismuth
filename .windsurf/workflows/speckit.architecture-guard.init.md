@@ -3,24 +3,24 @@ description: Initialize or refine the project governance and architecture consti
   for Architecture Guard.
 ---
 
-
 <!-- Extension: architecture-guard -->
 <!-- Config: .specify/extensions/architecture-guard/ -->
+
 # Purpose
 
 This command helps teams intentionally define:
 
-* engineering governance principles
-* architecture boundaries
-* enforcement standards
-* validation and contract rules
-* architecture evolution policies
+- engineering governance principles
+- architecture boundaries
+- enforcement standards
+- validation and contract rules
+- architecture evolution policies
 
 This command generates or refines:
 
-* `.specify/memory/constitution.md`
-* `.specify/memory/architecture_constitution.md`
-* `.specify/memory/security_constitution.md`
+- `.specify/memory/constitution.md`
+- `.specify/memory/architecture_constitution.md`
+- `.specify/memory/security_constitution.md`
 
 When the project uses the active memory backend, `flash-mem` is the source of truth for Spec Kit memory workflows. The legacy `memory-hub` name is reference-only and should not be treated as the runtime backend.
 
@@ -28,22 +28,24 @@ The goal is NOT to generate generic best practices.
 
 The goal is to establish:
 
-* enforceable rules
-* clear boundaries
-* long-term consistency
-* architecture evolution discipline
-* project-specific standards
+- enforceable rules
+- clear boundaries
+- long-term consistency
+- architecture evolution discipline
+- project-specific standards
 
 ---
 
 ## Framework-Agnostic vs Framework-Aware
 
 **Framework-Agnostic Core** (applied to all projects):
+
 - Universal boundary concepts apply (Entry, App, Domain, Data, External)
 - Core governance principles are framework-independent
 - Examples: "Domain logic never touches HTTP", "Persistence is abstracted", "Events flow one direction"
 
 **Framework-Aware Enhancement** (optional, selected during init):
+
 - If user selects framework preset (Laravel, Django, NestJS, etc.):
   - Core principles are enhanced with framework-specific vocabulary
   - Examples become Laravel-idiomatic, Django-idiomatic, etc.
@@ -51,6 +53,7 @@ The goal is to establish:
   - But underlying boundary concepts remain identical
 
 **Coexistence**:
+
 - Command starts framework-agnostic
 - If preset selected: Constitution gains framework-aware guidance
 - Both layers work together: abstract principles + concrete framework patterns
@@ -74,18 +77,18 @@ Only continue when the current phase is sufficiently understood.
 
 Adapt vocabulary and suggestions based on:
 
-* framework
-* architecture style
-* project maturity
-* existing conventions
-* existing constitution files
+- framework
+- architecture style
+- project maturity
+- existing conventions
+- existing constitution files
 
 Examples:
 
-* Laravel → Controllers, Form Requests, Actions, Eloquent
-* NestJS → Controllers, Providers, DTOs, Modules
-* Next.js → Server Components, Server Actions, Zod
-* Nuxt → Composables, Pinia, server/api
+- Laravel → Controllers, Form Requests, Actions, Eloquent
+- NestJS → Controllers, Providers, DTOs, Modules
+- Next.js → Server Components, Server Actions, Zod
+- Nuxt → Composables, Pinia, server/api
 
 ---
 
@@ -97,8 +100,8 @@ NEVER force architecture opinions into the Constitution.
 
 A rule only becomes a standard when:
 
-* the user explicitly accepts it
-* OR the project already consistently follows it
+- the user explicitly accepts it
+- OR the project already consistently follows it
 
 ---
 
@@ -106,11 +109,11 @@ A rule only becomes a standard when:
 
 Prioritize:
 
-* boundaries
-* ownership
-* responsibilities
-* contracts
-* dependency direction
+- boundaries
+- ownership
+- responsibilities
+- contracts
+- dependency direction
 
 before implementation details.
 
@@ -140,10 +143,10 @@ NEVER automatically evolve architecture direction.
 
 If architecture drift is detected:
 
-* summarize the drift
-* explain impact
-* propose evolution
-* require explicit approval
+- summarize the drift
+- explain impact
+- propose evolution
+- require explicit approval
 
 ---
 
@@ -151,13 +154,13 @@ If architecture drift is detected:
 
 This system separates:
 
-* governance principles
-* architecture enforcement rules
+- governance principles
+- architecture enforcement rules
 
 The system must maintain:
 
-* `.specify/memory/constitution.md`
-* `.specify/memory/architecture_constitution.md`
+- `.specify/memory/constitution.md`
+- `.specify/memory/architecture_constitution.md`
 
 Avoid duplication between both files.
 
@@ -168,22 +171,25 @@ Avoid duplication between both files.
 Users may need to pause the init workflow and resume later. Support this gracefully:
 
 **Pausing Mid-Interview**:
+
 1. Save current answers to `.specify/memory/constitution-draft.md` with timestamp and completion percentage
 2. Ask user: "Do you want to resume these answers later?"
 3. If YES: Save draft and exit cleanly with resume instructions
 4. If NO: Confirm deletion or suggest next steps
 
 **Resuming Saved Draft**:
+
 1. Detect `.specify/memory/constitution-draft.md` on next init run
 2. Ask: "I found a draft from [timestamp]. Resume from where you left off?"
 3. If YES: Load saved answers, continue from last question
 4. If NO: Start fresh (optionally archive old draft)
 
 **Draft Contents**:
+
 ```yaml
 # Constitution Draft (Paused)
 timestamp: 2025-01-15T14:30:00Z
-completion: "Phase 1/3 (Framework + Team)"
+completion: 'Phase 1/3 (Framework + Team)'
 framework: [answer if provided]
 team_size: [answer if provided]
 technology_stack: [answer if provided]
@@ -204,20 +210,20 @@ High-level governance and engineering philosophy.
 
 Should contain:
 
-* engineering philosophy
-* testing standards
-* security expectations
-* documentation standards
-* review expectations
-* operational expectations
-* high-level architecture intent
+- engineering philosophy
+- testing standards
+- security expectations
+- documentation standards
+- review expectations
+- operational expectations
+- high-level architecture intent
 
 Should NOT contain:
 
-* controller implementation details
-* DTO implementation specifics
-* framework-specific structure rules
-* module folder naming conventions
+- controller implementation details
+- DTO implementation specifics
+- framework-specific structure rules
+- module folder naming conventions
 
 ---
 
@@ -229,15 +235,15 @@ Enforceable architecture standards and system boundaries.
 
 Should contain:
 
-* layer boundaries
-* business logic placement
-* validation flow
-* DTO/schema standards
-* module ownership rules
-* async boundaries
-* API contract rules
-* framework-specific architectural conventions
-* architecture evolution rules
+- layer boundaries
+- business logic placement
+- validation flow
+- DTO/schema standards
+- module ownership rules
+- async boundaries
+- API contract rules
+- framework-specific architectural conventions
+- architecture evolution rules
 
 ---
 
@@ -249,12 +255,12 @@ Project-wide security rules, standards, and requirements.
 
 Should contain:
 
-* trust boundaries
-* authentication/authorization standards
-* secret management policies
-* data isolation rules
-* audit/logging requirements
-* secure-by-design patterns
+- trust boundaries
+- authentication/authorization standards
+- secret management policies
+- data isolation rules
+- audit/logging requirements
+- secure-by-design patterns
 
 ---
 
@@ -264,9 +270,9 @@ Should contain:
 
 Check for:
 
-* `.specify/memory/constitution.md`
-* `.specify/memory/architecture_constitution.md`
-* `.specify/memory/security_constitution.md`
+- `.specify/memory/constitution.md`
+- `.specify/memory/architecture_constitution.md`
+- `.specify/memory/security_constitution.md`
 
 ---
 
@@ -274,11 +280,11 @@ Check for:
 
 1. Summarize:
 
-* governance principles
-* architecture rules
-* duplicated rules
-* conflicting standards
-* unclear sections
+- governance principles
+- architecture rules
+- duplicated rules
+- conflicting standards
+- unclear sections
 
 2. Ask:
 
@@ -327,11 +333,11 @@ Start phased initialization interview.
 
 Determine:
 
-* technology stack
-* architecture style
-* runtime boundaries
-* application type
-* deployment shape
+- technology stack
+- architecture style
+- runtime boundaries
+- application type
+- deployment shape
 
 ---
 
@@ -409,9 +415,9 @@ Examples:
 
 Focus on:
 
-* layering
-* separation of concerns
-* entry-point discipline
+- layering
+- separation of concerns
+- entry-point discipline
 
 ---
 
@@ -419,10 +425,10 @@ Focus on:
 
 Focus on:
 
-* module ownership
-* cross-module access
-* shared contracts
-* dependency direction
+- module ownership
+- cross-module access
+- shared contracts
+- dependency direction
 
 ---
 
@@ -430,11 +436,11 @@ Focus on:
 
 Focus on:
 
-* service ownership
-* API contracts
-* event communication
-* shared database restrictions
-* service boundaries
+- service ownership
+- API contracts
+- event communication
+- shared database restrictions
+- service boundaries
 
 ---
 
@@ -542,10 +548,10 @@ How should API access be abstracted?
 
 Determine:
 
-* business logic ownership
-* dependency direction
-* layer responsibilities
-* boundary isolation
+- business logic ownership
+- dependency direction
+- layer responsibilities
+- boundary isolation
 
 ---
 
@@ -587,10 +593,10 @@ How strict should module boundaries be enforced?
 
 Determine:
 
-* validation strategy
-* request/response contracts
-* serialization standards
-* frontend/backend boundaries
+- validation strategy
+- request/response contracts
+- serialization standards
+- frontend/backend boundaries
 
 ---
 
@@ -654,11 +660,11 @@ How should Server Action inputs be validated?
 
 Determine:
 
-* ORM strategy
-* repository usage
-* query ownership
-* async boundaries
-* background processing rules
+- ORM strategy
+- repository usage
+- query ownership
+- async boundaries
+- background processing rules
 
 ---
 
@@ -698,10 +704,10 @@ Which operations must never block requests?
 
 Determine:
 
-* blocking rules
-* architecture governance
-* evolution policies
-* intentional deviations
+- blocking rules
+- architecture governance
+- evolution policies
+- intentional deviations
 
 ---
 
@@ -746,12 +752,12 @@ Before generating rules, classify them.
 
 Examples:
 
-* testing philosophy
-* documentation standards
-* security requirements
-* review expectations
-* engineering philosophy
-* operational governance
+- testing philosophy
+- documentation standards
+- security requirements
+- review expectations
+- engineering philosophy
+- operational governance
 
 ---
 
@@ -759,13 +765,13 @@ Examples:
 
 Examples:
 
-* controller/service boundaries
-* DTO requirements
-* validation placement
-* async boundaries
-* response contracts
-* module ownership rules
-* framework-specific architecture patterns
+- controller/service boundaries
+- DTO requirements
+- validation placement
+- async boundaries
+- response contracts
+- module ownership rules
+- framework-specific architecture patterns
 
 ---
 
@@ -813,8 +819,8 @@ Duplicating detailed architecture rules in both files.
 
 DO NOT generate final documents until:
 
-* enough information has been collected
-* OR the user explicitly requests a draft
+- enough information has been collected
+- OR the user explicitly requests a draft
 
 ---
 
@@ -822,9 +828,9 @@ DO NOT generate final documents until:
 
 Generate or refine:
 
-* `.specify/memory/constitution.md`
-* `.specify/memory/architecture_constitution.md`
-* `.specify/memory/security_constitution.md`
+- `.specify/memory/constitution.md`
+- `.specify/memory/architecture_constitution.md`
+- `.specify/memory/security_constitution.md`
 
 ---
 
@@ -883,9 +889,9 @@ Architecture rules may evolve over time.
 
 When repeated architecture drift is detected:
 
-* generate Constitution Update Proposals
-* target `.specify/memory/architecture_constitution.md` by default
-* only propose updates to `.specify/memory/constitution.md` for governance-level changes
+- generate Constitution Update Proposals
+- target `.specify/memory/architecture_constitution.md` by default
+- only propose updates to `.specify/memory/constitution.md` for governance-level changes
 
 NEVER automatically modify either file.
 
@@ -901,42 +907,42 @@ DO NOT automatically enforce them.
 
 ## Laravel Reference Patterns
 
-* Thin Controllers
-* Form Requests for validation
-* Business logic in Services or Actions
-* Explicit frontend contracts for Inertia
-* Avoid leaking raw models to frontend
-* Separate HTTP entry layer from domain logic
+- Thin Controllers
+- Form Requests for validation
+- Business logic in Services or Actions
+- Explicit frontend contracts for Inertia
+- Avoid leaking raw models to frontend
+- Separate HTTP entry layer from domain logic
 
 ---
 
 ## NestJS Reference Patterns
 
-* Thin Controllers
-* Business logic in Services
-* Strong Module boundaries
-* DTO validation with ValidationPipe
-* Explicit imports/exports between modules
+- Thin Controllers
+- Business logic in Services
+- Strong Module boundaries
+- DTO validation with ValidationPipe
+- Explicit imports/exports between modules
 
 ---
 
 ## Next.js Reference Patterns
 
-* Clear Server vs Client boundaries
-* Server Components for data loading
-* Avoid heavy logic in Server Actions
-* Validate inputs using schemas
-* Prefer Server Actions over unnecessary API routes
+- Clear Server vs Client boundaries
+- Server Components for data loading
+- Avoid heavy logic in Server Actions
+- Validate inputs using schemas
+- Prefer Server Actions over unnecessary API routes
 
 ---
 
 ## Nuxt / Vue Reference Patterns
 
-* Thin API handlers
-* Organized composables
-* Controlled global state
-* Dedicated API abstraction layer
-* Middleware only for cross-cutting concerns
+- Thin API handlers
+- Organized composables
+- Controlled global state
+- Dedicated API abstraction layer
+- Middleware only for cross-cutting concerns
 
 ---
 
@@ -944,16 +950,16 @@ DO NOT automatically enforce them.
 
 This command exists to help teams intentionally design:
 
-* governance standards
-* architecture boundaries
-* evolution policies
-* enforceable engineering systems
+- governance standards
+- architecture boundaries
+- evolution policies
+- enforceable engineering systems
 
 It must NOT:
 
-* generate vague advice
-* blindly enforce trends
-* automatically rewrite architecture direction
-* duplicate rules across constitutions
+- generate vague advice
+- blindly enforce trends
+- automatically rewrite architecture direction
+- duplicate rules across constitutions
 
 The generated constitutions must reflect intentional engineering decisions.

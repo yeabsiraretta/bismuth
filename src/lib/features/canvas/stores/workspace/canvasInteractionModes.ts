@@ -68,8 +68,8 @@ export const highlightedEdgeIds = derived(
 
     // Check edge elements (arrows/lines) that share endpoints with selected nodes
     const selectedEls = $canvas.elements.filter((e: CanvasElement) => $selected.includes(e.id));
-    const edgeEls = $canvas.elements.filter((e: CanvasElement) =>
-      e.element_type === 'arrow' || e.element_type === 'line',
+    const edgeEls = $canvas.elements.filter(
+      (e: CanvasElement) => e.element_type === 'arrow' || e.element_type === 'line'
     );
 
     for (const edge of edgeEls) {
@@ -89,11 +89,16 @@ export const highlightedEdgeIds = derived(
     }
 
     return ids;
-  },
+  }
 );
 
 /** Checks if a point is within or near an element's bounding box. */
-function isPointNearElement(px: number, py: number, el: CanvasElement, tolerance: number = 8): boolean {
+function isPointNearElement(
+  px: number,
+  py: number,
+  el: CanvasElement,
+  tolerance: number = 8
+): boolean {
   return (
     px >= el.x - tolerance &&
     px <= el.x + el.width + tolerance &&

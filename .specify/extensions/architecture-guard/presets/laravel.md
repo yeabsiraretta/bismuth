@@ -14,95 +14,95 @@ When reviewing a Laravel project, map generic architecture boundaries to Laravel
 
 ### Entry Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Controllers (`app/Http/Controllers/`) |
-| Entry point for CLI commands | Artisan Commands (`app/Console/Commands/`) |
-| Entry point for queued work | Jobs (`app/Jobs/`) |
-| Entry point for event-driven work | Listeners (`app/Listeners/`) |
-| Entry point for scheduling | **Modern (11.x+):** `routes/console.php` / **Legacy:** `app/Console/Kernel.php` |
-| Entry point for broadcasting | Broadcast Channels (`routes/channels.php`) |
-| Global Config / Middleware | **Modern (11.x+):** `bootstrap/app.php` / **Legacy:** `app/Http/Kernel.php` |
-| Route-based pages (optional) | Folio Pages (`resources/views/pages/`) |
+| Generic Concept                   | Laravel Equivalent                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------- |
+| Entry point for HTTP requests     | Controllers (`app/Http/Controllers/`)                                           |
+| Entry point for CLI commands      | Artisan Commands (`app/Console/Commands/`)                                      |
+| Entry point for queued work       | Jobs (`app/Jobs/`)                                                              |
+| Entry point for event-driven work | Listeners (`app/Listeners/`)                                                    |
+| Entry point for scheduling        | **Modern (11.x+):** `routes/console.php` / **Legacy:** `app/Console/Kernel.php` |
+| Entry point for broadcasting      | Broadcast Channels (`routes/channels.php`)                                      |
+| Global Config / Middleware        | **Modern (11.x+):** `bootstrap/app.php` / **Legacy:** `app/Http/Kernel.php`     |
+| Route-based pages (optional)      | Folio Pages (`resources/views/pages/`)                                          |
 
 ### Validation Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Input validation and normalization | Form Requests (`app/Http/Requests/`) |
-| Inline validation | `Validator` facade or `$request->validate()` |
-| Custom validation rules | Rule Objects (`app/Rules/`) |
-| API input validation | Form Requests or inline validation in API controllers |
+| Generic Concept                    | Laravel Equivalent                                    |
+| ---------------------------------- | ----------------------------------------------------- |
+| Input validation and normalization | Form Requests (`app/Http/Requests/`)                  |
+| Inline validation                  | `Validator` facade or `$request->validate()`          |
+| Custom validation rules            | Rule Objects (`app/Rules/`)                           |
+| API input validation               | Form Requests or inline validation in API controllers |
 
 ### Contract Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Stable request shapes | Form Requests (`app/Http/Requests/`) |
-| Stable response shapes | API Resources (`app/Http/Resources/`) |
-| Shared interfaces | Contracts / Interfaces (`app/Contracts/` or inline) |
-| Data transfer objects | DTOs or Data classes (custom `app/Data/` or `app/DTOs/`) |
-| Event contracts | Event classes (`app/Events/`) |
-| Notification contracts | Notification classes (`app/Notifications/`) |
-| Mail contracts | Mailable classes (`app/Mail/`) |
+| Generic Concept        | Laravel Equivalent                                       |
+| ---------------------- | -------------------------------------------------------- |
+| Stable request shapes  | Form Requests (`app/Http/Requests/`)                     |
+| Stable response shapes | API Resources (`app/Http/Resources/`)                    |
+| Shared interfaces      | Contracts / Interfaces (`app/Contracts/` or inline)      |
+| Data transfer objects  | DTOs or Data classes (custom `app/Data/` or `app/DTOs/`) |
+| Event contracts        | Event classes (`app/Events/`)                            |
+| Notification contracts | Notification classes (`app/Notifications/`)              |
+| Mail contracts         | Mailable classes (`app/Mail/`)                           |
 
 ### Application Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Use case coordination | Actions (`app/Actions/`) or Services (`app/Services/`) |
-| Multi-step workflows | Jobs, Pipelines, or Action chains |
-| Transaction coordination | Service or Action classes with `DB::transaction()` |
+| Generic Concept          | Laravel Equivalent                                     |
+| ------------------------ | ------------------------------------------------------ |
+| Use case coordination    | Actions (`app/Actions/`) or Services (`app/Services/`) |
+| Multi-step workflows     | Jobs, Pipelines, or Action chains                      |
+| Transaction coordination | Service or Action classes with `DB::transaction()`     |
 
 ### Domain Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Business rules and decisions | Domain classes, Value Objects, or Model methods |
-| Domain models | Eloquent Models (`app/Models/`) |
-| Domain policies | Policy classes (`app/Policies/`) |
-| Domain enums | PHP Enums (`app/Enums/`) |
-| Scoped queries | Eloquent Scopes (local or global) |
-| Attribute casting | Model Casts (`$casts` property or custom Cast classes) |
+| Generic Concept              | Laravel Equivalent                                     |
+| ---------------------------- | ------------------------------------------------------ |
+| Business rules and decisions | Domain classes, Value Objects, or Model methods        |
+| Domain models                | Eloquent Models (`app/Models/`)                        |
+| Domain policies              | Policy classes (`app/Policies/`)                       |
+| Domain enums                 | PHP Enums (`app/Enums/`)                               |
+| Scoped queries               | Eloquent Scopes (local or global)                      |
+| Attribute casting            | Model Casts (`$casts` property or custom Cast classes) |
 
 ### Data Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Persistence abstraction | Eloquent ORM or Repository classes (`app/Repositories/`) |
-| Query building | Eloquent Query Builder or raw Query Builder |
-| Schema management | Migrations (`database/migrations/`) |
-| Seed data | Seeders and Factories (`database/seeders/`, `database/factories/`) |
-| Cache access | Cache facade or cache driver |
-| **AI Boundary (v13+)** | |
-| AI / LLM Provider Logic | Laravel AI SDK (`app/Services/` or `app/AI/`) |
-| Vector Search / Embeddings | Vector-supported DB drivers or AI SDK integrations |
-| Prompt Templates | Custom Prompt classes or Blade-based templates |
+| Generic Concept            | Laravel Equivalent                                                 |
+| -------------------------- | ------------------------------------------------------------------ |
+| Persistence abstraction    | Eloquent ORM or Repository classes (`app/Repositories/`)           |
+| Query building             | Eloquent Query Builder or raw Query Builder                        |
+| Schema management          | Migrations (`database/migrations/`)                                |
+| Seed data                  | Seeders and Factories (`database/seeders/`, `database/factories/`) |
+| Cache access               | Cache facade or cache driver                                       |
+| **AI Boundary (v13+)**     |                                                                    |
+| AI / LLM Provider Logic    | Laravel AI SDK (`app/Services/` or `app/AI/`)                      |
+| Vector Search / Embeddings | Vector-supported DB drivers or AI SDK integrations                 |
+| Prompt Templates           | Custom Prompt classes or Blade-based templates                     |
 
 ### Integration Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| External HTTP calls | HTTP Client (`Http::`) |
-| External service wrappers | Service classes or SDK wrappers (`app/Services/`) |
-| Queue-based async | Jobs dispatched to queues |
-| Event broadcasting | Broadcasting system (`app/Events/`, channels) |
-| File storage | Storage facade (`Storage::`) |
-| **AI Integration** | **Laravel AI SDK** (Text, Image, Chat, Embeddings) |
+| Generic Concept           | Laravel Equivalent                                 |
+| ------------------------- | -------------------------------------------------- |
+| External HTTP calls       | HTTP Client (`Http::`)                             |
+| External service wrappers | Service classes or SDK wrappers (`app/Services/`)  |
+| Queue-based async         | Jobs dispatched to queues                          |
+| Event broadcasting        | Broadcasting system (`app/Events/`, channels)      |
+| File storage              | Storage facade (`Storage::`)                       |
+| **AI Integration**        | **Laravel AI SDK** (Text, Image, Chat, Embeddings) |
 
 ### Presentation Boundary
 
-| Generic Concept | Laravel Equivalent |
-| --- | --- |
-| Server-rendered views | Blade Templates (`resources/views/`) |
-| Client-side SPA (React) | Inertia.js + React 19 pages (`resources/js/pages/`) with shadcn/ui |
-| Client-side SPA (Vue) | Inertia.js + Vue 3 Composition API pages (`resources/js/pages/`) with shadcn-vue |
-| Client-side SPA (Svelte) | Inertia.js + Svelte 5 pages (`resources/js/pages/`) with shadcn-svelte |
+| Generic Concept             | Laravel Equivalent                                                                |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| Server-rendered views       | Blade Templates (`resources/views/`)                                              |
+| Client-side SPA (React)     | Inertia.js + React 19 pages (`resources/js/pages/`) with shadcn/ui                |
+| Client-side SPA (Vue)       | Inertia.js + Vue 3 Composition API pages (`resources/js/pages/`) with shadcn-vue  |
+| Client-side SPA (Svelte)    | Inertia.js + Svelte 5 pages (`resources/js/pages/`) with shadcn-svelte            |
 | Reactive server-rendered UI | Livewire components (`app/Livewire/` or `resources/views/livewire/`) with Flux UI |
-| API output formatting | API Resources (`app/Http/Resources/`) |
-| View composition | View Composers or Blade Components (`app/View/Components/`) |
-| Frontend type contracts | TypeScript types/interfaces (`resources/js/types/`) |
-| Frontend layouts | Layout components (`resources/js/layouts/`) |
+| API output formatting       | API Resources (`app/Http/Resources/`)                                             |
+| View composition            | View Composers or Blade Components (`app/View/Components/`)                       |
+| Frontend type contracts     | TypeScript types/interfaces (`resources/js/types/`)                               |
+| Frontend layouts            | Layout components (`resources/js/layouts/`)                                       |
 
 ---
 
@@ -112,14 +112,14 @@ Laravel 13 starter kits ship **four frontend stacks**, all of which change how t
 
 ### Detecting the Active Stack
 
-| If you see | The stack is |
-| --- | --- |
-| `Inertia::render()` in controllers + `resources/js/pages/*.tsx` | **React** (Inertia) |
-| `Inertia::render()` in controllers + `resources/js/pages/*.vue` | **Vue** (Inertia) |
-| `Inertia::render()` in controllers + `resources/js/pages/*.svelte` | **Svelte** (Inertia) |
-| `Livewire\Component` classes + `resources/views/livewire/*.blade.php` | **Livewire** |
-| `return view(...)` without Inertia or Livewire | **Blade-only** (traditional) |
-| `return response()->json(...)` or API Resources without Inertia | **REST API** |
+| If you see                                                            | The stack is                 |
+| --------------------------------------------------------------------- | ---------------------------- |
+| `Inertia::render()` in controllers + `resources/js/pages/*.tsx`       | **React** (Inertia)          |
+| `Inertia::render()` in controllers + `resources/js/pages/*.vue`       | **Vue** (Inertia)            |
+| `Inertia::render()` in controllers + `resources/js/pages/*.svelte`    | **Svelte** (Inertia)         |
+| `Livewire\Component` classes + `resources/views/livewire/*.blade.php` | **Livewire**                 |
+| `return view(...)` without Inertia or Livewire                        | **Blade-only** (traditional) |
+| `return response()->json(...)` or API Resources without Inertia       | **REST API**                 |
 
 ### Inertia.js Stack (React / Vue / Svelte) [Focus: general]
 
@@ -156,6 +156,7 @@ When the project uses Inertia, controllers return `Inertia::render()` instead of
 - Types (`resources/js/types/`) define the contract between backend and frontend
 
 **Do not flag:**
+
 - Using `router.visit()` or `router.post()` from Inertia — this is the standard way to submit data
 - Using `usePage()` to access shared data — this is the standard Inertia pattern
 - Simple prop destructuring in page components
@@ -180,6 +181,7 @@ When the project uses Livewire, components are full-stack: a PHP class + a Blade
 - Components use `wire:model` on fields with no validation
 
 **Acceptable in Livewire components:**
+
 - UI state management (`$search`, `$sortBy`, `$isModalOpen`)
 - Pagination and filtering
 - Simple `$this->validate()` for component-specific fields
@@ -210,6 +212,7 @@ Detect when a controller:
 - Catches exceptions for business flow control
 
 **Acceptable in controllers:**
+
 - Calling `$request->validate()` or type-hinting a Form Request
 - Delegating to an Action, Service, or Job
 - Returning an API Resource, `Inertia::render()`, or `view()` response
@@ -227,6 +230,7 @@ Detect when:
 - API and web controllers validate the same entity differently without documented reason
 
 **Do not flag:**
+
 - Simple 1–3 rule inline validation in low-complexity endpoints
 - Inline validation in Artisan Commands (Form Requests are HTTP-only)
 
@@ -240,6 +244,7 @@ Detect when:
 - Sensitive fields (passwords, tokens, internal IDs) leak through `toArray()`
 
 **Acceptable alternatives:**
+
 - Using `->only()` or `->makeHidden()` for simple cases with few fields
 - Returning raw arrays in internal/admin-only endpoints if the Constitution allows it
 
@@ -254,6 +259,7 @@ Detect when:
 - Models grow beyond ~300 lines without using traits, scopes, or value objects to decompose
 
 **Acceptable in models:**
+
 - Relationships (`hasMany`, `belongsTo`, etc.)
 - Accessors and mutators
 - Local and global scopes
@@ -296,6 +302,7 @@ Detect when:
 - Middleware modifies request data beyond authentication context
 
 **Acceptable in middleware:**
+
 - Authentication and authorization checks
 - Rate limiting
 - CORS handling
@@ -322,6 +329,7 @@ Detect when:
 - Boot methods do heavy work that should be deferred
 
 **Acceptable in providers:**
+
 - Binding interfaces to implementations
 - Registering macros, policies, observers
 - Publishing package assets
@@ -570,22 +578,22 @@ class OrderDashboard extends Component
 ```tsx
 // ❌ React page owns business logic that should be server-side
 export default function OrdersPage({ orders }: { orders: Order[] }) {
-    const filteredOrders = orders.filter(o => {
-        // Complex permission checking duplicated from backend
-        if (user.role === 'admin') return true;
-        if (o.department_id === user.department_id) return true;
-        if (o.created_by === user.id) return true;
-        return false;
-    });
-    return <OrderTable orders={filteredOrders} />;
+  const filteredOrders = orders.filter((o) => {
+    // Complex permission checking duplicated from backend
+    if (user.role === 'admin') return true;
+    if (o.department_id === user.department_id) return true;
+    if (o.created_by === user.id) return true;
+    return false;
+  });
+  return <OrderTable orders={filteredOrders} />;
 }
 ```
 
 ```tsx
 // ✅ Server handles filtering, page only renders
 export default function OrdersPage({ orders }: { orders: Order[] }) {
-    // Orders already filtered by Policy/scope on the server
-    return <OrderTable orders={orders} />;
+  // Orders already filtered by Policy/scope on the server
+  return <OrderTable orders={orders} />;
 }
 ```
 

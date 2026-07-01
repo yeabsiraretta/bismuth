@@ -4,12 +4,21 @@ vi.mock('@tauri-apps/api/core', () => ({ invoke: vi.fn() }));
 vi.mock('@/utils/logger', () => ({ log: { info: vi.fn(), debug: vi.fn(), error: vi.fn() } }));
 
 import { invoke } from '@tauri-apps/api/core';
-import { isRecordingSupported, saveRecording, listRecordings, deleteRecording, attachRecordingToNote, generateRecordingFilename } from '../services/voice';
+import {
+  isRecordingSupported,
+  saveRecording,
+  listRecordings,
+  deleteRecording,
+  attachRecordingToNote,
+  generateRecordingFilename,
+} from '../services/voice';
 
 const mockInvoke = invoke as ReturnType<typeof vi.fn>;
 
 describe('Voice Service', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('detects recording support (mocked as unsupported in test env)', () => {
     const supported = isRecordingSupported();
@@ -32,7 +41,14 @@ describe('Voice Service', () => {
   });
 
   it('saves a recording', async () => {
-    const metadata = { id: 'r1', filename: 'recording-2025-01-01-120000.webm', path: '.bismuth/recordings/recording-2025-01-01-120000.webm', duration: 30, createdAt: '2025-01-01T12:00:00Z', attachedNote: null };
+    const metadata = {
+      id: 'r1',
+      filename: 'recording-2025-01-01-120000.webm',
+      path: '.bismuth/recordings/recording-2025-01-01-120000.webm',
+      duration: 30,
+      createdAt: '2025-01-01T12:00:00Z',
+      attachedNote: null,
+    };
     mockInvoke.mockResolvedValue(metadata);
     const result = await saveRecording(new ArrayBuffer(100), 30, 'audio/webm');
     expect(result.id).toBe('r1');
@@ -46,7 +62,16 @@ describe('Voice Service', () => {
   });
 
   it('lists recordings', async () => {
-    mockInvoke.mockResolvedValue([{ id: 'r1', filename: 'test.webm', path: '.bismuth/recordings/test.webm', duration: 10, createdAt: '2025-01-01', attachedNote: null }]);
+    mockInvoke.mockResolvedValue([
+      {
+        id: 'r1',
+        filename: 'test.webm',
+        path: '.bismuth/recordings/test.webm',
+        duration: 10,
+        createdAt: '2025-01-01',
+        attachedNote: null,
+      },
+    ]);
     const list = await listRecordings();
     expect(list).toHaveLength(1);
     expect(list[0].filename).toBe('test.webm');
@@ -61,11 +86,16 @@ describe('Voice Service', () => {
   it('attaches recording to note', async () => {
     mockInvoke.mockResolvedValue(undefined);
     await attachRecordingToNote('r1', 'notes/my-note.md');
-    expect(mockInvoke).toHaveBeenCalledWith('attach_voice_recording', { recordingId: 'r1', notePath: 'notes/my-note.md' });
+    expect(mockInvoke).toHaveBeenCalledWith('attach_voice_recording', {
+      recordingId: 'r1',
+      notePath: 'notes/my-note.md',
+    });
   });
 
   it('throws on save error', async () => {
     mockInvoke.mockRejectedValue(new Error('disk full'));
-    await expect(saveRecording(new ArrayBuffer(10), 5, 'audio/webm')).rejects.toThrow('Failed to save recording');
+    await expect(saveRecording(new ArrayBuffer(10), 5, 'audio/webm')).rejects.toThrow(
+      'Failed to save recording'
+    );
   });
 });

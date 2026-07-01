@@ -1,10 +1,27 @@
 <script lang="ts">
-  import { calendarFocusDate, calendarViewMode, allCalendarItems } from '../../stores/calendarStore';
+  import {
+    calendarFocusDate,
+    calendarViewMode,
+    allCalendarItems,
+  } from '../../stores/calendarStore';
 
   $: year = $calendarFocusDate.getFullYear();
   $: monthGrids = buildYearGrid(year, $allCalendarItems);
 
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   interface MiniCell {
@@ -18,9 +35,12 @@
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
-  function buildYearGrid(y: number, items: { date: string }[]): { name: string; month: number; cells: MiniCell[] }[] {
+  function buildYearGrid(
+    y: number,
+    items: { date: string }[]
+  ): { name: string; month: number; cells: MiniCell[] }[] {
     const today = formatDateStr(new Date());
-    const eventDates = new Set(items.map(e => e.date));
+    const eventDates = new Set(items.map((e) => e.date));
 
     return Array.from({ length: 12 }, (_, m) => {
       const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -64,11 +84,9 @@
             {#if cell.day === null}
               <span class="mini-day empty"></span>
             {:else}
-              <span
-                class="mini-day"
-                class:today={cell.isToday}
-                class:has-event={cell.hasEvents}
-              >{cell.day}</span>
+              <span class="mini-day" class:today={cell.isToday} class:has-event={cell.hasEvents}
+                >{cell.day}</span
+              >
             {/if}
           {/each}
         </div>

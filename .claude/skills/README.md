@@ -15,29 +15,33 @@ governed-plan → governed-tasks → governed-implement
 
 Each governed workflow activates quality skills at specific gates:
 
-| Workflow | Gate | Skills Applied |
-|---|---|---|
-| governed-plan | Plan feasibility | code-review (quality bar), component-gen (UX mapping), pict-test-designer (test boundaries), ux-review (interaction surfaces) |
-| governed-tasks | Task generation | pict-test-designer (combinatorial tests), code-review (ownership), component-gen (UI guardrails), ux-review (acceptance criteria) |
-| governed-implement | Coding | coding-principles, component-gen, agent-rules |
-| governed-implement | Review | code-review (full bar), ux-review (evaluation) |
-| governed-implement | Testing | pict-test-designer (pairwise coverage) |
+| Workflow           | Gate             | Skills Applied                                                                                                                    |
+| ------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| governed-plan      | Plan feasibility | code-review (quality bar), component-gen (UX mapping), pict-test-designer (test boundaries), ux-review (interaction surfaces)     |
+| governed-tasks     | Task generation  | pict-test-designer (combinatorial tests), code-review (ownership), component-gen (UI guardrails), ux-review (acceptance criteria) |
+| governed-implement | Coding           | coding-principles, component-gen, agent-rules                                                                                     |
+| governed-implement | Review           | code-review (full bar), ux-review (evaluation)                                                                                    |
+| governed-implement | Testing          | pict-test-designer (pairwise coverage)                                                                                            |
 
 ## Quality Skills
 
 ### code-review
+
 **Trigger**: Code review, PR review, "is this the best fix"
 **Key**: Fix Quality Bar, ownership boundaries, regression tests, backward compat
 
 ### ux-review
+
 **Trigger**: UX feedback, UI evaluation, component review
 **Key**: 168 principles, smell detection, scoring (0-100), priority fixes
 
 ### component-gen
+
 **Trigger**: Create/build UI component
 **Key**: Type-specific requirements, UX guardrails, post-gen checklist
 
 ### pict-test-designer
+
 **Trigger**: Test design for combinatorial inputs
 **Key**: Pairwise coverage, parameter models, constraint definitions
 
@@ -48,7 +52,7 @@ Each skill directory contains a single `SKILL.md` with YAML frontmatter:
 ```yaml
 ---
 name: skill-name
-description: "Short trigger phrase"
+description: 'Short trigger phrase'
 ---
 ```
 

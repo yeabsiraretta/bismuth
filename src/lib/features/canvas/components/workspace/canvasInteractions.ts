@@ -3,8 +3,19 @@
  * Extracted from CanvasWorkspaceInteractive.svelte for the 300-line limit.
  */
 
-import type { CanvasDocument, CanvasElement, CanvasSettings, FlowLink } from '@/features/canvas/types';
-import { exportToPNG, exportToSVG, downloadFile, downloadSVG, exportToJSON } from '@/features/canvas/utils/export';
+import type {
+  CanvasDocument,
+  CanvasElement,
+  CanvasSettings,
+  FlowLink,
+} from '@/features/canvas/types';
+import {
+  exportToPNG,
+  exportToSVG,
+  downloadFile,
+  downloadSVG,
+  exportToJSON,
+} from '@/features/canvas/utils/export';
 import { log } from '@/utils/logger';
 import {
   createRectangle,
@@ -105,24 +116,39 @@ export function handleMouseDown(
 
   if (['rectangle', 'circle', 'frame', 'line', 'arrow'].includes(ctx.activeTool)) {
     if (!ctx.layers[0]) return state;
-    const sx = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.x, ctx.settings.gridSize) : canvasCoords.x;
-    const sy = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.y, ctx.settings.gridSize) : canvasCoords.y;
+    const sx = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.x, ctx.settings.gridSize)
+      : canvasCoords.x;
+    const sy = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.y, ctx.settings.gridSize)
+      : canvasCoords.y;
     return { ...state, isDrawing: true, startX: sx, startY: sy };
   }
 
   if (ctx.activeTool === 'pen') {
     if (!ctx.layers[0]) return state;
     if (!state.isDrawingPen) {
-      return { ...state, isDrawingPen: true, penPoints: [{ x: canvasCoords.x, y: canvasCoords.y }] };
+      return {
+        ...state,
+        isDrawingPen: true,
+        penPoints: [{ x: canvasCoords.x, y: canvasCoords.y }],
+      };
     } else {
-      return { ...state, penPoints: [...state.penPoints, { x: canvasCoords.x, y: canvasCoords.y }] };
+      return {
+        ...state,
+        penPoints: [...state.penPoints, { x: canvasCoords.x, y: canvasCoords.y }],
+      };
     }
   }
 
   if (ctx.activeTool === 'text') {
     if (!ctx.layers[0]) return state;
-    const x = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.x, ctx.settings.gridSize) : canvasCoords.x;
-    const y = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.y, ctx.settings.gridSize) : canvasCoords.y;
+    const x = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.x, ctx.settings.gridSize)
+      : canvasCoords.x;
+    const y = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.y, ctx.settings.gridSize)
+      : canvasCoords.y;
     const textElement = createText(x, y, 'Text', ctx.layers[0].id);
     ctx.addElement(textElement);
   }
@@ -177,8 +203,12 @@ export function handleMouseMove(
   }
 
   if (state.isDrawing) {
-    const currentX = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.x, ctx.settings.gridSize) : canvasCoords.x;
-    const currentY = ctx.settings.snapToGrid ? snapToGrid(canvasCoords.y, ctx.settings.gridSize) : canvasCoords.y;
+    const currentX = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.x, ctx.settings.gridSize)
+      : canvasCoords.x;
+    const currentY = ctx.settings.snapToGrid
+      ? snapToGrid(canvasCoords.y, ctx.settings.gridSize)
+      : canvasCoords.y;
     const w = Math.abs(currentX - state.startX);
     const h = Math.abs(currentY - state.startY);
     const x = Math.min(state.startX, currentX);
@@ -191,8 +221,10 @@ export function handleMouseMove(
       const radius = Math.sqrt(w * w + h * h) / 2;
       preview = createCircle(state.startX, state.startY, radius, layerId);
     } else if (ctx.activeTool === 'frame') preview = createFrame(x, y, w, h, layerId);
-    else if (ctx.activeTool === 'line') preview = createLine(state.startX, state.startY, currentX, currentY, layerId);
-    else if (ctx.activeTool === 'arrow') preview = createArrow(state.startX, state.startY, currentX, currentY, layerId);
+    else if (ctx.activeTool === 'line')
+      preview = createLine(state.startX, state.startY, currentX, currentY, layerId);
+    else if (ctx.activeTool === 'arrow')
+      preview = createArrow(state.startX, state.startY, currentX, currentY, layerId);
 
     return { ...state, previewElement: preview };
   }
@@ -246,7 +278,14 @@ export function handleKeyDown(
       const penEl = createPenPath(state.penPoints, ctx.layers[0].id);
       ctx.addElement(penEl);
     }
-    return { ...state, previewElement: null, isDrawing: false, isDragging: false, isDrawingPen: false, penPoints: [] };
+    return {
+      ...state,
+      previewElement: null,
+      isDrawing: false,
+      isDragging: false,
+      isDrawingPen: false,
+      penPoints: [],
+    };
   }
 
   if (e.key === 'Enter' && state.isDrawingPen && state.penPoints.length >= 2 && ctx.layers[0]) {

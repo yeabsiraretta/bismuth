@@ -24,11 +24,7 @@ vi.mock('../services/template', () => ({
   },
 }));
 
-import {
-  favoriteTemplates,
-  toggleFavorite,
-  expandTemplateVariables,
-} from '../stores/template';
+import { favoriteTemplates, toggleFavorite, expandTemplateVariables } from '../stores/template';
 
 describe('Template Store Enhancements', () => {
   beforeEach(() => {
@@ -73,7 +69,11 @@ describe('Template Store Enhancements', () => {
     });
 
     it('preserves unknown variables unchanged', async () => {
-      const result = await expandTemplateVariables('Hello {{unknown_var}}', 'notes/test.md', 'Test');
+      const result = await expandTemplateVariables(
+        'Hello {{unknown_var}}',
+        'notes/test.md',
+        'Test'
+      );
       expect(result).toBe('Hello {{unknown_var}}');
     });
   });

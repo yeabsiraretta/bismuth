@@ -21,7 +21,7 @@ export const lastBackup = writable<BackupInfo | null>(null);
 
 let intervalId: ReturnType<typeof setInterval> | null = null;
 
-export const backupCount = derived(backupList, $list => $list.length);
+export const backupCount = derived(backupList, ($list) => $list.length);
 
 /** Load config and backup list from backend. */
 export async function loadBackupState(): Promise<void> {
@@ -67,7 +67,7 @@ export async function triggerBackup(customName?: string): Promise<BackupInfo | n
     const info = await createBackup(vault.root_path, customName);
     const elapsed = ((performance.now() - startMs) / 1000).toFixed(1);
     lastBackup.set(info);
-    backupList.update(list => [info, ...list]);
+    backupList.update((list) => [info, ...list]);
     updateStatusItem('backup-progress', {
       icon: 'check',
       label: `Backup done (${elapsed}s)`,

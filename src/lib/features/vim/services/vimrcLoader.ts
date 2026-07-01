@@ -7,12 +7,7 @@ import { get } from 'svelte/store';
 import { currentVault } from '@/stores/vault/vault';
 import { readFileText } from '@/services/vault/vault';
 import { log } from '@/utils/logger';
-import {
-  parseVimrc,
-  expandLeader,
-  extractLeader,
-  extractSetOptions,
-} from './vimrcParser';
+import { parseVimrc, expandLeader, extractLeader, extractSetOptions } from './vimrcParser';
 import type { VimrcCommand, VimrcParseResult } from './vimrcParser';
 
 // ─── State ──────────────────────────────────────────────────────────────────
@@ -56,10 +51,7 @@ export async function loadVimrc(vimrcPath: string): Promise<VimrcParseResult | n
  * Apply parsed vimrc commands to the CodeMirror Vim instance.
  * Requires the Vim object from @replit/codemirror-vim.
  */
-export function applyVimrcCommands(
-  Vim: VimApi,
-  commands: VimrcCommand[],
-): void {
+export function applyVimrcCommands(Vim: VimApi, commands: VimrcCommand[]): void {
   const leader = extractLeader(commands);
   const setOpts = extractSetOptions(commands);
   const exmaps = new Map<string, string>();
@@ -123,7 +115,8 @@ export function applyVimrcCommands(
   }
 
   log.info('Vimrc commands applied', {
-    mappings: commands.filter(c => ['map', 'nmap', 'imap', 'vmap', 'noremap'].includes(c.type)).length,
+    mappings: commands.filter((c) => ['map', 'nmap', 'imap', 'vmap', 'noremap'].includes(c.type))
+      .length,
     exmaps: exmaps.size,
     setOptions: setOpts.length,
   });
@@ -133,10 +126,17 @@ export function applyVimrcCommands(
 
 function getModeForCmd(type: string): string | undefined {
   switch (type) {
-    case 'nmap': case 'nunmap': return 'normal';
-    case 'imap': case 'iunmap': return 'insert';
-    case 'vmap': case 'vunmap': return 'visual';
-    default: return undefined;
+    case 'nmap':
+    case 'nunmap':
+      return 'normal';
+    case 'imap':
+    case 'iunmap':
+      return 'insert';
+    case 'vmap':
+    case 'vunmap':
+      return 'visual';
+    default:
+      return undefined;
   }
 }
 

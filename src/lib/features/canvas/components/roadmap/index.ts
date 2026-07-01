@@ -19,9 +19,7 @@ export function syncRoadmapFlowLinks(doc: CanvasDocument): CanvasDocument {
 
   // Collect IDs of all feature_card elements so we can look them up
   const featureCardIds = new Set(
-    doc.elements
-      .filter((el) => el.element_type === 'feature_card')
-      .map((el) => el.id)
+    doc.elements.filter((el) => el.element_type === 'feature_card').map((el) => el.id)
   );
 
   // Preserve non-roadmap flow links (those not between two feature cards)

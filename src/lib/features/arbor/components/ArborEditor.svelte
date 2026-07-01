@@ -54,7 +54,10 @@
         if ($arborSelection.blockId) deleteBlock($arborSelection.blockId, false);
         break;
       case 'z':
-        if (meta) { e.preventDefault(); e.shiftKey ? arborRedo() : arborUndo(); }
+        if (meta) {
+          e.preventDefault();
+          e.shiftKey ? arborRedo() : arborUndo();
+        }
         break;
     }
   }
@@ -62,14 +65,16 @@
   function handleWheel(e: WheelEvent) {
     if ((e.metaKey || e.ctrlKey) && $arborConfig.dragEnabled) {
       e.preventDefault();
-      arborConfig.update(c => ({
+      arborConfig.update((c) => ({
         ...c,
-        zoom: Math.max(0.25, Math.min(2, c.zoom + (e.deltaY > 0 ? -0.05 : 0.05)))
+        zoom: Math.max(0.25, Math.min(2, c.zoom + (e.deltaY > 0 ? -0.05 : 0.05))),
       }));
     }
   }
 
-  function resetZoom() { arborConfig.update(c => ({ ...c, zoom: 1 })); }
+  function resetZoom() {
+    arborConfig.update((c) => ({ ...c, zoom: 1 }));
+  }
 
   function getBlockChildren(blockId: string): ArborBlock[] {
     if (!$arborTree) return [];
@@ -91,7 +96,11 @@
     {#if $arborConfig.showBreadcrumbs && $breadcrumbPath.length > 0}
       <div class="breadcrumbs">
         {#each $breadcrumbPath as crumb, i}
-          <button class="crumb" class:active={crumb.id === $arborSelection.blockId} on:click={() => selectBlock(crumb.id)}>
+          <button
+            class="crumb"
+            class:active={crumb.id === $arborSelection.blockId}
+            on:click={() => selectBlock(crumb.id)}
+          >
             {crumb.content.split('\n')[0]?.slice(0, 30) || '…'}
           </button>
           {#if i < $breadcrumbPath.length - 1}
@@ -114,7 +123,10 @@
   </div>
 
   <!-- Scene canvas -->
-  <div class="arbor-scene" style="transform: scale({$arborConfig.zoom}); transform-origin: top left;">
+  <div
+    class="arbor-scene"
+    style="transform: scale({$arborConfig.zoom}); transform-origin: top left;"
+  >
     {#if $arborTree}
       <div class="arbor-columns">
         {#each getRootBlocks($arborTree.blocks) as root}
@@ -179,18 +191,47 @@
     text-overflow: ellipsis;
     transition: background var(--transition-fast);
   }
-  .crumb:hover { background: var(--background-modifier-hover); }
-  .crumb.active { color: var(--text-normal); font-weight: var(--font-medium); }
-  .crumb-sep { color: var(--text-faint); font-size: 10px; }
-  .toolbar-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-  .tool-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 24px; height: 24px; border: none; border-radius: var(--radius-s);
-    background: none; color: var(--text-muted); cursor: pointer;
-    transition: background var(--transition-fast), color var(--transition-fast);
+  .crumb:hover {
+    background: var(--background-modifier-hover);
   }
-  .tool-btn:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
-  .zoom-indicator { width: auto; padding: 0 6px; font-size: 10px; }
+  .crumb.active {
+    color: var(--text-normal);
+    font-weight: var(--font-medium);
+  }
+  .crumb-sep {
+    color: var(--text-faint);
+    font-size: 10px;
+  }
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .tool-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: var(--radius-s);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background var(--transition-fast),
+      color var(--transition-fast);
+  }
+  .tool-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+  .zoom-indicator {
+    width: auto;
+    padding: 0 6px;
+    font-size: 10px;
+  }
   .arbor-scene {
     flex: 1;
     overflow: auto;
@@ -220,5 +261,8 @@
     gap: var(--spacing-s);
     color: var(--text-faint);
   }
-  .empty-state p { margin: 0; font-size: var(--font-ui-small); }
+  .empty-state p {
+    margin: 0;
+    font-size: var(--font-ui-small);
+  }
 </style>

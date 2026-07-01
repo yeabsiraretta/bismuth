@@ -33,7 +33,7 @@ export function buildLifeTrackerCommands(): Command[] {
     {
       id: 'lt:capture-today',
       name: 'Life Tracker: Capture today',
-      description: 'Jump to today\'s daily note and start property capture',
+      description: "Jump to today's daily note and start property capture",
       category: 'Life Tracker',
       action: async () => {
         const today = new Date().toISOString().slice(0, 10);

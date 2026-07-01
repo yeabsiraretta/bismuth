@@ -27,7 +27,9 @@
 
   <div class="setting-group">
     <h4>Typography</h4>
-    <p class="setting-note">Editor font is configured in <strong>Appearance</strong> &rarr; <strong>Fonts</strong>.</p>
+    <p class="setting-note">
+      Editor font is configured in <strong>Appearance</strong> &rarr; <strong>Fonts</strong>.
+    </p>
 
     <div class="setting-item setting-row">
       <div class="setting-info">
@@ -46,7 +48,14 @@
         <span class="setting-hint">Spacing between lines of text</span>
       </div>
       <div class="setting-control setting-control-range">
-        <input id="line-height" type="range" bind:value={lineHeight} min="1.2" max="2.0" step="0.1" />
+        <input
+          id="line-height"
+          type="range"
+          bind:value={lineHeight}
+          min="1.2"
+          max="2.0"
+          step="0.1"
+        />
         <span class="setting-value">{lineHeight}</span>
       </div>
     </div>
@@ -104,7 +113,14 @@
         <label for="tab-size">Tab Size</label>
         <span class="setting-hint">Number of spaces per tab</span>
       </div>
-      <input id="tab-size" class="setting-input-number" type="number" bind:value={tabSize} min="1" max="8" />
+      <input
+        id="tab-size"
+        class="setting-input-number"
+        type="number"
+        bind:value={tabSize}
+        min="1"
+        max="8"
+      />
     </div>
 
     <div class="setting-item setting-row">
@@ -139,7 +155,8 @@
       <div class="setting-item setting-row setting-indent">
         <div class="setting-info">
           <label for="live-preview-mode">Preview mode</label>
-          <span class="setting-hint">Controls how Markdown is rendered when live preview is on</span>
+          <span class="setting-hint">Controls how Markdown is rendered when live preview is on</span
+          >
         </div>
         <select id="live-preview-mode" class="setting-select" bind:value={livePreviewMode}>
           <option value="source">Source</option>
@@ -182,10 +199,19 @@
       <div class="setting-item setting-row setting-indent">
         <div class="setting-info">
           <label for="tw-offset">Scroll position</label>
-          <span class="setting-hint">Vertical position for the cursor (0% top, 50% center, 100% bottom)</span>
+          <span class="setting-hint"
+            >Vertical position for the cursor (0% top, 50% center, 100% bottom)</span
+          >
         </div>
         <div class="setting-control setting-control-range">
-          <input id="tw-offset" type="range" bind:value={typewriterOffset} min="0.15" max="0.85" step="0.05" />
+          <input
+            id="tw-offset"
+            type="range"
+            bind:value={typewriterOffset}
+            min="0.15"
+            max="0.85"
+            step="0.05"
+          />
           <span class="setting-value">{Math.round(typewriterOffset * 100)}%</span>
         </div>
       </div>
@@ -219,7 +245,14 @@
           <span class="setting-hint">Lines above and below the cursor that stay fully visible</span>
         </div>
         <div class="setting-control setting-control-range">
-          <input id="zen-radius" type="range" bind:value={zenModeVisibleLines} min="1" max="15" step="1" />
+          <input
+            id="zen-radius"
+            type="range"
+            bind:value={zenModeVisibleLines}
+            min="1"
+            max="15"
+            step="1"
+          />
           <span class="setting-value">{zenModeVisibleLines}</span>
         </div>
       </div>
@@ -230,7 +263,14 @@
           <span class="setting-hint">Opacity for dimmed lines (lower = more dim)</span>
         </div>
         <div class="setting-control setting-control-range">
-          <input id="zen-opacity" type="range" bind:value={zenModeDimOpacity} min="0.05" max="0.6" step="0.05" />
+          <input
+            id="zen-opacity"
+            type="range"
+            bind:value={zenModeDimOpacity}
+            min="0.05"
+            max="0.6"
+            step="0.05"
+          />
           <span class="setting-value">{Math.round(zenModeDimOpacity * 100)}%</span>
         </div>
       </div>
@@ -238,12 +278,17 @@
   </div>
   <div class="setting-group">
     <h4>Vim Mode</h4>
-    <p class="setting-note">Use Vim keybindings in the editor. Place a <code>.obsidian.vimrc</code> file in your vault root for persistent configuration.</p>
+    <p class="setting-note">
+      Use Vim keybindings in the editor. Place a <code>.obsidian.vimrc</code> file in your vault root
+      for persistent configuration.
+    </p>
 
     <div class="setting-item setting-row">
       <div class="setting-info">
         <label for="cb-vim">Enable Vim mode</label>
-        <span class="setting-hint">Use Vim keybindings for editing (normal, insert, visual modes)</span>
+        <span class="setting-hint"
+          >Use Vim keybindings for editing (normal, insert, visual modes)</span
+        >
       </div>
       <input id="cb-vim" type="checkbox" bind:checked={vimMode} />
     </div>
@@ -254,13 +299,21 @@
           <label for="vimrc-path">Vimrc file path</label>
           <span class="setting-hint">Relative path from vault root (e.g. .obsidian.vimrc)</span>
         </div>
-        <input id="vimrc-path" class="setting-input-text" type="text" bind:value={vimrcPath} placeholder=".obsidian.vimrc" />
+        <input
+          id="vimrc-path"
+          class="setting-input-text"
+          type="text"
+          bind:value={vimrcPath}
+          placeholder=".obsidian.vimrc"
+        />
       </div>
 
       <div class="setting-item setting-row setting-indent">
         <div class="setting-info">
           <label for="cb-vim-show">Show Vim mode in status bar</label>
-          <span class="setting-hint">Display current mode (NORMAL, INSERT, VISUAL) in the status bar</span>
+          <span class="setting-hint"
+            >Display current mode (NORMAL, INSERT, VISUAL) in the status bar</span
+          >
         </div>
         <input id="cb-vim-show" type="checkbox" bind:checked={vimShowMode} />
       </div>
@@ -269,18 +322,86 @@
 </div>
 
 <style>
-  .setting-note { font-size: var(--font-ui-small); color: var(--text-muted); margin: 0 0 var(--spacing-s); padding: var(--spacing-xs) var(--spacing-s); background: var(--background-modifier-hover); border-radius: var(--radius-s); border-left: 2px solid var(--interactive-accent); }
-  .setting-row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); min-height: 36px; }
-  .setting-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-  .setting-info > label { font-size: var(--font-ui-small); font-weight: 500; color: var(--text-normal); cursor: pointer; }
-  .setting-row > input[type="checkbox"] { flex-shrink: 0; width: 18px; height: 18px; accent-color: var(--interactive-accent); cursor: pointer; }
-  .setting-control { flex-shrink: 0; }
-  .setting-control-range { display: flex; align-items: center; gap: var(--spacing-xs); min-width: 180px; }
-  .setting-control-range input[type="range"] { flex: 1; accent-color: var(--interactive-accent); }
-  .setting-select, .setting-input-number, .setting-input-text { height: 30px; padding: var(--spacing-xs) var(--spacing-s); background: var(--background-modifier-form-field); border: 1px solid var(--border-color); border-radius: var(--radius-s); font-size: var(--font-ui-small); color: var(--text-normal); outline: none; }
-  .setting-select { min-width: 120px; max-width: 180px; }
-  .setting-input-number { width: 64px; text-align: center; flex-shrink: 0; }
-  .setting-input-text { min-width: 160px; max-width: 220px; }
-  .setting-select:focus, .setting-input-number:focus, .setting-input-text:focus { border-color: var(--interactive-accent); }
-  .setting-indent { padding-left: var(--spacing-l); }
+  .setting-note {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+    margin: 0 0 var(--spacing-s);
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-modifier-hover);
+    border-radius: var(--radius-s);
+    border-left: 2px solid var(--interactive-accent);
+  }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-m);
+    min-height: 36px;
+  }
+  .setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+  .setting-info > label {
+    font-size: var(--font-ui-small);
+    font-weight: 500;
+    color: var(--text-normal);
+    cursor: pointer;
+  }
+  .setting-row > input[type='checkbox'] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--interactive-accent);
+    cursor: pointer;
+  }
+  .setting-control {
+    flex-shrink: 0;
+  }
+  .setting-control-range {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-width: 180px;
+  }
+  .setting-control-range input[type='range'] {
+    flex: 1;
+    accent-color: var(--interactive-accent);
+  }
+  .setting-select,
+  .setting-input-number,
+  .setting-input-text {
+    height: 30px;
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-modifier-form-field);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
+    outline: none;
+  }
+  .setting-select {
+    min-width: 120px;
+    max-width: 180px;
+  }
+  .setting-input-number {
+    width: 64px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .setting-input-text {
+    min-width: 160px;
+    max-width: 220px;
+  }
+  .setting-select:focus,
+  .setting-input-number:focus,
+  .setting-input-text:focus {
+    border-color: var(--interactive-accent);
+  }
+  .setting-indent {
+    padding-left: var(--spacing-l);
+  }
 </style>

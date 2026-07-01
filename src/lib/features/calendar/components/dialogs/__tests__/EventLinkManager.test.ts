@@ -21,7 +21,11 @@ describe('EventLinkManager', () => {
     const { container, component } = render(EventLinkManager, {
       props: { linkedNotePaths: [] },
     });
-    (component as unknown as { $on: (event: string, handler: (...args: unknown[]) => void) => void }).$on('change', onChange);
+    (
+      component as unknown as {
+        $on: (event: string, handler: (...args: unknown[]) => void) => void;
+      }
+    ).$on('change', onChange);
     const input = container.querySelector('.link-input') as HTMLInputElement;
     await fireEvent.input(input, { target: { value: 'new/note.md' } });
     input.value = 'new/note.md';
@@ -36,7 +40,11 @@ describe('EventLinkManager', () => {
     const { container, component } = render(EventLinkManager, {
       props: { linkedNotePaths: ['notes/a.md', 'notes/b.md'] },
     });
-    (component as unknown as { $on: (event: string, handler: (...args: unknown[]) => void) => void }).$on('change', onChange);
+    (
+      component as unknown as {
+        $on: (event: string, handler: (...args: unknown[]) => void) => void;
+      }
+    ).$on('change', onChange);
     const removeBtn = container.querySelector('.link-remove') as HTMLButtonElement;
     await fireEvent.click(removeBtn);
     expect(onChange).toHaveBeenCalledOnce();

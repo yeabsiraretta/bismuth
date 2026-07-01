@@ -13,14 +13,7 @@
   export let disabled: boolean = false;
 </script>
 
-<button
-  class="menu-item"
-  class:destructive
-  {disabled}
-  role="menuitem"
-  title={label}
-  on:click
->
+<button class="menu-item" class:destructive {disabled} role="menuitem" title={label} on:click>
   {#if icon}
     <Icon name={icon} size={14} />
   {/if}

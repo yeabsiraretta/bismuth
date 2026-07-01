@@ -3,7 +3,10 @@
  */
 import type { Vault, Note } from '@/types/data/vault';
 
-interface CommandContract<P, R> { params: P; result: R }
+interface CommandContract<P, R> {
+  params: P;
+  result: R;
+}
 
 export interface VaultCommands {
   open_vault: CommandContract<{ path: string }, Vault>;
@@ -39,11 +42,17 @@ export interface VaultCommands {
   compute_graph_layout: CommandContract<{ algorithm?: string }, unknown>;
   find_unlinked_references: CommandContract<{ path: string }, unknown[]>;
   create_link_from_mention: CommandContract<{ sourcePath: string; targetTitle: string }, void>;
-  create_link_from_unlinked_mention: CommandContract<{ sourcePath: string; targetTitle: string }, void>;
+  create_link_from_unlinked_mention: CommandContract<
+    { sourcePath: string; targetTitle: string },
+    void
+  >;
   update_links_on_rename: CommandContract<{ oldPath: string; newPath: string }, void>;
   parse_frontmatter: CommandContract<{ content: string }, Record<string, unknown>>;
   update_frontmatter_field: CommandContract<{ path: string; field: string; value: unknown }, void>;
-  batch_update_frontmatter_field: CommandContract<{ paths: string[]; field: string; value: unknown }, void>;
+  batch_update_frontmatter_field: CommandContract<
+    { paths: string[]; field: string; value: unknown },
+    void
+  >;
   lint_note_text: CommandContract<{ content: string }, unknown[]>;
   read_navigator_state: CommandContract<Record<string, never>, unknown>;
   write_navigator_state: CommandContract<{ state: unknown }, void>;

@@ -24,7 +24,7 @@ export const navHistoryIndex = writable<number>(-1);
 
 /** Push a navigation entry to history (truncates forward history). */
 export function pushNavHistory(entry: NavHistoryEntry) {
-  navHistory.update(h => {
+  navHistory.update((h) => {
     const idx = get(navHistoryIndex);
     const truncated = h.slice(0, idx + 1);
     truncated.push(entry);
@@ -81,7 +81,7 @@ export const selectedTag = writable<string | null>(null);
 /** Select a tag and optionally push to history. Shows notes with that tag. */
 export function selectTag(tagName: string | null, pushHistory = true) {
   selectedTag.set(tagName);
-  navigatorStore.update(s => ({ ...s, activeTab: 'tags' }));
+  navigatorStore.update((s) => ({ ...s, activeTab: 'tags' }));
   if (tagName && pushHistory) {
     pushNavHistory({ type: 'tag', path: tagName, tab: 'tags' });
   }
@@ -89,18 +89,15 @@ export function selectTag(tagName: string | null, pushHistory = true) {
 }
 
 /** Notes filtered by selected tag. */
-export const tagFilteredNotes = derived(
-  [notes, selectedTag],
-  ([$notes, $tag]) => {
-    if (!$tag) return [];
-    return $notes.filter((note: Note) => {
-      const fmTags = note.frontmatter?.['tags'];
-      if (Array.isArray(fmTags) && fmTags.includes($tag)) return true;
-      const inlineTags = note.content?.match(/#([a-zA-Z0-9_/-]+)/g) || [];
-      return inlineTags.some((t: string) => t.slice(1) === $tag || t.slice(1).startsWith($tag + '/'));
-    });
-  }
-);
+export const tagFilteredNotes = derived([notes, selectedTag], ([$notes, $tag]) => {
+  if (!$tag) return [];
+  return $notes.filter((note: Note) => {
+    const fmTags = note.frontmatter?.['tags'];
+    if (Array.isArray(fmTags) && fmTags.includes($tag)) return true;
+    const inlineTags = note.content?.match(/#([a-zA-Z0-9_/-]+)/g) || [];
+    return inlineTags.some((t: string) => t.slice(1) === $tag || t.slice(1).startsWith($tag + '/'));
+  });
+});
 
 // ─── Property Selection ──────────────────────────────────────────────────────
 
@@ -114,11 +111,10 @@ export const selectedProperty = writable<PropertySelection | null>(null);
 /** Select a property key (and optionally value) to filter notes. */
 export function selectProperty(keyOrPath: string, pushHistory = true) {
   const parts = keyOrPath.split('=');
-  const sel: PropertySelection = parts.length > 1
-    ? { key: parts[0], value: parts[1] }
-    : { key: parts[0] };
+  const sel: PropertySelection =
+    parts.length > 1 ? { key: parts[0], value: parts[1] } : { key: parts[0] };
   selectedProperty.set(sel);
-  navigatorStore.update(s => ({ ...s, activeTab: 'properties' }));
+  navigatorStore.update((s) => ({ ...s, activeTab: 'properties' }));
   if (pushHistory) {
     pushNavHistory({ type: 'property', path: keyOrPath, tab: 'properties' });
   }
@@ -126,20 +122,17 @@ export function selectProperty(keyOrPath: string, pushHistory = true) {
 }
 
 /** Notes filtered by selected property. */
-export const propertyFilteredNotes = derived(
-  [notes, selectedProperty],
-  ([$notes, $prop]) => {
-    if (!$prop) return [];
-    return $notes.filter((note: Note) => {
-      const fm = note.frontmatter;
-      if (!fm) return false;
-      const val = fm[$prop.key];
-      if (val === undefined) return false;
-      if ($prop.value === undefined) return true;
-      return String(val).toLowerCase().includes($prop.value.toLowerCase());
-    });
-  }
-);
+export const propertyFilteredNotes = derived([notes, selectedProperty], ([$notes, $prop]) => {
+  if (!$prop) return [];
+  return $notes.filter((note: Note) => {
+    const fm = note.frontmatter;
+    if (!fm) return false;
+    const val = fm[$prop.key];
+    if (val === undefined) return false;
+    if ($prop.value === undefined) return true;
+    return String(val).toLowerCase().includes($prop.value.toLowerCase());
+  });
+});
 
 // ─── Multi-Select ────────────────────────────────────────────────────────────
 
@@ -147,7 +140,7 @@ export const selectedNotes = writable<Set<string>>(new Set());
 
 /** Toggle note selection (for Cmd/Ctrl+Click). */
 export function toggleNoteSelection(path: string) {
-  selectedNotes.update(s => {
+  selectedNotes.update((s) => {
     const next = new Set(s);
     if (next.has(path)) next.delete(path);
     else next.add(path);
@@ -192,7 +185,7 @@ export const searchQuery = writable<string>('');
 
 /** Toggle search visibility. */
 export function toggleSearch() {
-  searchOpen.update(v => !v);
+  searchOpen.update((v) => !v);
 }
 
 /** Set search query and update navigator filter. */

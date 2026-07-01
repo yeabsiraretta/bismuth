@@ -18,10 +18,13 @@ export const notesByPath = derived(notes, ($notes: Note[]) => {
   return map;
 });
 
-export const visibleNotes = derived([notes, showArchived], ([$notes, $showArchived]: [Note[], boolean]) => {
-  if ($showArchived) return $notes;
-  return $notes.filter((n: Note) => n.frontmatter?.['archived'] !== true);
-});
+export const visibleNotes = derived(
+  [notes, showArchived],
+  ([$notes, $showArchived]: [Note[], boolean]) => {
+    if ($showArchived) return $notes;
+    return $notes.filter((n: Note) => n.frontmatter?.['archived'] !== true);
+  }
+);
 
 // --- Note content cache (LRU) ---
 const CONTENT_CACHE_MAX = 50;
@@ -133,9 +136,7 @@ export function updateNoteInStore(updatedNote: Note) {
 export function removeNoteFromStore(path: string) {
   notes.update(($notes: Note[]) => $notes.filter((n: Note) => n.path !== path));
   contentCache.delete(path);
-  activeNote.update(($active: Note | null) =>
-    $active && $active.path === path ? null : $active
-  );
+  activeNote.update(($active: Note | null) => ($active && $active.path === path ? null : $active));
 }
 
 export async function openVault(path: string): Promise<void> {
@@ -164,9 +165,10 @@ export async function openVault(path: string): Promise<void> {
 
     // Phase 2 — Deferred: load full content for features that need it
     // (dataview, backlinks, search, tags). Runs after UI is interactive.
-    const deferContent = typeof requestIdleCallback === 'function'
-      ? requestIdleCallback
-      : (cb: () => void) => setTimeout(cb, 100);
+    const deferContent =
+      typeof requestIdleCallback === 'function'
+        ? requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 100);
     deferContent(() => {
       refreshNotesWithContent()
         .then((allNotes) => {
@@ -211,7 +213,7 @@ function startPolling() {
 
 function hasChanges(meta: NoteMeta[], current: Note[]): boolean {
   if (meta.length !== current.length) return true;
-  const currentPaths = new Set(current.map(n => n.path));
+  const currentPaths = new Set(current.map((n) => n.path));
   for (const m of meta) {
     if (!currentPaths.has(m.path)) return true;
   }

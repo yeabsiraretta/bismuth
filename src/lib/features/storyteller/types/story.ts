@@ -34,8 +34,22 @@ export interface Story {
 }
 
 export type DashboardView =
-  | 'stories' | 'entities' | 'timeline' | 'campaign'
-  | 'compile' | 'storyboard' | 'graph' | 'gallery'
-  | 'analytics' | 'maps' | 'settings'
-  | 'plotgrid' | 'plotlines' | 'manuscript' | 'stats'
-  | 'navigator' | 'corkboard' | 'export' | 'research';
+  | 'stories'
+  | 'entities'
+  | 'timeline'
+  | 'campaign'
+  | 'compile'
+  | 'storyboard'
+  | 'graph'
+  | 'gallery'
+  | 'analytics'
+  | 'maps'
+  | 'settings'
+  | 'plotgrid'
+  | 'plotlines'
+  | 'manuscript'
+  | 'stats'
+  | 'navigator'
+  | 'corkboard'
+  | 'export'
+  | 'research';

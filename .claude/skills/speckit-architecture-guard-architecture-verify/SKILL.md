@@ -41,6 +41,7 @@ Perform a high-integrity verification of the implementation. Unlike a general re
 ### 2. Semantic Modeling (Internal)
 
 Build internal representations:
+
 - **Task-Boundary Map**: Associate each task with its intended architecture layer (Entry, Application, Domain, Data, External).
 - **Implementation Evidence**: For each completed task (`[x]`), scan referenced files for logic that addresses the task description.
 - **Contract Inventory**: Extract planned API/Data signatures from `plan.md`.
@@ -48,15 +49,18 @@ Build internal representations:
 ### 3. Verification Checks
 
 #### A. Task-Code Alignment
+
 - **Ghost Tasks**: Tasks marked complete but with no evidence in the referenced files.
 - **Orphaned Code**: Implementation logic present in files that wasn't planned in `tasks.md`.
 - **Missing Files**: Files referenced in tasks that do not exist on disk.
 
 #### B. Boundary Integrity
+
 - **Layer Violation**: Logic from one layer (e.g., Database queries) appearing in another layer (e.g., Controllers/Entry).
 - **Dependency Drift**: New dependencies introduced that violate the architecture's "Stable Abstractions" principle.
 
 #### C. Constitution Compliance
+
 - **Rule Check**: Does the implementation violate any "MUST" rules in the `architecture_constitution.md`?
 - **Pattern Match**: Does the code follow the mandated architectural patterns (e.g., DTOs, Repositories, Events)?
 
@@ -69,24 +73,28 @@ Build internal representations:
 
 ## Verification Report
 
-| ID | Category | Severity | Location(s) | Summary | Recommendation |
-|:---|:---|:---|:---|:---|:---|
-| V1 | Task Integrity | CRITICAL | `tasks.md:T01` | Task marked complete but logic missing in `src/auth.ts` | Implement logic or uncheck task |
-| V2 | Boundary | HIGH | `src/ctrl/user.ts` | Database query found in Controller layer | Move query to Repository/Data layer |
+| ID  | Category       | Severity | Location(s)        | Summary                                                 | Recommendation                      |
+| :-- | :------------- | :------- | :----------------- | :------------------------------------------------------ | :---------------------------------- |
+| V1  | Task Integrity | CRITICAL | `tasks.md:T01`     | Task marked complete but logic missing in `src/auth.ts` | Implement logic or uncheck task     |
+| V2  | Boundary       | HIGH     | `src/ctrl/user.ts` | Database query found in Controller layer                | Move query to Repository/Data layer |
 
 ### Task Status Analysis
+
 For each task in `tasks.md`:
+
 - **Implemented?**: [Yes/No/Partial]
 - **Evidence**: [File path or logic pattern]
 - **Gap Analysis**: If "No" or "Partial", explain why the task is incomplete and suggest the remediation.
 
 ### Metrics
+
 - **Tasks Verified**: [Completed / Total]
 - **Requirement Coverage**: [e.g. 100%]
 - **Boundary Integrity**: [Strong / Eroded / Breached]
 - **Constitution Score**: [e.g. 100%]
 
 ### Action Plan
+
 1. **Critical Gaps**: Address missing implementation for tasks [IDs] immediately.
 2. **Architecture Alignment**: Resolve boundary violations in [Files] using suggested refactor tasks.
 3. **Completion**: If all CRITICAL/HIGH are resolved, you **MUST automatically execute** `/speckit.memory-md.capture` to preserve lessons. Do not just recommend it; run the command.

@@ -5,10 +5,10 @@ import { components, filteredComponents, searchQuery, categoryFilter } from './c
 import { log } from '@/utils/logger';
 
 /** All components (built-in + user) merged into a single list. */
-export const allComponents = derived(
-  [components],
-  ([$userComponents]) => [...BUILTIN_COMPONENTS, ...$userComponents]
-);
+export const allComponents = derived([components], ([$userComponents]) => [
+  ...BUILTIN_COMPONENTS,
+  ...$userComponents,
+]);
 
 /** Filtered components including built-in entries. */
 export const allFilteredComponents = derived(

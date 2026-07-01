@@ -33,7 +33,9 @@
   let builtPrompt: BuiltPrompt | null = null;
   let copied = false;
 
-  onMount(async () => { await initModal(); });
+  onMount(async () => {
+    await initModal();
+  });
 
   $: if (isOpen && !context) {
     context = initContext(selection);
@@ -48,12 +50,16 @@
     step = nextStep(step);
   }
 
-  function handleBack() { step = prevStep(step); }
+  function handleBack() {
+    step = prevStep(step);
+  }
 
   async function handleCopy() {
     if (!builtPrompt) return;
     copied = await copyToClipboard(builtPrompt.text);
-    setTimeout(() => { copied = false; }, 2000);
+    setTimeout(() => {
+      copied = false;
+    }, 2000);
   }
 
   function handleClose() {
@@ -67,7 +73,7 @@
   }
 
   function isSelected(t: SmartTemplate): boolean {
-    return selectedTemplates.some(s => s.name === t.name);
+    return selectedTemplates.some((s) => s.name === t.name);
   }
 </script>
 
@@ -79,7 +85,13 @@
     <div class="st-steps">
       {#each STEP_ORDER as s, i}
         <span class="st-step" class:active={s === step} class:done={getStepIndex(step) > i}>
-          {i + 1}. {s === 'context' ? 'Context' : s === 'templates' ? 'Templates' : s === 'instructions' ? 'Instructions' : 'Result'}
+          {i + 1}. {s === 'context'
+            ? 'Context'
+            : s === 'templates'
+              ? 'Templates'
+              : s === 'instructions'
+                ? 'Instructions'
+                : 'Result'}
         </span>
       {/each}
     </div>
@@ -96,11 +108,17 @@
             <p class="st-empty">No active note. Open a note first.</p>
           {/if}
         </div>
-
       {:else if step === 'templates'}
         <div class="st-section">
-          <h4><Icon name="layers" size={14} /> Choose Templates ({selectedTemplates.length} selected)</h4>
-          <input bind:value={filterQuery} class="st-input" type="text" placeholder="Filter templates…" />
+          <h4>
+            <Icon name="layers" size={14} /> Choose Templates ({selectedTemplates.length} selected)
+          </h4>
+          <input
+            bind:value={filterQuery}
+            class="st-input"
+            type="text"
+            placeholder="Filter templates…"
+          />
           {#if $smartTemplatesLoading}
             <p class="st-loading">Loading…</p>
           {:else}
@@ -109,7 +127,9 @@
                 <button
                   class="st-template-item"
                   class:selected={isSelected(tmpl)}
-                  on:click={() => { selectedTemplates = toggleTemplateSelection(selectedTemplates, tmpl); }}
+                  on:click={() => {
+                    selectedTemplates = toggleTemplateSelection(selectedTemplates, tmpl);
+                  }}
                 >
                   <span class="st-tmpl-check">{isSelected(tmpl) ? '✓' : '○'}</span>
                   <span class="st-tmpl-name">{tmpl.name}</span>
@@ -122,14 +142,19 @@
             </div>
           {/if}
         </div>
-
       {:else if step === 'instructions'}
         <div class="st-section">
           <h4><Icon name="message-square" size={14} /> Additional Instructions</h4>
-          <textarea bind:value={instructions} class="st-textarea" placeholder="Optional: add specific instructions for the AI…" rows="4"></textarea>
-          <p class="st-meta">Templates: {selectedTemplates.map(t => t.name).join(', ') || 'none'}</p>
+          <textarea
+            bind:value={instructions}
+            class="st-textarea"
+            placeholder="Optional: add specific instructions for the AI…"
+            rows="4"
+          ></textarea>
+          <p class="st-meta">
+            Templates: {selectedTemplates.map((t) => t.name).join(', ') || 'none'}
+          </p>
         </div>
-
       {:else if step === 'result'}
         <div class="st-section">
           <h4><Icon name="clipboard" size={14} /> Ready to Copy</h4>
@@ -161,7 +186,11 @@
             {copied ? 'Copied!' : 'Copy Prompt'}
           </button>
         {:else if canGoNext(step)}
-          <button class="st-btn st-btn-primary" on:click={handleNext} disabled={step === 'context' && !context}>
+          <button
+            class="st-btn st-btn-primary"
+            on:click={handleNext}
+            disabled={step === 'context' && !context}
+          >
             Next <Icon name="arrow-right" size={14} />
           </button>
         {/if}
@@ -171,38 +200,196 @@
 </Modal>
 
 <style>
-  .st-modal { display: flex; flex-direction: column; gap: 12px; min-height: 320px; }
-  .st-progress { height: 3px; background: var(--background-modifier-border); border-radius: 2px; overflow: hidden; }
-  .st-progress-bar { height: 100%; background: var(--interactive-accent, #6366f1); transition: width 0.3s ease; }
-  .st-steps { display: flex; gap: 12px; font-size: 11px; color: var(--text-faint); }
-  .st-step { opacity: 0.5; }
-  .st-step.active { opacity: 1; font-weight: 600; color: var(--text-normal); }
-  .st-step.done { opacity: 0.7; text-decoration: line-through; }
-  .st-body { flex: 1; overflow-y: auto; max-height: 360px; }
-  .st-section h4 { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 13px; }
-  .st-label { font-weight: 600; font-size: 13px; margin: 0 0 4px; color: var(--text-normal); }
-  .st-preview, .st-result { font-size: 11px; padding: 8px; background: var(--background-secondary); border-radius: 4px; overflow: auto; max-height: 180px; white-space: pre-wrap; word-break: break-word; margin: 0; }
-  .st-result { max-height: 240px; }
-  .st-meta { font-size: 11px; color: var(--text-faint); margin: 4px 0 0; }
-  .st-empty { color: var(--text-faint); font-style: italic; }
-  .st-loading { color: var(--text-faint); }
-  .st-input { width: 100%; padding: 6px 8px; border: 1px solid var(--background-modifier-border); border-radius: 4px; background: var(--background-primary); font-size: 12px; margin-bottom: 8px; }
-  .st-textarea { width: 100%; padding: 8px; border: 1px solid var(--background-modifier-border); border-radius: 4px; background: var(--background-primary); font-size: 12px; resize: vertical; font-family: inherit; }
-  .st-template-list { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow-y: auto; }
-  .st-template-item { display: grid; grid-template-columns: 20px 1fr auto; gap: 4px; align-items: center; padding: 6px 8px; border: 1px solid transparent; border-radius: 4px; background: none; cursor: pointer; text-align: left; font-size: 12px; }
-  .st-template-item:hover { background: var(--background-secondary); }
-  .st-template-item.selected { border-color: var(--interactive-accent, #6366f1); background: rgba(99, 102, 241, 0.06); }
-  .st-tmpl-check { font-size: 13px; text-align: center; }
-  .st-tmpl-name { font-weight: 500; }
-  .st-tmpl-source { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
-  .st-tmpl-desc { grid-column: 2 / -1; font-size: 11px; color: var(--text-muted); }
-  .st-result-meta { display: flex; gap: 12px; font-size: 11px; color: var(--text-faint); margin-top: 6px; }
-  .st-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--background-modifier-border); }
-  .st-footer-right { display: flex; gap: 8px; }
-  .st-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--background-modifier-border); }
-  .st-btn-primary { background: var(--interactive-accent, #6366f1); color: #fff; border-color: transparent; }
-  .st-btn-primary:hover { opacity: 0.9; }
-  .st-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-  .st-btn-secondary { background: var(--background-secondary); color: var(--text-normal); }
-  .st-btn-secondary:hover { background: var(--background-modifier-hover); }
+  .st-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 320px;
+  }
+  .st-progress {
+    height: 3px;
+    background: var(--background-modifier-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .st-progress-bar {
+    height: 100%;
+    background: var(--interactive-accent, #6366f1);
+    transition: width 0.3s ease;
+  }
+  .st-steps {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .st-step {
+    opacity: 0.5;
+  }
+  .st-step.active {
+    opacity: 1;
+    font-weight: 600;
+    color: var(--text-normal);
+  }
+  .st-step.done {
+    opacity: 0.7;
+    text-decoration: line-through;
+  }
+  .st-body {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 360px;
+  }
+  .st-section h4 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 13px;
+  }
+  .st-label {
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0 0 4px;
+    color: var(--text-normal);
+  }
+  .st-preview,
+  .st-result {
+    font-size: 11px;
+    padding: 8px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    overflow: auto;
+    max-height: 180px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+  }
+  .st-result {
+    max-height: 240px;
+  }
+  .st-meta {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin: 4px 0 0;
+  }
+  .st-empty {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+  .st-loading {
+    color: var(--text-faint);
+  }
+  .st-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background: var(--background-primary);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .st-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background: var(--background-primary);
+    font-size: 12px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  .st-template-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .st-template-item {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 4px;
+    align-items: center;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 12px;
+  }
+  .st-template-item:hover {
+    background: var(--background-secondary);
+  }
+  .st-template-item.selected {
+    border-color: var(--interactive-accent, #6366f1);
+    background: rgba(99, 102, 241, 0.06);
+  }
+  .st-tmpl-check {
+    font-size: 13px;
+    text-align: center;
+  }
+  .st-tmpl-name {
+    font-weight: 500;
+  }
+  .st-tmpl-source {
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .st-tmpl-desc {
+    grid-column: 2 / -1;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .st-result-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 6px;
+  }
+  .st-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid var(--background-modifier-border);
+  }
+  .st-footer-right {
+    display: flex;
+    gap: 8px;
+  }
+  .st-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--background-modifier-border);
+  }
+  .st-btn-primary {
+    background: var(--interactive-accent, #6366f1);
+    color: #fff;
+    border-color: transparent;
+  }
+  .st-btn-primary:hover {
+    opacity: 0.9;
+  }
+  .st-btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .st-btn-secondary {
+    background: var(--background-secondary);
+    color: var(--text-normal);
+  }
+  .st-btn-secondary:hover {
+    background: var(--background-modifier-hover);
+  }
 </style>

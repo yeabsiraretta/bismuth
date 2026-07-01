@@ -24,7 +24,11 @@ describe('EventFormFields', () => {
   it('dispatches change on title input', async () => {
     const { container, component } = render(EventFormFields, { props: baseProps });
     const onChange = vi.fn();
-    (component as unknown as { $on: (event: string, handler: (...args: unknown[]) => void) => void }).$on('change', onChange);
+    (
+      component as unknown as {
+        $on: (event: string, handler: (...args: unknown[]) => void) => void;
+      }
+    ).$on('change', onChange);
     const input = container.querySelector('.input-title') as HTMLInputElement;
     await fireEvent.input(input, { target: { value: 'My event' } });
     expect(onChange).toHaveBeenCalledOnce();

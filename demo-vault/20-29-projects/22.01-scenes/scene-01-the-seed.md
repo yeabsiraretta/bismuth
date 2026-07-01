@@ -1,10 +1,10 @@
 ---
-title: "Scene 1: The Seed"
+title: 'Scene 1: The Seed'
 date: 2026-06-21
 tags: [longform, scene, draft]
 type: Task
 status: drafting
-parent: "[[20-29-projects/22.01-longform-project]]"
+parent: '[[20-29-projects/22.01-longform-project]]'
 word_count: 812
 ---
 
@@ -45,6 +45,7 @@ A new card materialized: "Both depend on maintaining connection across distance 
 ## Flashcards
 
 ### What is the central metaphor in Scene 1? #card #writing #craft
+
 Notes physically growing like plants and forming connections the writer never intended — knowledge as a living garden that self-organizes through linking.
 
 The story's card numbering (Card #247.89) mirrors ==Zettelkasten== branching notation, where child ideas inherit parent IDs.

@@ -66,7 +66,7 @@ describe('createFocusTrap', () => {
     trap.activate();
     expect(vi.mocked(libMock)).toHaveBeenCalledWith(
       container,
-      expect.objectContaining({ initialFocus: button }),
+      expect.objectContaining({ initialFocus: button })
     );
   });
 
@@ -78,7 +78,7 @@ describe('createFocusTrap', () => {
     trap.activate();
     expect(vi.mocked(libMock)).toHaveBeenCalledWith(
       container,
-      expect.objectContaining({ returnFocusOnDeactivate: true }),
+      expect.objectContaining({ returnFocusOnDeactivate: true })
     );
   });
 
@@ -90,7 +90,7 @@ describe('createFocusTrap', () => {
     trap.activate();
     expect(vi.mocked(libMock)).toHaveBeenCalledWith(
       container,
-      expect.objectContaining({ returnFocusOnDeactivate: false }),
+      expect.objectContaining({ returnFocusOnDeactivate: false })
     );
   });
 
@@ -102,7 +102,7 @@ describe('createFocusTrap', () => {
     trap.activate();
     expect(vi.mocked(libMock)).toHaveBeenCalledWith(
       container,
-      expect.objectContaining({ escapeDeactivates: false }),
+      expect.objectContaining({ escapeDeactivates: false })
     );
   });
 
@@ -115,7 +115,7 @@ describe('createFocusTrap', () => {
     trap.activate();
     expect(vi.mocked(libMock)).toHaveBeenCalledWith(
       container,
-      expect.objectContaining({ escapeDeactivates: true }),
+      expect.objectContaining({ escapeDeactivates: true })
     );
   });
 

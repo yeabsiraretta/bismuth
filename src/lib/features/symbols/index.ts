@@ -10,16 +10,26 @@ export { DEFAULT_RULES, DEFAULT_CONFIG, WORD_BOUNDARY } from './types';
 
 // Services
 export {
-  findMatch, isWordTrigger, sortRules,
-  prettifyText, unprettifyText,
+  findMatch,
+  isWordTrigger,
+  sortRules,
+  prettifyText,
+  unprettifyText,
 } from './services/prettifier';
 
 // Stores
 export {
-  symbolsEnabled, symbolRules, symbolRulesRaw,
-  toggleSymbols, setSymbolsEnabled,
-  toggleRule, addRule, removeRule, resetRules,
-  getRules, isEnabled,
+  symbolsEnabled,
+  symbolRules,
+  symbolRulesRaw,
+  toggleSymbols,
+  setSymbolsEnabled,
+  toggleRule,
+  addRule,
+  removeRule,
+  resetRules,
+  getRules,
+  isEnabled,
 } from './stores/symbolStore';
 
 // Extensions

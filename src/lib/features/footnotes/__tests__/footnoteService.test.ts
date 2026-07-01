@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  nextFootnoteIndex,
-  extractFootnotes,
-  getFootnoteIds,
-} from '../services/footnoteService';
+import { nextFootnoteIndex, extractFootnotes, getFootnoteIds } from '../services/footnoteService';
 
 describe('nextFootnoteIndex', () => {
   it('returns 1 for empty document', () => {
@@ -52,7 +48,7 @@ describe('extractFootnotes', () => {
     const doc = 'A[^1] B[^2] C[^note]\n[^1]: x\n[^2]: y\n[^note]: z';
     const fns = extractFootnotes(doc);
     expect(fns).toHaveLength(3);
-    const ids = fns.map(f => f.id).sort();
+    const ids = fns.map((f) => f.id).sort();
     expect(ids).toEqual(['1', '2', 'note']);
   });
 

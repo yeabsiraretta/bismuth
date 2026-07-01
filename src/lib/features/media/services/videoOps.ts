@@ -31,11 +31,8 @@ export async function checkCoopCoepAvailable(): Promise<boolean> {
  *
  * @throws Always throws until COOP/COEP headers are verified.
  */
-export async function applyVideoOps(
-  _videoPath: string,
-  _ops: VideoOperation[],
-): Promise<string> {
+export async function applyVideoOps(_videoPath: string, _ops: VideoOperation[]): Promise<string> {
   throw new Error(
-    'Video editing requires COOP/COEP headers — see docs/development/coop-coep-verification.md',
+    'Video editing requires COOP/COEP headers — see docs/development/coop-coep-verification.md'
   );
 }

@@ -1,16 +1,16 @@
-schema_version: "1.0"
+schema_version: '1.0'
 
 extension:
   id: changelog
   name: Spec Changelog
-  version: "1.0.0"
-  description: "Auto-generate changelogs and release notes from spec history and implementation milestones"
+  version: '1.0.0'
+  description: 'Auto-generate changelogs and release notes from spec history and implementation milestones'
   author: Quratulain-bilal
   repository: https://github.com/Quratulain-bilal/spec-kit-changelog
   license: MIT
 
 requires:
-  spec_kit: ">= 0.4.0"
+  spec_kit: '>= 0.4.0'
 
 provides:
   commands:
@@ -24,9 +24,9 @@ provides:
 
 hooks:
   after_specify:
-    description: "Generate changelog entry after spec generation"
+    description: 'Generate changelog entry after spec generation'
   after_implement:
-    description: "Generate changelog entry and bump version after implementation completion"
+    description: 'Generate changelog entry and bump version after implementation completion'
 
 tags:
   - changelog

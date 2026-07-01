@@ -1,56 +1,56 @@
-import MarkdownIt from "markdown-it";
+import MarkdownIt from 'markdown-it';
 
 const markdownIt = new MarkdownIt({ html: false, linkify: false, typographer: false });
 
 export const STOPWORDS = new Set([
-  "able",
-  "about",
-  "after",
-  "all",
-  "also",
-  "and",
-  "any",
-  "are",
-  "before",
-  "been",
-  "being",
-  "can",
-  "does",
-  "each",
-  "for",
-  "from",
-  "have",
-  "into",
-  "less",
-  "more",
-  "must",
-  "not",
-  "only",
-  "over",
-  "should",
-  "than",
-  "that",
-  "the",
-  "then",
-  "this",
-  "under",
-  "use",
-  "used",
-  "what",
-  "when",
-  "where",
-  "will",
-  "with",
-  "your",
+  'able',
+  'about',
+  'after',
+  'all',
+  'also',
+  'and',
+  'any',
+  'are',
+  'before',
+  'been',
+  'being',
+  'can',
+  'does',
+  'each',
+  'for',
+  'from',
+  'have',
+  'into',
+  'less',
+  'more',
+  'must',
+  'not',
+  'only',
+  'over',
+  'should',
+  'than',
+  'that',
+  'the',
+  'then',
+  'this',
+  'under',
+  'use',
+  'used',
+  'what',
+  'when',
+  'where',
+  'will',
+  'with',
+  'your',
 ]);
 
 export function normalizeWhitespace(value: string): string {
-  return value.replace(/\s+/g, " ").trim();
+  return value.replace(/\s+/g, ' ').trim();
 }
 
 export function markdownToText(markdown: string): string {
   const html = markdownIt.render(markdown);
-  return normalizeWhitespace(html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " "));
+  return normalizeWhitespace(html.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' '));
 }
 
 export function wordCount(value: string): number {
@@ -63,7 +63,7 @@ export function truncateWords(value: string, maxWords: number): string {
   if (words.length <= maxWords) {
     return normalizeWhitespace(value);
   }
-  return normalizeWhitespace(words.slice(0, maxWords).join(" ")) + "...";
+  return normalizeWhitespace(words.slice(0, maxWords).join(' ')) + '...';
 }
 
 export function sentencesFromText(value: string, maxSentences: number, maxWords: number): string {
@@ -90,14 +90,15 @@ export function sentencesFromText(value: string, maxSentences: number, maxWords:
     return truncateWords(value, maxWords);
   }
 
-  return chosen.join(" ");
+  return chosen.join(' ');
 }
 
 export function extractKeywords(value: string, maxKeywords = 8): string[] {
-  const words = value
-    .toLowerCase()
-    .match(/\b[\p{L}\p{N}_-]{3,}\b/gu)
-    ?.filter((word) => !STOPWORDS.has(word)) ?? [];
+  const words =
+    value
+      .toLowerCase()
+      .match(/\b[\p{L}\p{N}_-]{3,}\b/gu)
+      ?.filter((word) => !STOPWORDS.has(word)) ?? [];
 
   const counts = new Map<string, number>();
   for (const word of words) {
@@ -111,7 +112,11 @@ export function extractKeywords(value: string, maxKeywords = 8): string[] {
 }
 
 export function uniqueSorted(values: Array<string | null | undefined>): string[] {
-  return [...new Set(values.filter(Boolean).map((value) => normalizeWhitespace(String(value)).toLowerCase()))]
+  return [
+    ...new Set(
+      values.filter(Boolean).map((value) => normalizeWhitespace(String(value)).toLowerCase())
+    ),
+  ]
     .filter(Boolean)
     .sort();
 }

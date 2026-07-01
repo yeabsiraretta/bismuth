@@ -18,6 +18,7 @@ Successfully implemented all core Rust data models for Bismuth PKM Editor. These
 ### ✅ T010: Note Struct (`src-tauri/src/models/note.rs`)
 
 **Implementation**:
+
 - Full markdown note representation with frontmatter support
 - YAML frontmatter parser using `serde_yaml`
 - Automatic title extraction from frontmatter or filename
@@ -26,12 +27,14 @@ Successfully implemented all core Rust data models for Bismuth PKM Editor. These
 - Field getters/setters for frontmatter manipulation
 
 **Key Features**:
+
 - Handles notes with and without frontmatter
 - Robust parsing with fallback for malformed YAML
 - Support for nested frontmatter structures
 - Automatic timestamp management
 
 **Tests**: 6 unit tests covering:
+
 - Note creation with/without frontmatter
 - Frontmatter parsing edge cases
 - Body extraction
@@ -40,18 +43,21 @@ Successfully implemented all core Rust data models for Bismuth PKM Editor. These
 ### ✅ T011: Vault Struct (`src-tauri/src/models/vault.rs`)
 
 **Implementation**:
+
 - Vault root path validation and canonicalization
 - Settings path management (`.bismuth/config.json`)
 - Directory helper methods for all vault subdirectories
 - Path security with `contains_path` check
 
 **Key Features**:
+
 - Validates path exists and is a directory
 - Canonicalizes paths for security
 - Provides helpers for: bismuth_dir, notes_dir, templates_dir, themes_dir, plugins_dir, index_dir, recovery_dir, history_dir
 - Custom vault naming support
 
 **Tests**: 6 unit tests covering:
+
 - Valid vault creation
 - Error handling (nonexistent path, file instead of directory)
 - Custom vault names
@@ -61,18 +67,21 @@ Successfully implemented all core Rust data models for Bismuth PKM Editor. These
 ### ✅ T012: Link Struct (`src-tauri/src/models/link.rs`)
 
 **Implementation**:
+
 - Wikilink representation with source/target tracking
 - Link resolution with multiple strategies
 - Alias support for display text
 - Backlink detection
 
 **Key Features**:
+
 - Resolves links by exact match, normalized match, and space-to-dash conversion
 - Tracks resolution status
 - Optional display aliases
 - Backlink relationship checking
 
 **Tests**: 6 unit tests covering:
+
 - Link creation
 - Display text with/without alias
 - Resolution strategies (exact, normalized, dashes)
@@ -82,16 +91,19 @@ Successfully implemented all core Rust data models for Bismuth PKM Editor. These
 ### ✅ T013: Tag and SearchResult Structs (`src-tauri/src/models/mod.rs`)
 
 **Implementation**:
+
 - Tag struct with name and usage count
 - SearchResult struct with path, title, snippet, and relevance score
 - Module exports for all models
 
 **Key Features**:
+
 - Simple, focused data structures
 - Serializable for IPC communication
 - Ready for search and tag management features
 
 **Tests**: 2 unit tests covering:
+
 - Tag creation
 - SearchResult creation
 
@@ -128,6 +140,7 @@ tempfile = "3.8"            # Test fixtures (dev-dependency)
 ## Acceptance Criteria Met
 
 ### T010 (Note)
+
 - ✅ `cargo check` passes
 - ✅ Frontmatter parsing works
 - ✅ Title extraction from frontmatter or filename
@@ -135,18 +148,21 @@ tempfile = "3.8"            # Test fixtures (dev-dependency)
 - ✅ Body extraction
 
 ### T011 (Vault)
+
 - ✅ Can instantiate from valid path
 - ✅ Path validation (exists, is directory)
 - ✅ Canonicalization for security
 - ✅ Directory helpers implemented
 
 ### T012 (Link)
+
 - ✅ Compiles successfully
 - ✅ Link resolution logic
 - ✅ Alias support
 - ✅ Backlink detection
 
 ### T013 (Tag & SearchResult)
+
 - ✅ All models accessible via `use crate::models::*`
 - ✅ Serializable for IPC
 - ✅ Ready for integration
@@ -200,14 +216,17 @@ src-tauri/src/models/link.rs            # Link struct (205 lines)
 ## Next Steps
 
 ### Immediate (Phase 2.2)
+
 - **T014**: Define error types with `thiserror`
 - **T015**: Define app config with `serde`
 
 ### Phase 2.3
+
 - **T016**: Initialize SQLite database with migrations
 - **T017**: Add performance indexes
 
 ### Phase 2.4
+
 - **T018-T020**: Implement VaultService and wire into Tauri state
 
 ---

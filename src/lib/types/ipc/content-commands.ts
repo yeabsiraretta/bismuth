@@ -2,7 +2,10 @@
  * Content IPC Commands — Tasks, properties, tags, lifecycle, embeddings, entities
  */
 
-interface CommandContract<P, R> { params: P; result: R }
+interface CommandContract<P, R> {
+  params: P;
+  result: R;
+}
 
 export interface ContentCommands {
   get_all_tasks: CommandContract<Record<string, never>, unknown[]>;

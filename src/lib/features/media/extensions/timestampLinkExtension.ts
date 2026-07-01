@@ -5,12 +5,7 @@
  * making them clickable to seek the active media player.
  */
 
-import {
-  Decoration,
-  EditorView,
-  ViewPlugin,
-  WidgetType,
-} from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin, WidgetType } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import type { Range } from '@codemirror/state';
 import { parseTimestamp } from '../services/playerService';
@@ -25,11 +20,17 @@ class TimestampWidget extends WidgetType {
   constructor(
     private display: string,
     private source: string,
-    private timeStr: string,
-  ) { super(); }
+    private timeStr: string
+  ) {
+    super();
+  }
 
   eq(other: TimestampWidget): boolean {
-    return this.display === other.display && this.source === other.source && this.timeStr === other.timeStr;
+    return (
+      this.display === other.display &&
+      this.source === other.source &&
+      this.timeStr === other.timeStr
+    );
   }
 
   toDOM(): HTMLElement {
@@ -68,7 +69,9 @@ class TimestampWidget extends WidgetType {
     return span;
   }
 
-  ignoreEvent(): boolean { return true; }
+  ignoreEvent(): boolean {
+    return true;
+  }
 }
 
 function buildDecorations(view: EditorView): DecorationSet {
@@ -81,9 +84,18 @@ function buildDecorations(view: EditorView): DecorationSet {
     const line = doc.line(i);
     const text = line.text;
 
-    if (i === 1 && text === '---') { inFrontmatter = true; continue; }
-    if (inFrontmatter) { if (text === '---') inFrontmatter = false; continue; }
-    if (/^(`{3,}|~{3,})/.test(text)) { inCodeBlock = !inCodeBlock; continue; }
+    if (i === 1 && text === '---') {
+      inFrontmatter = true;
+      continue;
+    }
+    if (inFrontmatter) {
+      if (text === '---') inFrontmatter = false;
+      continue;
+    }
+    if (/^(`{3,}|~{3,})/.test(text)) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
     if (inCodeBlock) continue;
 
     TS_LINK_RE.lastIndex = 0;
@@ -116,7 +128,7 @@ export function timestampLinkExtension() {
         }
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 
   const theme = EditorView.baseTheme({

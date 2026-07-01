@@ -129,15 +129,18 @@ A **production-grade, scalable Git workflow** has been implemented for the Bismu
 ### 2. Automated Quality Checks
 
 **Pre-commit**:
+
 - ✅ Code formatting (ESLint, Prettier, Rustfmt)
 - ✅ Linting (Clippy, ESLint)
 - ✅ Commit message validation
 
 **Pre-push**:
+
 - ✅ Unit tests (frontend + backend)
 - ✅ Integration tests
 
 **CI Pipeline**:
+
 - ✅ Multi-platform testing (Linux, macOS, Windows)
 - ✅ E2E tests with Playwright
 - ✅ Security audits
@@ -147,6 +150,7 @@ A **production-grade, scalable Git workflow** has been implemented for the Bismu
 ### 3. Conventional Commits
 
 **Enforced Format**:
+
 ```
 <type>(<scope>): <subject>
 
@@ -235,19 +239,23 @@ pnpm release:major
 ## 📊 Quality Gates
 
 ### Before Commit
+
 - ✅ Code formatted
 - ✅ No linting errors
 - ✅ Commit message valid
 
 ### Before Push
+
 - ✅ All tests pass
 
 ### Before Merge to `develop`
+
 - ✅ 1 approval
 - ✅ CI passes
 - ✅ No conflicts
 
 ### Before Merge to `main`
+
 - ✅ 2 approvals
 - ✅ All CI checks pass
 - ✅ E2E tests pass
@@ -268,24 +276,28 @@ pnpm release:major
 ## 📈 Benefits
 
 ### Code Quality
+
 - Consistent code style across team
 - Automated quality checks
 - Zero warnings policy
 - High test coverage
 
 ### Security
+
 - Automated vulnerability detection
 - Regular dependency updates
 - Code review required
 - Signed commits for accountability
 
 ### Collaboration
+
 - Clear workflow guidelines
 - Automated reviewer assignment
 - Structured PR/issue templates
 - Easy onboarding for new contributors
 
 ### Maintainability
+
 - Clear project history
 - Semantic versioning
 - Automated changelog
@@ -362,18 +374,21 @@ After setup, verify:
 ## 🔧 Troubleshooting
 
 ### Pre-commit fails
+
 ```bash
 pnpm format && pnpm lint:fix
 cargo fmt --all && cargo clippy --fix --allow-dirty
 ```
 
 ### CI fails
+
 ```bash
 pnpm test:ci
 cargo test --all-features
 ```
 
 ### Cannot push to protected branch
+
 ```bash
 # Don't push directly! Create PR instead
 git push origin feature/your-branch

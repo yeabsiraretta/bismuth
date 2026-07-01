@@ -90,6 +90,7 @@ Suggested fixes should be concrete:
 - Document an accepted deviation if the current design is intentional.
 
 ### Incremental Migration Strategy
+
 When generating refactor tasks based on architecture drift, you MUST avoid proposing full system rewrites. Prefer incremental, boundary-by-boundary, or module-by-module migrations.
 Output your phased migration strategy to `specs/<feature>/architecture-migration-plan.md`. Include coexistence strategies for old and new patterns.
 
@@ -101,22 +102,27 @@ When creating `specs/<feature>/architecture-migration-plan.md`, use this structu
 # [Violation Title] Migration Plan
 
 ## Current State
+
 [Brief description or ASCII diagram of current architecture]
 
 ### Problems
+
 - [Problem 1 from violation]
 - [Problem 2 from violation]
 
 ## Target State
+
 [Brief description or ASCII diagram of target architecture]
 
 ### Benefits
+
 - [Benefit 1]
 - [Benefit 2]
 
 ## Migration Phases
 
 ### Phase 1: [Name] (Estimated: X days)
+
 **Goal**: [Outcome]
 
 - **Task 1.1**: [Specific, actionable task]
@@ -125,6 +131,7 @@ When creating `specs/<feature>/architecture-migration-plan.md`, use this structu
 **Coexistence**: [How old and new patterns coexist in this phase]
 
 ### Phase 2: [Name] (Estimated: X days)
+
 [Same structure]
 
 ## Coexistence Strategy
@@ -132,15 +139,18 @@ When creating `specs/<feature>/architecture-migration-plan.md`, use this structu
 **Why coexistence?** Avoid big-bang rewrites; allow gradual migration.
 
 **How**:
+
 - New code uses new pattern immediately
 - Old code continues on old pattern temporarily
 - Boundary layer adapts between old and new
 - Example: Run both repositories in parallel until all consumers migrate
 
 ## Rollback Plan
+
 [If migration fails, how do we revert?]
 
 ## Success Criteria
+
 - [ ] All new code uses target pattern
 - [ ] Old pattern removed or marked deprecated
 - [ ] Tests pass

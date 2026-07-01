@@ -7,11 +7,7 @@
  * Pattern follows abcExtension.ts / smilesExtension.ts.
  */
 
-import {
-  Decoration,
-  ViewPlugin,
-  EditorView,
-} from '@codemirror/view';
+import { Decoration, ViewPlugin, EditorView } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { findClozes, noteHasTag } from './clozeService';
@@ -74,7 +70,7 @@ export function clozeExtension() {
               cloze.text,
               cloze.hint,
               config,
-              globalRevealed,
+              globalRevealed
             );
             builder.add(from, to, Decoration.replace({ widget }));
           }
@@ -84,7 +80,7 @@ export function clozeExtension() {
         this.decorations = builder.finish();
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 
   return [plugin, clozeTheme];
@@ -104,7 +100,8 @@ const clozeTheme = EditorView.theme({
     background: 'var(--cloze-underline-color, var(--background-modifier-border))',
     color: 'var(--cloze-hint-color, var(--text-faint))',
     fontSize: 'var(--cloze-hint-font-size, inherit)',
-    borderBottom: 'var(--cloze-underline-width, 2px) var(--cloze-underline-style, dashed) var(--cloze-underline-color, rgba(245, 158, 11, 0.5))',
+    borderBottom:
+      'var(--cloze-underline-width, 2px) var(--cloze-underline-style, dashed) var(--cloze-underline-color, rgba(245, 158, 11, 0.5))',
     fontFamily: 'var(--font-monospace)',
   },
   '.cm-cloze-hidden:hover': {

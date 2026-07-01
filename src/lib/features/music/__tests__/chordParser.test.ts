@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseChordSymbol, extractChords, isChordLine, classifyLine,
-  parseChordBlock, findChordBlocks, sampleChordSheet,
+  parseChordSymbol,
+  extractChords,
+  isChordLine,
+  classifyLine,
+  parseChordBlock,
+  findChordBlocks,
+  sampleChordSheet,
 } from '../services/chords/chordParser';
 
 describe('parseChordSymbol', () => {
@@ -152,7 +157,7 @@ describe('findChordBlocks', () => {
     const blocks = findChordBlocks(text);
     expect(blocks).toHaveLength(1);
     expect(blocks[0].lines.length).toBeGreaterThanOrEqual(2);
-    expect(blocks[0].lines.filter(l => l.type !== 'empty')).toHaveLength(2);
+    expect(blocks[0].lines.filter((l) => l.type !== 'empty')).toHaveLength(2);
   });
 
   it('finds multiple blocks', () => {

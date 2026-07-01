@@ -9,7 +9,17 @@ beforeEach(() => {
   Element.prototype.getBoundingClientRect = vi.fn().mockImplementation(function (this: Element) {
     const isPill = this.classList?.contains('ms-pill');
     const w = isPill ? 60 : 500;
-    return { width: w, height: 32, top: 0, left: 0, bottom: 32, right: w, x: 0, y: 0, toJSON: () => ({}) };
+    return {
+      width: w,
+      height: 32,
+      top: 0,
+      left: 0,
+      bottom: 32,
+      right: w,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    };
   });
 });
 
@@ -21,7 +31,13 @@ const opts = [
 
 const groupedOpts = [
   { label: 'Group 1', options: [{ value: 'a', label: 'Alpha' }] },
-  { label: 'Group 2', options: [{ value: 'b', label: 'Beta' }, { value: 'c', label: 'Gamma' }] },
+  {
+    label: 'Group 2',
+    options: [
+      { value: 'b', label: 'Beta' },
+      { value: 'c', label: 'Gamma' },
+    ],
+  },
 ];
 
 describe('MultiSelect', () => {

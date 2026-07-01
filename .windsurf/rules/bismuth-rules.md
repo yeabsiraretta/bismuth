@@ -36,6 +36,7 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 ## Global Coding Principles
 
 ### Code Style and Readability
+
 - **Clarity Over Brevity**: Favor understandable code over clever tricks
 - **Consistent Naming**: Descriptive names following language conventions
 - **Consistent Formatting**: Use automated tools (linters, formatters)
@@ -43,18 +44,21 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 - **Small Functions**: Single-responsibility, concise, focused
 
 ### Architecture and Modularity
+
 - **Encapsulate Complexity**: Hide complex logic behind clear interfaces
 - **Decouple Components**: Use interfaces/dependency injection
 - **DRY**: Factor out repetitive patterns
 - **Design for Extensibility**: Add features without major rewrites
 
 ### Error Handling and Testing
+
 - **Fail Fast, Fail Loud**: Validate early, clear error messages
 - **Testability as Priority**: Easy to test in isolation
 - **Thorough Input Validation**: Check correctness, sanity, security
 - **Iterative Validation**: Run tests frequently
 
 ### Performance and Resource Management
+
 - **Appropriate Data Structures**: Choose best-suited for problem
 - **Avoid Premature Optimization**: Start clean, measure, address hotspots
 - **Resource Lifecycle Awareness**: Proper cleanup (memory, files, connections)
@@ -62,6 +66,7 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: Svelte 4.2+ with TypeScript
 - **Editor**: CodeMirror 6
 - **Styling**: Tailwind CSS + CSS custom properties
@@ -69,12 +74,14 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 - **Build**: Vite 5.4+
 
 ### Backend
+
 - **Runtime**: Rust with Tauri 1.5+
 - **Database**: SQLite (local, embedded)
 - **Search**: Tantivy (full-text search)
 - **File Watching**: notify crate
 
 ### Testing
+
 - **Frontend**: Vitest + Testing Library
 - **Backend**: Rust built-in testing + tempfile
 - **E2E**: Playwright (planned)
@@ -82,6 +89,7 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 ## Pre-Action Checklist
 
 **Before Every Task**:
+
 1. Read `.claude/agent-rules.md` for workflow rules
 2. Check `.claude/project-context.md` for architecture
 3. Review Constitution for constraints
@@ -89,18 +97,21 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 5. Check existing code for similar patterns
 
 **Before Code Changes**:
+
 1. Verify file won't exceed 300-line limit
 2. Check if tests exist for affected behavior
 3. Review UX principles if UI changes
 4. Confirm tech stack alignment
 
 **Before Creating Files**:
+
 1. Verify file doesn't already exist
 2. Confirm it fits Constitution principles
 3. Check if content belongs in existing file
 4. Plan file structure to stay under 300 lines
 
 **Before Documentation Changes**:
+
 1. Check if information exists elsewhere
 2. Verify it's not temporary/scratch content
 3. Confirm it adds value to knowledge base
@@ -109,6 +120,7 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 ## Documentation Standards
 
 **Anti-Bloat Rules**:
+
 - NEVER create new docs without explicit need
 - PREFER: Update existing docs over creating new ones
 - PREFER: Add to CHANGELOG.md over separate notes
@@ -116,6 +128,7 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 - Only create for: major architecture, required tooling, or when doesn't fit existing structure
 
 **When Creating Docs**:
+
 - Add YAML frontmatter with `summary` and `read_when` fields
 - Place in appropriate `docs/` subdirectory
 - Update `docs/README.md` with reference
@@ -127,16 +140,19 @@ This file integrates all Claude tooling and project-specific rules for AI-assist
 Invoke skills when user request matches the description:
 
 ### ux-review
+
 **Trigger**: User requests UX feedback, evaluation, or review
 **Process**: Classify interface → Select principles → Scan violations → Detect smells → Score
 **Output**: Structured evaluation (0-100 score, findings, priority fixes)
 
 ### code-review
+
 **Trigger**: User requests code/PR review or asks "is this the best fix"
 **Process**: Identify change → Find root cause → Evaluate fix → Check refactor → Verify proof
 **Output**: Structured review with root cause, evaluation, recommendation
 
 ### component-gen
+
 **Trigger**: User asks to create/build UI component
 **Process**: Identify type → Check requirements → Apply guardrails → Generate → Verify
 **Output**: Production-ready component with UX principles baked in
@@ -207,17 +223,20 @@ bismuth/
 ## UX Guardrails (Non-Negotiable)
 
 ### Cognitive Load
+
 - Max 7±2 items in any list, menu, or visible set
 - Group when exceeding 9 items
 - Progressive disclosure for advanced options
 
 ### Interaction
+
 - Min 40x40px for all interactive elements
 - Min 44x44px for primary actions
 - Immediate feedback on all user actions
 - Confirmation for destructive actions
 
 ### Accessibility
+
 - Keyboard navigation for all features
 - ARIA labels on icon-only buttons
 - Focus indicators visible (2px outline)

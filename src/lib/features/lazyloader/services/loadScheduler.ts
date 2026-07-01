@@ -45,7 +45,7 @@ export function saveProfiles(profiles: FeatureLoadProfile[]): void {
 /** Record a load timing into the profile history. */
 export function recordTiming(
   timing: FeatureLoadTiming,
-  profiles: FeatureLoadProfile[],
+  profiles: FeatureLoadProfile[]
 ): FeatureLoadProfile[] {
   if (!timing.success || timing.durationMs === null) return profiles;
   const existing = profiles.find((p) => p.featureId === timing.featureId);
@@ -75,7 +75,7 @@ export function resolveFeaturePriority(
   featureId: string,
   config: LazyLoaderConfig,
   profiles: FeatureLoadProfile[],
-  isCoreFeature: boolean,
+  isCoreFeature: boolean
 ): LoadPriority {
   if (isCoreFeature) return 'eager';
   // Explicit override
@@ -93,9 +93,7 @@ export function resolveFeaturePriority(
 
 /** Sort queue entries by priority (lower number = higher priority). */
 export function sortQueue(queue: LoadQueueEntry[]): LoadQueueEntry[] {
-  return [...queue].sort(
-    (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority],
-  );
+  return [...queue].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]);
 }
 
 /** Filter queue to only loadable entries (not disabled). */
@@ -131,7 +129,7 @@ export function createSchedulerState(): SchedulerState {
 export async function processQueue(
   state: SchedulerState,
   config: LazyLoaderConfig,
-  onTiming: (timing: FeatureLoadTiming) => void,
+  onTiming: (timing: FeatureLoadTiming) => void
 ): Promise<FeatureLoadTiming[]> {
   if (state.running) return state.timings;
   state.running = true;
@@ -168,7 +166,7 @@ export async function processQueue(
 async function loadSingle(
   entry: LoadQueueEntry,
   state: SchedulerState,
-  onTiming: (timing: FeatureLoadTiming) => void,
+  onTiming: (timing: FeatureLoadTiming) => void
 ): Promise<void> {
   const start = performance.now();
   const trigger = entry.priority === 'eager' ? 'eager' : 'preload';
@@ -201,7 +199,10 @@ async function loadSingle(
     state.timings.push(timing);
     entry.reject?.(err);
     onTiming(timing);
-    log.warn('Lazy loader: feature failed to load', { featureId: entry.featureId, error: String(err) });
+    log.warn('Lazy loader: feature failed to load', {
+      featureId: entry.featureId,
+      error: String(err),
+    });
   } finally {
     state.active.delete(entry.featureId);
   }
@@ -215,10 +216,7 @@ export function totalLoadTime(timings: FeatureLoadTiming[]): number {
 }
 
 /** Get the N slowest features. */
-export function slowestFeatures(
-  timings: FeatureLoadTiming[],
-  n: number,
-): FeatureLoadTiming[] {
+export function slowestFeatures(timings: FeatureLoadTiming[], n: number): FeatureLoadTiming[] {
   return [...timings]
     .filter((t) => t.success && t.durationMs !== null)
     .sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0))
@@ -226,10 +224,14 @@ export function slowestFeatures(
 }
 
 /** Count features by priority. */
-export function countByPriority(
-  entries: LoadQueueEntry[],
-): Record<LoadPriority, number> {
-  const counts: Record<LoadPriority, number> = { eager: 0, high: 0, normal: 0, low: 0, disabled: 0 };
+export function countByPriority(entries: LoadQueueEntry[]): Record<LoadPriority, number> {
+  const counts: Record<LoadPriority, number> = {
+    eager: 0,
+    high: 0,
+    normal: 0,
+    low: 0,
+    disabled: 0,
+  };
   for (const e of entries) counts[e.priority]++;
   return counts;
 }

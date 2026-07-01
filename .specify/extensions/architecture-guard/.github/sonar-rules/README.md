@@ -20,12 +20,14 @@ When this extension is installed into a project, the same bundle is available at
 ## Initial Bundle
 
 The initial `sonarlint-rules.json` contains **18 representative architecture-relevant rules** covering:
+
 - Brain overload (high complexity, oversized functions/classes)
 - Coupling/dependencies (circular deps, tight coupling, public fields)
 - Structure (encapsulation, boundaries, naming consistency)
 - Performance anti-patterns (common architectural misuse)
 
 **These are template/example rules**, formatted as they would appear from SonarLint CLI output. They serve as working examples for the MVP. You can customize or replace them by:
+
 1. Running the extraction script to use real SonarLint CLI rules
 2. Manually editing to match your project's needs
 
@@ -39,6 +41,7 @@ When ready, regenerate rules from actual SonarLint CLI (quarterly recommended):
 ```
 
 This will:
+
 1. Check for `sonarlint` CLI (`npm install -g sonarlint` if needed)
 2. Extract all available rules with `sonarlint --list-all-rules --format=json`
 3. Filter for architecture-relevant tags (coupling, complexity, structure, dependency, performance)
@@ -56,6 +59,7 @@ git commit -m "chore: update SonarLint rules bundle"
 ## Customizing Rules Locally
 
 You can also manually edit `sonarlint-rules.json` to:
+
 - Remove rules not relevant to your project
 - Reorder by severity or frequency
 - Add custom rule mappings
@@ -85,6 +89,7 @@ The `architecture-review` command Step 7b loads rules from this bundle and:
 ## SonarQube Server Integration (Future)
 
 When SonarQube server integration is added (Phase 3b):
+
 - Init process will ask for SonarQube URL + token
 - At review time: Try server API first → fall back to CLI rules if unavailable
 - This bundle remains as permanent fallback

@@ -19,10 +19,20 @@
     <div class="empty">Select a component to view documentation</div>
   {:else}
     <div class="tabs">
-      <button class:active={activeTab === 'description'} on:click={() => activeTab = 'description'}>Description</button>
-      <button class:active={activeTab === 'usage'} on:click={() => activeTab = 'usage'}>Usage</button>
-      <button class:active={activeTab === 'accessibility'} on:click={() => activeTab = 'accessibility'}>A11y</button>
-      <button class:active={activeTab === 'history'} on:click={() => activeTab = 'history'}>History</button>
+      <button
+        class:active={activeTab === 'description'}
+        on:click={() => (activeTab = 'description')}>Description</button
+      >
+      <button class:active={activeTab === 'usage'} on:click={() => (activeTab = 'usage')}
+        >Usage</button
+      >
+      <button
+        class:active={activeTab === 'accessibility'}
+        on:click={() => (activeTab = 'accessibility')}>A11y</button
+      >
+      <button class:active={activeTab === 'history'} on:click={() => (activeTab = 'history')}
+        >History</button
+      >
     </div>
 
     <div class="tab-content">
@@ -60,19 +70,71 @@
 </div>
 
 <style>
-  .component-docs { display: flex; flex-direction: column; height: 100%; }
-  .empty { color: var(--text-muted); text-align: center; padding: var(--spacing-lg); }
-  .tabs { display: flex; border-bottom: 1px solid var(--border); }
-  .tabs button { padding: var(--spacing-xs) var(--spacing-sm); border: none; background: none; cursor: pointer; font-size: var(--font-size-sm); border-bottom: 2px solid transparent; }
-  .tabs button.active { border-bottom-color: var(--accent); color: var(--accent); }
-  .tab-content { flex: 1; overflow-y: auto; padding: var(--spacing-sm); }
-  .markdown-content { line-height: 1.6; font-size: var(--font-size-sm); }
-  .examples { padding-left: var(--spacing-md); }
-  .examples.do li { color: var(--text-success); }
-  .examples.dont li { color: var(--text-error); }
-  h5 { margin: var(--spacing-sm) 0 var(--spacing-xs); font-size: var(--font-size-sm); }
-  .changelog { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .change-entry { display: grid; grid-template-columns: 80px 80px 1fr; gap: var(--spacing-xs); font-size: var(--font-size-sm); padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--border); }
-  .change-date { color: var(--text-muted); }
-  .change-author { font-weight: 500; }
+  .component-docs {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+  .tabs button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    border-bottom: 2px solid transparent;
+  }
+  .tabs button.active {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+  }
+  .markdown-content {
+    line-height: 1.6;
+    font-size: var(--font-size-sm);
+  }
+  .examples {
+    padding-left: var(--spacing-md);
+  }
+  .examples.do li {
+    color: var(--text-success);
+  }
+  .examples.dont li {
+    color: var(--text-error);
+  }
+  h5 {
+    margin: var(--spacing-sm) 0 var(--spacing-xs);
+    font-size: var(--font-size-sm);
+  }
+  .changelog {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .change-entry {
+    display: grid;
+    grid-template-columns: 80px 80px 1fr;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .change-date {
+    color: var(--text-muted);
+  }
+  .change-author {
+    font-weight: 500;
+  }
 </style>

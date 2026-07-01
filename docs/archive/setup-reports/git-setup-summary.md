@@ -9,27 +9,30 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 1. Branch Protection & Policies
 
 **Files Created**:
+
 - `.github/branch-protection.md` - Detailed branch protection configuration guide
 
 **Branch Rules**:
 
-| Branch | Direct Push | Approvals | CI Required | Signed Commits |
-|--------|-------------|-----------|-------------|----------------|
-| `main` | ❌ | 2 | ✅ All | ✅ |
-| `develop` | ❌ | 1 | ✅ Core | ✅ |
-| `release/*` | ❌ | 2 | ✅ All | ✅ |
-| `feature/*` | ✅ | 0 | ❌ | ❌ |
-| `bugfix/*` | ✅ | 0 | ❌ | ❌ |
-| `hotfix/*` | ✅ | 0 | ❌ | ❌ |
+| Branch      | Direct Push | Approvals | CI Required | Signed Commits |
+| ----------- | ----------- | --------- | ----------- | -------------- |
+| `main`      | ❌          | 2         | ✅ All      | ✅             |
+| `develop`   | ❌          | 1         | ✅ Core     | ✅             |
+| `release/*` | ❌          | 2         | ✅ All      | ✅             |
+| `feature/*` | ✅          | 0         | ❌          | ❌             |
+| `bugfix/*`  | ✅          | 0         | ❌          | ❌             |
+| `hotfix/*`  | ✅          | 0         | ❌          | ❌             |
 
 ### 2. CI/CD Pipelines
 
 **Files Created**:
+
 - `.github/workflows/ci.yml` - Comprehensive CI pipeline
 - `.github/workflows/release.yml` - Automated release builds
 - `.github/workflows/codeql.yml` - Security scanning
 
 **CI Pipeline Includes**:
+
 - ✅ Rust checks (format, clippy, tests) on Linux/macOS/Windows
 - ✅ Frontend checks (ESLint, Prettier, type-check, tests)
 - ✅ E2E tests with Playwright on all platforms
@@ -41,12 +44,14 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 3. Pre-commit Hooks (Husky)
 
 **Files Created**:
+
 - `.husky/pre-commit` - Runs before every commit
 - `.husky/commit-msg` - Validates commit messages
 - `.husky/pre-push` - Runs tests before push
 - `.lintstagedrc.json` - Lint-staged configuration
 
 **Pre-commit Checks**:
+
 1. **Lint-staged**: Runs on staged files only
    - ESLint --fix on TS/JS/Svelte
    - Prettier --write on all files
@@ -57,15 +62,18 @@ This document summarizes the production-grade Git workflow and quality controls 
 3. **Clippy**: `cargo clippy -- -D warnings`
 
 **Pre-push Checks**:
+
 - Frontend tests: `pnpm test`
 - Rust tests: `cargo test --all-features`
 
 ### 4. Commit Message Enforcement
 
 **Files Created**:
+
 - `commitlint.config.js` - Conventional commits configuration
 
 **Enforced Format**:
+
 ```
 <type>(<scope>): <subject>
 
@@ -77,6 +85,7 @@ This document summarizes the production-grade Git workflow and quality controls 
 **Valid Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 
 **Examples**:
+
 ```bash
 ✅ feat(US1): implement vault editor
 ✅ fix(search): prevent index corruption
@@ -89,9 +98,11 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 5. Dependency Management
 
 **Files Created**:
+
 - `.github/dependabot.yml` - Automated dependency updates
 
 **Dependabot Configuration**:
+
 - Weekly updates for Rust dependencies
 - Weekly updates for npm dependencies
 - Weekly updates for GitHub Actions
@@ -102,9 +113,11 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 6. Code Ownership
 
 **Files Created**:
+
 - `.github/CODEOWNERS` - Defines code ownership
 
 **Ownership Rules**:
+
 - All files: `@yeabsiraretta`
 - Rust backend: `@yeabsiraretta`
 - Frontend: `@yeabsiraretta`
@@ -114,11 +127,13 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 7. Issue & PR Templates
 
 **Files Created**:
+
 - `.github/PULL_REQUEST_TEMPLATE.md` - PR template
 - `.github/ISSUE_TEMPLATE/bug_report.md` - Bug report template
 - `.github/ISSUE_TEMPLATE/feature_request.md` - Feature request template
 
 **Templates Include**:
+
 - Description
 - Related issues
 - Type of change
@@ -130,12 +145,14 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 8. Documentation
 
 **Files Created**:
+
 - `CONTRIBUTING.md` - Comprehensive contributing guide
 - `docs/GIT_WORKFLOW.md` - Detailed Git workflow guide
 - `CHANGELOG.md` - Changelog following Keep a Changelog format
 - `.editorconfig` - Editor configuration for consistency
 
 **Documentation Covers**:
+
 - Code of conduct
 - Development workflow
 - Branch strategy
@@ -149,9 +166,11 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 9. Code Quality Tools
 
 **Files Created**:
+
 - `.editorconfig` - Consistent coding styles across editors
 
 **Configured Tools**:
+
 - **ESLint**: TypeScript/JavaScript linting
 - **Prettier**: Code formatting
 - **Clippy**: Rust linting
@@ -162,9 +181,11 @@ This document summarizes the production-grade Git workflow and quality controls 
 ### 10. Setup Automation
 
 **Files Created**:
+
 - `scripts/setup-git.sh` - Automated setup script
 
 **Setup Script**:
+
 - Checks prerequisites (Node.js, pnpm, Rust, Git)
 - Installs dependencies
 - Sets up Husky hooks

@@ -63,7 +63,7 @@ function myersDiff(oldArr: string[], newArr: string[]): DiffLine[] {
 function backtrack(
   trace: Record<number, number>[],
   oldArr: string[],
-  newArr: string[],
+  newArr: string[]
 ): DiffLine[] {
   const result: DiffLine[] = [];
   let x = oldArr.length;

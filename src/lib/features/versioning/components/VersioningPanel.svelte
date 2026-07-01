@@ -109,7 +109,10 @@
     flex: 1;
   }
 
-  .empty-icon { font-size: 40px; opacity: 0.35; }
+  .empty-icon {
+    font-size: 40px;
+    opacity: 0.35;
+  }
 
   .empty-text {
     font-size: var(--font-ui-small, 13px);

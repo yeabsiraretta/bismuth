@@ -11,11 +11,7 @@ import type {
   EntityReference,
   TypeDefinition,
 } from '@/types/data/entity';
-import {
-  DEFAULT_PORTENT_TYPES,
-  deriveLifecycle,
-  getPortentIcon,
-} from '@/types/data/entity';
+import { DEFAULT_PORTENT_TYPES, deriveLifecycle, getPortentIcon } from '@/types/data/entity';
 import { log } from '@/utils/logger';
 import { notes, activeNote } from '@/stores/vault/vault';
 import {

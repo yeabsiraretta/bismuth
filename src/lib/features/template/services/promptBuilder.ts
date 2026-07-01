@@ -15,15 +15,13 @@ export function buildPrompt(
   context: PromptContext,
   selectedTemplates: SmartTemplate[],
   instructions: string,
-  maxContextLength: number,
+  maxContextLength: number
 ): BuiltPrompt {
   const sections: string[] = [];
 
   // 1. Template instructions (merged in order)
   if (selectedTemplates.length > 0) {
-    const templateSection = selectedTemplates
-      .map(t => t.content.trim())
-      .join('\n\n---\n\n');
+    const templateSection = selectedTemplates.map((t) => t.content.trim()).join('\n\n---\n\n');
     sections.push(`## Instructions\n\n${templateSection}`);
   }
 
@@ -47,7 +45,7 @@ export function buildPrompt(
 
   return {
     text,
-    templateNames: selectedTemplates.map(t => t.name),
+    templateNames: selectedTemplates.map((t) => t.name),
     charCount: text.length,
     estimatedTokens: estimateTokens(text),
     builtAt: new Date().toISOString(),
@@ -76,7 +74,7 @@ export function buildContextFromNote(
   noteTitle: string,
   notePath: string,
   content: string,
-  selection?: string,
+  selection?: string
 ): PromptContext {
   return {
     noteTitle,

@@ -1,14 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import {
-  extractDataPoints, extractDate, timeFrameRange, isInTimeFrame,
+  extractDataPoints,
+  extractDate,
+  timeFrameRange,
+  isInTimeFrame,
 } from '../services/dataExtractor';
 import type { NoteMeta } from '../services/dataExtractor';
 import type { PropertyDefinition } from '../types';
 
 function propDef(overrides: Partial<PropertyDefinition> = {}): PropertyDefinition {
   return {
-    id: 'p1', name: 'mood', type: 'number',
-    order: 0, ...overrides,
+    id: 'p1',
+    name: 'mood',
+    type: 'number',
+    order: 0,
+    ...overrides,
   };
 }
 
@@ -84,8 +90,12 @@ describe('extractDataPoints', () => {
 
   it('applies value mappings', () => {
     const def = propDef({
-      name: 'mood', type: 'text',
-      valueMappings: [{ display: 'great', numeric: 10 }, { display: 'ok', numeric: 5 }],
+      name: 'mood',
+      type: 'text',
+      valueMappings: [
+        { display: 'great', numeric: 10 },
+        { display: 'ok', numeric: 5 },
+      ],
     });
     const notes = [note('2026-01-01.md', { mood: 'great' })];
     const points = extractDataPoints(notes, def, 'date', 'all');
@@ -110,7 +120,7 @@ describe('extractDataPoints', () => {
       note('2026-02-01.md', { mood: 3 }),
     ];
     const points = extractDataPoints(notes, propDef(), 'date', 'all');
-    expect(points.map(p => p.date)).toEqual(['2026-01-01', '2026-02-01', '2026-03-01']);
+    expect(points.map((p) => p.date)).toEqual(['2026-01-01', '2026-02-01', '2026-03-01']);
   });
 
   it('converts boolean to 0/1', () => {

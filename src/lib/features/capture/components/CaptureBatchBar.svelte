@@ -29,7 +29,12 @@
     <div class="batch-collapsed">
       <span class="batch-badge">{totalCount}</span>
       <span class="batch-summary">notes</span>
-      <button class="select-all-btn" on:click={onSelectAll} title="Select all notes" aria-label="Select all notes">
+      <button
+        class="select-all-btn"
+        on:click={onSelectAll}
+        title="Select all notes"
+        aria-label="Select all notes"
+      >
         <Icon name="check-square" size={14} />
         Select all
       </button>
@@ -74,12 +79,22 @@
       </button>
 
       {#if onBatchDelete}
-        <button class="delete-btn" on:click={onBatchDelete} title="Delete selected" aria-label="Delete selected">
+        <button
+          class="delete-btn"
+          on:click={onBatchDelete}
+          title="Delete selected"
+          aria-label="Delete selected"
+        >
           <Icon name="trash-2" size={14} />
         </button>
       {/if}
       {#if onMerge && selectedCount >= 2}
-        <button class="merge-btn" on:click={onMerge} title="Merge selected notes" aria-label="Merge selected">
+        <button
+          class="merge-btn"
+          on:click={onMerge}
+          title="Merge selected notes"
+          aria-label="Merge selected"
+        >
           <Icon name="git-merge" size={14} />
           Merge
         </button>

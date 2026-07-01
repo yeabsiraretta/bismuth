@@ -16,7 +16,7 @@ export interface Command {
 /** Command that adds a new element to the canvas. */
 export class CreateElementCommand implements Command {
   description = 'Create element';
-  
+
   constructor(private element: CanvasElement) {}
 
   execute(): void {
@@ -41,7 +41,7 @@ export class CreateElementCommand implements Command {
 /** Command that removes an element from the canvas. */
 export class DeleteElementCommand implements Command {
   description = 'Delete element';
-  
+
   constructor(private element: CanvasElement) {}
 
   execute(): void {
@@ -66,7 +66,7 @@ export class DeleteElementCommand implements Command {
 /** Command that updates an element's properties (style, size, etc.). */
 export class UpdateElementCommand implements Command {
   description = 'Update element';
-  
+
   constructor(
     private elementId: string,
     private oldState: CanvasElement,
@@ -101,7 +101,7 @@ export class UpdateElementCommand implements Command {
 /** Command that repositions an element on the canvas. */
 export class MoveElementCommand implements Command {
   description = 'Move element';
-  
+
   constructor(
     private elementId: string,
     private oldX: number,
@@ -140,8 +140,11 @@ export class MoveElementCommand implements Command {
 /** Composite command that groups multiple commands into a single undo step. */
 export class BatchCommand implements Command {
   description: string;
-  
-  constructor(private commands: Command[], description: string = 'Batch operation') {
+
+  constructor(
+    private commands: Command[],
+    description: string = 'Batch operation'
+  ) {
     this.description = description;
   }
 
@@ -187,62 +190,62 @@ historyState.subscribe((state) => {
 /** Executes a command, pushes it onto the undo stack, and clears redo. */
 export function executeCommand(command: Command) {
   command.execute();
-  
+
   historyState.update((state) => {
     // Add to undo stack
     state.undoStack.push(command);
-    
+
     // Limit stack size
     if (state.undoStack.length > state.maxSize) {
       state.undoStack.shift();
     }
-    
+
     // Clear redo stack when new command is executed
     state.redoStack = [];
-    
+
     return state;
   });
-  
+
   log.debug('Command executed', { description: command.description });
 }
 
 /** Undoes the most recent command and pushes it onto the redo stack. */
 export function undo() {
   const state = get(historyState);
-  
+
   if (state.undoStack.length === 0) {
     log.warn('Nothing to undo');
     return;
   }
-  
+
   const command = state.undoStack.pop()!;
   command.undo();
-  
+
   historyState.update((s) => {
     s.redoStack.push(command);
     return s;
   });
-  
+
   log.info('Undo', { description: command.description });
 }
 
 /** Re-applies the most recently undone command. */
 export function redo() {
   const state = get(historyState);
-  
+
   if (state.redoStack.length === 0) {
     log.warn('Nothing to redo');
     return;
   }
-  
+
   const command = state.redoStack.pop()!;
   command.execute();
-  
+
   historyState.update((s) => {
     s.undoStack.push(command);
     return s;
   });
-  
+
   log.info('Redo', { description: command.description });
 }
 

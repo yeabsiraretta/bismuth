@@ -3,7 +3,8 @@
 
   export let task: Task;
   export let display: DisplayOptions;
-  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined = undefined;
+  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined =
+    undefined;
   export let onNavigate: ((sourcePath: string, line: number) => void) | undefined = undefined;
 
   $: isHidden = (field: string) => display.hidden_fields.includes(field);
@@ -29,7 +30,11 @@
   }
 </script>
 
-<div class="task-item {priorityClass}" class:done={task.status === 'done'} class:cancelled={task.status === 'cancelled'}>
+<div
+  class="task-item {priorityClass}"
+  class:done={task.status === 'done'}
+  class:cancelled={task.status === 'cancelled'}
+>
   <button class="task-checkbox" on:click={handleCheckbox} title="Toggle status">
     {#if task.status === 'done'}
       <span class="check">&#10003;</span>
@@ -62,7 +67,9 @@
     {/if}
 
     {#if !isHidden('ScheduledDate') && task.scheduled_date}
-      <span class="badge date-badge" title="Scheduled">Sched: {formatDate(task.scheduled_date)}</span>
+      <span class="badge date-badge" title="Scheduled"
+        >Sched: {formatDate(task.scheduled_date)}</span
+      >
     {/if}
 
     {#if !isHidden('StartDate') && task.start_date}
@@ -173,11 +180,22 @@
     font-weight: var(--font-semibold);
   }
 
-  .priority-highest { color: var(--text-error); }
-  .priority-high { color: var(--status-warning); }
-  .priority-medium { color: var(--status-info); }
-  .priority-low { color: var(--text-muted); }
-  .priority-lowest { color: var(--text-muted); opacity: 0.6; }
+  .priority-highest {
+    color: var(--text-error);
+  }
+  .priority-high {
+    color: var(--status-warning);
+  }
+  .priority-medium {
+    color: var(--status-info);
+  }
+  .priority-low {
+    color: var(--text-muted);
+  }
+  .priority-lowest {
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
 
   .date-badge {
     color: var(--text-muted);

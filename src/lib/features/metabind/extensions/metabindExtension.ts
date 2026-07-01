@@ -9,17 +9,18 @@
  * and writes changes back via the frontmatter service.
  */
 
-import {
-  Decoration,
-  EditorView,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import type { Range } from '@codemirror/state';
 import { parseMetaBindSyntax, isMetaBindSyntax } from '../services/metabindParser';
 import { MetaBindInputWidget } from './metabindInputWidgets';
 import { MetaBindViewWidget, MetaBindButtonWidget } from './metabindViewWidgets';
-import type { MetaBindMatch, InputFieldDeclaration, ViewFieldDeclaration, ButtonDeclaration } from '../types/metabind';
+import type {
+  MetaBindMatch,
+  InputFieldDeclaration,
+  ViewFieldDeclaration,
+  ButtonDeclaration,
+} from '../types/metabind';
 import { log } from '@/utils/logger';
 
 // ─── Frontmatter extraction (lightweight, in-editor) ─────────────────────────
@@ -42,7 +43,10 @@ function extractFrontmatter(docText: string): Record<string, unknown> {
     else if (/^-?\d+$/.test(rawValue)) fm[key] = parseInt(rawValue, 10);
     else if (/^-?\d+\.\d+$/.test(rawValue)) fm[key] = parseFloat(rawValue);
     else if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
-      fm[key] = rawValue.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+      fm[key] = rawValue
+        .slice(1, -1)
+        .split(',')
+        .map((s) => s.trim().replace(/^['"]|['"]$/g, ''));
     } else {
       fm[key] = rawValue.replace(/^['"]|['"]$/g, '');
     }
@@ -98,11 +102,20 @@ function findMetaBindBlocks(view: EditorView): MetaBindMatch[] {
     const text = line.text;
 
     // Skip frontmatter
-    if (i === 1 && text === '---') { inFrontmatter = true; continue; }
-    if (inFrontmatter) { if (text === '---') inFrontmatter = false; continue; }
+    if (i === 1 && text === '---') {
+      inFrontmatter = true;
+      continue;
+    }
+    if (inFrontmatter) {
+      if (text === '---') inFrontmatter = false;
+      continue;
+    }
 
     // Skip fenced code blocks
-    if (/^(`{3,}|~{3,})/.test(text)) { inCodeBlock = !inCodeBlock; continue; }
+    if (/^(`{3,}|~{3,})/.test(text)) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
     if (inCodeBlock) continue;
 
     // Find inline code blocks
@@ -144,7 +157,7 @@ function updateFrontmatterInDoc(view: EditorView, property: string, value: unkno
   const lines = fmBlock.split('\n');
   const yamlVal = formatYamlValue(value);
   let found = false;
-  const updated = lines.map(line => {
+  const updated = lines.map((line) => {
     const colonIdx = line.indexOf(':');
     if (colonIdx > 0) {
       const key = line.slice(0, colonIdx).trim();
@@ -166,7 +179,7 @@ function updateFrontmatterInDoc(view: EditorView, property: string, value: unkno
 function formatYamlValue(value: unknown): string {
   if (typeof value === 'boolean') return String(value);
   if (typeof value === 'number') return String(value);
-  if (Array.isArray(value)) return `[${value.map(v => String(v)).join(', ')}]`;
+  if (Array.isArray(value)) return `[${value.map((v) => String(v)).join(', ')}]`;
   if (value === null || value === undefined) return 'null';
   return String(value);
 }
@@ -199,7 +212,9 @@ function handleButtonAction(view: EditorView, action: string, args: string) {
       break;
     case 'template':
       log.info('MetaBind: template action', { template: args });
-      window.dispatchEvent(new CustomEvent('bismuth-apply-template', { detail: { template: args } }));
+      window.dispatchEvent(
+        new CustomEvent('bismuth-apply-template', { detail: { template: args } })
+      );
       break;
     default:
       log.warn('MetaBind: unknown button action', { action, args });
@@ -262,6 +277,6 @@ export function metabindExtension() {
         }
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 }

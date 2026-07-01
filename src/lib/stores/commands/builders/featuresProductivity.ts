@@ -34,7 +34,10 @@ export function buildProductivityFeatureCommands(): Command[] {
         const { timekeeps, exportTimekeep } = await import('@/features/timekeep');
         const { get } = await import('svelte/store');
         const tks = get(timekeeps);
-        if (tks.length === 0) { showToast('No timekeeps to export', 'warning'); return; }
+        if (tks.length === 0) {
+          showToast('No timekeeps to export', 'warning');
+          return;
+        }
         const output = exportTimekeep(tks[0].data, { format: 'markdown' });
         await navigator.clipboard.writeText(output);
         showToast('Markdown table copied to clipboard', 'info');
@@ -49,7 +52,10 @@ export function buildProductivityFeatureCommands(): Command[] {
         const { timekeeps, exportTimekeep } = await import('@/features/timekeep');
         const { get } = await import('svelte/store');
         const tks = get(timekeeps);
-        if (tks.length === 0) { showToast('No timekeeps to export', 'warning'); return; }
+        if (tks.length === 0) {
+          showToast('No timekeeps to export', 'warning');
+          return;
+        }
         const output = exportTimekeep(tks[0].data, { format: 'csv' });
         await navigator.clipboard.writeText(output);
         showToast('CSV copied to clipboard', 'info');
@@ -64,7 +70,10 @@ export function buildProductivityFeatureCommands(): Command[] {
         const { timekeeps, exportTimekeep } = await import('@/features/timekeep');
         const { get } = await import('svelte/store');
         const tks = get(timekeeps);
-        if (tks.length === 0) { showToast('No timekeeps to export', 'warning'); return; }
+        if (tks.length === 0) {
+          showToast('No timekeeps to export', 'warning');
+          return;
+        }
         const output = exportTimekeep(tks[0].data, { format: 'json' });
         await navigator.clipboard.writeText(output);
         showToast('JSON copied to clipboard', 'info');

@@ -29,7 +29,9 @@ export interface WritingGoals {
 }
 
 export const DEFAULT_WRITING_GOALS: WritingGoals = {
-  dailyTarget: 500, weeklyTarget: 3500, monthlyTarget: 15000,
+  dailyTarget: 500,
+  weeklyTarget: 3500,
+  monthlyTarget: 15000,
 };
 
 export interface WritingSprint {
@@ -91,9 +93,14 @@ export interface ExportOptions {
 }
 
 export const DEFAULT_EXPORT_OPTIONS: ExportOptions = {
-  format: 'markdown', scope: 'manuscript',
-  includeMetadata: true, includeStats: false,
-  pageSize: 'letter', fontFamily: 'serif', fontSize: 12, marginMm: 25,
+  format: 'markdown',
+  scope: 'manuscript',
+  includeMetadata: true,
+  includeStats: false,
+  pageSize: 'letter',
+  fontFamily: 'serif',
+  fontSize: 12,
+  marginMm: 25,
 };
 
 // ─── Research ───────────────────────────────────────────────────────────────
@@ -153,7 +160,10 @@ export interface FocusModeSettings {
 }
 
 export const DEFAULT_FOCUS_MODE: FocusModeSettings = {
-  enabled: false, dimAmount: 0.5, darkenAmount: 0.3, blurAmount: 4,
+  enabled: false,
+  dimAmount: 0.5,
+  darkenAmount: 0.3,
+  blurAmount: 4,
 };
 
 // ─── Codex Category ─────────────────────────────────────────────────────────
@@ -168,15 +178,33 @@ export interface CodexCategory {
 }
 
 export const BUILTIN_CODEX_CATEGORIES: CodexCategory[] = [
-  { id: 'characters', name: 'Characters', folderName: 'Characters', icon: 'user', color: '#7c3aed', isBuiltIn: true },
-  { id: 'locations', name: 'Locations', folderName: 'Locations', icon: 'map-pin', color: '#059669', isBuiltIn: true },
+  {
+    id: 'characters',
+    name: 'Characters',
+    folderName: 'Characters',
+    icon: 'user',
+    color: '#7c3aed',
+    isBuiltIn: true,
+  },
+  {
+    id: 'locations',
+    name: 'Locations',
+    folderName: 'Locations',
+    icon: 'map-pin',
+    color: '#059669',
+    isBuiltIn: true,
+  },
 ];
 
 // ─── Plot Hole Detection ────────────────────────────────────────────────────
 
 export type PlotHoleCategory =
-  | 'unresolved-setup' | 'missing-character' | 'timeline-gap'
-  | 'location-conflict' | 'continuity-error' | 'orphan-plotline';
+  | 'unresolved-setup'
+  | 'missing-character'
+  | 'timeline-gap'
+  | 'location-conflict'
+  | 'continuity-error'
+  | 'orphan-plotline';
 
 export interface PlotHoleWarning {
   id: string;

@@ -1,5 +1,12 @@
 import { writable, derived, get } from 'svelte/store';
-import type { CanvasDocument, CanvasElement, Page, Viewport, Tool, CanvasSettings } from '@/features/canvas/types';
+import type {
+  CanvasDocument,
+  CanvasElement,
+  Page,
+  Viewport,
+  Tool,
+  CanvasSettings,
+} from '@/features/canvas/types';
 import * as canvasService from '@/features/canvas/services/canvas';
 import { generateDocuments } from '@/features/canvas/services/documentGenerator';
 import { writeDocument } from '@/services/design-docs';
@@ -33,7 +40,9 @@ function loadCanvasSettings(): CanvasSettings {
   try {
     const raw = localStorage.getItem(CANVAS_SETTINGS_KEY);
     if (raw) return { ...DEFAULT_CANVAS_SETTINGS, ...JSON.parse(raw) };
-  } catch (e) { log.warn('Failed to load canvas settings from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load canvas settings from localStorage', { error: String(e) });
+  }
   return { ...DEFAULT_CANVAS_SETTINGS };
 }
 
@@ -42,15 +51,29 @@ function createCanvasSettingsStore() {
     typeof localStorage !== 'undefined' ? loadCanvasSettings() : { ...DEFAULT_CANVAS_SETTINGS }
   );
   function persist(s: CanvasSettings) {
-    try { localStorage.setItem(CANVAS_SETTINGS_KEY, JSON.stringify(s)); } catch (e) { log.warn('Failed to persist canvas settings', { error: String(e) }); }
+    try {
+      localStorage.setItem(CANVAS_SETTINGS_KEY, JSON.stringify(s));
+    } catch (e) {
+      log.warn('Failed to persist canvas settings', { error: String(e) });
+    }
   }
   return {
     subscribe,
-    set(v: CanvasSettings) { set(v); persist(v); },
-    update(fn: (s: CanvasSettings) => CanvasSettings) {
-      update((cur) => { const next = fn(cur); persist(next); return next; });
+    set(v: CanvasSettings) {
+      set(v);
+      persist(v);
     },
-    reset() { set({ ...DEFAULT_CANVAS_SETTINGS }); persist(DEFAULT_CANVAS_SETTINGS); },
+    update(fn: (s: CanvasSettings) => CanvasSettings) {
+      update((cur) => {
+        const next = fn(cur);
+        persist(next);
+        return next;
+      });
+    },
+    reset() {
+      set({ ...DEFAULT_CANVAS_SETTINGS });
+      persist(DEFAULT_CANVAS_SETTINGS);
+    },
   };
 }
 
@@ -123,7 +146,9 @@ export function selectElement(elementId: string) {
 
 /** Removes a single element from the selection. */
 export function deselectElement(elementId: string) {
-  selectedElements.update((selected: string[]) => selected.filter((id: string) => id !== elementId));
+  selectedElements.update((selected: string[]) =>
+    selected.filter((id: string) => id !== elementId)
+  );
 }
 
 /** Empties the selection set. */

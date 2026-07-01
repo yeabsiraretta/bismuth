@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseRewardLine, parseRewardsFile,
-  rollForReward, decrementInventory,
+  parseRewardLine,
+  parseRewardsFile,
+  rollForReward,
+  decrementInventory,
   generateSampleRewards,
 } from '../services/rewarderService';
 import type { RewarderReward } from '../types';
@@ -36,7 +38,13 @@ describe('parseRewardLine', () => {
   });
 
   it('parses occurrence + inventory + image', () => {
-    const r = parseRewardLine('Beer {rare} {5} {https://example.com/beer.png}', 4, '{', '}', labels);
+    const r = parseRewardLine(
+      'Beer {rare} {5} {https://example.com/beer.png}',
+      4,
+      '{',
+      '}',
+      labels
+    );
     expect(r!.occurrence).toBe('rare');
     expect(r!.inventory).toBe(5);
     expect(r!.imageUrl).toBe('https://example.com/beer.png');
@@ -166,7 +174,10 @@ describe('decrementInventory', () => {
   it('decrements integer in braces', () => {
     const content = 'Have tea\nWatch TV {rare} {20}\nBuy gift {legendary} {1}';
     const reward: RewarderReward = {
-      name: 'Watch TV', occurrence: 'rare', inventory: 20, lineIndex: 1,
+      name: 'Watch TV',
+      occurrence: 'rare',
+      inventory: 20,
+      lineIndex: 1,
     };
     const result = decrementInventory(content, reward, '{', '}');
     expect(result).not.toBeNull();
@@ -176,7 +187,10 @@ describe('decrementInventory', () => {
 
   it('returns null for unlimited inventory', () => {
     const reward: RewarderReward = {
-      name: 'Tea', occurrence: 'common', inventory: null, lineIndex: 0,
+      name: 'Tea',
+      occurrence: 'common',
+      inventory: null,
+      lineIndex: 0,
     };
     expect(decrementInventory('Have tea', reward, '{', '}')).toBeNull();
   });
@@ -184,7 +198,10 @@ describe('decrementInventory', () => {
   it('returns null when inventory is already 0', () => {
     const content = 'Gift {legendary} {0}';
     const reward: RewarderReward = {
-      name: 'Gift', occurrence: 'legendary', inventory: 0, lineIndex: 0,
+      name: 'Gift',
+      occurrence: 'legendary',
+      inventory: 0,
+      lineIndex: 0,
     };
     expect(decrementInventory(content, reward, '{', '}')).toBeNull();
   });
@@ -192,7 +209,10 @@ describe('decrementInventory', () => {
   it('handles custom delimiters', () => {
     const content = 'Tea [rare] [3]';
     const reward: RewarderReward = {
-      name: 'Tea', occurrence: 'rare', inventory: 3, lineIndex: 0,
+      name: 'Tea',
+      occurrence: 'rare',
+      inventory: 3,
+      lineIndex: 0,
     };
     const result = decrementInventory(content, reward, '[', ']');
     expect(result).toContain('[2]');

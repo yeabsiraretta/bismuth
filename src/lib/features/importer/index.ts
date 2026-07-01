@@ -36,7 +36,12 @@ export { runImport } from './services/importerService';
 
 // Converters (for direct use / testing)
 export { htmlToMarkdown, convertHtmlFile } from './services/converters/htmlToMd';
-export { parseCsv, convertCsvToNotes, getHeaders, detectDelimiter } from './services/converters/csvToMd';
+export {
+  parseCsv,
+  convertCsvToNotes,
+  getHeaders,
+  detectDelimiter,
+} from './services/converters/csvToMd';
 export {
   convertBearNotes,
   convertGoogleKeepNotes,

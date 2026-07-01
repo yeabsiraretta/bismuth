@@ -75,8 +75,13 @@
     user-select: none;
   }
 
-  .tree-item:hover { background: var(--interactive-hover); }
-  .tree-item.selected { background: var(--interactive-accent); color: var(--text-on-accent); }
+  .tree-item:hover {
+    background: var(--interactive-hover);
+  }
+  .tree-item.selected {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+  }
 
   .expand-btn {
     display: flex;
@@ -92,11 +97,21 @@
     border-radius: var(--radius-s);
     flex-shrink: 0;
   }
-  .expand-btn:hover { background: var(--background-modifier-hover); }
+  .expand-btn:hover {
+    background: var(--background-modifier-hover);
+  }
 
-  .expand-spacer { width: 16px; flex-shrink: 0; }
+  .expand-spacer {
+    width: 16px;
+    flex-shrink: 0;
+  }
 
-  .folder-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .folder-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .folder-count {
     font-size: 10px;
@@ -105,5 +120,8 @@
     min-width: 16px;
     text-align: right;
   }
-  .selected .folder-count { color: var(--text-on-accent); opacity: 0.7; }
+  .selected .folder-count {
+    color: var(--text-on-accent);
+    opacity: 0.7;
+  }
 </style>

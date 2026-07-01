@@ -24,18 +24,30 @@ function makeRecord(overrides: Partial<ReviewRecord> = {}): ReviewRecord {
 
 describe('gradeCard: SM-2 interval calculation', () => {
   it('grade 5 (easy): increases interval and ease', () => {
-    const rec = gradeCard(makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }), 'c1', 5);
+    const rec = gradeCard(
+      makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }),
+      'c1',
+      5
+    );
     expect(rec.intervalDays).toBeGreaterThan(6);
     expect(rec.easeFactor).toBeGreaterThanOrEqual(2.5);
   });
 
   it('grade 4 (good): increases interval', () => {
-    const rec = gradeCard(makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }), 'c1', 4);
+    const rec = gradeCard(
+      makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }),
+      'c1',
+      4
+    );
     expect(rec.intervalDays).toBeGreaterThan(6);
   });
 
   it('grade 3 (ok): interval grows but ease may decrease slightly', () => {
-    const rec = gradeCard(makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }), 'c1', 3);
+    const rec = gradeCard(
+      makeRecord({ intervalDays: 6, easeFactor: 2.5, reviewCount: 3 }),
+      'c1',
+      3
+    );
     expect(rec.intervalDays).toBeGreaterThan(0);
   });
 
@@ -86,8 +98,8 @@ describe('getDueCards', () => {
     const future = new Date(Date.now() + 86400000).toISOString();
     records.set('c1', makeRecord({ nextReview: future }));
     const due = getDueCards(cards, records);
-    expect(due.some(c => c.id === 'c1')).toBe(false);
-    expect(due.some(c => c.id === 'c2')).toBe(true);
+    expect(due.some((c) => c.id === 'c1')).toBe(false);
+    expect(due.some((c) => c.id === 'c2')).toBe(true);
   });
 
   it('includes overdue cards', () => {
@@ -95,7 +107,7 @@ describe('getDueCards', () => {
     const past = new Date(Date.now() - 86400000).toISOString();
     records.set('c1', makeRecord({ nextReview: past }));
     const due = getDueCards(cards, records);
-    expect(due.some(c => c.id === 'c1')).toBe(true);
+    expect(due.some((c) => c.id === 'c1')).toBe(true);
   });
 });
 
@@ -167,8 +179,15 @@ import type { Flashcard } from '../types/flashcard';
 
 function makeCard(id: string, deck: string): Flashcard {
   return {
-    id, type: 'basic', front: 'Q', back: 'A',
-    tags: [], deck, sourcePath: 'test.md', sourceLine: 0, ankiNoteId: null,
+    id,
+    type: 'basic',
+    front: 'Q',
+    back: 'A',
+    tags: [],
+    deck,
+    sourcePath: 'test.md',
+    sourceLine: 0,
+    ankiNoteId: null,
   };
 }
 
@@ -195,10 +214,7 @@ describe('buildDeckTree', () => {
 
 describe('getCardsInDeck', () => {
   it('returns cards matching deck prefix', () => {
-    const cards = [
-      makeCard('1', 'Bismuth::CS::Algo'),
-      makeCard('2', 'Bismuth::Math'),
-    ];
+    const cards = [makeCard('1', 'Bismuth::CS::Algo'), makeCard('2', 'Bismuth::Math')];
     const result = getCardsInDeck(cards, 'Bismuth::CS');
     expect(result).toHaveLength(1);
     expect(result[0].id).toBe('1');

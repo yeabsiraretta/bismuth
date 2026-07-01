@@ -12,7 +12,12 @@ vi.mock('@/utils/id', () => ({
   generatePrefixedId: vi.fn((prefix: string) => `${prefix}-test-id`),
 }));
 vi.mock('@/features/tasks', () => ({
-  tasks: { subscribe: vi.fn((fn: (v: unknown[]) => void) => { fn([]); return vi.fn(); }) },
+  tasks: {
+    subscribe: vi.fn((fn: (v: unknown[]) => void) => {
+      fn([]);
+      return vi.fn();
+    }),
+  },
 }));
 vi.mock('@/features/gamify', () => ({
   recordCalendarEventCompleted: vi.fn(),
@@ -21,8 +26,12 @@ vi.mock('@/features/gamify', () => ({
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
 });
 
 import {
@@ -56,7 +65,8 @@ function _focusYearMonth(): string {
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   return `${yyyy}-${mm}`;
-} void _focusYearMonth;
+}
+void _focusYearMonth;
 
 describe('calendarStore', () => {
   beforeEach(() => {

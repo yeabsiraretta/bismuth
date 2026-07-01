@@ -52,15 +52,15 @@ Architecture Guard detects these drifts early and converts them into structured,
 
 Think of it as a governance layer that sits between Spec Kit and implementation.
 
-| Phase | What Happens | Output |
-| --- | --- | --- |
-| Specification | Reviews ownership, boundaries, contracts | Missing boundaries or unclear ownership |
-| Planning | Detects coupling and architecture drift | Warnings before implementation hardens |
-| Task Generation | Converts violations into structured refactor work | Prioritized refactor tasks |
-| Implementation | Re-checks implementation against architecture rules | Drift detection and consistency review |
-| Architecture Evolution | Detects repeated patterns and proposes architecture updates | Constitution update proposals |
-| Approved Changes | Applies accepted updates into planning artifacts | Updated tasks and plans via `architecture-apply` |
-| Verification | Post-implementation task and requirement audit | Task gap analysis and outcome report |
+| Phase                  | What Happens                                                | Output                                           |
+| ---------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
+| Specification          | Reviews ownership, boundaries, contracts                    | Missing boundaries or unclear ownership          |
+| Planning               | Detects coupling and architecture drift                     | Warnings before implementation hardens           |
+| Task Generation        | Converts violations into structured refactor work           | Prioritized refactor tasks                       |
+| Implementation         | Re-checks implementation against architecture rules         | Drift detection and consistency review           |
+| Architecture Evolution | Detects repeated patterns and proposes architecture updates | Constitution update proposals                    |
+| Approved Changes       | Applies accepted updates into planning artifacts            | Updated tasks and plans via `architecture-apply` |
+| Verification           | Post-implementation task and requirement audit              | Task gap analysis and outcome report             |
 
 ## Key Philosophy
 
@@ -89,14 +89,14 @@ Suggested Fix: Extract pricing logic into the checkout service and keep the hand
 
 Architecture Guard can make Spec Kit feel safer, clearer, and easier to scale without adding heavy process.
 
-| Spec Kit Only | Spec Kit + Architecture Guard |
-| --- | --- |
-| AI starts each feature independently | AI checks work against architecture standards first |
-| Drift accumulates silently | Drift becomes visible and actionable |
-| Architecture inconsistencies appear during code review | Inconsistencies are detected earlier |
-| Constitution exists passively | Constitution becomes actively enforced |
-| No structured architecture debt tracking | Violations become prioritized refactor tasks |
-| Architecture evolution is manual and inconsistent | Architecture evolution becomes structured and reviewable |
+| Spec Kit Only                                          | Spec Kit + Architecture Guard                            |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| AI starts each feature independently                   | AI checks work against architecture standards first      |
+| Drift accumulates silently                             | Drift becomes visible and actionable                     |
+| Architecture inconsistencies appear during code review | Inconsistencies are detected earlier                     |
+| Constitution exists passively                          | Constitution becomes actively enforced                   |
+| No structured architecture debt tracking               | Violations become prioritized refactor tasks             |
+| Architecture evolution is manual and inconsistent      | Architecture evolution becomes structured and reviewable |
 
 The practical payoff:
 
@@ -110,13 +110,13 @@ The practical payoff:
 
 Static analyzers are great at rules. Architecture Guard is better at helping AI keep the right shape in mind while it works.
 
-| Static Analyzers | Architecture Guard |
-| --- | --- |
-| Language-specific tooling | Framework-agnostic architecture review |
-| Syntax and code-pattern focus | Architecture and boundary focus |
-| Build-time blocking | Non-blocking by default |
-| Generic rules | Project-specific architecture rules |
-| Runtime/tooling dependencies | Prompt-based with no runtime dependency |
+| Static Analyzers              | Architecture Guard                      |
+| ----------------------------- | --------------------------------------- |
+| Language-specific tooling     | Framework-agnostic architecture review  |
+| Syntax and code-pattern focus | Architecture and boundary focus         |
+| Build-time blocking           | Non-blocking by default                 |
+| Generic rules                 | Project-specific architecture rules     |
+| Runtime/tooling dependencies  | Prompt-based with no runtime dependency |
 
 > Architecture Guard is a prompt governance layer, not a static analysis engine.
 > Its commands are structured Markdown files that instruct the AI agent on what to check and how to report findings.
@@ -156,4 +156,3 @@ Do not use Architecture Guard when the overhead would outweigh the value:
 - replacing benchmarking or profiling workflows
 
 If you can fully manage architecture mentally and the project is truly small, this extension may be unnecessary overhead.
-

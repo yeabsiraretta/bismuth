@@ -14,10 +14,13 @@ import type { ToolDefinition, ToolResult } from '../types/llm';
 export const VAULT_TOOLS: ToolDefinition[] = [
   {
     name: 'read_file',
-    description: 'Read the contents of a file in the vault. Returns the file content as UTF-8 text.',
+    description:
+      'Read the contents of a file in the vault. Returns the file content as UTF-8 text.',
     inputSchema: {
       type: 'object',
-      properties: { path: { type: 'string', description: 'File path relative to vault root, or absolute path' } },
+      properties: {
+        path: { type: 'string', description: 'File path relative to vault root, or absolute path' },
+      },
       required: ['path'],
     },
     source: 'vault',
@@ -43,7 +46,8 @@ export const VAULT_TOOLS: ToolDefinition[] = [
   },
   {
     name: 'search_vault',
-    description: 'Search for text across all notes in the vault. Returns matching file paths and snippets.',
+    description:
+      'Search for text across all notes in the vault. Returns matching file paths and snippets.',
     inputSchema: {
       type: 'object',
       properties: { query: { type: 'string', description: 'Search query string' } },
@@ -103,7 +107,7 @@ function resolveVaultPath(relativePath: string): string {
 export async function executeVaultTool(
   toolCallId: string,
   toolName: string,
-  args: Record<string, unknown>,
+  args: Record<string, unknown>
 ): Promise<ToolResult> {
   try {
     let output: string;
@@ -124,7 +128,7 @@ export async function executeVaultTool(
 
       case 'list_files': {
         const notes = await scanVaultMeta();
-        output = notes.map(n => `${n.path} — ${n.title}`).join('\n');
+        output = notes.map((n) => `${n.path} — ${n.title}`).join('\n');
         break;
       }
 
@@ -132,18 +136,23 @@ export async function executeVaultTool(
         const query = (args['query'] as string).toLowerCase();
         const allNotes = await scanVault();
         const matches = allNotes
-          .filter(n => n.content.toLowerCase().includes(query) || n.title.toLowerCase().includes(query))
+          .filter(
+            (n) => n.content.toLowerCase().includes(query) || n.title.toLowerCase().includes(query)
+          )
           .slice(0, 20);
         if (matches.length === 0) {
           output = `No results for "${args['query']}"`;
         } else {
-          output = matches.map(n => {
-            const idx = n.content.toLowerCase().indexOf(query);
-            const snippet = idx >= 0
-              ? n.content.slice(Math.max(0, idx - 40), idx + query.length + 40).trim()
-              : '';
-            return `${n.path}: ...${snippet}...`;
-          }).join('\n');
+          output = matches
+            .map((n) => {
+              const idx = n.content.toLowerCase().indexOf(query);
+              const snippet =
+                idx >= 0
+                  ? n.content.slice(Math.max(0, idx - 40), idx + query.length + 40).trim()
+                  : '';
+              return `${n.path}: ...${snippet}...`;
+            })
+            .join('\n');
         }
         break;
       }

@@ -54,7 +54,7 @@ export async function startRecording(): Promise<void> {
     recordingDuration.set(0);
 
     durationInterval = setInterval(() => {
-      recordingDuration.update(d => d + 1);
+      recordingDuration.update((d) => d + 1);
     }, 1000);
 
     log.info('Voice recording started');
@@ -80,7 +80,7 @@ export function resumeRecording(): void {
     mediaRecorder.resume();
     recordingState.set('recording');
     durationInterval = setInterval(() => {
-      recordingDuration.update(d => d + 1);
+      recordingDuration.update((d) => d + 1);
     }, 1000);
   }
 }
@@ -101,7 +101,7 @@ export async function stopRecording(): Promise<RecordingMetadata | null> {
       voiceLoading.set(true);
       try {
         const metadata = await saveRecording(arrayBuffer, duration, 'audio/webm');
-        recordings.update(list => [metadata, ...list]);
+        recordings.update((list) => [metadata, ...list]);
         log.info('Voice recording saved', { duration, id: metadata.id });
         resolve(metadata);
       } catch (error) {
@@ -114,7 +114,7 @@ export async function stopRecording(): Promise<RecordingMetadata | null> {
       }
 
       // Stop all tracks
-      mediaRecorder!.stream.getTracks().forEach(track => track.stop());
+      mediaRecorder!.stream.getTracks().forEach((track) => track.stop());
       mediaRecorder = null;
       audioChunks = [];
     };
@@ -126,7 +126,7 @@ export async function stopRecording(): Promise<RecordingMetadata | null> {
 /** Cancel recording without saving */
 export function cancelRecording(): void {
   if (mediaRecorder) {
-    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     mediaRecorder = null;
     audioChunks = [];
   }
@@ -152,13 +152,13 @@ export async function loadRecordings(): Promise<void> {
 /** Delete a recording */
 export async function removeRecording(recordingId: string): Promise<void> {
   await deleteRecording(recordingId);
-  recordings.update(list => list.filter(r => r.id !== recordingId));
+  recordings.update((list) => list.filter((r) => r.id !== recordingId));
 }
 
 /** Attach a recording to the active note */
 export async function attachToNote(recordingId: string, notePath: string): Promise<void> {
   await attachRecordingToNote(recordingId, notePath);
-  recordings.update(list =>
-    list.map(r => r.id === recordingId ? { ...r, attachedNote: notePath } : r)
+  recordings.update((list) =>
+    list.map((r) => (r.id === recordingId ? { ...r, attachedNote: notePath } : r))
   );
 }

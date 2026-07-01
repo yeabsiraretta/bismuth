@@ -82,10 +82,13 @@ export function togglePin(
 export function copyAsWikilinks(pinnedConnections: Connection[], connections: Connection[]): void {
   const allConnections = [...pinnedConnections, ...connections.filter((c) => !c.pinned)];
   const wikilinks = allConnections.map((c) => `[[${c.title.replace('.md', '')}]]`).join('\n');
-  navigator.clipboard.writeText(wikilinks).catch(err => log.error('Clipboard write failed', err));
+  navigator.clipboard.writeText(wikilinks).catch((err) => log.error('Clipboard write failed', err));
 }
 
-export function pickRandomConnection(connections: Connection[], pinnedConnections: Connection[]): string | null {
+export function pickRandomConnection(
+  connections: Connection[],
+  pinnedConnections: Connection[]
+): string | null {
   const pool = connections.length > 0 ? connections : pinnedConnections;
   if (pool.length === 0) return null;
   const idx = Math.floor(Math.random() * pool.length);
@@ -100,13 +103,13 @@ export function buildDragData(connection: Connection): { text: string; wikilinkP
 /** Extract hashtag strings from note content. */
 export function extractTags(content: string): string[] {
   const matches = content.match(/#([\w-]+)/g) ?? [];
-  return matches.map(t => t.slice(1).toLowerCase());
+  return matches.map((t) => t.slice(1).toLowerCase());
 }
 
 /** Resolve already-linked paths from wikilinks in content. */
 export function extractLinkedPaths(content: string, allNotes: Note[]): Set<string> {
   const wikilinks = content.match(/\[\[([^\]]+)\]\]/g) ?? [];
-  const titles = new Set(wikilinks.map(l => l.slice(2, -2).split('|')[0].trim().toLowerCase()));
+  const titles = new Set(wikilinks.map((l) => l.slice(2, -2).split('|')[0].trim().toLowerCase()));
   const paths = new Set<string>();
   for (const note of allNotes) {
     if (titles.has(note.title.toLowerCase())) paths.add(note.path);
@@ -123,12 +126,12 @@ export function computeLinkSuggestions(
   const tags = extractTags(active.content);
   const linked = extractLinkedPaths(active.content, allNotes);
   return allNotes
-    .filter(n => n.path !== active.path && !linked.has(n.path))
-    .filter(n => {
+    .filter((n) => n.path !== active.path && !linked.has(n.path))
+    .filter((n) => {
       const nameLower = n.title.toLowerCase();
       const noteTags = extractTags(n.content);
       const nameOverlap = nameLower.includes(titleLower) || titleLower.includes(nameLower);
-      const tagOverlap = tags.some(t => noteTags.includes(t));
+      const tagOverlap = tags.some((t) => noteTags.includes(t));
       return nameOverlap || tagOverlap;
     })
     .slice(0, 5);

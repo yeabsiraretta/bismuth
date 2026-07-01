@@ -124,7 +124,10 @@ export async function moveNote(oldPath: string, newFolder: string): Promise<Note
 
 export async function moveFolder(sourcePath: string, targetParent: string): Promise<string> {
   try {
-    return await invoke<string>('move_folder', { source_path: sourcePath, target_parent: targetParent });
+    return await invoke<string>('move_folder', {
+      source_path: sourcePath,
+      target_parent: targetParent,
+    });
   } catch (error) {
     log.error('Vault service: failed to move folder', error as Error);
     throw safeError('Failed to move folder', error);
@@ -133,7 +136,10 @@ export async function moveFolder(sourcePath: string, targetParent: string): Prom
 
 export async function updateLinksOnRename(oldPath: string, newPath: string): Promise<string[]> {
   try {
-    return await invoke<string[]>('update_links_on_rename', { old_path: oldPath, new_path: newPath });
+    return await invoke<string[]>('update_links_on_rename', {
+      old_path: oldPath,
+      new_path: newPath,
+    });
   } catch (error) {
     log.error('Vault service: failed to update links', error as Error);
     throw safeError('Failed to update links', error);
@@ -143,7 +149,10 @@ export async function updateLinksOnRename(oldPath: string, newPath: string): Pro
 export async function listNotes(vaultPath: string, folderPath: string = ''): Promise<Note[]> {
   log.debug('Vault service: listing notes');
   try {
-    const notes = await invoke<Note[]>('list_notes', { vault_path: vaultPath, folder_path: folderPath });
+    const notes = await invoke<Note[]>('list_notes', {
+      vault_path: vaultPath,
+      folder_path: folderPath,
+    });
     log.info('Vault service: notes listed', { count: notes.length });
     return notes;
   } catch (error) {

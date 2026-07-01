@@ -9,7 +9,7 @@
   import { recordFeatureUse } from '@/utils/storage/featurePreload';
 
   function getByCategory(cat: string): FeatureDefinition[] {
-    return OPTIONAL_FEATURES.filter(f => f.category === cat);
+    return OPTIONAL_FEATURES.filter((f) => f.category === cat);
   }
 
   function getLoadState(id: string): FeatureLoadState {
@@ -24,7 +24,7 @@
 
   function handleDelete(id: string): void {
     if ($featureFlags[id]) featureFlags.toggle(id);
-    import('@/features/lazyloader/stores/lazyloaderStore').then(m => m.unloadFeature(id));
+    import('@/features/lazyloader/stores/lazyloaderStore').then((m) => m.unloadFeature(id));
   }
 
   function resetAll(): void {
@@ -35,7 +35,10 @@
 <div class="settings-section stack stack-md">
   <div class="section-header">
     <h3>Feature Toggles</h3>
-    <p class="setting-hint">Enable or disable optional features and sidebar panels. Core features (File Tree, Search, Recent, Outline, Properties) are always enabled.</p>
+    <p class="setting-hint">
+      Enable or disable optional features and sidebar panels. Core features (File Tree, Search,
+      Recent, Outline, Properties) are always enabled.
+    </p>
   </div>
 
   {#each FEATURE_CATEGORIES as category}
@@ -46,7 +49,11 @@
         <div class="feature-list">
           {#each items as feature (feature.id)}
             {@const loadState = getLoadState(feature.id)}
-            <div class="feature-item" class:feature-loading={loadState === 'loading'} class:feature-error={loadState === 'error'}>
+            <div
+              class="feature-item"
+              class:feature-loading={loadState === 'loading'}
+              class:feature-error={loadState === 'error'}
+            >
               <div class="feature-info">
                 <span class="feature-icon"><Icon name={feature.icon} size={16} /></span>
                 <div class="feature-text">
@@ -58,7 +65,11 @@
                 {#if loadState === 'loading'}
                   <span class="feature-badge loading"><Spinner size="sm" /></span>
                 {:else if loadState === 'loaded'}
-                  <button class="feature-delete" title="Unload module" on:click={() => handleDelete(feature.id)}>
+                  <button
+                    class="feature-delete"
+                    title="Unload module"
+                    on:click={() => handleDelete(feature.id)}
+                  >
                     <Icon name="trash-2" size={12} />
                   </button>
                 {:else if loadState === 'error'}
@@ -84,9 +95,7 @@
   {/each}
 
   <div class="setting-group">
-    <button class="btn btn-secondary" on:click={resetAll}>
-      Reset to Defaults
-    </button>
+    <button class="btn btn-secondary" on:click={resetAll}> Reset to Defaults </button>
   </div>
 </div>
 
@@ -107,7 +116,9 @@
     justify-content: space-between;
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--radius-sm);
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
     border: 1px solid transparent;
   }
 
@@ -182,7 +193,10 @@
     color: var(--text-muted);
     cursor: pointer;
     opacity: 0;
-    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      color 0.15s ease,
+      background-color 0.15s ease;
   }
 
   .feature-item:hover .feature-delete {
@@ -241,7 +255,9 @@
     bottom: 2px;
     background-color: var(--background-primary, #fff);
     border-radius: 50%;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease;
   }
 
   .toggle-switch input:checked + .toggle-slider {

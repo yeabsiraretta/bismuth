@@ -68,10 +68,11 @@ export const metabindTheme = EditorView.baseTheme({
     minWidth: '60px',
     maxWidth: '200px',
   },
-  '.cm-mb-text-input:focus, .cm-mb-number-input:focus, .cm-mb-date-input:focus, .cm-mb-time-input:focus': {
-    borderColor: 'var(--interactive-accent, #89b4fa)',
-    boxShadow: '0 0 0 1px var(--interactive-accent, #89b4fa)',
-  },
+  '.cm-mb-text-input:focus, .cm-mb-number-input:focus, .cm-mb-date-input:focus, .cm-mb-time-input:focus':
+    {
+      borderColor: 'var(--interactive-accent, #89b4fa)',
+      boxShadow: '0 0 0 1px var(--interactive-accent, #89b4fa)',
+    },
   '.cm-mb-number-input': { maxWidth: '80px' },
 
   // ─── INPUT: Slider ───────────────────────────────────────────────────

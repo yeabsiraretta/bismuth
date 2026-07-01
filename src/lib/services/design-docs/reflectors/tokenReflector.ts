@@ -59,7 +59,12 @@ function createToken(varName: string, value: string, collection: string): Design
 
 /** Infer token type from value and collection. */
 function inferTokenType(value: string, collection: string): DesignToken['type'] {
-  if (collection === 'colors' || value.startsWith('#') || value.startsWith('rgb') || value.startsWith('hsl')) {
+  if (
+    collection === 'colors' ||
+    value.startsWith('#') ||
+    value.startsWith('rgb') ||
+    value.startsWith('hsl')
+  ) {
     return 'color';
   }
   if (collection === 'spacing' || collection === 'sizing' || /^\d/.test(value)) {

@@ -31,7 +31,7 @@ export function saveGamifyState(state: GamifyState): void {
 /** Check and reset recurring tasks that are due. */
 export function processRecurrence(tasks: GamifiedTask[]): GamifiedTask[] {
   const now = new Date();
-  return tasks.map(task => {
+  return tasks.map((task) => {
     if (!task.recurrence || !task.completed) return task;
     const nextDue = new Date(task.recurrence.nextDue);
     if (now >= nextDue) {
@@ -51,10 +51,14 @@ export function processRecurrence(tasks: GamifiedTask[]): GamifiedTask[] {
 function computeNextDue(rec: Recurrence): Date {
   const base = new Date(rec.nextDue);
   switch (rec.pattern) {
-    case 'daily': return addDays(base, 1);
-    case 'weekly': return addWeeks(base, 1);
-    case 'monthly': return addMonths(base, 1);
-    case 'custom': return addDays(base, rec.intervalDays ?? 1);
+    case 'daily':
+      return addDays(base, 1);
+    case 'weekly':
+      return addWeeks(base, 1);
+    case 'monthly':
+      return addMonths(base, 1);
+    case 'custom':
+      return addDays(base, rec.intervalDays ?? 1);
   }
 }
 
@@ -66,10 +70,45 @@ export function generateId(): string {
 /** Default rewards. */
 function defaultRewards(): Reward[] {
   return [
-    { id: 'r1', name: '15 min break', description: 'Take a guilt-free 15 minute break', cost: 10, icon: 'coffee', purchased: false },
-    { id: 'r2', name: 'Snack time', description: 'Treat yourself to a snack', cost: 15, icon: 'cookie', purchased: false },
-    { id: 'r3', name: 'Short walk', description: 'Go for a refreshing walk', cost: 20, icon: 'sun', purchased: false },
-    { id: 'r4', name: 'Gaming session', description: '30 minutes of your favorite game', cost: 50, icon: 'gamepad-2', purchased: false },
-    { id: 'r5', name: 'Movie night', description: 'Watch a movie of your choice', cost: 100, icon: 'tv', purchased: false },
+    {
+      id: 'r1',
+      name: '15 min break',
+      description: 'Take a guilt-free 15 minute break',
+      cost: 10,
+      icon: 'coffee',
+      purchased: false,
+    },
+    {
+      id: 'r2',
+      name: 'Snack time',
+      description: 'Treat yourself to a snack',
+      cost: 15,
+      icon: 'cookie',
+      purchased: false,
+    },
+    {
+      id: 'r3',
+      name: 'Short walk',
+      description: 'Go for a refreshing walk',
+      cost: 20,
+      icon: 'sun',
+      purchased: false,
+    },
+    {
+      id: 'r4',
+      name: 'Gaming session',
+      description: '30 minutes of your favorite game',
+      cost: 50,
+      icon: 'gamepad-2',
+      purchased: false,
+    },
+    {
+      id: 'r5',
+      name: 'Movie night',
+      description: 'Watch a movie of your choice',
+      cost: 100,
+      icon: 'tv',
+      purchased: false,
+    },
   ];
 }

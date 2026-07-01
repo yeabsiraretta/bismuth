@@ -11,7 +11,7 @@ import type { PropertyDefinition, PropertyConstraints, PropertyType } from '../t
 export function validateValue(
   value: unknown,
   type: PropertyType,
-  constraints?: PropertyConstraints,
+  constraints?: PropertyConstraints
 ): { valid: boolean; error?: string } {
   if (value === undefined || value === null || value === '') {
     return { valid: true };
@@ -53,15 +53,22 @@ export function coerceValue(value: unknown, type: PropertyType): unknown {
   if (value === undefined || value === null || value === '') return undefined;
 
   switch (type) {
-    case 'number': return typeof value === 'number' ? value : parseFloat(String(value));
-    case 'checkbox': return typeof value === 'boolean' ? value : String(value) === 'true';
-    case 'date': return String(value).slice(0, 10);
+    case 'number':
+      return typeof value === 'number' ? value : parseFloat(String(value));
+    case 'checkbox':
+      return typeof value === 'boolean' ? value : String(value) === 'true';
+    case 'date':
+      return String(value).slice(0, 10);
     case 'list':
     case 'tags': {
       if (Array.isArray(value)) return value;
-      return String(value).split(',').map(s => s.trim()).filter(Boolean);
+      return String(value)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
-    default: return String(value);
+    default:
+      return String(value);
   }
 }
 
@@ -70,7 +77,7 @@ export function coerceValue(value: unknown, type: PropertyType): unknown {
 export async function savePropertyValue(
   path: string,
   propertyName: string,
-  value: unknown,
+  value: unknown
 ): Promise<boolean> {
   try {
     await updateFrontmatterField(path, propertyName, value);
@@ -86,7 +93,7 @@ export async function savePropertyValue(
 export async function saveAllProperties(
   path: string,
   values: Record<string, unknown>,
-  definitions: PropertyDefinition[],
+  definitions: PropertyDefinition[]
 ): Promise<{ saved: number; errors: string[] }> {
   let saved = 0;
   const errors: string[] = [];
@@ -105,7 +112,8 @@ export async function saveAllProperties(
 
     if (coerced !== undefined) {
       const ok = await savePropertyValue(path, def.name, coerced);
-      if (ok) saved++; else errors.push(`${def.name}: Save failed`);
+      if (ok) saved++;
+      else errors.push(`${def.name}: Save failed`);
     }
   }
 
@@ -117,9 +125,9 @@ export async function saveAllProperties(
 /** Check which properties are missing from a note's frontmatter */
 export function missingProperties(
   frontmatter: Record<string, unknown>,
-  definitions: PropertyDefinition[],
+  definitions: PropertyDefinition[]
 ): PropertyDefinition[] {
-  return definitions.filter(def => {
+  return definitions.filter((def) => {
     const val = frontmatter[def.name];
     return val === undefined || val === null || val === '';
   });
@@ -128,7 +136,7 @@ export function missingProperties(
 /** Check if all required properties are filled */
 export function isComplete(
   frontmatter: Record<string, unknown>,
-  definitions: PropertyDefinition[],
+  definitions: PropertyDefinition[]
 ): boolean {
   return missingProperties(frontmatter, definitions).length === 0;
 }
@@ -136,7 +144,7 @@ export function isComplete(
 /** Get completion percentage */
 export function completionPercent(
   frontmatter: Record<string, unknown>,
-  definitions: PropertyDefinition[],
+  definitions: PropertyDefinition[]
 ): number {
   if (definitions.length === 0) return 100;
   const filled = definitions.length - missingProperties(frontmatter, definitions).length;

@@ -10,7 +10,7 @@ import { FRONTMATTER_MD_LINK_RE } from '../types';
 /** Extract all string values from a frontmatter object recursively */
 export function flattenFrontmatterValues(
   obj: Record<string, unknown>,
-  prefix = '',
+  prefix = ''
 ): Array<{ key: string; value: string }> {
   const results: Array<{ key: string; value: string }> = [];
 
@@ -25,7 +25,9 @@ export function flattenFrontmatterValues(
         if (typeof item === 'string') {
           results.push({ key: `${fullKey}[${i}]`, value: item });
         } else if (item && typeof item === 'object') {
-          results.push(...flattenFrontmatterValues(item as Record<string, unknown>, `${fullKey}[${i}]`));
+          results.push(
+            ...flattenFrontmatterValues(item as Record<string, unknown>, `${fullKey}[${i}]`)
+          );
         }
       }
     } else if (v && typeof v === 'object') {
@@ -59,7 +61,7 @@ export function parseMarkdownLinks(value: string, key: string): FrontmatterLink[
 
 /** Extract all markdown links from a note's frontmatter */
 export function extractFrontmatterLinks(
-  frontmatter: Record<string, unknown> | undefined | null,
+  frontmatter: Record<string, unknown> | undefined | null
 ): FrontmatterLink[] {
   if (!frontmatter || typeof frontmatter !== 'object') return [];
 

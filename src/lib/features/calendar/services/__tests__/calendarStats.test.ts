@@ -1,14 +1,23 @@
 import { describe, it, expect } from 'vitest';
 import {
-  filterEventsByRange, computeCategoryBreakdown,
-  computeStreaks, findBusiestDay, computeCalendarStats,
+  filterEventsByRange,
+  computeCategoryBreakdown,
+  computeStreaks,
+  findBusiestDay,
+  computeCalendarStats,
 } from '../calendarStats';
 import type { CalendarEvent, CalendarCategory } from '../../types';
 
 function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
-    id: 'e1', title: 'Test', type: 'event', date: '2025-06-15',
-    startMinute: 540, durationMinutes: 60, completed: false, ...overrides,
+    id: 'e1',
+    title: 'Test',
+    type: 'event',
+    date: '2025-06-15',
+    startMinute: 540,
+    durationMinutes: 60,
+    completed: false,
+    ...overrides,
   };
 }
 
@@ -52,7 +61,7 @@ describe('computeCategoryBreakdown', () => {
     ];
     const result = computeCategoryBreakdown(events, categories);
     expect(result).toHaveLength(2);
-    const work = result.find(r => r.categoryId === 'work')!;
+    const work = result.find((r) => r.categoryId === 'work')!;
     expect(work.eventCount).toBe(2);
     expect(work.totalMinutes).toBe(180);
   });
@@ -75,10 +84,7 @@ describe('computeStreaks', () => {
   });
 
   it('handles gaps', () => {
-    const events = [
-      makeEvent({ date: '2025-06-10' }),
-      makeEvent({ date: '2025-06-12' }),
-    ];
+    const events = [makeEvent({ date: '2025-06-10' }), makeEvent({ date: '2025-06-12' })];
     const { longestStreak } = computeStreaks(events);
     expect(longestStreak).toBe(1);
   });

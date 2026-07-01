@@ -46,8 +46,12 @@ export interface Camera3D {
 }
 
 export const DEFAULT_CAMERA: Camera3D = {
-  theta: 0.3, phi: 0.5, distance: 600,
-  focusX: 0, focusY: 0, focusZ: 0,
+  theta: 0.3,
+  phi: 0.5,
+  distance: 600,
+  focusX: 0,
+  focusY: 0,
+  focusZ: 0,
 };
 
 // ─── 3D Graph settings ──────────────────────────────────────────────────────

@@ -2,9 +2,9 @@
 description: Load spec context and validation rules before generating wireframes
 ---
 
-
 <!-- Extension: wireframe -->
 <!-- Config: .specify/extensions/wireframe/ -->
+
 # speckit.wireframe.prep
 
 Prime context for wireframe work. Run before `/speckit.wireframe.generate` when you want to pre-load spec context, validation rules, and any prior review issues.
@@ -16,6 +16,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - Feature identifier (e.g. `001-user-auth` or `001`) — prep for specific feature
 - No args — prep for patch mode (load prior issues only)
 
@@ -50,6 +51,7 @@ If any of these files don't exist, continue without them — they're convenience
 **If `FEATURE_DIR` is set:**
 
 Read `<FEATURE_DIR>/spec.md` and extract:
+
 - Feature ID and title
 - Overview / description
 - User Stories (each `### User Story N` section)

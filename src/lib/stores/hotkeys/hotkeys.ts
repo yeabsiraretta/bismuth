@@ -24,25 +24,25 @@ function createHotkeyStore() {
 
   return {
     subscribe,
-    
+
     register: (hotkey: Hotkey) => {
-      update(state => {
+      update((state) => {
         state.hotkeys.set(hotkey.id, hotkey);
         return state;
       });
     },
 
     unregister: (id: string) => {
-      update(state => {
+      update((state) => {
         state.hotkeys.delete(id);
         return state;
       });
     },
 
     execute: (keys: string) => {
-      update(state => {
+      update((state) => {
         if (!state.enabled) return state;
-        
+
         for (const [, hotkey] of state.hotkeys) {
           if (hotkey.keys === keys) {
             hotkey.action();
@@ -54,7 +54,7 @@ function createHotkeyStore() {
     },
 
     toggle: () => {
-      update(state => ({
+      update((state) => ({
         ...state,
         enabled: !state.enabled,
       }));
@@ -113,4 +113,4 @@ export const defaultHotkeys: Hotkey[] = [
 ];
 
 // Initialize default hotkeys
-defaultHotkeys.forEach(hotkey => hotkeyStore.register(hotkey));
+defaultHotkeys.forEach((hotkey) => hotkeyStore.register(hotkey));

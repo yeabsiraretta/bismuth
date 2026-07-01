@@ -42,13 +42,20 @@
     return null;
   }
 
-  $: visibleNodes = currentFolderPath ? (findFolderNode(tree, currentFolderPath)?.children ?? tree) : tree;
+  $: visibleNodes = currentFolderPath
+    ? (findFolderNode(tree, currentFolderPath)?.children ?? tree)
+    : tree;
   $: currentFolderName = currentFolderPath?.split('/').pop() || 'Notes';
 
-  function navigateToFolder(path: string) { currentFolderPath = path; }
+  function navigateToFolder(path: string) {
+    currentFolderPath = path;
+  }
 
   function navigateUp() {
-    if (!currentFolderPath || !$currentVault) { currentFolderPath = null; return; }
+    if (!currentFolderPath || !$currentVault) {
+      currentFolderPath = null;
+      return;
+    }
     const parent = currentFolderPath.substring(0, currentFolderPath.lastIndexOf('/'));
     currentFolderPath = parent.length > $currentVault.root_path.length ? parent : null;
   }
@@ -57,15 +64,23 @@
   let isCreatingFolder = false;
   let newFolderName = '';
 
-  function startCreateFolder() { isCreatingFolder = true; newFolderName = ''; }
+  function startCreateFolder() {
+    isCreatingFolder = true;
+    newFolderName = '';
+  }
 
   async function handleCreateFolder() {
-    if (!newFolderName.trim() || !$currentVault) { isCreatingFolder = false; return; }
+    if (!newFolderName.trim() || !$currentVault) {
+      isCreatingFolder = false;
+      return;
+    }
     try {
       await createFolder(newFolderName, $currentVault.root_path, new Set());
       const folderPath = `${$currentVault.root_path}/${newFolderName.trim()}`;
       navigateToFolder(folderPath);
-    } catch (error) { log.error('Failed to create folder', error as Error); }
+    } catch (error) {
+      log.error('Failed to create folder', error as Error);
+    }
     isCreatingFolder = false;
   }
 
@@ -86,7 +101,9 @@
     contextMenuY = event.clientY;
   }
 
-  function closeContextMenu() { contextMenuNote = null; }
+  function closeContextMenu() {
+    contextMenuNote = null;
+  }
 
   function toggleNoteSelection(path: string) {
     if (selectedNotes.has(path)) selectedNotes.delete(path);
@@ -94,7 +111,9 @@
     selectedNotes = selectedNotes;
   }
 
-  function clearNoteSelection() { selectedNotes = new Set(); }
+  function clearNoteSelection() {
+    selectedNotes = new Set();
+  }
 
   // --- Drag and drop ---
   let draggedNote: Note | null = null;
@@ -114,23 +133,40 @@
     dropTargetPath = folderPath;
   }
 
-  function handleDragLeave() { dropTargetPath = null; }
-  function handleDragEnd() { draggedNote = null; dropTargetPath = null; }
+  function handleDragLeave() {
+    dropTargetPath = null;
+  }
+  function handleDragEnd() {
+    draggedNote = null;
+    dropTargetPath = null;
+  }
 
   async function handleDropOnFolder(event: DragEvent, folderPath: string) {
     event.preventDefault();
-    if (!draggedNote) { handleDragEnd(); return; }
-    try { await moveNoteToFolder(draggedNote, folderPath); }
-    catch (error) { log.error('Failed to move note via drag-and-drop', error as Error); }
+    if (!draggedNote) {
+      handleDragEnd();
+      return;
+    }
+    try {
+      await moveNoteToFolder(draggedNote, folderPath);
+    } catch (error) {
+      log.error('Failed to move note via drag-and-drop', error as Error);
+    }
     handleDragEnd();
   }
 
   async function handleDropOnHeader(event: DragEvent) {
     event.preventDefault();
-    if (!draggedNote || !$currentVault) { handleDragEnd(); return; }
+    if (!draggedNote || !$currentVault) {
+      handleDragEnd();
+      return;
+    }
     const target = currentFolderPath || $currentVault.root_path;
-    try { await moveNoteToFolder(draggedNote, target); }
-    catch (error) { log.error('Failed to move note', error as Error); }
+    try {
+      await moveNoteToFolder(draggedNote, target);
+    } catch (error) {
+      log.error('Failed to move note', error as Error);
+    }
     handleDragEnd();
   }
 
@@ -139,16 +175,24 @@
       toggleNoteSelection(note.path);
       return;
     }
-    try { await openNote(note); }
-    catch (error) { log.error('Failed to read note:', error as Error); }
+    try {
+      await openNote(note);
+    } catch (error) {
+      log.error('Failed to read note:', error as Error);
+    }
   }
 
   function handleTreeKeydown(e: KeyboardEvent, node: TreeNode) {
     if (e.key === 'Enter' || e.key === 'ArrowRight') {
-      if (node.type === 'folder') { e.preventDefault(); navigateToFolder(node.path); }
-      else if (node.note) handleNoteClick(node.note);
+      if (node.type === 'folder') {
+        e.preventDefault();
+        navigateToFolder(node.path);
+      } else if (node.note) handleNoteClick(node.note);
     }
-    if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); navigateUp(); }
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      e.preventDefault();
+      navigateUp();
+    }
   }
 </script>
 
@@ -157,13 +201,19 @@
   <div
     class="header"
     class:drop-target={dropTargetPath === (currentFolderPath || $currentVault?.root_path || '')}
-    on:dragover|preventDefault={(e) => handleDragOverFolder(e, currentFolderPath || $currentVault?.root_path || '')}
+    on:dragover|preventDefault={(e) =>
+      handleDragOverFolder(e, currentFolderPath || $currentVault?.root_path || '')}
     on:dragleave={handleDragLeave}
     on:drop={handleDropOnHeader}
   >
     <div class="header-title">
       {#if currentFolderPath}
-        <button class="icon-btn" on:click={navigateUp} aria-label="Go back" title="Go to parent folder">
+        <button
+          class="icon-btn"
+          on:click={navigateUp}
+          aria-label="Go back"
+          title="Go to parent folder"
+        >
           <Icon name="arrow-left" size={16} />
         </button>
       {/if}
@@ -171,10 +221,22 @@
     </div>
     <div class="header-actions">
       {#if selectedNotes.size >= 2}
-        <button class="icon-btn" on:click={() => { mergeModalOpen = true; }} aria-label="Merge selected notes" title="Merge {selectedNotes.size} notes">
+        <button
+          class="icon-btn"
+          on:click={() => {
+            mergeModalOpen = true;
+          }}
+          aria-label="Merge selected notes"
+          title="Merge {selectedNotes.size} notes"
+        >
           <Icon name="git-merge" size={16} />
         </button>
-        <button class="icon-btn" on:click={clearNoteSelection} aria-label="Clear selection" title="Clear selection">
+        <button
+          class="icon-btn"
+          on:click={clearNoteSelection}
+          aria-label="Clear selection"
+          title="Clear selection"
+        >
           <Icon name="x" size={16} />
         </button>
       {/if}
@@ -182,14 +244,38 @@
         <Icon name="folder-plus" size={16} />
       </button>
       <div class="sort-wrapper">
-        <button class="icon-btn" on:click={() => showSortMenu = !showSortMenu} aria-label="Sort">
+        <button class="icon-btn" on:click={() => (showSortMenu = !showSortMenu)} aria-label="Sort">
           <Icon name="arrow-up-down" size={16} />
         </button>
         {#if showSortMenu}
           <div class="sort-menu" role="menu">
-            <button class="sort-option" class:active={sortBy === 'name'} on:click={() => { sortBy = 'name'; showSortMenu = false; }} role="menuitem">Name</button>
-            <button class="sort-option" class:active={sortBy === 'modified'} on:click={() => { sortBy = 'modified'; showSortMenu = false; }} role="menuitem">Modified</button>
-            <button class="sort-option" class:active={sortBy === 'created'} on:click={() => { sortBy = 'created'; showSortMenu = false; }} role="menuitem">Created</button>
+            <button
+              class="sort-option"
+              class:active={sortBy === 'name'}
+              on:click={() => {
+                sortBy = 'name';
+                showSortMenu = false;
+              }}
+              role="menuitem">Name</button
+            >
+            <button
+              class="sort-option"
+              class:active={sortBy === 'modified'}
+              on:click={() => {
+                sortBy = 'modified';
+                showSortMenu = false;
+              }}
+              role="menuitem">Modified</button
+            >
+            <button
+              class="sort-option"
+              class:active={sortBy === 'created'}
+              on:click={() => {
+                sortBy = 'created';
+                showSortMenu = false;
+              }}
+              role="menuitem">Created</button
+            >
           </div>
         {/if}
       </div>
@@ -254,30 +340,141 @@
 <MergeNotesModal
   isOpen={mergeModalOpen}
   sources={mergeSourcePaths}
-  onClose={() => { mergeModalOpen = false; }}
-  onMerged={() => { mergeModalOpen = false; clearNoteSelection(); }}
+  onClose={() => {
+    mergeModalOpen = false;
+  }}
+  onMerged={() => {
+    mergeModalOpen = false;
+    clearNoteSelection();
+  }}
 />
 
 <style>
-  .file-tree { display: flex; flex-direction: column; height: 100%; background: var(--background-secondary); color: var(--text-normal); }
-  .header { display: flex; align-items: center; justify-content: space-between; padding: var(--spacing-s) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .header-title { display: flex; align-items: center; gap: var(--spacing-s); }
-  .header h2 { margin: 0; font-size: var(--font-ui-medium); font-weight: var(--font-semibold); }
-  .header-actions { display: flex; align-items: center; gap: var(--spacing-xs); }
-  .header.drop-target { background: var(--interactive-accent-hover, rgba(14, 165, 233, 0.1)); }
-  .icon-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; border-radius: var(--radius-s); background: transparent; color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
-  .icon-btn:hover { background: var(--interactive-hover); color: var(--text-normal); }
-  .sort-wrapper { position: relative; }
-  .sort-menu { position: absolute; top: 100%; right: 0; margin-top: var(--spacing-xs); min-width: 120px; background: var(--background-primary); border: 1px solid var(--border-color); border-radius: var(--radius-m); box-shadow: var(--shadow-m); padding: var(--spacing-xs); z-index: var(--layer-popover); }
-  .sort-option { display: block; width: 100%; padding: var(--spacing-xs) var(--spacing-s); border: none; border-radius: var(--radius-s); background: transparent; color: var(--text-normal); font-size: var(--font-ui-small); text-align: left; cursor: pointer; }
-  .sort-option:hover { background: var(--interactive-hover); }
-  .sort-option.active { color: var(--interactive-accent); font-weight: var(--font-medium); }
-  .count { background: var(--interactive-accent); color: var(--text-on-accent); padding: 2px var(--spacing-s); border-radius: var(--radius-l); font-size: var(--font-smallest); font-weight: var(--font-semibold); }
-  .inline-input { padding: var(--spacing-xs) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .inline-input input { width: 100%; padding: var(--spacing-xs) var(--spacing-s); border: 1px solid var(--interactive-accent); border-radius: var(--radius-s); background: var(--background-primary); color: var(--text-normal); font-size: var(--font-ui-small); outline: none; }
-  .tree-content { flex: 1; overflow-y: auto; }
-  .empty-state { padding: var(--spacing-xl) var(--spacing-m); text-align: center; color: var(--text-muted); }
-  .empty-state p { margin: var(--spacing-s) 0; }
-  .hint { font-size: var(--font-smaller); color: var(--text-faint); }
-  .node-list { list-style: none; margin: 0; padding: 0; }
+  .file-tree {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--background-secondary);
+    color: var(--text-normal);
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .header h2 {
+    margin: 0;
+    font-size: var(--font-ui-medium);
+    font-weight: var(--font-semibold);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  .header.drop-target {
+    background: var(--interactive-accent-hover, rgba(14, 165, 233, 0.1));
+  }
+  .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: var(--radius-s);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .icon-btn:hover {
+    background: var(--interactive-hover);
+    color: var(--text-normal);
+  }
+  .sort-wrapper {
+    position: relative;
+  }
+  .sort-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--spacing-xs);
+    min-width: 120px;
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-m);
+    padding: var(--spacing-xs);
+    z-index: var(--layer-popover);
+  }
+  .sort-option {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: none;
+    border-radius: var(--radius-s);
+    background: transparent;
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+    text-align: left;
+    cursor: pointer;
+  }
+  .sort-option:hover {
+    background: var(--interactive-hover);
+  }
+  .sort-option.active {
+    color: var(--interactive-accent);
+    font-weight: var(--font-medium);
+  }
+  .count {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    padding: 2px var(--spacing-s);
+    border-radius: var(--radius-l);
+    font-size: var(--font-smallest);
+    font-weight: var(--font-semibold);
+  }
+  .inline-input {
+    padding: var(--spacing-xs) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .inline-input input {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-s);
+    border: 1px solid var(--interactive-accent);
+    border-radius: var(--radius-s);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+    outline: none;
+  }
+  .tree-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .empty-state {
+    padding: var(--spacing-xl) var(--spacing-m);
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .empty-state p {
+    margin: var(--spacing-s) 0;
+  }
+  .hint {
+    font-size: var(--font-smaller);
+    color: var(--text-faint);
+  }
+  .node-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 </style>

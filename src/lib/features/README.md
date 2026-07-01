@@ -26,6 +26,7 @@ All features are declared in the **FeatureRegistry** (`src/lib/stores/settings/f
   Everything else (graph, canvas, git, music, etc.).
 
 The registry is the **single source of truth** for:
+
 - Feature flag defaults and persistence
 - Sidebar tab definitions (icons, labels, tooltips)
 - Feature toggle UI (Settings > Features)

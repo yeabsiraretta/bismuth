@@ -39,13 +39,40 @@ export function changeTab(side: 'left' | 'right', tabId: string): void {
 export function handleGlobalKeydown(e: KeyboardEvent, openCommandPalette: () => void): void {
   const mod = e.metaKey || e.ctrlKey;
 
-  if (mod && e.key === 'p') { e.preventDefault(); openCommandPalette(); }
-  if (mod && e.shiftKey && e.key === 'N') { e.preventDefault(); quickCapture(); }
-  if (mod && e.key === 'w') { e.preventDefault(); closeActiveTab(); }
-  if (mod && !e.shiftKey && e.key === 'Tab') { e.preventDefault(); nextTab(); }
-  if (mod && e.shiftKey && e.key === 'Tab') { e.preventDefault(); prevTab(); }
-  if (mod && e.key === 'h' && !e.shiftKey) { e.preventDefault(); import('@/stores/layout/presets').then(m => m.setViewportMode('home')); }
-  if (mod && e.shiftKey && e.key === 'T') { e.preventDefault(); import('@/stores/editor/tabFeatures').then(m => m.reopenClosedTab()); }
-  if (mod && e.key === 'b' && !e.shiftKey) { e.preventDefault(); toggleLeftSidebar(); }
-  if (mod && e.shiftKey && e.key === 'B') { e.preventDefault(); toggleRightSidebar(); }
+  if (mod && e.key === 'p') {
+    e.preventDefault();
+    openCommandPalette();
+  }
+  if (mod && e.shiftKey && e.key === 'N') {
+    e.preventDefault();
+    quickCapture();
+  }
+  if (mod && e.key === 'w') {
+    e.preventDefault();
+    closeActiveTab();
+  }
+  if (mod && !e.shiftKey && e.key === 'Tab') {
+    e.preventDefault();
+    nextTab();
+  }
+  if (mod && e.shiftKey && e.key === 'Tab') {
+    e.preventDefault();
+    prevTab();
+  }
+  if (mod && e.key === 'h' && !e.shiftKey) {
+    e.preventDefault();
+    import('@/stores/layout/presets').then((m) => m.setViewportMode('home'));
+  }
+  if (mod && e.shiftKey && e.key === 'T') {
+    e.preventDefault();
+    import('@/stores/editor/tabFeatures').then((m) => m.reopenClosedTab());
+  }
+  if (mod && e.key === 'b' && !e.shiftKey) {
+    e.preventDefault();
+    toggleLeftSidebar();
+  }
+  if (mod && e.shiftKey && e.key === 'B') {
+    e.preventDefault();
+    toggleRightSidebar();
+  }
 }

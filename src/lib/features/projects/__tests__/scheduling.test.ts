@@ -1,20 +1,41 @@
 import { describe, it, expect } from 'vitest';
 import {
-  hasCycle, wouldCreateCycle, topologicalSort,
-  autoSchedule, nextOccurrence, isMilestone,
-  buildDepGraph, diffDays, taskDuration,
+  hasCycle,
+  wouldCreateCycle,
+  topologicalSort,
+  autoSchedule,
+  nextOccurrence,
+  isMilestone,
+  buildDepGraph,
+  diffDays,
+  taskDuration,
 } from '../services/scheduling';
 import type { PMTask, Recurrence } from '../types';
 
 function mockTask(overrides: Partial<PMTask> = {}): PMTask {
   return {
-    id: 'task-1', path: 'p/t.md', title: 'Test', description: '',
-    type: 'task', status: 'todo', priority: 'medium',
-    startDate: null, dueDate: null, progress: 0,
-    timeEstimate: null, timeLogs: [], assignees: [], tags: [],
-    parentId: null, subtaskIds: [], dependencies: [],
-    recurrence: null, customFields: {}, archived: false,
-    createdAt: '2026-01-01', updatedAt: '2026-01-01',
+    id: 'task-1',
+    path: 'p/t.md',
+    title: 'Test',
+    description: '',
+    type: 'task',
+    status: 'todo',
+    priority: 'medium',
+    startDate: null,
+    dueDate: null,
+    progress: 0,
+    timeEstimate: null,
+    timeLogs: [],
+    assignees: [],
+    tags: [],
+    parentId: null,
+    subtaskIds: [],
+    dependencies: [],
+    recurrence: null,
+    customFields: {},
+    archived: false,
+    createdAt: '2026-01-01',
+    updatedAt: '2026-01-01',
     ...overrides,
   };
 }
@@ -73,7 +94,7 @@ describe('topologicalSort', () => {
       mockTask({ id: 'b', dependencies: ['a'] }),
     ];
     const sorted = topologicalSort(tasks);
-    const ids = sorted.map(t => t.id);
+    const ids = sorted.map((t) => t.id);
     expect(ids.indexOf('a')).toBeLessThan(ids.indexOf('b'));
     expect(ids.indexOf('b')).toBeLessThan(ids.indexOf('c'));
   });
@@ -118,7 +139,7 @@ describe('autoSchedule', () => {
       mockTask({ id: 'b', startDate: '2026-01-02', dueDate: '2026-01-04', dependencies: ['a'] }),
     ];
     const result = autoSchedule(tasks, 'a');
-    const taskB = result.find(t => t.id === 'b')!;
+    const taskB = result.find((t) => t.id === 'b')!;
     expect(taskB.startDate).toBe('2026-01-06');
   });
 
@@ -128,7 +149,7 @@ describe('autoSchedule', () => {
       mockTask({ id: 'b', startDate: '2026-01-02', dueDate: '2026-01-04', dependencies: [] }),
     ];
     const result = autoSchedule(tasks, 'a');
-    const taskB = result.find(t => t.id === 'b')!;
+    const taskB = result.find((t) => t.id === 'b')!;
     expect(taskB.startDate).toBe('2026-01-02');
   });
 });

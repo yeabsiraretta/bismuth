@@ -146,12 +146,12 @@ describe('livePreview: table rendering', () => {
   function isSeparatorRow(line: string, split: (r: string) => string[]): boolean {
     const inner = line.trim().replace(/^\||\|$/g, '');
     const cells = split(inner);
-    return cells.length > 0 && cells.every(c => /^\s*:?-+:?\s*$/.test(c));
+    return cells.length > 0 && cells.every((c) => /^\s*:?-+:?\s*$/.test(c));
   }
 
   it('detects table lines starting with |', () => {
     const lines = ['| Header 1 | Header 2 |', '| --- | --- |', '| Cell 1 | Cell 2 |'];
-    expect(lines.every(l => l.trimStart().startsWith('|'))).toBe(true);
+    expect(lines.every((l) => l.trimStart().startsWith('|'))).toBe(true);
   });
 
   it('requires at least 2 lines for table rendering', () => {
@@ -224,11 +224,7 @@ describe('livePreview: table rendering', () => {
 
   it('renderTable preserves wikilinks with aliases in cells', async () => {
     const { renderTable } = await import('../live-preview/livePreviewWidgets');
-    const lines = [
-      '| Name | Link |',
-      '| --- | --- |',
-      '| Alice | [[note|Display Text]] |',
-    ];
+    const lines = ['| Name | Link |', '| --- | --- |', '| Alice | [[note|Display Text]] |'];
     const html = renderTable(lines);
     expect(html).toContain('[[note|Display Text]]');
     expect(html).toContain('<td>Alice</td>');

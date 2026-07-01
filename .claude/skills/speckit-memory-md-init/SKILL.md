@@ -52,6 +52,7 @@ Tasks:
    - ephemeral run context = temporary prompt or terminal state that must not be committed
 
 **Guardrails**:
+
 - **Safety First**: Update existing files safely by targeting only managed sections (e.g., `### Spec Kit`).
 - **No Destruction**: Never overwrite project-specific memory or custom agent instructions without explicit approval.
 - **Reconciliation**: If `.specify/memory/workflow.md` exists, treat it as a "living document"—improve its technical requirements without deleting its existing context.

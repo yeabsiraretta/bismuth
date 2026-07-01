@@ -5,19 +5,22 @@ All Claude tooling is now integrated into Windsurf! Here's what you get automati
 ## 🎯 What's Available
 
 ### Skills (Auto-Activate)
+
 Just ask naturally - skills trigger automatically:
 
 - **"Review this UI component"** → `ux-review` skill activates
-- **"Review this code/PR"** → `code-review` skill activates  
+- **"Review this code/PR"** → `code-review` skill activates
 - **"Create a button component"** → `component-gen` skill activates
 
 ### Constitution Constraints (Auto-Enforced)
+
 - ✅ 300-line file limit (auto-checked)
 - ✅ 90%+ test coverage required
 - ✅ UX evaluation for all UI changes
 - ✅ Consistent UX across all interfaces
 
 ### Coding Principles (Auto-Applied)
+
 - Clarity over brevity
 - DRY (Don't Repeat Yourself)
 - Fail fast with clear errors
@@ -43,6 +46,7 @@ All automatically loaded from `.claude/` folder:
 ## 🚀 Common Workflows
 
 ### Creating a UI Component
+
 ```
 You: "Create a dropdown component for vault templates"
 AI: → Activates component-gen skill
@@ -52,6 +56,7 @@ AI: → Activates component-gen skill
 ```
 
 ### Reviewing UI
+
 ```
 You: "Review the WelcomeScreen component for UX issues"
 AI: → Activates ux-review skill
@@ -62,6 +67,7 @@ AI: → Activates ux-review skill
 ```
 
 ### Code Review
+
 ```
 You: "Review this vault_service.rs refactoring"
 AI: → Activates code-review skill
@@ -85,6 +91,7 @@ pnpm docs:list        # List docs with summaries
 ## 🎨 UX Guardrails (Auto-Applied)
 
 When creating/modifying UI:
+
 - ✅ Min 40x40px for interactive elements (44x44px for primary)
 - ✅ Max 7 items in lists/menus (cognitive load)
 - ✅ Immediate feedback on all actions
@@ -95,6 +102,7 @@ When creating/modifying UI:
 ## 📝 Commit Messages
 
 AI automatically formats commits as:
+
 ```
 prefix: short description (max one sentence)
 ```
@@ -104,6 +112,7 @@ prefix: short description (max one sentence)
 ## 🔍 Pre-Action Checks
 
 AI automatically checks before:
+
 - **Every task**: Reads agent-rules, project-context, Constitution
 - **Code changes**: Verifies 300-line limit, tests exist, UX principles
 - **Creating files**: Confirms doesn't exist, fits Constitution, under 300 lines
@@ -120,6 +129,7 @@ AI automatically checks before:
 ## 🎯 Performance Targets
 
 AI enforces these automatically:
+
 - Input latency: <16ms
 - Page load: <1s
 - Search results: <200ms

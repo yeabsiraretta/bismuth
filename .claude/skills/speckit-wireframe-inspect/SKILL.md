@@ -18,6 +18,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - Feature identifier (e.g. `001`) — inspect all wireframes for one feature
 - `--all` — inspect every wireframe across all features
 - No args — inspect current feature
@@ -26,26 +27,28 @@ Accepts:
 
 Per-SVG review catches issues within one wireframe. Inspection catches drift **between** wireframes:
 
-| Pattern | Expected | Drift example |
-|---------|----------|---------------|
-| Title position | All SVGs: x=960, y=28 | One SVG has y=35 |
-| Signature | All SVGs same format | One uses different separator |
-| Header include | All use `includes/header-desktop.svg` | One embeds header inline |
-| Mockup bounds | All: desktop x=40, mobile x=1360 | One has desktop at x=50 |
-| Color palette | Light theme: `#e8d4b8` panels | One uses `#e8d5b9` (close but different) |
-| Callout style | Red circle, 14px text, white fill | One uses blue circle |
-| Badge style | Height=22, rx=4 | One uses height=24 |
+| Pattern        | Expected                              | Drift example                            |
+| -------------- | ------------------------------------- | ---------------------------------------- |
+| Title position | All SVGs: x=960, y=28                 | One SVG has y=35                         |
+| Signature      | All SVGs same format                  | One uses different separator             |
+| Header include | All use `includes/header-desktop.svg` | One embeds header inline                 |
+| Mockup bounds  | All: desktop x=40, mobile x=1360      | One has desktop at x=50                  |
+| Color palette  | Light theme: `#e8d4b8` panels         | One uses `#e8d5b9` (close but different) |
+| Callout style  | Red circle, 14px text, white fill     | One uses blue circle                     |
+| Badge style    | Height=22, rx=4                       | One uses height=24                       |
 
 ## Workflow
 
 ### Step 1: Discover SVGs
 
 **If feature ID:**
+
 ```bash
 find specs/<feature>/wireframes -name "*.svg" -not -path "*/includes/*"
 ```
 
 **If `--all`:**
+
 ```bash
 find specs/*/wireframes -name "*.svg" -not -path "*/includes/*"
 ```
@@ -59,6 +62,7 @@ python3 .specify/extensions/wireframe/scripts/inspect.py --report specs/<feature
 ```
 
 If the script is not installed, read each SVG and extract:
+
 - Title `<text>` element: x, y, font-size, fill
 - Signature `<text>` element: x, y, font-size
 - Desktop mockup `<rect>` or `<g>`: x, y, width, height
@@ -72,6 +76,7 @@ If the script is not installed, read each SVG and extract:
 For each measurable attribute, find the **majority value** across all SVGs. Flag any SVG that deviates from the majority.
 
 Example:
+
 - Title y position:
   - 8 SVGs have y=28 (majority)
   - 1 SVG has y=35 → **DEVIATION: SVG-005**
@@ -81,14 +86,14 @@ Example:
 
 Also verify each SVG against hard expectations (independent of majority):
 
-| Check | Expected |
-|-------|----------|
-| Title position | x=960, y=28 (centered, 1920/2) |
-| Signature position | y=1060 |
-| Desktop mockup (light) | x=40, y=60, 1280×720 |
-| Mobile mockup (light) | x=1360, y=60, 360×720 |
-| Annotation panel | x=40 (or full-width container), y=800 |
-| Canvas | `viewBox="0 0 1920 1080"` |
+| Check                  | Expected                              |
+| ---------------------- | ------------------------------------- |
+| Title position         | x=960, y=28 (centered, 1920/2)        |
+| Signature position     | y=1060                                |
+| Desktop mockup (light) | x=40, y=60, 1280×720                  |
+| Mobile mockup (light)  | x=1360, y=60, 360×720                 |
+| Annotation panel       | x=40 (or full-width container), y=800 |
+| Canvas                 | `viewBox="0 0 1920 1080"`             |
 
 ### Step 5: Log pattern violations
 
@@ -97,10 +102,10 @@ Append to each affected SVG's `.issues.md`:
 ```markdown
 ## Inspector Issues (YYYY-MM-DD)
 
-| Check | Expected | Actual | Classification |
-|-------|----------|--------|----------------|
-| title_y_position | y=28 (majority, 8/10 SVGs) | y=35 | PATTERN_VIOLATION |
-| panel_color_light | #e8d4b8 (majority) | #e8d5b9 | PATTERN_VIOLATION |
+| Check             | Expected                   | Actual  | Classification    |
+| ----------------- | -------------------------- | ------- | ----------------- |
+| title_y_position  | y=28 (majority, 8/10 SVGs) | y=35    | PATTERN_VIOLATION |
+| panel_color_light | #e8d4b8 (majority)         | #e8d5b9 | PATTERN_VIOLATION |
 ```
 
 ### Step 6: Report

@@ -24,7 +24,11 @@
   } from '@/features/canvas/stores';
   import { undo, redo } from '@/features/canvas/stores';
   import { log } from '@/utils/logger';
-  import { exportCanvas, saveCanvasWithLogging, type ExportFormat } from '@/features/canvas/components/workspace/canvasInteractions';
+  import {
+    exportCanvas,
+    saveCanvasWithLogging,
+    type ExportFormat,
+  } from '@/features/canvas/components/workspace/canvasInteractions';
   import { handleCanvasShortcut } from '@/features/canvas/components/workspace/canvasShortcuts';
   import { startPresentation, presentationMode } from '@/features/canvas/stores';
 
@@ -71,7 +75,9 @@
       group: groupSelectedElements,
       ungroup: ungroupSelectedElements,
       save: handleSave,
-      createComponent: () => { showCreateComponentDialog = true; },
+      createComponent: () => {
+        showCreateComponentDialog = true;
+      },
       togglePreview,
       toggleOverview,
     });
@@ -101,7 +107,10 @@
           ...el,
           properties: {
             ...el.properties,
-            featureCardData: { ...el.properties.featureCardData, status: status as 'done' | 'idea' | 'planned' | 'in-progress' | 'deferred' },
+            featureCardData: {
+              ...el.properties.featureCardData,
+              status: status as 'done' | 'idea' | 'planned' | 'in-progress' | 'deferred',
+            },
           },
         };
       });
@@ -228,7 +237,7 @@
   .roadmap-modal {
     background: var(--background-primary);
     border-radius: var(--radius-m);
-    box-shadow: var(--shadow-l, 0 8px 32px rgba(0,0,0,0.2));
+    box-shadow: var(--shadow-l, 0 8px 32px rgba(0, 0, 0, 0.2));
     overflow: hidden;
     max-width: 600px;
     width: 100%;
@@ -259,5 +268,7 @@
     border-radius: var(--radius-s);
   }
 
-  .roadmap-modal-close:hover { background: var(--background-secondary); }
+  .roadmap-modal-close:hover {
+    background: var(--background-secondary);
+  }
 </style>

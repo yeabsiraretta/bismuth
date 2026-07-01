@@ -168,16 +168,52 @@ describe('getTodayTrackedMinutes', () => {
   it('sums stopped clocks from today', () => {
     const today = new Date().toISOString().slice(0, 10);
     const records: ClockRecord[] = [
-      { id: '1', taskText: 'A', sourcePath: 'a.md', sourceLine: 1, startedAt: `${today}T09:00:00Z`, stoppedAt: `${today}T10:00:00Z`, status: 'stopped', durationMinutes: 60 },
-      { id: '2', taskText: 'B', sourcePath: 'b.md', sourceLine: 2, startedAt: `${today}T14:00:00Z`, stoppedAt: `${today}T14:30:00Z`, status: 'stopped', durationMinutes: 30 },
-      { id: '3', taskText: 'C', sourcePath: 'c.md', sourceLine: 3, startedAt: `${today}T16:00:00Z`, stoppedAt: null, status: 'running', durationMinutes: null },
+      {
+        id: '1',
+        taskText: 'A',
+        sourcePath: 'a.md',
+        sourceLine: 1,
+        startedAt: `${today}T09:00:00Z`,
+        stoppedAt: `${today}T10:00:00Z`,
+        status: 'stopped',
+        durationMinutes: 60,
+      },
+      {
+        id: '2',
+        taskText: 'B',
+        sourcePath: 'b.md',
+        sourceLine: 2,
+        startedAt: `${today}T14:00:00Z`,
+        stoppedAt: `${today}T14:30:00Z`,
+        status: 'stopped',
+        durationMinutes: 30,
+      },
+      {
+        id: '3',
+        taskText: 'C',
+        sourcePath: 'c.md',
+        sourceLine: 3,
+        startedAt: `${today}T16:00:00Z`,
+        stoppedAt: null,
+        status: 'running',
+        durationMinutes: null,
+      },
     ];
     expect(getTodayTrackedMinutes(records)).toBe(90);
   });
 
   it('excludes clocks from other days', () => {
     const records: ClockRecord[] = [
-      { id: '1', taskText: 'A', sourcePath: 'a.md', sourceLine: 1, startedAt: '2020-01-01T09:00:00Z', stoppedAt: '2020-01-01T10:00:00Z', status: 'stopped', durationMinutes: 60 },
+      {
+        id: '1',
+        taskText: 'A',
+        sourcePath: 'a.md',
+        sourceLine: 1,
+        startedAt: '2020-01-01T09:00:00Z',
+        stoppedAt: '2020-01-01T10:00:00Z',
+        status: 'stopped',
+        durationMinutes: 60,
+      },
     ];
     expect(getTodayTrackedMinutes(records)).toBe(0);
   });

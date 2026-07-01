@@ -1,6 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getBacklinksData, createLinkFromMention, type BacklinksData, type Mention } from '@/features/graph';
+  import {
+    getBacklinksData,
+    createLinkFromMention,
+    type BacklinksData,
+    type Mention,
+  } from '@/features/graph';
   import Icon from '@/components/icons/Icon.svelte';
   import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
   import SearchInput from '@/components/ui/forms/SearchInput.svelte';
@@ -13,7 +18,7 @@
   export const noteName: string = '';
 
   function getDisplayName(mention: Mention): string {
-    const note = $notes.find(n => n.path === mention.notePath || n.path === mention.noteId);
+    const note = $notes.find((n) => n.path === mention.notePath || n.path === mention.noteId);
     if (note?.title) return note.title;
     return mention.noteName;
   }
@@ -111,10 +116,18 @@
 <div class="backlinks" role="tabpanel" aria-label="Backlinks">
   <PanelHeader icon="link" title="Backlinks" count={totalMentions || undefined}>
     <svelte:fragment slot="actions">
-      <button class="icon-btn" on:click={() => (collapseResults = !collapseResults)} title={collapseResults ? 'Expand results' : 'Collapse results'}>
+      <button
+        class="icon-btn"
+        on:click={() => (collapseResults = !collapseResults)}
+        title={collapseResults ? 'Expand results' : 'Collapse results'}
+      >
         <Icon name={collapseResults ? 'maximize' : 'minimize'} size={14} />
       </button>
-      <button class="icon-btn" on:click={() => (showSearchFilter = !showSearchFilter)} title="Filter">
+      <button
+        class="icon-btn"
+        on:click={() => (showSearchFilter = !showSearchFilter)}
+        title="Filter"
+      >
         <Icon name="search" size={14} />
       </button>
     </svelte:fragment>
@@ -223,7 +236,6 @@
     padding: var(--space-2) var(--space-3);
     border-bottom: 1px solid var(--color-border);
   }
-
 
   .loading,
   .error {

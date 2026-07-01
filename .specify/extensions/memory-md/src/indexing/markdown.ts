@@ -1,15 +1,26 @@
-import matter from "gray-matter";
-import path from "path";
-import { ParsedChunk } from "../types";
-import { markdownToText, normalizeWhitespace, sentencesFromText, STOPWORDS, truncateWords, uniqueSorted, wordCount } from "../utils/text";
-import { shortId, sha256 } from "../utils/hash";
+import matter from 'gray-matter';
+import path from 'path';
+import { ParsedChunk } from '../types';
+import {
+  markdownToText,
+  normalizeWhitespace,
+  sentencesFromText,
+  STOPWORDS,
+  truncateWords,
+  uniqueSorted,
+  wordCount,
+} from '../utils/text';
+import { shortId, sha256 } from '../utils/hash';
 
 const SECTION_WORD_TARGET_MIN = 200;
 const SECTION_WORD_TARGET_MAX = 800;
 const SECTION_WORD_TARGET_DEFAULT = 400;
 
 function headingLabel(pathParts: string[]): string {
-  return pathParts.map((part) => normalizeWhitespace(part)).filter(Boolean).join(" / ");
+  return pathParts
+    .map((part) => normalizeWhitespace(part))
+    .filter(Boolean)
+    .join(' / ');
 }
 
 function splitParagraphs(rawContent: string): string[] {
@@ -27,7 +38,7 @@ function splitLongText(rawContent: string, maxWords = SECTION_WORD_TARGET_MAX): 
 
   const flush = () => {
     if (current.length > 0) {
-      chunks.push(current.join("\n\n").trim());
+      chunks.push(current.join('\n\n').trim());
     }
     current = [];
     currentWords = 0;
@@ -69,7 +80,7 @@ function splitIntoSentenceBlocks(rawContent: string, maxWords: number): string[]
 
   const flush = () => {
     if (current.length > 0) {
-      blocks.push(current.join(" "));
+      blocks.push(current.join(' '));
     }
     current = [];
     currentWords = 0;
@@ -93,8 +104,8 @@ function stripFrontmatter(content: string): string {
 }
 
 export function parseMarkdownFile(filePath: string, rawContent: string): ParsedChunk[] {
-  const content = stripFrontmatter(rawContent).replace(/\r\n/g, "\n");
-  const lines = content.split("\n");
+  const content = stripFrontmatter(rawContent).replace(/\r\n/g, '\n');
+  const lines = content.split('\n');
   const fileStem = path.basename(filePath, path.extname(filePath));
   const chunks: ParsedChunk[] = [];
   const headingStack: Array<{ level: number; title: string; line: number }> = [];
@@ -104,7 +115,7 @@ export function parseMarkdownFile(filePath: string, rawContent: string): ParsedC
   let currentHeadingPath = [fileStem];
 
   const flush = (endLine: number) => {
-    const rawSection = currentLines.join("\n").trim();
+    const rawSection = currentLines.join('\n').trim();
     if (!rawSection) {
       return;
     }
@@ -129,7 +140,7 @@ export function parseMarkdownFile(filePath: string, rawContent: string): ParsedC
       const chunkLineStart = currentStartLine;
       const chunkLineEnd = endLine;
       const chunkHash = sha256(
-        [filePath, chunkHeading, chunkLineStart, chunkLineEnd, rawChunk, index].join("\n---\n"),
+        [filePath, chunkHeading, chunkLineStart, chunkLineEnd, rawChunk, index].join('\n---\n')
       );
 
       chunks.push({
@@ -184,6 +195,6 @@ function extractTopicWords(summary: string, textChunk: string): string[] {
     source
       .toLowerCase()
       .match(/\b[a-z0-9][a-z0-9_-]{2,}\b/g)
-      ?.filter((token) => !STOPWORDS.has(token)) ?? [],
+      ?.filter((token) => !STOPWORDS.has(token)) ?? []
   );
 }

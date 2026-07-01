@@ -19,7 +19,9 @@
         <input type="checkbox" bind:checked={changelogAutoUpdate} />
         Auto-update changelog on file changes
       </label>
-      <span class="setting-hint">Automatically append entries when notes are created or modified</span>
+      <span class="setting-hint"
+        >Automatically append entries when notes are created or modified</span
+      >
     </div>
 
     <div class="setting-item">
@@ -42,7 +44,9 @@
         bind:value={changelogPath}
         placeholder="Changelog.md"
       />
-      <span class="setting-hint">Path relative to vault root where changelog entries are written</span>
+      <span class="setting-hint"
+        >Path relative to vault root where changelog entries are written</span
+      >
     </div>
 
     <div class="setting-item">
@@ -92,7 +96,8 @@
         bind:value={changelogExcludedFolders}
         placeholder=".backups, templates"
       />
-      <span class="setting-hint">Comma-separated folder paths to ignore when recording changes</span>
+      <span class="setting-hint">Comma-separated folder paths to ignore when recording changes</span
+      >
     </div>
   </div>
 </div>

@@ -95,11 +95,7 @@ export {
   navigatePeriod,
 } from './services/journalService';
 
-export {
-  formatDate,
-  applyDateOffset,
-  resolveTemplateVars,
-} from './services/templateVars';
+export { formatDate, applyDateOffset, resolveTemplateVars } from './services/templateVars';
 
 // ─── Components ───────────────────────────────────────────────────────────
 

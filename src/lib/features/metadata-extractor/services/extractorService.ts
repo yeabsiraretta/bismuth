@@ -143,7 +143,7 @@ export function extractAliases(frontmatter: Record<string, unknown>): string[] |
 /** Build backlinks map: for each note path, who links to it. */
 export function buildBacklinksMap(
   notes: NoteInput[],
-  allPaths: Map<string, string>,
+  allPaths: Map<string, string>
 ): Map<string, MdBacklink[]> {
   const map = new Map<string, MdBacklink[]>();
 
@@ -182,7 +182,7 @@ export function buildMetadataExport(notes: NoteInput[]): NoteMetadataExport[] {
 
   const backlinksMap = buildBacklinksMap(notes, allPaths);
 
-  return notes.map(note => {
+  return notes.map((note) => {
     const fileName = note.path.split('/').pop()?.replace('.md', '') || '';
     const tags = extractTags(note.content, note.frontmatter);
     const headings = extractHeadings(note.content);
@@ -202,7 +202,7 @@ export function buildMetadataExport(notes: NoteInput[]): NoteMetadataExport[] {
     if (backlinks && backlinks.length > 0) entry.backlinks = backlinks;
 
     // Include frontmatter only if it has content beyond 'position'
-    const fmKeys = Object.keys(note.frontmatter).filter(k => k !== 'position');
+    const fmKeys = Object.keys(note.frontmatter).filter((k) => k !== 'position');
     if (fmKeys.length > 0) entry.frontmatter = note.frontmatter;
 
     return entry;
@@ -214,14 +214,14 @@ export function buildMetadataExport(notes: NoteInput[]): NoteMetadataExport[] {
 /** Build the non-MD files + folders export. */
 export function buildNonMdExport(
   folders: string[],
-  nonMdFiles: Array<{ name: string; relativePath: string }>,
+  nonMdFiles: Array<{ name: string; relativePath: string }>
 ): NonMdExport {
-  const folderEntries: FolderEntry[] = folders.map(p => ({
+  const folderEntries: FolderEntry[] = folders.map((p) => ({
     name: p.split('/').pop() || p,
     relativePath: p,
   }));
 
-  const fileEntries: FileEntry[] = nonMdFiles.map(f => ({
+  const fileEntries: FileEntry[] = nonMdFiles.map((f) => ({
     name: f.name,
     basename: f.name.replace(/\.[^.]+$/, ''),
     relativePath: f.relativePath,
@@ -236,9 +236,9 @@ export function buildNonMdExport(
 
 /** Build the canvas files export. */
 export function buildCanvasExport(
-  canvasFiles: Array<{ name: string; relativePath: string }>,
+  canvasFiles: Array<{ name: string; relativePath: string }>
 ): CanvasEntry[] {
-  return canvasFiles.map(f => ({
+  return canvasFiles.map((f) => ({
     name: f.name,
     basename: f.name.replace(/\.canvas$/, ''),
     relativePath: f.relativePath,

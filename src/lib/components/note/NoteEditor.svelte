@@ -12,7 +12,12 @@
   import { registerStatusItem, removeStatusItem } from '@/stores/status/status';
   import { settings } from '@/features/settings';
   import { log } from '@/utils/logger';
-  import { parseFrontmatter, computeStats, getFormatStrings, navigateToWikilink } from './noteEditorLogic';
+  import {
+    parseFrontmatter,
+    computeStats,
+    getFormatStrings,
+    navigateToWikilink,
+  } from './noteEditorLogic';
   import FloatingToolbar from '@/components/editor/FloatingToolbar.svelte';
   import {
     formatPainterActive,
@@ -23,7 +28,12 @@
   import { zoomRange, zoomReset } from '@/features/zoom';
   import { ZoomBreadcrumbs } from '@/features/zoom';
   import { shouldUseCodeEditor } from '@/features/code-editor';
-  import { codeBlockModalOpen, activeCodeBlock, closeCodeBlockModal, saveCodeBlock } from '@/features/code-editor';
+  import {
+    codeBlockModalOpen,
+    activeCodeBlock,
+    closeCodeBlockModal,
+    saveCodeBlock,
+  } from '@/features/code-editor';
   import { graphBannerEnabled } from '@/features/graph-banner';
 
   let content = '';
@@ -51,7 +61,9 @@
     zoomReset();
     // Auto-scan for flashcards when note changes (if enabled)
     if ($settings.flashcardsEnabled && $settings.flashcardsAutoScan) {
-      import('@/features/flashcards').then(m => m.scanActiveNote($activeNote.path, $activeNote.content)).catch(() => {});
+      import('@/features/flashcards')
+        .then((m) => m.scanActiveNote($activeNote.path, $activeNote.content))
+        .catch(() => {});
     }
   }
 
@@ -72,9 +84,25 @@
 
   // Push editor stats to status bar
   $: if ($activeNote) {
-    registerStatusItem({ id: 'editor-words', position: 'right', icon: 'type', label: `${wordCount} words`, priority: 10 });
-    registerStatusItem({ id: 'editor-lines', position: 'right', label: `${lineCount} lines`, priority: 20 });
-    registerStatusItem({ id: 'editor-chars', position: 'right', label: `${charCount} chars`, priority: 30 });
+    registerStatusItem({
+      id: 'editor-words',
+      position: 'right',
+      icon: 'type',
+      label: `${wordCount} words`,
+      priority: 10,
+    });
+    registerStatusItem({
+      id: 'editor-lines',
+      position: 'right',
+      label: `${lineCount} lines`,
+      priority: 20,
+    });
+    registerStatusItem({
+      id: 'editor-chars',
+      position: 'right',
+      label: `${charCount} chars`,
+      priority: 30,
+    });
   }
   $: registerStatusItem({
     id: 'editor-save',
@@ -216,8 +244,13 @@
   }
 
   function handleRenameKeydown(e: KeyboardEvent) {
-    if (e.key === 'Enter') { e.preventDefault(); commitRename(); }
-    if (e.key === 'Escape') { isRenaming = false; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      commitRename();
+    }
+    if (e.key === 'Escape') {
+      isRenaming = false;
+    }
   }
 
   function handleEditorInsertText(e: Event) {
@@ -257,7 +290,9 @@
             autofocus
           />
         {:else}
-          <h3 class="panel-header-title note-title" on:dblclick={startRename}>{$activeNote.title}</h3>
+          <h3 class="panel-header-title note-title" on:dblclick={startRename}>
+            {$activeNote.title}
+          </h3>
         {/if}
       </svelte:fragment>
       <svelte:fragment slot="actions">
@@ -268,9 +303,19 @@
           hasFrontmatter={!!frontmatter}
           onFormat={handleFormat}
           onViewModeChange={(mode) => {
-            if (mode === 'source') { livePreview = false; readingMode = false; settings.update(s => ({ ...s, livePreview: false, livePreviewMode: 'source' })); }
-            else if (mode === 'live') { livePreview = true; readingMode = false; settings.update(s => ({ ...s, livePreview: true, livePreviewMode: 'live' })); }
-            else { livePreview = true; readingMode = true; settings.update(s => ({ ...s, livePreview: true, livePreviewMode: 'reading' })); }
+            if (mode === 'source') {
+              livePreview = false;
+              readingMode = false;
+              settings.update((s) => ({ ...s, livePreview: false, livePreviewMode: 'source' }));
+            } else if (mode === 'live') {
+              livePreview = true;
+              readingMode = false;
+              settings.update((s) => ({ ...s, livePreview: true, livePreviewMode: 'live' }));
+            } else {
+              livePreview = true;
+              readingMode = true;
+              settings.update((s) => ({ ...s, livePreview: true, livePreviewMode: 'reading' }));
+            }
           }}
           onToggleFrontmatter={() => (showFrontmatter = !showFrontmatter)}
         />
@@ -278,7 +323,7 @@
     </PanelHeader>
 
     {#if $graphBannerEnabled}
-      {#await import('@/features/graph-banner').then(m => m.GraphBanner) then GraphBanner}
+      {#await import('@/features/graph-banner').then((m) => m.GraphBanner) then GraphBanner}
         <svelte:component this={GraphBanner} />
       {/await}
     {/if}
@@ -296,7 +341,8 @@
       {#key $activeNote?.path}
         {#if isCodeFile}
           {#await import('@/features/code-editor/components/CodeEditor.svelte') then mod}
-            <svelte:component this={mod.default}
+            <svelte:component
+              this={mod.default}
               content={editorContent}
               filePath={$activeNote?.path ?? ''}
               onContentChange={handleContentChange}
@@ -304,10 +350,7 @@
             />
           {/await}
         {:else if readingMode}
-          <MarkdownPreview
-            content={editorContent}
-            onWikilinkClick={handleWikilinkClick}
-          />
+          <MarkdownPreview content={editorContent} onWikilinkClick={handleWikilinkClick} />
         {:else}
           <Editor
             bind:this={editorRef}
@@ -325,11 +368,7 @@
           />
         {/if}
       {/key}
-      <ConceptSuggestionPopover
-        {content}
-        notePath={$activeNote.path}
-        onLink={handleConceptLink}
-      />
+      <ConceptSuggestionPopover {content} notePath={$activeNote.path} onLink={handleConceptLink} />
       {#if $settings.flashcardsEnabled}
         {#await import('@/features/flashcards') then m}
           <div class="flashcard-viewport-bar">
@@ -338,7 +377,6 @@
         {/await}
       {/if}
     </div>
-
   {:else}
     <div class="empty-editor">
       <div class="empty-content">
@@ -352,7 +390,8 @@
 
 {#if $codeBlockModalOpen && $activeCodeBlock}
   {#await import('@/features/code-editor/components/CodeBlockModal.svelte') then mod}
-    <svelte:component this={mod.default}
+    <svelte:component
+      this={mod.default}
       isOpen={$codeBlockModalOpen}
       code={$activeCodeBlock.code}
       language={$activeCodeBlock.language}
@@ -363,15 +402,78 @@
 {/if}
 
 <style>
-  .note-editor { display: flex; flex-direction: column; height: 100%; background: var(--background-primary); }
-  .flashcard-viewport-bar { display: flex; align-items: center; padding: 2px var(--spacing-m); border-top: 1px solid var(--border-color); background: var(--background-secondary); min-height: 24px; }
-  .note-title { cursor: default; margin: 0; font-size: var(--font-ui-menu); font-weight: var(--font-semibold); color: var(--text-normal); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-  .note-title-input { font-size: var(--font-ui-menu); font-weight: var(--font-semibold); color: var(--text-normal); background: var(--background-primary); border: 1px solid var(--interactive-accent); border-radius: var(--radius-s); padding: var(--spacing-xxs) var(--spacing-xs); outline: none; min-width: 0; max-width: 180px; }
-  .editor-content { flex: 1; overflow: hidden; position: relative; }
-  .editor-content.painter-active { cursor: crosshair; }
-  .editor-content.painter-active :global(.cm-content) { cursor: crosshair; }
-  .empty-editor { display: flex; align-items: center; justify-content: center; height: 100%; background: var(--background-primary-alt); }
-  .empty-content { text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: var(--spacing-s); }
-  .empty-content h2 { margin: 0; font-size: var(--font-ui-large); font-weight: var(--font-semibold); color: var(--text-normal); }
-  .empty-content p { margin: 0; font-size: var(--font-ui-small); color: var(--text-muted); }
+  .note-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--background-primary);
+  }
+  .flashcard-viewport-bar {
+    display: flex;
+    align-items: center;
+    padding: 2px var(--spacing-m);
+    border-top: 1px solid var(--border-color);
+    background: var(--background-secondary);
+    min-height: 24px;
+  }
+  .note-title {
+    cursor: default;
+    margin: 0;
+    font-size: var(--font-ui-menu);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .note-title-input {
+    font-size: var(--font-ui-menu);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+    background: var(--background-primary);
+    border: 1px solid var(--interactive-accent);
+    border-radius: var(--radius-s);
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    outline: none;
+    min-width: 0;
+    max-width: 180px;
+  }
+  .editor-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .editor-content.painter-active {
+    cursor: crosshair;
+  }
+  .editor-content.painter-active :global(.cm-content) {
+    cursor: crosshair;
+  }
+  .empty-editor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: var(--background-primary-alt);
+  }
+  .empty-content {
+    text-align: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .empty-content h2 {
+    margin: 0;
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+  }
+  .empty-content p {
+    margin: 0;
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+  }
 </style>

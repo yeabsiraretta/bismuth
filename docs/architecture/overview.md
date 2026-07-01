@@ -16,14 +16,14 @@ The system has three layers connected by Tauri's IPC bridge:
 
 ## Frontend (src/lib/)
 
-| Layer | Directory | Responsibility |
-|-------|-----------|----------------|
-| Components | `components/` | UI presentation (Svelte) |
-| Stores | `stores/` | Reactive state management |
-| Services | `services/` | Tauri IPC call wrappers |
-| Utils | `utils/` | Pure utility functions |
-| Types | `types/` | TypeScript type definitions |
-| Styles | `styles/` | Design tokens, CSS |
+| Layer      | Directory     | Responsibility              |
+| ---------- | ------------- | --------------------------- |
+| Components | `components/` | UI presentation (Svelte)    |
+| Stores     | `stores/`     | Reactive state management   |
+| Services   | `services/`   | Tauri IPC call wrappers     |
+| Utils      | `utils/`      | Pure utility functions      |
+| Types      | `types/`      | TypeScript type definitions |
+| Styles     | `styles/`     | Design tokens, CSS          |
 
 ### Key Conventions
 
@@ -36,10 +36,10 @@ The system has three layers connected by Tauri's IPC bridge:
 
 ## Backend (src-tauri/src/)
 
-| Layer | File/Dir | Responsibility |
-|-------|----------|----------------|
-| Entry | `main.rs` | Tauri app builder, command registration |
-| Commands | `commands/` | IPC handler functions |
+| Layer    | File/Dir    | Responsibility                          |
+| -------- | ----------- | --------------------------------------- |
+| Entry    | `main.rs`   | Tauri app builder, command registration |
+| Commands | `commands/` | IPC handler functions                   |
 
 ### Key Conventions
 
@@ -64,15 +64,15 @@ The system has three layers connected by Tauri's IPC bridge:
 
 ## Module Domains
 
-| Domain | Store | Service | Components |
-|--------|-------|---------|------------|
-| Vault | `stores/vault/` | `services/vault/` | `components/vault/` |
-| Canvas | `stores/canvas/` | `services/canvas/` | `components/canvas/` |
-| Notes | `stores/entity/` | `services/entity/` | `components/note/` |
-| Search | — | `services/search/` | `components/modals/` |
-| Graph | — | `services/graph/` | `components/graph/` |
-| Theme | `stores/theme/` | `services/theme/` | `components/settings/` |
-| Navigation | `stores/navigator/` | — | `components/sidebar/` |
+| Domain     | Store               | Service            | Components             |
+| ---------- | ------------------- | ------------------ | ---------------------- |
+| Vault      | `stores/vault/`     | `services/vault/`  | `components/vault/`    |
+| Canvas     | `stores/canvas/`    | `services/canvas/` | `components/canvas/`   |
+| Notes      | `stores/entity/`    | `services/entity/` | `components/note/`     |
+| Search     | —                   | `services/search/` | `components/modals/`   |
+| Graph      | —                   | `services/graph/`  | `components/graph/`    |
+| Theme      | `stores/theme/`     | `services/theme/`  | `components/settings/` |
+| Navigation | `stores/navigator/` | —                  | `components/sidebar/`  |
 
 ---
 

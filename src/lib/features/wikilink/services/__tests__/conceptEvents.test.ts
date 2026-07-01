@@ -26,7 +26,9 @@ describe('subscribeConceptSuggestions', () => {
     subscribeConceptSuggestions(handler);
     await Promise.resolve();
 
-    const suggestions = [{ title: 'Note A', offset: 0, length: 6, matched_text: 'Note A', score: 0.9 }];
+    const suggestions = [
+      { title: 'Note A', offset: 0, length: 6, matched_text: 'Note A', score: 0.9 },
+    ];
     capturedCallback!({ payload: suggestions });
     expect(handler).toHaveBeenCalledWith(suggestions);
   });

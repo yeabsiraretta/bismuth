@@ -3,7 +3,8 @@
   import { weekColumns, toggleCalendarEventComplete } from '../../stores/calendarStore';
   import type { CalendarEvent } from '../../types';
 
-  export let onCreateEvent: ((detail: { date: string; startMinute: number | null }) => void) | undefined = undefined;
+  export let onCreateEvent:
+    ((detail: { date: string; startMinute: number | null }) => void) | undefined = undefined;
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
   const HOUR_HEIGHT = 60; // px per hour
@@ -89,7 +90,7 @@
 
           <!-- Timed events overlay -->
           <div class="events-overlay">
-            {#each col.events.filter(e => !isAllDay(e)) as event (event.id)}
+            {#each col.events.filter((e) => !isAllDay(e)) as event (event.id)}
               <div
                 class="timed-event"
                 style="{getEventStyle(event)} --event-color: {getEventColor(event)};"
@@ -254,7 +255,11 @@
     left: 0;
     right: 0;
     border-radius: var(--radius-s);
-    background: color-mix(in srgb, var(--event-color, var(--interactive-accent)) 15%, var(--background-primary));
+    background: color-mix(
+      in srgb,
+      var(--event-color, var(--interactive-accent)) 15%,
+      var(--background-primary)
+    );
     border-left: 3px solid var(--event-color, var(--interactive-accent));
     overflow: hidden;
     pointer-events: auto;

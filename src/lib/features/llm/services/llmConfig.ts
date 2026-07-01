@@ -17,7 +17,7 @@ export async function readVaultLlmConfig(vaultRoot: string): Promise<VaultLlmCon
  */
 export async function writeVaultLlmConfig(
   vaultRoot: string,
-  config: VaultLlmConfig,
+  config: VaultLlmConfig
 ): Promise<void> {
   return ipcCall<void>('write_vault_llm_config', { vaultRoot, config });
 }

@@ -17,10 +17,7 @@ export interface FlowGraph {
 /**
  * Builds a flow graph from the canvas document's flow links.
  */
-export function buildFlowGraph(
-  flowLinks: FlowLink[],
-  frames: CanvasElement[]
-): FlowGraph {
+export function buildFlowGraph(flowLinks: FlowLink[], frames: CanvasElement[]): FlowGraph {
   const nodes = new Map<string, FlowNode>();
 
   // Initialize nodes for all frames
@@ -57,9 +54,7 @@ export function resolveFlowTarget(
 
   // First try exact hotspot match
   if (clickedElementId) {
-    const hotspotLink = node.outgoing.find(
-      (l) => l.hotspotElementId === clickedElementId
-    );
+    const hotspotLink = node.outgoing.find((l) => l.hotspotElementId === clickedElementId);
     if (hotspotLink) return hotspotLink;
   }
 
@@ -71,10 +66,7 @@ export function resolveFlowTarget(
 /**
  * Gets all frames reachable from a starting frame (BFS traversal).
  */
-export function getReachableFrames(
-  graph: FlowGraph,
-  startFrameId: string
-): string[] {
+export function getReachableFrames(graph: FlowGraph, startFrameId: string): string[] {
   const visited = new Set<string>();
   const queue = [startFrameId];
 
@@ -100,10 +92,7 @@ export function getReachableFrames(
  * Finds the first frame in a flow (entry point) — the frame with incoming=0
  * or falls back to the first frame in document order.
  */
-export function findEntryFrame(
-  graph: FlowGraph,
-  frames: CanvasElement[]
-): string | null {
+export function findEntryFrame(graph: FlowGraph, frames: CanvasElement[]): string | null {
   if (frames.length === 0) return null;
 
   // Prefer a frame with no incoming links

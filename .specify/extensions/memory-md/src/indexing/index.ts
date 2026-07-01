@@ -1,23 +1,28 @@
-import path from "path";
-import { promises as fs } from "fs";
-import fg from "fast-glob";
-import { loadConfig, resolveProjectPaths } from "../config";
-import { MemoryDatabase, deleteSourceEntries, loadIndexingStateMap, upsertIndexedFile } from "../db";
-import { MemoryEntryRecord, MemoryHubConfig, ParsedChunk } from "../types";
-import { pathExists, readTextFile } from "../utils/fs";
-import { normalizeWhitespace } from "../utils/text";
-import { parseMarkdownFile } from "./markdown";
-import { shortId, sha256 } from "../utils/hash";
+import path from 'path';
+import { promises as fs } from 'fs';
+import fg from 'fast-glob';
+import { loadConfig, resolveProjectPaths } from '../config';
+import {
+  MemoryDatabase,
+  deleteSourceEntries,
+  loadIndexingStateMap,
+  upsertIndexedFile,
+} from '../db';
+import { MemoryEntryRecord, MemoryHubConfig, ParsedChunk } from '../types';
+import { pathExists, readTextFile } from '../utils/fs';
+import { normalizeWhitespace } from '../utils/text';
+import { parseMarkdownFile } from './markdown';
+import { shortId, sha256 } from '../utils/hash';
 
 const PHASE1_MEMORY_FILES = new Set([
-  "INDEX.md",
-  "PROJECT_CONTEXT.md",
-  "ARCHITECTURE.md",
-  "DECISIONS.md",
-  "BUGS.md",
-  "WORKLOG.md",
-  "constitution.md",
-  "architecture_constitution.md",
+  'INDEX.md',
+  'PROJECT_CONTEXT.md',
+  'ARCHITECTURE.md',
+  'DECISIONS.md',
+  'BUGS.md',
+  'WORKLOG.md',
+  'constitution.md',
+  'architecture_constitution.md',
 ]);
 
 export interface IndexMemoryOptions {
@@ -33,8 +38,14 @@ export interface IndexMemoryResult {
   indexedEntries: number;
 }
 
-export async function discoverPhase1MemoryFiles(projectRoot: string, config: MemoryHubConfig): Promise<string[]> {
-  const patterns = config.indexing.include.memory.length > 0 ? config.indexing.include.memory : ["docs/memory/**/*.md"];
+export async function discoverPhase1MemoryFiles(
+  projectRoot: string,
+  config: MemoryHubConfig
+): Promise<string[]> {
+  const patterns =
+    config.indexing.include.memory.length > 0
+      ? config.indexing.include.memory
+      : ['docs/memory/**/*.md'];
   const files = await fg(patterns, {
     cwd: projectRoot,
     absolute: false,
@@ -50,7 +61,7 @@ export async function indexPhase1MemoryFiles(
   projectRoot: string,
   db: MemoryDatabase,
   config: MemoryHubConfig = loadConfig(projectRoot),
-  options: IndexMemoryOptions = {},
+  options: IndexMemoryOptions = {}
 ): Promise<IndexMemoryResult> {
   const { memoryRoot } = resolveProjectPaths(projectRoot, config);
   const allowedFiles = await discoverPhase1MemoryFiles(projectRoot, config);
@@ -77,7 +88,9 @@ export async function indexPhase1MemoryFiles(
       continue;
     }
 
-    const chunks = parseMarkdownFile(relPath, raw).map((chunk) => chunkToEntry(projectRoot, relPath, chunk, now));
+    const chunks = parseMarkdownFile(relPath, raw).map((chunk) =>
+      chunkToEntry(projectRoot, relPath, chunk, now)
+    );
     upsertIndexedFile(db, relPath, hash, now, chunks);
     result.indexedFiles += 1;
     result.indexedEntries += chunks.length;
@@ -99,18 +112,25 @@ export async function indexPhase1MemoryFiles(
   return result;
 }
 
-export function chunkToEntry(projectRoot: string, relPath: string, chunk: ParsedChunk, now: string): MemoryEntryRecord {
-  const id = shortId([relPath, chunk.section_heading, chunk.line_start, chunk.line_end, chunk.hash].join("|"));
+export function chunkToEntry(
+  projectRoot: string,
+  relPath: string,
+  chunk: ParsedChunk,
+  now: string
+): MemoryEntryRecord {
+  const id = shortId(
+    [relPath, chunk.section_heading, chunk.line_start, chunk.line_end, chunk.hash].join('|')
+  );
   const tagsList = [...chunk.tags];
-  if (relPath.startsWith(".specify/memory/")) {
-    tagsList.push("governance");
+  if (relPath.startsWith('.specify/memory/')) {
+    tagsList.push('governance');
   }
-  const tags = tagsList.join(",");
+  const tags = tagsList.join(',');
 
   return {
     id,
     source_path: relPath,
-    source_type: "memory",
+    source_type: 'memory',
     section_heading: chunk.section_heading,
     content_summary: chunk.summary,
     snippet: chunk.snippet,
@@ -120,14 +140,14 @@ export function chunkToEntry(projectRoot: string, relPath: string, chunk: Parsed
     line_end: chunk.line_end,
     updated_at: now,
     created_at: now,
-    status: "active", // Default status
+    status: 'active', // Default status
   };
 }
 
 export function buildSearchQuery(query: string): string {
-  const terms = normalizeWhitespace(query)
-    .toLowerCase()
-    .match(/\b[\p{L}\p{N}_-]+\b/gu) ?? [];
-  return terms.length > 0 ? terms.join(" ") : query.trim();
+  const terms =
+    normalizeWhitespace(query)
+      .toLowerCase()
+      .match(/\b[\p{L}\p{N}_-]+\b/gu) ?? [];
+  return terms.length > 0 ? terms.join(' ') : query.trim();
 }
-

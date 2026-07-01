@@ -61,7 +61,7 @@ describe('sendClaudeMessage — missing key', () => {
     vi.mocked(getSecret).mockResolvedValueOnce({ found: false, value: null, available: true });
 
     await expect(sendClaudeMessage(MESSAGES, MODEL)).rejects.toThrow(
-      'Claude API key not configured — add via Settings > LLM',
+      'Claude API key not configured — add via Settings > LLM'
     );
   });
 
@@ -74,7 +74,7 @@ describe('sendClaudeMessage — missing key', () => {
     });
 
     await expect(sendClaudeMessage(MESSAGES, MODEL)).rejects.toThrow(
-      'Claude API key not configured — add via Settings > LLM',
+      'Claude API key not configured — add via Settings > LLM'
     );
   });
 });
@@ -140,7 +140,7 @@ describe('sendClaudeMessageStream — missing key', () => {
     vi.mocked(getSecret).mockResolvedValueOnce({ found: false, value: null, available: true });
 
     await expect(sendClaudeMessageStream(MESSAGES, MODEL, vi.fn())).rejects.toThrow(
-      'Claude API key not configured — add via Settings > LLM',
+      'Claude API key not configured — add via Settings > LLM'
     );
   });
 });

@@ -7,8 +7,12 @@ vi.mock('@/services/vault/vault', () => ({
   openVault: vi.fn(),
   scanVault: vi.fn(),
   getNote: vi.fn().mockResolvedValue({
-    path: '/vault/reopened.md', title: 'Reopened', content: '',
-    frontmatter: {}, created_at: '2026-01-01', modified_at: '2026-01-01',
+    path: '/vault/reopened.md',
+    title: 'Reopened',
+    content: '',
+    frontmatter: {},
+    created_at: '2026-01-01',
+    modified_at: '2026-01-01',
   }),
 }));
 vi.mock('@/utils/logger', () => ({
@@ -21,21 +25,40 @@ vi.mock('@/utils/id', () => ({
 }));
 
 import {
-  editorTabs, activeEditorTabId, closeTab, closeAllTabs,
-  openNoteTab, _closedHistory, _groupsInternal,
+  editorTabs,
+  activeEditorTabId,
+  closeTab,
+  closeAllTabs,
+  openNoteTab,
+  _closedHistory,
+  _groupsInternal,
 } from '../tabs';
 import {
-  tabGroups, closedTabHistory, activeTabZoom,
-  openEphemeralTab, pinTab, setTabZoom,
-  createTabGroup, removeTabGroup, toggleGroupCollapse,
-  closeTabsToRight, closeTabsToLeft, reopenClosedTab, clearClosedHistory,
+  tabGroups,
+  closedTabHistory,
+  activeTabZoom,
+  openEphemeralTab,
+  pinTab,
+  setTabZoom,
+  createTabGroup,
+  removeTabGroup,
+  toggleGroupCollapse,
+  closeTabsToRight,
+  closeTabsToLeft,
+  reopenClosedTab,
+  clearClosedHistory,
 } from '../tabFeatures';
 import type { Note } from '@/types/data/vault';
 
-const mkNote = (name: string): Note => ({
-  path: `/vault/${name}.md`, title: name, content: `# ${name}`,
-  frontmatter: {}, created_at: '2026-01-01', modified_at: '2026-01-01',
-} as Note);
+const mkNote = (name: string): Note =>
+  ({
+    path: `/vault/${name}.md`,
+    title: name,
+    content: `# ${name}`,
+    frontmatter: {},
+    created_at: '2026-01-01',
+    modified_at: '2026-01-01',
+  }) as Note;
 
 describe('tabFeatures', () => {
   beforeEach(() => {
@@ -175,7 +198,7 @@ describe('tabFeatures', () => {
       await openNoteTab(mkNote('c'));
       const tabs = get(editorTabs);
       closeTabsToRight(tabs[1].id);
-      expect(get(editorTabs).map(t => t.title)).toEqual(['a', 'b']);
+      expect(get(editorTabs).map((t) => t.title)).toEqual(['a', 'b']);
     });
 
     it('closeTabsToLeft keeps current and right tabs', async () => {
@@ -184,7 +207,7 @@ describe('tabFeatures', () => {
       await openNoteTab(mkNote('c'));
       const tabs = get(editorTabs);
       closeTabsToLeft(tabs[1].id);
-      expect(get(editorTabs).map(t => t.title)).toEqual(['b', 'c']);
+      expect(get(editorTabs).map((t) => t.title)).toEqual(['b', 'c']);
     });
   });
 });

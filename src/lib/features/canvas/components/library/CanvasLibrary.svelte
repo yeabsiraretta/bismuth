@@ -37,7 +37,10 @@
     try {
       await createNewCanvas(newCanvasName);
       if (useDesignTemplate) {
-        currentCanvas.update((c) => { if (c) c.pages = createDesignSystemPages(); return c; });
+        currentCanvas.update((c) => {
+          if (c) c.pages = createDesignSystemPages();
+          return c;
+        });
       }
       newCanvasName = '';
       useDesignTemplate = false;
@@ -53,7 +56,7 @@
     const name = newCanvasName;
     try {
       await createNewCanvas(name);
-      currentCanvas.update((c) => c ? { ...c, documentType: 'slides', slideMetadata: [] } : c);
+      currentCanvas.update((c) => (c ? { ...c, documentType: 'slides', slideMetadata: [] } : c));
       newCanvasName = '';
       isCreating = false;
       await refreshCanvasList();
@@ -87,7 +90,11 @@
   }
 
   function loadLivingDesignCanvas() {
-    const canvas = { ...BISMUTH_DESIGN_CANVAS, created_at: Math.floor(Date.now() / 1000), modified_at: Math.floor(Date.now() / 1000) };
+    const canvas = {
+      ...BISMUTH_DESIGN_CANVAS,
+      created_at: Math.floor(Date.now() / 1000),
+      modified_at: Math.floor(Date.now() / 1000),
+    };
     currentCanvas.set(canvas);
     log.info('Loaded Bismuth Living Design Canvas');
   }
@@ -110,14 +117,20 @@
       </select>
       <div class="view-toggle">
         <button
-          class="toggle-btn" class:active={viewMode === 'grid'}
-          on:click={() => (viewMode = 'grid')} title="Grid view" aria-label="Grid view"
+          class="toggle-btn"
+          class:active={viewMode === 'grid'}
+          on:click={() => (viewMode = 'grid')}
+          title="Grid view"
+          aria-label="Grid view"
         >
           <Icon name="grid" size={16} />
         </button>
         <button
-          class="toggle-btn" class:active={viewMode === 'list'}
-          on:click={() => (viewMode = 'list')} title="List view" aria-label="List view"
+          class="toggle-btn"
+          class:active={viewMode === 'list'}
+          on:click={() => (viewMode = 'list')}
+          title="List view"
+          aria-label="List view"
         >
           <Icon name="list" size={16} />
         </button>
@@ -133,7 +146,11 @@
     <button class="canvas-btn canvas-btn--primary" on:click={() => (isCreating = true)}>
       <Icon name="plus" size={14} /> New Canvas
     </button>
-    <button class="canvas-btn canvas-btn--secondary" on:click={loadLivingDesignCanvas} title="Open the Bismuth Living Design Document">
+    <button
+      class="canvas-btn canvas-btn--secondary"
+      on:click={loadLivingDesignCanvas}
+      title="Open the Bismuth Living Design Document"
+    >
       <Icon name="layers" size={14} /> Design Doc
     </button>
   </div>
@@ -152,9 +169,17 @@
         <span>Use Design System template</span>
       </label>
       <div class="form-actions">
-        <button class="canvas-btn canvas-btn--primary" on:click={handleCreateCanvas}>Create Canvas</button>
-        <button class="canvas-btn canvas-btn--secondary" on:click={handleCreateSlideDeck} title="Create a slide deck">Slide Deck</button>
-        <button class="canvas-btn canvas-btn--secondary" on:click={() => (isCreating = false)}>Cancel</button>
+        <button class="canvas-btn canvas-btn--primary" on:click={handleCreateCanvas}
+          >Create Canvas</button
+        >
+        <button
+          class="canvas-btn canvas-btn--secondary"
+          on:click={handleCreateSlideDeck}
+          title="Create a slide deck">Slide Deck</button
+        >
+        <button class="canvas-btn canvas-btn--secondary" on:click={() => (isCreating = false)}
+          >Cancel</button
+        >
       </div>
     </div>
   {/if}

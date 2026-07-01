@@ -71,11 +71,7 @@ export interface AaCandidate {
  * Returns candidates sorted by score (descending), excluding the target
  * itself and its direct neighbors (which are trivially related).
  */
-export function rankByAdamicAdar(
-  adj: AdjMap,
-  targetId: string,
-  limit: number = 20,
-): AaCandidate[] {
+export function rankByAdamicAdar(adj: AdjMap, targetId: string, limit: number = 20): AaCandidate[] {
   const directNeighbors = adj.get(targetId);
   if (!directNeighbors || directNeighbors.size === 0) return [];
 

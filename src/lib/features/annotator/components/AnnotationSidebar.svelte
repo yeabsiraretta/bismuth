@@ -17,9 +17,10 @@
   let filterColor: HighlightColor | 'all' = 'all';
 
   $: activeColor = $annotatorView.activeColor;
-  $: filteredAnnotations = filterColor === 'all'
-    ? $annotations
-    : $annotations.filter((a: DocumentAnnotation) => a.color === filterColor);
+  $: filteredAnnotations =
+    filterColor === 'all'
+      ? $annotations
+      : $annotations.filter((a: DocumentAnnotation) => a.color === filterColor);
 
   function startEdit(ann: DocumentAnnotation) {
     editingId = ann.id;
@@ -31,7 +32,10 @@
     if (!editingId) return;
     await updateAnnotation(editingId, {
       comment: editComment,
-      tags: editTags.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: editTags
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean),
     });
     editingId = null;
   }
@@ -45,7 +49,12 @@
   }
 
   function formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return new Date(iso).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 </script>
 
@@ -68,13 +77,17 @@
   </div>
 
   <div class="filter-bar">
-    <button class="filter-btn" class:active={filterColor === 'all'} on:click={() => filterColor = 'all'}>All</button>
+    <button
+      class="filter-btn"
+      class:active={filterColor === 'all'}
+      on:click={() => (filterColor = 'all')}>All</button
+    >
     {#each Object.entries(HIGHLIGHT_COLORS) as [name, hex]}
       <button
         class="filter-dot"
         class:active={filterColor === name}
         style="background: {hex}"
-        on:click={() => filterColor = filterColor === name ? 'all' : name as HighlightColor}
+        on:click={() => (filterColor = filterColor === name ? 'all' : (name as HighlightColor))}
         title="Filter {name}"
       ></button>
     {/each}
@@ -99,11 +112,7 @@
               class="edit-comment"
               rows="3"
             ></textarea>
-            <input
-              bind:value={editTags}
-              placeholder="tag1, tag2, tag3"
-              class="edit-tags"
-            />
+            <input bind:value={editTags} placeholder="tag1, tag2, tag3" class="edit-tags" />
             <div class="edit-actions">
               <button class="save-btn" on:click={saveEdit}>Save</button>
               <button class="cancel-btn" on:click={cancelEdit}>Cancel</button>
@@ -128,7 +137,11 @@
               <button class="action-btn" on:click={() => startEdit(ann)} title="Edit">
                 <Icon name="edit" size={12} />
               </button>
-              <button class="action-btn danger" on:click={() => handleDelete(ann.id)} title="Delete">
+              <button
+                class="action-btn danger"
+                on:click={() => handleDelete(ann.id)}
+                title="Delete"
+              >
                 <Icon name="trash" size={12} />
               </button>
             </div>
@@ -163,16 +176,24 @@
     font-size: var(--font-size-sm);
     font-weight: 600;
   }
-  .count { color: var(--text-muted); font-weight: 400; }
-  .color-palette, .filter-bar {
+  .count {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .color-palette,
+  .filter-bar {
     display: flex;
     align-items: center;
     gap: 4px;
     padding: 8px 16px;
     font-size: var(--font-size-xs);
   }
-  .palette-label { color: var(--text-secondary); margin-right: 4px; }
-  .color-swatch, .filter-dot {
+  .palette-label {
+    color: var(--text-secondary);
+    margin-right: 4px;
+  }
+  .color-swatch,
+  .filter-dot {
     width: 18px;
     height: 18px;
     border-radius: 50%;
@@ -180,8 +201,14 @@
     cursor: pointer;
     transition: border-color 0.15s;
   }
-  .color-swatch.active, .filter-dot.active { border-color: var(--text-primary); }
-  .filter-bar { border-bottom: 1px solid var(--border-primary); padding-top: 0; }
+  .color-swatch.active,
+  .filter-dot.active {
+    border-color: var(--text-primary);
+  }
+  .filter-bar {
+    border-bottom: 1px solid var(--border-primary);
+    padding-top: 0;
+  }
   .filter-btn {
     padding: 2px 8px;
     font-size: var(--font-size-xs);
@@ -191,8 +218,15 @@
     color: var(--text-secondary);
     cursor: pointer;
   }
-  .filter-btn.active { background: var(--bg-accent); color: var(--text-on-accent); }
-  .annotations-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .filter-btn.active {
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
+  }
+  .annotations-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
   .annotation-card {
     padding: 10px 12px;
     margin-bottom: 8px;
@@ -201,11 +235,30 @@
     border-left: 3px solid;
     font-size: var(--font-size-sm);
   }
-  .ann-page { font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: 4px; }
-  .ann-highlight { margin-bottom: 6px; line-height: 1.4; }
-  .ann-highlight mark { padding: 1px 3px; border-radius: 2px; }
-  .ann-comment { color: var(--text-secondary); margin-bottom: 6px; line-height: 1.4; }
-  .ann-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+  .ann-page {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .ann-highlight {
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .ann-highlight mark {
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+  .ann-comment {
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .ann-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
   .tag {
     font-size: var(--font-size-xs);
     color: var(--text-accent);
@@ -218,9 +271,19 @@
     justify-content: space-between;
     align-items: center;
   }
-  .ann-date { font-size: var(--font-size-xs); color: var(--text-muted); }
-  .ann-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
-  .annotation-card:hover .ann-actions { opacity: 1; }
+  .ann-date {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+  }
+  .ann-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .annotation-card:hover .ann-actions {
+    opacity: 1;
+  }
   .action-btn {
     padding: 2px 4px;
     border: none;
@@ -229,10 +292,19 @@
     cursor: pointer;
     border-radius: var(--radius-sm);
   }
-  .action-btn:hover { background: var(--bg-hover); }
-  .action-btn.danger:hover { color: var(--text-error); }
-  .ann-edit { display: flex; flex-direction: column; gap: 6px; }
-  .edit-comment, .edit-tags {
+  .action-btn:hover {
+    background: var(--bg-hover);
+  }
+  .action-btn.danger:hover {
+    color: var(--text-error);
+  }
+  .ann-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .edit-comment,
+  .edit-tags {
     width: 100%;
     padding: 6px 8px;
     border: 1px solid var(--border-primary);
@@ -243,16 +315,34 @@
     font-family: inherit;
     resize: vertical;
   }
-  .edit-actions { display: flex; gap: 6px; }
-  .save-btn, .cancel-btn {
+  .edit-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .save-btn,
+  .cancel-btn {
     padding: 4px 12px;
     font-size: var(--font-size-xs);
     border: 1px solid var(--border-primary);
     border-radius: var(--radius-sm);
     cursor: pointer;
   }
-  .save-btn { background: var(--bg-accent); color: var(--text-on-accent); border-color: var(--bg-accent); }
-  .cancel-btn { background: var(--bg-secondary); color: var(--text-secondary); }
-  .empty-state { text-align: center; padding: 24px 16px; color: var(--text-muted); }
-  .hint { font-size: var(--font-size-xs); margin-top: 4px; }
+  .save-btn {
+    background: var(--bg-accent);
+    color: var(--text-on-accent);
+    border-color: var(--bg-accent);
+  }
+  .cancel-btn {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+  .empty-state {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--text-muted);
+  }
+  .hint {
+    font-size: var(--font-size-xs);
+    margin-top: 4px;
+  }
 </style>

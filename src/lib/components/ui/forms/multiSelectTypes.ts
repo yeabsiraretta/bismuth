@@ -16,7 +16,7 @@ export function isGrouped(options: SelectOptions): options is SelectOptionGroup[
 
 export function flatOptions(options: SelectOptions): SelectOption[] {
   if (isGrouped(options)) {
-    return options.flatMap(g => g.options);
+    return options.flatMap((g) => g.options);
   }
   return options as SelectOption[];
 }

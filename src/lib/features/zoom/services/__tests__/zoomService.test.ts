@@ -10,26 +10,26 @@ import {
 } from '../zoomService';
 
 const DOC = [
-  '# Title',           // 1
-  '',                   // 2
-  '## Section A',      // 3
-  'Some text here.',   // 4
-  '',                   // 5
+  '# Title', // 1
+  '', // 2
+  '## Section A', // 3
+  'Some text here.', // 4
+  '', // 5
   '### Subsection A1', // 6
   'Details about A1.', // 7
-  '',                   // 8
-  '## Section B',      // 9
-  'Text in B.',        // 10
+  '', // 8
+  '## Section B', // 9
+  'Text in B.', // 10
 ].join('\n');
 
 const LIST_DOC = [
-  '- Item 1',             // 1
-  '  - Nested 1a',        // 2
-  '  - Nested 1b',        // 3
-  '    - Deep 1b-i',      // 4
-  '- Item 2',             // 5
-  '  - Nested 2a',        // 6
-  '',                      // 7
+  '- Item 1', // 1
+  '  - Nested 1a', // 2
+  '  - Nested 1b', // 3
+  '    - Deep 1b-i', // 4
+  '- Item 2', // 5
+  '  - Nested 2a', // 6
+  '', // 7
   '# Heading after list', // 8
 ].join('\n');
 

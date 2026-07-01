@@ -121,12 +121,20 @@ describe('isCodeFile', () => {
   });
 
   it('uses custom config extensions', () => {
-    expect(isCodeFile('file.xyz', {
-      extensions: ['xyz'],
-      fontSize: 14, fontFamily: 'monospace', fontLigatures: false,
-      lineNumbers: true, wordWrap: false, minimap: false,
-      indentGuides: true, tabSize: 2, theme: 'auto',
-    })).toBe(true);
+    expect(
+      isCodeFile('file.xyz', {
+        extensions: ['xyz'],
+        fontSize: 14,
+        fontFamily: 'monospace',
+        fontLigatures: false,
+        lineNumbers: true,
+        wordWrap: false,
+        minimap: false,
+        indentGuides: true,
+        tabSize: 2,
+        theme: 'auto',
+      })
+    ).toBe(true);
   });
 });
 

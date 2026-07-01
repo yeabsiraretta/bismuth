@@ -12,6 +12,7 @@
 ## Week 1: Core Functionality
 
 ### Day 1: Project Setup ✅
+
 - [x] Tauri + Svelte project initialized
 - [ ] Install dependencies:
   ```bash
@@ -28,7 +29,9 @@
 - [ ] Test: App opens with empty 4-panel layout
 
 ### Day 2: Vault Management
+
 **Rust Backend**:
+
 - [ ] Create `src-tauri/src/commands/vault.rs`
 - [ ] Implement `open_vault(path: String) -> Result<Vec<Note>>`
   - [ ] Scan directory recursively
@@ -51,24 +54,27 @@
   ```
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/stores/vault.ts`
   ```typescript
   export const vault = writable<{
-    path: string | null
-    notes: Note[]
-    isLoading: boolean
+    path: string | null;
+    notes: Note[];
+    isLoading: boolean;
   }>({
     path: null,
     notes: [],
-    isLoading: false
-  })
+    isLoading: false,
+  });
   ```
 - [ ] Implement vault opening flow
 - [ ] Display notes in Sidebar
 - [ ] Test: Open folder, see markdown files listed
 
 ### Day 3: Basic Editor
+
 **Rust Backend**:
+
 - [ ] Create `src-tauri/src/commands/notes.rs`
 - [ ] Implement `read_note(path: String) -> Result<String>`
   - [ ] Read file from disk
@@ -79,6 +85,7 @@
 - [ ] Add error handling (file not found, permission denied)
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/components/CodeMirrorEditor.svelte`
 - [ ] Set up CodeMirror 6:
   - [ ] Markdown language support
@@ -87,21 +94,23 @@
 - [ ] Create `src/lib/stores/selection.ts`
   ```typescript
   export const selection = writable<{
-    activeNote: Note | null
-    content: string
-    isDirty: boolean
+    activeNote: Note | null;
+    content: string;
+    isDirty: boolean;
   }>({
     activeNote: null,
     content: '',
-    isDirty: false
-  })
+    isDirty: false,
+  });
   ```
 - [ ] Implement open note flow
 - [ ] Implement save flow (disk-first)
 - [ ] Test: Open file, edit, save, verify on disk
 
 ### Day 4: Johnny.Decimal Parsing
+
 **Rust Backend**:
+
 - [ ] Create `src-tauri/src/utils/jd.rs`
 - [ ] Implement JD ID parser:
   ```rust
@@ -116,6 +125,7 @@
 - [ ] Test: Verify JD parsing with various filenames
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/components/JDBadge.svelte`
   ```svelte
   <span class="jd-badge">
@@ -128,7 +138,9 @@
 - [ ] Test: Notes show JD badges, grouped by area (10-19, 20-29, etc.)
 
 ### Day 5: Wikilink Parsing
+
 **Rust Backend**:
+
 - [ ] Create `src-tauri/src/utils/wikilinks.rs`
 - [ ] Implement wikilink parser:
   ```rust
@@ -142,18 +154,14 @@
 - [ ] Test: Verify wikilink parsing
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/stores/wikilinks.ts`
 - [ ] Compute backlinks (reverse index):
   ```typescript
-  export const backlinks = derived(
-    [vault, selection],
-    ([$vault, $selection]) => {
-      if (!$selection.activeNote) return []
-      return $vault.notes.filter(note =>
-        note.outgoing_links.includes($selection.activeNote.title)
-      )
-    }
-  )
+  export const backlinks = derived([vault, selection], ([$vault, $selection]) => {
+    if (!$selection.activeNote) return [];
+    return $vault.notes.filter((note) => note.outgoing_links.includes($selection.activeNote.title));
+  });
   ```
 - [ ] Create `src/lib/components/BacklinksPanel.svelte`
 - [ ] Make wikilinks clickable in editor (CodeMirror extension)
@@ -164,7 +172,9 @@
 ## Week 2: Enhancement & Polish
 
 ### Day 6: JD Auto-Suggest
+
 **Rust Backend**:
+
 - [ ] Implement `suggest_next_jd_id(category: u8) -> Result<String>`
   - [ ] Scan existing notes in category
   - [ ] Find highest item number
@@ -172,6 +182,7 @@
 - [ ] Test: Verify suggestion logic
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/components/CreateNoteDialog.svelte`
 - [ ] Add category selector
 - [ ] Show suggested JD ID
@@ -179,7 +190,9 @@
 - [ ] Test: Create note, verify filename format
 
 ### Day 7: Simple Search
+
 **Rust Backend**:
+
 - [ ] Create `src-tauri/src/commands/search.rs`
 - [ ] Implement `search_notes(query: String) -> Result<Vec<Note>>`
   - [ ] Simple grep-like search
@@ -188,6 +201,7 @@
 - [ ] Test: Search for text, verify results
 
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/components/SearchInput.svelte`
 - [ ] Add search input to Sidebar
 - [ ] Filter note list by search results
@@ -195,31 +209,35 @@
 - [ ] Test: Search, see filtered results
 
 ### Day 8: Graph View
+
 **Svelte Frontend**:
+
 - [ ] Install force-graph: `pnpm add force-graph`
 - [ ] Create `src/lib/components/GraphView.svelte`
 - [ ] Build graph data from notes and wikilinks:
   ```typescript
   const graphData = {
-    nodes: notes.map(n => ({
+    nodes: notes.map((n) => ({
       id: n.path,
       label: n.title,
-      color: getAreaColor(n.jd_area)
+      color: getAreaColor(n.jd_area),
     })),
-    links: notes.flatMap(n =>
-      n.outgoing_links.map(target => ({
+    links: notes.flatMap((n) =>
+      n.outgoing_links.map((target) => ({
         source: n.path,
-        target: findNoteByTitle(target)?.path
+        target: findNoteByTitle(target)?.path,
       }))
-    )
-  }
+    ),
+  };
   ```
 - [ ] Add click handler to open note
 - [ ] Add toggle in right panel: Backlinks ↔ Graph
 - [ ] Test: View graph, click node, navigate
 
 ### Day 9: Keyboard Shortcuts
+
 **Svelte Frontend**:
+
 - [ ] Create `src/lib/utils/shortcuts.ts`
 - [ ] Implement shortcuts:
   - [ ] Cmd+N: Create note
@@ -232,7 +250,9 @@
 - [ ] Test: Verify all shortcuts work
 
 ### Day 10: Polish & Demo Prep
+
 **Polish**:
+
 - [ ] Add loading spinner during vault scan
 - [ ] Add error messages (toast notifications)
 - [ ] Add empty states:
@@ -244,12 +264,14 @@
 - [ ] Test on macOS, Windows, Linux (if possible)
 
 **Demo Vault**:
+
 - [ ] Create `demo-vault/` with 20-30 sample notes
 - [ ] Ensure JD structure is clear (10-19, 20-29, 30-39)
 - [ ] Add wikilinks between notes
 - [ ] Add frontmatter to some notes
 
 **Demo Recording**:
+
 - [ ] Write demo script (5 minutes)
 - [ ] Practice demo 2-3 times
 - [ ] Record screen with audio
@@ -261,6 +283,7 @@
 ## Testing Checklist
 
 ### Functional Tests
+
 - [ ] Open vault with 100+ notes (performance)
 - [ ] Open vault with 0 notes (empty state)
 - [ ] Open note with no wikilinks (empty backlinks)
@@ -276,6 +299,7 @@
 - [ ] Use all keyboard shortcuts
 
 ### Edge Cases
+
 - [ ] Filename with special characters
 - [ ] Wikilink to non-existent note
 - [ ] Circular wikilinks (A → B → A)
@@ -286,6 +310,7 @@
 - [ ] Disk full error
 
 ### Browser Compatibility
+
 - [ ] Test on Chrome/Chromium
 - [ ] Test on Safari (macOS)
 - [ ] Test on Firefox
@@ -295,6 +320,7 @@
 ## Pre-Demo Checklist
 
 ### Code Quality
+
 - [ ] No console errors
 - [ ] No TypeScript errors
 - [ ] No Rust warnings
@@ -302,11 +328,13 @@
 - [ ] Remove debug logs
 
 ### Documentation
+
 - [ ] README.md with setup instructions
 - [ ] Demo script written
 - [ ] Known issues documented
 
 ### Demo Environment
+
 - [ ] Demo vault ready
 - [ ] App builds successfully
 - [ ] App runs without crashes
@@ -318,11 +346,13 @@
 ## Post-Demo Checklist
 
 ### Immediate
+
 - [ ] Gather feedback (form or notes)
 - [ ] Document bugs found during demo
 - [ ] Prioritize feedback items
 
 ### Follow-up
+
 - [ ] Share demo video with stakeholders
 - [ ] Schedule feedback review meeting
 - [ ] Plan next iteration based on feedback
@@ -332,6 +362,7 @@
 ## Quick Reference
 
 ### Build Commands
+
 ```bash
 # Development
 pnpm tauri dev
@@ -344,26 +375,28 @@ pnpm test
 ```
 
 ### Tauri Commands (Rust → JS)
+
 ```typescript
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/tauri';
 
 // Open vault
-const notes = await invoke('open_vault', { path: '/path/to/vault' })
+const notes = await invoke('open_vault', { path: '/path/to/vault' });
 
 // Read note
-const content = await invoke('read_note', { path: '/path/to/note.md' })
+const content = await invoke('read_note', { path: '/path/to/note.md' });
 
 // Write note
-await invoke('write_note', { path: '/path/to/note.md', content: '...' })
+await invoke('write_note', { path: '/path/to/note.md', content: '...' });
 
 // Search
-const results = await invoke('search_notes', { query: 'search term' })
+const results = await invoke('search_notes', { query: 'search term' });
 
 // Suggest JD ID
-const nextId = await invoke('suggest_next_jd_id', { category: 15 })
+const nextId = await invoke('suggest_next_jd_id', { category: 15 });
 ```
 
 ### File Paths
+
 - **Frontend**: `src/`
 - **Backend**: `src-tauri/src/`
 - **Demo Vault**: `demo-vault/`

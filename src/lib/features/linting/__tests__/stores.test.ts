@@ -5,7 +5,13 @@ vi.mock('../services/linting', () => ({
   lintText: vi.fn(),
 }));
 
-import { lintIssues, lintLoading, lintImmediate, lintDebounced, clearLintIssues } from '../stores/linting';
+import {
+  lintIssues,
+  lintLoading,
+  lintImmediate,
+  lintDebounced,
+  clearLintIssues,
+} from '../stores/linting';
 import { lintText } from '../services/linting';
 import type { LintIssue } from '../services/linting';
 

@@ -53,10 +53,7 @@ export async function getNavigationTarget(
  * Auto-sequences notes in a folder by alphabetical order.
  * Creates a linked chain: note1 → note2 → note3 → ...
  */
-export async function sequenceFromFolder(
-  folderPath: string,
-  series?: string
-): Promise<number> {
+export async function sequenceFromFolder(folderPath: string, series?: string): Promise<number> {
   const notes = await invoke<{ path: string }[]>('list_notes', {
     vaultPath: folderPath,
     folderPath,
@@ -64,9 +61,7 @@ export async function sequenceFromFolder(
 
   if (notes.length < 2) return 0;
 
-  const sorted = notes
-    .map((n) => n.path)
-    .sort((a, b) => a.localeCompare(b));
+  const sorted = notes.map((n) => n.path).sort((a, b) => a.localeCompare(b));
 
   for (let i = 0; i < sorted.length; i++) {
     const seq: SequenceInfo = { series };

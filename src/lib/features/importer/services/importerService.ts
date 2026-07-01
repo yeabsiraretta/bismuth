@@ -30,13 +30,13 @@ type ProgressCallback = (progress: ImportProgress) => void;
  */
 export async function runImport(
   options: ImportOptions,
-  onProgress?: ProgressCallback,
+  onProgress?: ProgressCallback
 ): Promise<ImportResult> {
   const start = performance.now();
   const vault = get(currentVault);
   if (!vault) throw new Error('No vault open');
 
-  const sourceInfo = IMPORT_SOURCES.find(s => s.id === options.source);
+  const sourceInfo = IMPORT_SOURCES.find((s) => s.id === options.source);
   if (!sourceInfo) throw new Error(`Unknown import source: ${options.source}`);
 
   // 1. Pick files
@@ -131,7 +131,11 @@ export async function runImport(
     try {
       // Ensure subfolder exists
       if (note.folder) {
-        try { await createFolder(folder); } catch { /* exists */ }
+        try {
+          await createFolder(folder);
+        } catch {
+          /* exists */
+        }
       }
 
       await writeNote(notePath, finalContent);
@@ -155,7 +159,11 @@ export async function runImport(
     durationMs: Math.round(performance.now() - start),
   };
 
-  log.info('Importer: import complete', { imported: result.imported, failed: result.failed, durationMs: result.durationMs });
+  log.info('Importer: import complete', {
+    imported: result.imported,
+    failed: result.failed,
+    durationMs: result.durationMs,
+  });
   return result;
 }
 
@@ -165,13 +173,19 @@ function convertFile(
   content: string,
   fileName: string,
   filePath: string,
-  source: ImportSource,
+  source: ImportSource
 ): ConvertedNote[] {
   switch (source) {
     case 'markdown':
     case 'text': {
       const title = fileName.replace(/\.(md|markdown|txt|text)$/i, '');
-      return [{ title, content: source === 'text' ? `# ${title}\n\n${content}` : content, sourcePath: filePath }];
+      return [
+        {
+          title,
+          content: source === 'text' ? `# ${title}\n\n${content}` : content,
+          sourcePath: filePath,
+        },
+      ];
     }
 
     case 'html':
@@ -207,7 +221,7 @@ function buildDestinationPath(vaultRoot: string, options: ImportOptions): string
     dest += `/${options.destinationFolder}`;
   }
   if (options.createSubfolder) {
-    const sourceInfo = IMPORT_SOURCES.find(s => s.id === options.source);
+    const sourceInfo = IMPORT_SOURCES.find((s) => s.id === options.source);
     const label = sourceInfo?.label ?? options.source;
     dest += `/${label} Import`;
   }
@@ -233,7 +247,7 @@ function injectTag(content: string, tag: string): string {
     // Append to existing tags array
     const updated = fm.replace(
       /tags:\s*\[(.*?)\]/,
-      (_m, existing) => `tags: [${existing}${existing.trim() ? ', ' : ''}"${tag}"]`,
+      (_m, existing) => `tags: [${existing}${existing.trim() ? ', ' : ''}"${tag}"]`
     );
     return content.replace(fmMatch[1], updated);
   }

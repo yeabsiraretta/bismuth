@@ -20,7 +20,14 @@
     }
   }
 
-  const TOKEN_TYPES: TokenType[] = ['color', 'spacing', 'typography', 'shadow', 'radius', 'opacity'];
+  const TOKEN_TYPES: TokenType[] = [
+    'color',
+    'spacing',
+    'typography',
+    'shadow',
+    'radius',
+    'opacity',
+  ];
 
   function handleSave() {
     const values: Record<string, string | number> = {};
@@ -87,10 +94,24 @@
 </div>
 
 <style>
-  .token-editor { display: flex; flex-direction: column; gap: 12px; padding: 12px; }
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); }
-  .field input, .field select {
+  .token-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  .field input,
+  .field select {
     padding: 4px 8px;
     font-size: 12px;
     border: 1px solid var(--color-border);
@@ -98,11 +119,30 @@
     background: var(--color-bg);
     color: var(--color-text);
   }
-  .modes-section { display: flex; flex-direction: column; gap: 6px; }
-  .modes-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); }
-  .mode-value { display: flex; flex-direction: column; gap: 2px; }
-  .mode-name { font-size: 10px; color: var(--color-text-muted); }
-  .mode-input-row { display: flex; align-items: center; gap: 6px; }
+  .modes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .modes-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+  }
+  .mode-value {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mode-name {
+    font-size: 10px;
+    color: var(--color-text-muted);
+  }
+  .mode-input-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
   .mode-input-row input {
     flex: 1;
     padding: 3px 6px;
@@ -112,13 +152,29 @@
     background: var(--color-bg);
     color: var(--color-text);
   }
-  .actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 8px; border-top: 1px solid var(--color-border); }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+  }
   .btn-cancel {
-    padding: 4px 12px; font-size: 11px; border: 1px solid var(--color-border);
-    border-radius: 4px; background: transparent; color: var(--color-text-secondary); cursor: pointer;
+    padding: 4px 12px;
+    font-size: 11px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
   }
   .btn-save {
-    padding: 4px 12px; font-size: 11px; border: none;
-    border-radius: 4px; background: var(--color-accent); color: white; cursor: pointer;
+    padding: 4px 12px;
+    font-size: 11px;
+    border: none;
+    border-radius: 4px;
+    background: var(--color-accent);
+    color: white;
+    cursor: pointer;
   }
 </style>

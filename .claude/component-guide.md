@@ -4,21 +4,22 @@ UX-informed requirements for generating Bismuth UI components. Apply these befor
 
 ## Component Type → Principles Mapping
 
-| Component | Primary Principles | Key Requirements |
-|-----------|-------------------|------------------|
-| **Form** | Cognitive Load, Error Prevention | Max 7 fields visible, inline validation, clear labels |
-| **Multi-step Form** | Progressive Disclosure, Cognitive Load | 4-5 fields per step, progress indicator, save state |
-| **Data Table** | Cognitive Load, Hick's Law | Max 5-7 visible columns, sticky header, row actions in menu |
-| **Navigation** | Hick's Law, Recognition vs Recall | Max 7 items, clear labels, active state visible |
-| **Modal** | Cognitive Load, Fitts's Law | Single focus, 44x44px close button, escape key |
-| **Settings** | Progressive Disclosure, Recognition | One section at a time, current state visible, auto-save toggles |
-| **Dashboard** | Cognitive Load, Visual Hierarchy | Max 5-7 KPI cards, grouped metrics, progressive disclosure |
-| **Empty State** | Progressive Disclosure, Mental Model | Clear action, illustration optional, helpful copy |
-| **Search** | Recognition vs Recall, Mental Model | Autocomplete, recent searches, clear results |
+| Component           | Primary Principles                     | Key Requirements                                                |
+| ------------------- | -------------------------------------- | --------------------------------------------------------------- |
+| **Form**            | Cognitive Load, Error Prevention       | Max 7 fields visible, inline validation, clear labels           |
+| **Multi-step Form** | Progressive Disclosure, Cognitive Load | 4-5 fields per step, progress indicator, save state             |
+| **Data Table**      | Cognitive Load, Hick's Law             | Max 5-7 visible columns, sticky header, row actions in menu     |
+| **Navigation**      | Hick's Law, Recognition vs Recall      | Max 7 items, clear labels, active state visible                 |
+| **Modal**           | Cognitive Load, Fitts's Law            | Single focus, 44x44px close button, escape key                  |
+| **Settings**        | Progressive Disclosure, Recognition    | One section at a time, current state visible, auto-save toggles |
+| **Dashboard**       | Cognitive Load, Visual Hierarchy       | Max 5-7 KPI cards, grouped metrics, progressive disclosure      |
+| **Empty State**     | Progressive Disclosure, Mental Model   | Clear action, illustration optional, helpful copy               |
+| **Search**          | Recognition vs Recall, Mental Model    | Autocomplete, recent searches, clear results                    |
 
 ## Generation Requirements by Component
 
 ### Forms
+
 ```typescript
 // Requirements
 - Max 7 visible fields (use steps for more)
@@ -31,6 +32,7 @@ UX-informed requirements for generating Bismuth UI components. Apply these befor
 ```
 
 **Example prompt**:
+
 ```
 Create a note metadata form with:
 - Title (required, max 200 chars)
@@ -47,6 +49,7 @@ Requirements:
 ```
 
 ### Data Tables
+
 ```typescript
 // Requirements
 - Max 5-7 visible columns
@@ -59,6 +62,7 @@ Requirements:
 ```
 
 ### Navigation
+
 ```typescript
 // Requirements
 - Max 7 top-level items
@@ -70,6 +74,7 @@ Requirements:
 ```
 
 ### Modals
+
 ```typescript
 // Requirements
 - Single focus (one modal at a time)
@@ -83,17 +88,20 @@ Requirements:
 ## UX Guardrails (Non-Negotiable)
 
 ### Cognitive Load
+
 - **Max 7±2 items** in any list, menu, or visible set
 - **Group** when exceeding 9 items
 - **Progressive disclosure** for advanced options
 
 ### Interaction
+
 - **Min 40x40px** for all interactive elements
 - **Min 44x44px** for primary actions
 - **Immediate feedback** on all user actions
 - **Confirmation** for destructive actions
 
 ### Accessibility
+
 - **Keyboard navigation** for all features
 - **ARIA labels** on icon-only buttons
 - **Focus indicators** visible (2px outline)
@@ -101,6 +109,7 @@ Requirements:
 - **Alt text** for images
 
 ### Error Handling
+
 - **Inline validation** on blur (forms)
 - **Specific error messages** with remediation
 - **Prevent errors** before they happen
@@ -122,24 +131,28 @@ Before submitting component code, verify:
 ## Bismuth-Specific Patterns
 
 ### Note Editor
+
 - Auto-save with 500ms debounce
 - Save indicator: "Saved at HH:mm:ss"
 - Wikilink autocomplete from existing notes
 - Keyboard: Cmd+S force save, Cmd+K insert link
 
 ### File Tree
+
 - Max 7-9 top-level folders visible
 - Expand/collapse with arrow keys
 - Active note highlighted
 - Drag-drop for move operations
 
 ### Graph View
+
 - Start simple, add filters progressively
 - Max 100 nodes visible initially
 - Filter by tag, folder, date range
 - Click node to open note
 
 ### Search Results
+
 - 10 results per page
 - Show context snippet
 - Highlight matches
@@ -148,26 +161,31 @@ Before submitting component code, verify:
 ## Anti-Patterns to Avoid
 
 ### ❌ Overloaded Screen
+
 - More than 7 action areas visible
 - No clear starting point
 - **Fix**: Group into sections, use tabs/accordion
 
 ### ❌ Form Graveyard
+
 - More than 10 required fields visible
 - No inline validation
 - **Fix**: Multi-step wizard, 4-5 fields per step
 
 ### ❌ Mystery Navigation
+
 - Icon-only navigation without labels
 - Unclear where features are
 - **Fix**: Add text labels, use standard patterns
 
 ### ❌ Silent Errors
+
 - Errors occur but no message shown
 - User doesn't know what went wrong
 - **Fix**: Show specific error with remediation
 
 ### ❌ Click Cemetery
+
 - 3+ clicks for simple tasks
 - Dead-end paths with no outcome
 - **Fix**: Reduce steps, add shortcuts
@@ -175,6 +193,7 @@ Before submitting component code, verify:
 ## Tech Stack Integration
 
 ### Svelte + Tailwind
+
 ```svelte
 <!-- Accessible button with proper sizing -->
 <button
@@ -200,6 +219,7 @@ Before submitting component code, verify:
 ```
 
 ### TypeScript Types
+
 ```typescript
 // Component props with UX constraints
 interface DataTableProps {
@@ -223,7 +243,7 @@ interface FormProps {
 **Fitts's Law**: Larger targets = easier clicks (min 40px)  
 **Progressive Disclosure**: Hide advanced options  
 **Recognition vs Recall**: Show options, don't make users remember  
-**Error Prevention**: Validate early, confirm destructive actions  
+**Error Prevention**: Validate early, confirm destructive actions
 
 ---
 
@@ -237,16 +257,16 @@ to these components.
 
 **Semantic map** (use these classes for human-readable content):
 
-| Class | Intended use |
-| --- | --- |
-| `.bismuth-heading-xl` | Page empty states, major system alerts |
-| `.bismuth-heading-lg` | Page H1 — one per screen |
-| `.bismuth-heading-md` | Section title inside a panel or workspace |
+| Class                 | Intended use                                    |
+| --------------------- | ----------------------------------------------- |
+| `.bismuth-heading-xl` | Page empty states, major system alerts          |
+| `.bismuth-heading-lg` | Page H1 — one per screen                        |
+| `.bismuth-heading-md` | Section title inside a panel or workspace       |
 | `.bismuth-heading-sm` | Card header, sidebar heading, sub-section label |
-| `.bismuth-body` | Standard paragraphs, user content, AI output |
-| `.bismuth-body-sm` | Captions, helper text, metadata labels |
-| `.bismuth-body-code` | Entity IDs, exact-match strings, inline code |
-| `.bismuth-caption` | Fine print, timestamps, supplemental notes |
+| `.bismuth-body`       | Standard paragraphs, user content, AI output    |
+| `.bismuth-body-sm`    | Captions, helper text, metadata labels          |
+| `.bismuth-body-code`  | Entity IDs, exact-match strings, inline code    |
+| `.bismuth-caption`    | Fine print, timestamps, supplemental notes      |
 
 **Overflow utilities** — apply only when text breaks its bounding box:
 

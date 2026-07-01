@@ -86,14 +86,16 @@ const _mockNutrition: NutritionEntry = {
   proteinG: 40,
   carbsG: 60,
   fatG: 10,
-}; void _mockNutrition;
+};
+void _mockNutrition;
 
 const _mockVolume: VolumeEntry = {
   muscleGroup: 'Legs',
   totalVolumeKg: 2500,
   sessionCount: 3,
   totalSets: 15,
-}; void _mockVolume;
+};
+void _mockVolume;
 
 function resetStores(): void {
   exerciseList.set([]);
@@ -225,7 +227,7 @@ describe('gymStore — addSetToSession', () => {
     activeSession.set(null);
 
     await expect(addSetToSession(VAULT_ROOT, VAULT_ID, 'ex-1', 1, 10, 100)).rejects.toThrow(
-      'No active session',
+      'No active session'
     );
   });
 
@@ -233,7 +235,7 @@ describe('gymStore — addSetToSession', () => {
     vi.mocked(gymService.addSet).mockRejectedValueOnce(new Error('Set limit'));
 
     await expect(addSetToSession(VAULT_ROOT, VAULT_ID, 'ex-1', 1, 10, 100)).rejects.toThrow(
-      'Set limit',
+      'Set limit'
     );
   });
 });
@@ -272,4 +274,3 @@ describe('gymStore — finishSession', () => {
     expect(gymService.updateSession).not.toHaveBeenCalled();
   });
 });
-

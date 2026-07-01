@@ -12,12 +12,14 @@
 **Created**: `src/lib/assets/icons.ts`
 
 **Purpose**: Centralize SVG icon path data
+
 - Extracted all icon paths from Icon component
 - Added TypeScript types for icon names
 - Single source of truth for icon assets
 - Easier to maintain and extend
 
 **Benefits**:
+
 - Icons can be updated in one place
 - Type-safe icon names
 - Reduced component file size
@@ -26,8 +28,10 @@
 ### 2. Atomic UI Components Created ✅
 
 #### Modal Component (`src/lib/components/ui/Modal.svelte`)
+
 **Size**: 75 lines  
 **Features**:
+
 - Reusable modal overlay and dialog
 - Keyboard navigation (Escape to close)
 - Proper ARIA roles (`role="dialog"`, `aria-modal="true"`)
@@ -35,14 +39,17 @@
 - Customizable title and content via slots
 
 **Accessibility**:
+
 - `role="dialog"` and `aria-modal="true"`
 - `aria-labelledby` for title association
 - Keyboard event handling
 - Focus management
 
 #### Button Component (`src/lib/components/ui/Button.svelte`)
+
 **Size**: 65 lines  
 **Features**:
+
 - Three variants: primary, secondary, danger
 - Disabled state support
 - Type attribute (button, submit, reset)
@@ -50,6 +57,7 @@
 - Consistent styling with design system
 
 **Variants**:
+
 ```svelte
 <Button variant="primary">Primary Action</Button>
 <Button variant="secondary">Secondary Action</Button>
@@ -59,8 +67,10 @@
 ### 3. Dialog Components Created ✅
 
 #### NewNoteDialog (`src/lib/components/dialogs/NewNoteDialog.svelte`)
+
 **Size**: 80 lines  
 **Features**:
+
 - Dedicated component for creating notes
 - Input validation
 - Keyboard shortcuts (Enter to create, Escape to cancel)
@@ -68,8 +78,10 @@
 - Proper ARIA labels
 
 #### DeleteConfirmDialog (`src/lib/components/dialogs/DeleteConfirmDialog.svelte`)
+
 **Size**: 65 lines  
 **Features**:
+
 - Confirmation dialog for destructive actions
 - Warning message styling
 - Uses atomic Modal and Button components
@@ -78,22 +90,26 @@
 ### 4. Component Refactoring ✅
 
 #### Icon Component
+
 **Before**: 61 lines (with embedded icon data)  
 **After**: 35 lines (imports from assets)  
 **Reduction**: 43%
 
 **Improvements**:
+
 - Added `ariaLabel` prop for accessibility
 - Added `role="img"` to SVG
 - Type-safe icon names via TypeScript
 - Cleaner, more focused component
 
 #### Toolbar Component
+
 **Before**: 249 lines (monolithic)  
 **After**: 126 lines (modular)  
 **Reduction**: 49%
 
 **Improvements**:
+
 - Extracted dialogs to separate components
 - Uses atomic Button component
 - Added ARIA labels to all interactive elements
@@ -101,11 +117,13 @@
 - Cleaner separation of concerns
 
 #### VaultPicker Component
+
 **Before**: 204 lines  
 **After**: 168 lines  
 **Reduction**: 18%
 
 **Improvements**:
+
 - Uses atomic Button component
 - Added `role="alert"` to error messages
 - Updated to use new design variables
@@ -117,6 +135,7 @@
 ## File Structure
 
 ### New Files Created
+
 ```
 src/lib/
 ├── assets/
@@ -131,6 +150,7 @@ src/lib/
 ```
 
 ### Modified Files
+
 ```
 src/lib/components/
 ├── icons/Icon.svelte              # Simplified, uses assets
@@ -143,6 +163,7 @@ src/lib/components/
 ## Accessibility Improvements
 
 ### ARIA Labels Added
+
 - All buttons have `aria-label` attributes
 - Icons have `aria-label` or inherit from parent
 - Modals have `role="dialog"` and `aria-modal="true"`
@@ -150,12 +171,14 @@ src/lib/components/
 - Form inputs have proper labels
 
 ### Keyboard Navigation
+
 - Modals close on Escape key
 - Dialogs support Enter to confirm
 - All interactive elements are keyboard accessible
 - Proper focus management
 
 ### Semantic HTML
+
 - Buttons use `<button>` elements (not divs)
 - Proper heading hierarchy
 - Semantic roles where appropriate
@@ -165,7 +188,9 @@ src/lib/components/
 ## Design System Compliance
 
 ### Color Variables Used
+
 All components now use design system variables:
+
 ```css
 --color-bg
 --color-surface
@@ -178,7 +203,9 @@ All components now use design system variables:
 ```
 
 ### Spacing Variables Used
+
 All spacing uses 8px scale:
+
 ```css
 --space-1 (4px)
 --space-2 (8px)
@@ -189,6 +216,7 @@ All spacing uses 8px scale:
 ```
 
 ### Typography
+
 - Font sizes: 0.875rem (body), 1.125rem (h3), 1.5rem (h1)
 - Font weights: 500 (medium), 600 (semibold)
 - System font stack
@@ -197,11 +225,11 @@ All spacing uses 8px scale:
 
 ## Component Size Summary
 
-| Component | Before | After | Reduction |
-|-----------|--------|-------|-----------|
-| Icon.svelte | 61 lines | 35 lines | 43% |
-| Toolbar.svelte | 249 lines | 126 lines | 49% |
-| VaultPicker.svelte | 204 lines | 168 lines | 18% |
+| Component          | Before    | After     | Reduction |
+| ------------------ | --------- | --------- | --------- |
+| Icon.svelte        | 61 lines  | 35 lines  | 43%       |
+| Toolbar.svelte     | 249 lines | 126 lines | 49%       |
+| VaultPicker.svelte | 204 lines | 168 lines | 18%       |
 
 **Total lines removed**: 225 lines  
 **New atomic components**: 285 lines  
@@ -212,30 +240,35 @@ All spacing uses 8px scale:
 ## Benefits Achieved
 
 ### 1. Modularity
+
 - **Atomic components** can be reused across the app
 - **Single responsibility** - each component does one thing well
 - **Easy to test** - smaller, focused components
 - **Easy to maintain** - changes in one place affect all uses
 
 ### 2. Consistency
+
 - **Shared Button component** ensures consistent styling
 - **Shared Modal component** ensures consistent behavior
 - **Design system variables** ensure consistent colors/spacing
 - **Reusable patterns** reduce code duplication
 
 ### 3. Accessibility
+
 - **ARIA labels** on all interactive elements
 - **Keyboard navigation** throughout
 - **Semantic HTML** for better screen reader support
 - **Focus management** in modals
 
 ### 4. Maintainability
+
 - **Smaller files** are easier to understand
 - **Clear separation** of concerns
 - **Type safety** with TypeScript
 - **Centralized assets** for easy updates
 
 ### 5. Scalability
+
 - **Atomic components** can be composed into larger features
 - **Design system** makes adding new components easy
 - **Consistent patterns** make onboarding easier
@@ -246,6 +279,7 @@ All spacing uses 8px scale:
 ## Remaining Lint Warnings
 
 ### Expected Warnings (Acceptable)
+
 1. **Modal overlay click handler**: Standard UX pattern for modals
    - Warning: "Non-interactive element <div> should not be assigned mouse or keyboard event listeners"
    - Reason: Modal overlays need click-to-close functionality
@@ -262,18 +296,21 @@ All spacing uses 8px scale:
 ## Next Steps (Optional)
 
 ### Further Refactoring Opportunities
+
 1. **FileTree.svelte** (140+ lines) - could extract tree item component
 2. **NoteEditor.svelte** - could extract editor toolbar
 3. **Create shared Input component** - for consistent form inputs
 4. **Create shared ErrorMessage component** - for consistent error display
 
 ### Additional Atomic Components
+
 - `Input.svelte` - Reusable text input with validation
 - `Select.svelte` - Reusable dropdown
 - `Checkbox.svelte` - Reusable checkbox
 - `Alert.svelte` - Reusable alert/notification
 
 ### Testing
+
 - Unit tests for atomic components
 - Integration tests for dialogs
 - Accessibility tests with axe-core
@@ -286,7 +323,7 @@ All spacing uses 8px scale:
 ✅ **All components render** - Functionality preserved  
 ✅ **Design system applied** - Consistent styling  
 ✅ **Accessibility improved** - ARIA labels and keyboard nav  
-✅ **Code reduced** - 49% reduction in Toolbar, 43% in Icon  
+✅ **Code reduced** - 49% reduction in Toolbar, 43% in Icon
 
 ---
 
@@ -295,6 +332,7 @@ All spacing uses 8px scale:
 ### Using the New Components
 
 #### Button Component
+
 ```svelte
 <script>
   import Button from '$lib/components/ui/Button.svelte';
@@ -308,24 +346,26 @@ All spacing uses 8px scale:
 ```
 
 #### Modal Component
+
 ```svelte
 <script>
   import Modal from '$lib/components/ui/Modal.svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  
+
   let isOpen = false;
 </script>
 
-<Modal {isOpen} title="Confirm Action" on:close={() => isOpen = false}>
+<Modal {isOpen} title="Confirm Action" on:close={() => (isOpen = false)}>
   <p>Are you sure?</p>
   <div class="actions">
-    <Button variant="secondary" on:click={() => isOpen = false}>Cancel</Button>
+    <Button variant="secondary" on:click={() => (isOpen = false)}>Cancel</Button>
     <Button variant="primary" on:click={handleConfirm}>Confirm</Button>
   </div>
 </Modal>
 ```
 
 #### Icon Component
+
 ```svelte
 <script>
   import Icon from '$lib/components/icons/Icon.svelte';
@@ -339,6 +379,7 @@ All spacing uses 8px scale:
 ## Conclusion
 
 The refactoring successfully:
+
 - ✅ Separated SVG assets into dedicated file
 - ✅ Created atomic, reusable UI components
 - ✅ Reduced component sizes (up to 49% reduction)
@@ -348,6 +389,7 @@ The refactoring successfully:
 - ✅ Build succeeds with no errors
 
 The codebase is now more modular, maintainable, and accessible, with a solid foundation for future development.
+
 # Design Update Summary
 
 **Date**: May 26, 2026  
@@ -362,36 +404,26 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 **File**: `DESIGN_PRINCIPLES.md`
 
 **Key Principles**:
+
 - **Plain text labels** - No decoration, clear descriptions
 - **2-3 colors maximum** - High contrast, simple palette
 - **Consistent components** - Reuse patterns across app
 - **Function over form** - Design serves usability
 
 **Color Palette** (3 colors):
+
 ```css
 /* Neutral (Gray) */
---color-bg: #ffffff
---color-surface: #f8f9fa
---color-border: #dee2e6
---color-text: #212529
---color-text-muted: #6c757d
-
-/* Accent (Blue) */
---color-primary: #0d6efd
---color-primary-hover: #0b5ed7
-
-/* Semantic (Red) */
---color-danger: #dc3545
+--color-bg: #ffffff --color-surface: #f8f9fa --color-border: #dee2e6 --color-text: #212529
+  --color-text-muted: #6c757d /* Accent (Blue) */ --color-primary: #0d6efd
+  --color-primary-hover: #0b5ed7 /* Semantic (Red) */ --color-danger: #dc3545;
 ```
 
 **Spacing Scale** (8px base):
+
 ```css
---space-1: 0.25rem  /* 4px */
---space-2: 0.5rem   /* 8px */
---space-3: 0.75rem  /* 12px */
---space-4: 1rem     /* 16px */
---space-6: 1.5rem   /* 24px */
---space-8: 2rem     /* 32px */
+--space-1: 0.25rem /* 4px */ --space-2: 0.5rem /* 8px */ --space-3: 0.75rem /* 12px */
+  --space-4: 1rem /* 16px */ --space-6: 1.5rem /* 24px */ --space-8: 2rem /* 32px */;
 ```
 
 ### 2. Color System Updated
@@ -399,6 +431,7 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 **File**: `src/App.svelte`
 
 **Before** (Old variables):
+
 ```css
 --bg-primary, --bg-secondary, --bg-hover, --bg-active
 --text-primary, --text-muted
@@ -407,6 +440,7 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 ```
 
 **After** (New variables):
+
 ```css
 --color-bg, --color-surface, --color-border
 --color-text, --color-text-muted
@@ -416,6 +450,7 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 ```
 
 **Impact**:
+
 - Reduced from 12 color variables to 8
 - Removed success/warning colors (not needed)
 - Removed active state color (use surface instead)
@@ -424,24 +459,28 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 ### 3. Component Standards Documented
 
 **Buttons**:
+
 - Plain text labels with icon
 - 3 variants: primary, secondary, danger
 - Consistent padding: `var(--space-3) var(--space-4)`
 - No shadows or gradients
 
 **Lists**:
+
 - No bullets, plain text
 - Border-bottom separators
 - Active state uses surface color
 - Icon + label pattern
 
 **Forms**:
+
 - Plain labels above inputs
 - Simple border, no effects
 - Focus state: primary color border
 - Consistent spacing
 
 **Modals**:
+
 - White background, simple border
 - No shadows except overlay
 - Plain text headings
@@ -450,11 +489,13 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 ### 4. Typography Simplified
 
 **Font Stack**:
+
 ```css
 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
 ```
 
 **Hierarchy**:
+
 - h1: 1.5rem, font-weight: 600
 - h2: 1.25rem, font-weight: 600
 - h3: 1.125rem, font-weight: 600
@@ -462,6 +503,7 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 - small: 0.75rem
 
 **Rules**:
+
 - No bold except headings/buttons
 - No italics
 - No uppercase transformation
@@ -470,15 +512,18 @@ The codebase is now more modular, maintainable, and accessible, with a solid fou
 ### 5. Icon Usage Standardized
 
 **Sizes**:
+
 - 16px: Inline icons (default)
 - 20px: Standalone icons (toolbar, headers)
 - Stroke width: 2 (consistent)
 
 **Color**:
+
 - currentColor (inherits text color)
 - No decorative icons
 
 **Standard Set**:
+
 ```
 file, folder, folder-open
 plus, trash, edit, save
@@ -491,11 +536,13 @@ alert-circle
 ## Files Modified
 
 ### Core Files
+
 1. **`DESIGN_PRINCIPLES.md`** - Complete design guidelines (NEW)
 2. **`DESIGN_SYSTEM.md`** - Updated philosophy section
 3. **`src/App.svelte`** - New color variables and spacing scale
 
 ### Components (Already Updated)
+
 1. **`src/lib/components/Icon.svelte`** - Icon component
 2. **`src/lib/components/FileTree.svelte`** - Uses icons, clean design
 3. **`src/lib/components/Toolbar.svelte`** - Uses icons, clean design
@@ -508,21 +555,25 @@ alert-circle
 ### Phase 1: Update Remaining Components
 
 **FileTree.svelte**:
+
 - [ ] Replace old color variables with new ones
 - [ ] Use spacing scale instead of arbitrary values
 - [ ] Simplify active state (use `--color-surface`)
 
 **Toolbar.svelte**:
+
 - [ ] Replace old color variables
 - [ ] Use spacing scale
 - [ ] Simplify button styles
 
 **VaultPicker.svelte**:
+
 - [ ] Replace old color variables
 - [ ] Use spacing scale
 - [ ] Remove gradient background (already done)
 
 **NoteEditor.svelte**:
+
 - [ ] Replace old color variables
 - [ ] Simplify editor styles
 - [ ] Use spacing scale
@@ -530,6 +581,7 @@ alert-circle
 ### Phase 2: Remove Forbidden Patterns
 
 **Check all components for**:
+
 - [ ] Gradients (remove)
 - [ ] Drop shadows (except modals)
 - [ ] Rounded corners >4px (reduce to 4px)
@@ -539,6 +591,7 @@ alert-circle
 ### Phase 3: Typography Audit
 
 **Update all components**:
+
 - [ ] Reduce font sizes (follow hierarchy)
 - [ ] Remove font-weight: 700 (use 600 max)
 - [ ] Standardize to 0.875rem body text
@@ -547,6 +600,7 @@ alert-circle
 ### Phase 4: Spacing Audit
 
 **Replace arbitrary spacing**:
+
 - [ ] `padding: 1rem` → `padding: var(--space-4)`
 - [ ] `gap: 0.5rem` → `gap: var(--space-2)`
 - [ ] `margin: 1.5rem` → `margin: var(--space-6)`
@@ -573,6 +627,7 @@ Before creating any new component:
 ## Accessibility Notes
 
 **Current Warnings** (Acknowledged, not blocking):
+
 - Modal overlays with click handlers (acceptable - modals close on Escape)
 - Autofocus in modals (acceptable - improves UX)
 - Missing TypeScript definitions for `@tauri-apps/plugin-dialog` (Tauri issue, not ours)
@@ -586,25 +641,28 @@ Before creating any new component:
 ✅ **Build succeeds** - No errors  
 ✅ **All components render** - Icons display correctly  
 ✅ **Color system updated** - New variables in place  
-✅ **Documentation complete** - DESIGN_PRINCIPLES.md created  
+✅ **Documentation complete** - DESIGN_PRINCIPLES.md created
 
 ---
 
 ## Benefits of New Design
 
 ### For Users
+
 1. **Faster to read** - Plain text, no visual clutter
 2. **Easier to scan** - High contrast, consistent spacing
 3. **Less cognitive load** - 2-3 colors, simple patterns
 4. **Better accessibility** - WCAG AA compliant contrast
 
 ### For Developers
+
 1. **Easier to maintain** - Reusable components
 2. **Faster to build** - Clear patterns to follow
 3. **Less CSS** - No complex effects
 4. **Better consistency** - Design system enforced
 
 ### For Canvas Integration
+
 1. **Clean data structure** - No decorative elements
 2. **Easy to parse** - Plain text, standard formats
 3. **Simple to render** - No complex styling
@@ -615,6 +673,7 @@ Before creating any new component:
 ## Examples
 
 ### Before (Decorative)
+
 ```svelte
 <button style="background: linear-gradient(...); box-shadow: 0 4px 12px...">
   <span style="font-size: 1.3rem">✨</span>
@@ -623,6 +682,7 @@ Before creating any new component:
 ```
 
 ### After (Plain, Functional)
+
 ```svelte
 <button class="btn btn-primary">
   <Icon name="plus" size={16} />
@@ -635,18 +695,23 @@ Before creating any new component:
 ## Rationale
 
 **Why plain text?**
+
 - Faster to read, easier to translate, better for accessibility
 
 **Why 2-3 colors?**
+
 - Prevents visual clutter, improves focus, easier to maintain
 
 **Why system fonts?**
+
 - Faster load times, native OS feel, no licensing issues
 
 **Why no effects?**
+
 - Reduces complexity, improves performance, timeless design
 
 **Why spacing scale?**
+
 - Consistency, easier to maintain, professional appearance
 
 ---
@@ -664,6 +729,7 @@ Before creating any new component:
 ## Status: ✅ Phase 1 Complete
 
 **Completed**:
+
 - ✅ Design principles documented
 - ✅ Color system simplified
 - ✅ Spacing scale added

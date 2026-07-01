@@ -101,8 +101,12 @@ describe('captureStore — service layer (lifecycle transitions)', () => {
       await captureService.setNoteLifecycleState('/vault/n.md', 'organized');
 
       const calls = vi.mocked(invoke).mock.calls;
-      const organizedCall = calls.find(c => (c[1] as Record<string, unknown>)?.['key'] === 'organized');
-      const archivedCall = calls.find(c => (c[1] as Record<string, unknown>)?.['key'] === 'archived');
+      const organizedCall = calls.find(
+        (c) => (c[1] as Record<string, unknown>)?.['key'] === 'organized'
+      );
+      const archivedCall = calls.find(
+        (c) => (c[1] as Record<string, unknown>)?.['key'] === 'archived'
+      );
       expect((organizedCall?.[1] as Record<string, unknown>)?.['value']).toBe(true);
       expect((archivedCall?.[1] as Record<string, unknown>)?.['value']).toBe(false);
     });
@@ -113,7 +117,9 @@ describe('captureStore — service layer (lifecycle transitions)', () => {
       await captureService.setNoteLifecycleState('/vault/n.md', 'archived');
 
       const calls = vi.mocked(invoke).mock.calls;
-      const archivedCall = calls.find(c => (c[1] as Record<string, unknown>)?.['key'] === 'archived');
+      const archivedCall = calls.find(
+        (c) => (c[1] as Record<string, unknown>)?.['key'] === 'archived'
+      );
       expect((archivedCall?.[1] as Record<string, unknown>)?.['value']).toBe(true);
     });
 
@@ -123,8 +129,12 @@ describe('captureStore — service layer (lifecycle transitions)', () => {
       await captureService.setNoteLifecycleState('/vault/n.md', 'captured');
 
       const calls = vi.mocked(invoke).mock.calls;
-      const organizedCall = calls.find(c => (c[1] as Record<string, unknown>)?.['key'] === 'organized');
-      const archivedCall = calls.find(c => (c[1] as Record<string, unknown>)?.['key'] === 'archived');
+      const organizedCall = calls.find(
+        (c) => (c[1] as Record<string, unknown>)?.['key'] === 'organized'
+      );
+      const archivedCall = calls.find(
+        (c) => (c[1] as Record<string, unknown>)?.['key'] === 'archived'
+      );
       expect((organizedCall?.[1] as Record<string, unknown>)?.['value']).toBe(false);
       expect((archivedCall?.[1] as Record<string, unknown>)?.['value']).toBe(false);
     });

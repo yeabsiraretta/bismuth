@@ -3,8 +3,14 @@
  */
 
 import type {
-  StoryCircleEntry, StoryCircleStage, KishotenketsuEntry,
-  ConflictEntry, RpgTask, CustomAttribute, CustomAttributeType, ElementType,
+  StoryCircleEntry,
+  StoryCircleStage,
+  KishotenketsuEntry,
+  ConflictEntry,
+  RpgTask,
+  CustomAttribute,
+  CustomAttributeType,
+  ElementType,
 } from '../types';
 import { generatePrefixedId } from '@/utils/id';
 import { log } from '@/utils/logger';
@@ -12,12 +18,12 @@ import { log } from '@/utils/logger';
 // ─── Story Circle ────────────────────────────────────────────────────────────
 
 export const STORY_CIRCLE_STAGES: { stage: StoryCircleStage; label: string; prompt: string }[] = [
-  { stage: 'you',    label: 'You',    prompt: 'Establish the protagonist in their comfort zone' },
-  { stage: 'need',   label: 'Need',   prompt: 'They want or need something' },
-  { stage: 'go',     label: 'Go',     prompt: 'They enter an unfamiliar situation' },
+  { stage: 'you', label: 'You', prompt: 'Establish the protagonist in their comfort zone' },
+  { stage: 'need', label: 'Need', prompt: 'They want or need something' },
+  { stage: 'go', label: 'Go', prompt: 'They enter an unfamiliar situation' },
   { stage: 'search', label: 'Search', prompt: 'They adapt to the new situation' },
-  { stage: 'find',   label: 'Find',   prompt: 'They get what they wanted' },
-  { stage: 'take',   label: 'Take',   prompt: 'They pay a heavy price for it' },
+  { stage: 'find', label: 'Find', prompt: 'They get what they wanted' },
+  { stage: 'take', label: 'Take', prompt: 'They pay a heavy price for it' },
   { stage: 'return', label: 'Return', prompt: 'They return to their familiar situation' },
   { stage: 'change', label: 'Change', prompt: 'They have changed' },
 ];
@@ -62,18 +68,24 @@ function loadTasks(): RpgTask[] {
   try {
     const raw = localStorage.getItem(TASKS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveTasks(tasks: RpgTask[]): void {
-  try { localStorage.setItem(TASKS_KEY, JSON.stringify(tasks)); }
-  catch { log.warn('Failed to persist RPG tasks'); }
+  try {
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+  } catch {
+    log.warn('Failed to persist RPG tasks');
+  }
 }
 
 export function createTask(elementId: string, description: string): RpgTask {
   const task: RpgTask = {
     id: generatePrefixedId('rpg-task'),
-    elementId, description,
+    elementId,
+    description,
     completed: false,
     assignedElements: [elementId],
   };
@@ -86,7 +98,10 @@ export function createTask(elementId: string, description: string): RpgTask {
 export function toggleTask(id: string): void {
   const all = loadTasks();
   const task = all.find((t) => t.id === id);
-  if (task) { task.completed = !task.completed; saveTasks(all); }
+  if (task) {
+    task.completed = !task.completed;
+    saveTasks(all);
+  }
 }
 
 export function deleteTask(id: string): void {
@@ -123,20 +138,31 @@ function loadCustomAttrs(): CustomAttribute[] {
   try {
     const raw = localStorage.getItem(CUSTOM_ATTRS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveCustomAttrs(attrs: CustomAttribute[]): void {
-  try { localStorage.setItem(CUSTOM_ATTRS_KEY, JSON.stringify(attrs)); }
-  catch { log.warn('Failed to persist RPG custom attributes'); }
+  try {
+    localStorage.setItem(CUSTOM_ATTRS_KEY, JSON.stringify(attrs));
+  } catch {
+    log.warn('Failed to persist RPG custom attributes');
+  }
 }
 
 export function createCustomAttribute(
-  name: string, type: CustomAttributeType, appliesTo: ElementType[], options?: string[],
+  name: string,
+  type: CustomAttributeType,
+  appliesTo: ElementType[],
+  options?: string[]
 ): CustomAttribute {
   const attr: CustomAttribute = {
     id: generatePrefixedId('rpg-attr'),
-    name, type, appliesTo, options,
+    name,
+    type,
+    appliesTo,
+    options,
   };
   const all = loadCustomAttrs();
   all.push(attr);

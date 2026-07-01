@@ -64,6 +64,7 @@ bismuth/
 **Security**: `.specify/memory/security_constitution.md` v1.0.0
 
 **Key Principles**:
+
 - **Principle VI**: No file >300 lines; max 8 files/directory before mandatory subfolder split
 - **Principle I**: Maintainable, cohesive, consistent code
 - **Principle II**: 90%+ test coverage
@@ -71,6 +72,7 @@ bismuth/
 - **Layer Separation**: services/, stores/, types/, constants/, components/, utils/ physically separate
 
 **UX Standards**: `docs/standards/ux-principles.md`
+
 - 168 research-backed principles across 6 parts
 - Apply during design, code review, implementation
 - See `.claude/ux-evaluator.md` for evaluation workflow
@@ -96,6 +98,7 @@ The governed workflow pipeline uses ALL skills together:
 ## Common Patterns
 
 ### IPC Commands (Tauri)
+
 ```rust
 // Backend: src-tauri/src/commands/vault_commands.rs
 #[tauri::command]
@@ -110,10 +113,11 @@ export async function commandName(param: Type): Promise<ReturnType> {
 ```
 
 ### Svelte Components
+
 ```svelte
 <script lang="ts">
   import type { Note } from '$lib/types';
-  
+
   export let note: Note;
   export let onSave: (note: Note) => Promise<void>;
 </script>
@@ -132,6 +136,7 @@ export async function commandName(param: Type): Promise<ReturnType> {
 ```
 
 ### Type Organization
+
 ```typescript
 // Modular types in src/types/
 export type { Note, Link } from './note';
@@ -142,12 +147,14 @@ export { VaultTemplate } from './vault';
 ## Quality Gates
 
 **Pre-commit**:
+
 - Rust formatting (cargo fmt)
 - Clippy lints
 - File size check (300-line limit)
 - Lint-staged (ESLint, Prettier)
 
 **CI/CD**:
+
 - Multi-platform tests (Linux, macOS, Windows)
 - Code coverage (90%+ required)
 - File size validation

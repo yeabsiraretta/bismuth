@@ -8,11 +8,7 @@ import { log } from '@/utils/logger';
 // ─── Slide HTML generation ──────────────────────────────────────────────────
 
 /** Render a single slide to an HTML section element */
-function renderSlide(
-  pres: MarpPresentation,
-  slideIndex: number,
-  showNumbers: boolean,
-): string {
+function renderSlide(pres: MarpPresentation, slideIndex: number, showNumbers: boolean): string {
   const slide = pres.slides[slideIndex];
   if (!slide) return '';
 
@@ -26,11 +22,14 @@ function renderSlide(
 
   let style = '';
   if (bg) style += `background-color: ${bg};`;
-  if (bgImage) style += `background-image: url('${bgImage}'); background-size: cover; background-position: center;`;
+  if (bgImage)
+    style += `background-image: url('${bgImage}'); background-size: cover; background-position: center;`;
   if (color) style += `color: ${color};`;
 
   const lines: string[] = [];
-  lines.push(`<section class="slide ${slideClass}" data-index="${slideIndex}" data-transition="${transition}" style="${style}">`);
+  lines.push(
+    `<section class="slide ${slideClass}" data-index="${slideIndex}" data-transition="${transition}" style="${style}">`
+  );
 
   // Header
   if (dir.header) {
@@ -57,13 +56,8 @@ function renderSlide(
 // ─── Full presentation HTML ─────────────────────────────────────────────────
 
 /** Generate a complete HTML document for the presentation */
-export function renderPresentation(
-  pres: MarpPresentation,
-  showNumbers: boolean = true,
-): string {
-  const slidesHtml = pres.slides
-    .map((_, i) => renderSlide(pres, i, showNumbers))
-    .join('\n');
+export function renderPresentation(pres: MarpPresentation, showNumbers: boolean = true): string {
+  const slidesHtml = pres.slides.map((_, i) => renderSlide(pres, i, showNumbers)).join('\n');
 
   const size = pres.globalDirectives.size || '16:9';
   const [w, h] = size.split(':').map(Number);
@@ -95,10 +89,7 @@ ${NAVIGATION_SCRIPT}
 // ─── Export ──────────────────────────────────────────────────────────────────
 
 /** Generate the export command for Marp CLI */
-export function getMarpExportCommand(
-  inputPath: string,
-  format: MarpExportFormat,
-): string {
+export function getMarpExportCommand(inputPath: string, format: MarpExportFormat): string {
   const formatFlag = format === 'pdf' ? '--pdf' : format === 'pptx' ? '--pptx' : '--html';
   return `npx @marp-team/marp-cli ${formatFlag} "${inputPath}"`;
 }

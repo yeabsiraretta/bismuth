@@ -70,22 +70,43 @@ export function executeQuery(query: DvQuery, pages: DvPage[]): DvResult {
   if (query.groupBy) {
     const result: DvResult = buildGroupedResult(query, filtered);
     const renderMs = performance.now() - t0 - filterMs;
-    result.timing = { totalMs: performance.now() - t0, filterMs, renderMs, autoLimited, unfilteredCount };
+    result.timing = {
+      totalMs: performance.now() - t0,
+      filterMs,
+      renderMs,
+      autoLimited,
+      unfilteredCount,
+    };
     return result;
   }
 
   // 7. Project result
   let result: DvResult;
   switch (query.type) {
-    case 'table': result = buildTableResult(query, filtered); break;
-    case 'list': result = buildListResult(query, filtered); break;
-    case 'task': result = buildTaskResult(query, filtered); break;
-    case 'calendar': result = buildCalendarResult(query, filtered); break;
-    default: result = buildListResult(query, filtered);
+    case 'table':
+      result = buildTableResult(query, filtered);
+      break;
+    case 'list':
+      result = buildListResult(query, filtered);
+      break;
+    case 'task':
+      result = buildTaskResult(query, filtered);
+      break;
+    case 'calendar':
+      result = buildCalendarResult(query, filtered);
+      break;
+    default:
+      result = buildListResult(query, filtered);
   }
 
   const renderMs = performance.now() - t0 - filterMs;
-  result.timing = { totalMs: performance.now() - t0, filterMs, renderMs, autoLimited, unfilteredCount };
+  result.timing = {
+    totalMs: performance.now() - t0,
+    filterMs,
+    renderMs,
+    autoLimited,
+    unfilteredCount,
+  };
   return result;
 }
 
@@ -109,13 +130,16 @@ function matchesFrom(page: DvPage, from: DvFromClause): boolean {
 
 function matchesFromAtom(page: DvPage, from: DvFromClause): boolean {
   switch (from.type) {
-    case 'folder': return page.file.folder.startsWith(from.value) || page.path.startsWith(from.value);
-    case 'tag': return page.tags.some((t) => `#${t}` === from.value || `#${t}`.startsWith(`${from.value}/`));
-    case 'link': return page.file.outlinks.some((l) => l.path === from.value);
-    case 'all': return true;
+    case 'folder':
+      return page.file.folder.startsWith(from.value) || page.path.startsWith(from.value);
+    case 'tag':
+      return page.tags.some((t) => `#${t}` === from.value || `#${t}`.startsWith(`${from.value}/`));
+    case 'link':
+      return page.file.outlinks.some((l) => l.path === from.value);
+    case 'all':
+      return true;
   }
 }
-
 
 // ─── Result builders ─────────────────────────────────────────────────────────
 
@@ -131,7 +155,8 @@ function buildTableResult(query: DvQuery, pages: DvPage[]): DvTableResult {
 
 function buildListResult(query: DvQuery, pages: DvPage[]): DvListResult {
   const items = pages.map((p) => ({
-    value: query.fields.length > 0 ? evaluateExpr(query.fields[0].expr, p) : (p.file.name as DvValue),
+    value:
+      query.fields.length > 0 ? evaluateExpr(query.fields[0].expr, p) : (p.file.name as DvValue),
     page: { type: 'link' as const, path: p.path, display: p.file.name },
   }));
   return { type: 'list', items, totalCount: items.length };
@@ -141,7 +166,14 @@ function buildTaskResult(query: DvQuery, pages: DvPage[]): DvTaskResult {
   let tasks: DvTask[] = pages.flatMap((p) => p.file.tasks);
   if (query.where) {
     tasks = tasks.filter((t) => {
-      const pseudo: DvPage = { path: t.path, file: {} as any, fields: { text: t.text, completed: t.completed, line: t.line }, inlineFields: [], tags: t.tags, sections: [] };
+      const pseudo: DvPage = {
+        path: t.path,
+        file: {} as any,
+        fields: { text: t.text, completed: t.completed, line: t.line },
+        inlineFields: [],
+        tags: t.tags,
+        sections: [],
+      };
       return isTruthy(evaluateExpr(query.where!, pseudo));
     });
   }
@@ -149,13 +181,19 @@ function buildTaskResult(query: DvQuery, pages: DvPage[]): DvTaskResult {
 }
 
 function buildCalendarResult(query: DvQuery, pages: DvPage[]): DvCalendarResult {
-  const dateExpr = query.fields.length > 0 ? query.fields[0].expr : { type: 'field' as const, path: 'file.day' };
+  const dateExpr =
+    query.fields.length > 0 ? query.fields[0].expr : { type: 'field' as const, path: 'file.day' };
   const items: Array<{ date: Date; value: DvValue; page: DvLink }> = [];
   for (const p of pages) {
     const dateVal = evaluateExpr(dateExpr, p);
-    const date = dateVal instanceof Date ? dateVal : (typeof dateVal === 'string' ? new Date(dateVal) : null);
+    const date =
+      dateVal instanceof Date ? dateVal : typeof dateVal === 'string' ? new Date(dateVal) : null;
     if (date && !isNaN(date.getTime())) {
-      items.push({ date, value: p.file.name as DvValue, page: { type: 'link', path: p.path, display: p.file.name } });
+      items.push({
+        date,
+        value: p.file.name as DvValue,
+        page: { type: 'link', path: p.path, display: p.file.name },
+      });
     }
   }
   return { type: 'calendar', items, totalCount: items.length };
@@ -207,4 +245,3 @@ function applyFlatten(pages: DvPage[], flattenExpr: { expr: DvExpr; alias?: stri
   }
   return result;
 }
-

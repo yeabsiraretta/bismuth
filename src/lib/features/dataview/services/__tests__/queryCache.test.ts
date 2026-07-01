@@ -3,7 +3,11 @@ import { QueryCache } from '../queryCache';
 import type { DvListResult } from '../../types/dataview';
 
 function fakeResult(count: number): DvListResult {
-  return { type: 'list', items: Array(count).fill({ value: 'x', page: { type: 'link', path: 'a.md' } }), totalCount: count };
+  return {
+    type: 'list',
+    items: Array(count).fill({ value: 'x', page: { type: 'link', path: 'a.md' } }),
+    totalCount: count,
+  };
 }
 
 describe('QueryCache', () => {

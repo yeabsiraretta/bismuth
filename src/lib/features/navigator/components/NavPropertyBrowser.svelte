@@ -1,7 +1,11 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
   import { notes } from '@/stores/vault/vault';
-  import { selectedProperty, selectProperty, type PropertySelection } from '../stores/navigatorActions';
+  import {
+    selectedProperty,
+    selectProperty,
+    type PropertySelection,
+  } from '../stores/navigatorActions';
   import type { Note } from '@/types/data/vault';
 
   interface PropertyGroup {
@@ -37,9 +41,10 @@
 
     if (filter) {
       const lower = filter.toLowerCase();
-      result = result.filter(g =>
-        g.key.toLowerCase().includes(lower) ||
-        Array.from(g.values.keys()).some(v => v.toLowerCase().includes(lower))
+      result = result.filter(
+        (g) =>
+          g.key.toLowerCase().includes(lower) ||
+          Array.from(g.values.keys()).some((v) => v.toLowerCase().includes(lower))
       );
     }
 
@@ -134,7 +139,7 @@
         </div>
 
         {#if isExpanded}
-          {#each Array.from(group.values.entries()).sort(([a], [b]) => a.localeCompare(b)) as [value, count] (value)}
+          {#each Array.from(group.values.entries()).sort( ([a], [b]) => a.localeCompare(b) ) as [value, count] (value)}
             {@const valSelected = isValueSelected(group.key, value, $selectedProperty)}
             <div
               class="prop-item prop-value-item"

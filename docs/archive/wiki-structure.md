@@ -19,15 +19,18 @@ The wiki is organized into four main sections:
 ## 📖 User Guide Section
 
 ### Home (Landing Page)
+
 **File**: `Home.md`
 
 Welcome page with:
+
 - What is Bismuth?
 - Quick navigation
 - Getting started links
 - Key features overview
 
 ### Getting Started
+
 **File**: `Getting-Started.md`
 
 - Installation instructions (macOS, Windows, Linux)
@@ -39,30 +42,35 @@ Welcome page with:
 ### Core Features
 
 **File**: `Note-Taking.md`
+
 - Creating notes
 - Markdown syntax
 - Frontmatter metadata
 - Note properties
 
 **File**: `Wikilinks.md`
+
 - Creating wikilinks
 - Link syntax variations
 - Backlinks
 - Unlinked mentions
 
 **File**: `Graph-View.md`
+
 - Understanding the graph
 - Navigation controls
 - Filtering options
 - Graph customization
 
 **File**: `Search.md`
+
 - Basic search
 - Advanced search syntax
 - Search operators
 - Search in files
 
 **File**: `Tags.md`
+
 - Creating tags
 - Tag hierarchy
 - Tag pane
@@ -71,6 +79,7 @@ Welcome page with:
 ### Organization Systems
 
 **File**: `Johnny-Decimal.md`
+
 - What is Johnny.Decimal?
 - Area-Category-ID structure
 - Setting up your system
@@ -78,6 +87,7 @@ Welcome page with:
 - Examples
 
 **File**: `Zettelkasten.md`
+
 - What is Zettelkasten?
 - Atomic notes
 - Linking strategy
@@ -85,6 +95,7 @@ Welcome page with:
 - Workflow examples
 
 **File**: `Folders-and-Structure.md`
+
 - Vault organization
 - Folder best practices
 - File naming conventions
@@ -93,24 +104,28 @@ Welcome page with:
 ### Customization
 
 **File**: `Themes.md`
+
 - Installing themes
 - Creating custom themes
 - CSS variables
 - Theme compatibility
 
 **File**: `Settings.md`
+
 - General settings
 - Editor settings
 - File settings
 - Appearance settings
 
 **File**: `Keyboard-Shortcuts.md`
+
 - Default shortcuts
 - Custom shortcuts
 - Shortcut reference table
 - Platform-specific shortcuts
 
 **File**: `Templates.md`
+
 - Creating templates
 - Using templates
 - Template variables
@@ -119,24 +134,28 @@ Welcome page with:
 ### Advanced Features
 
 **File**: `Frontmatter.md`
+
 - YAML syntax
 - Common properties
 - Custom properties
 - Dataview integration
 
 **File**: `Embeds.md`
+
 - Embedding notes
 - Embedding images
 - Embedding PDFs
 - Block embeds
 
 **File**: `PDF-Annotation.md`
+
 - Opening PDFs
 - Highlighting
 - Annotations
 - Linking to highlights
 
 **File**: `Export.md`
+
 - Export formats
 - Export settings
 - Batch export
@@ -145,18 +164,21 @@ Welcome page with:
 ### Help & Support
 
 **File**: `Troubleshooting.md`
+
 - Common issues
 - Error messages
 - Performance problems
 - Platform-specific issues
 
 **File**: `FAQ.md`
+
 - General questions
 - Feature questions
 - Technical questions
 - Comparison with other tools
 
 **File**: `Tips-and-Tricks.md`
+
 - Power user features
 - Workflow optimizations
 - Hidden features
@@ -167,9 +189,11 @@ Welcome page with:
 ## 🛠️ Developer Guide Section
 
 ### Developer Home
+
 **File**: `Developer-Guide.md`
 
 Overview of:
+
 - Development setup
 - Tech stack
 - Architecture overview
@@ -178,6 +202,7 @@ Overview of:
 ### Getting Started
 
 **File**: `Development-Setup.md`
+
 - Prerequisites
 - Installing dependencies
 - Running dev server
@@ -185,6 +210,7 @@ Overview of:
 - Troubleshooting setup
 
 **File**: `Project-Structure.md`
+
 - Directory layout
 - Frontend structure
 - Backend structure
@@ -192,6 +218,7 @@ Overview of:
 - Documentation structure
 
 **File**: `Tech-Stack.md`
+
 - Frontend technologies
 - Backend technologies
 - Build tools
@@ -199,6 +226,7 @@ Overview of:
 - CI/CD tools
 
 **File**: `First-Contribution.md`
+
 - Finding issues
 - Setting up environment
 - Making changes
@@ -208,6 +236,7 @@ Overview of:
 ### Frontend Development
 
 **File**: `Frontend-Guide.md`
+
 - Svelte architecture
 - Component structure
 - State management
@@ -215,6 +244,7 @@ Overview of:
 - Styling approach
 
 **File**: `Components.md`
+
 - Component library
 - Creating components
 - Component props
@@ -222,6 +252,7 @@ Overview of:
 - Reusable patterns
 
 **File**: `State-Management.md`
+
 - Svelte stores
 - Global state
 - Local state
@@ -229,6 +260,7 @@ Overview of:
 - Store best practices
 
 **File**: `Styling.md`
+
 - CSS architecture
 - Theme system
 - CSS variables
@@ -238,6 +270,7 @@ Overview of:
 ### Backend Development
 
 **File**: `Backend-Guide.md`
+
 - Rust architecture
 - Module structure
 - Error handling
@@ -245,6 +278,7 @@ Overview of:
 - Best practices
 
 **File**: `Tauri-Commands.md`
+
 - Creating commands
 - Command patterns
 - Error handling
@@ -252,6 +286,7 @@ Overview of:
 - Testing commands
 
 **File**: `File-System.md`
+
 - Vault operations
 - File watching
 - Path handling
@@ -259,6 +294,7 @@ Overview of:
 - Cross-platform considerations
 
 **File**: `Database.md`
+
 - SQLite schema
 - Migrations
 - Queries
@@ -268,6 +304,7 @@ Overview of:
 ### API & Integration
 
 **File**: `API-Reference.md`
+
 - Complete API documentation
 - Command reference
 - Event reference
@@ -275,6 +312,7 @@ Overview of:
 - Examples
 
 **File**: `Events.md`
+
 - Event system
 - Creating events
 - Listening to events
@@ -282,6 +320,7 @@ Overview of:
 - Debugging events
 
 **File**: `Plugins.md`
+
 - Plugin architecture
 - Creating plugins
 - Plugin API
@@ -291,6 +330,7 @@ Overview of:
 ### Quality & Testing
 
 **File**: `Testing-Guide.md`
+
 - Testing philosophy
 - Unit tests
 - Integration tests
@@ -298,6 +338,7 @@ Overview of:
 - Test coverage
 
 **File**: `Code-Quality.md`
+
 - Linting rules
 - Formatting standards
 - Code review process
@@ -305,6 +346,7 @@ Overview of:
 - Performance profiling
 
 **File**: `Debugging.md`
+
 - Frontend debugging
 - Backend debugging
 - Tauri DevTools
@@ -312,6 +354,7 @@ Overview of:
 - Common issues
 
 **File**: `Performance.md`
+
 - Performance goals
 - Profiling tools
 - Optimization techniques
@@ -321,6 +364,7 @@ Overview of:
 ### Build & Release
 
 **File**: `Build-Process.md`
+
 - Development builds
 - Production builds
 - Platform-specific builds
@@ -328,6 +372,7 @@ Overview of:
 - Troubleshooting builds
 
 **File**: `Release-Process.md`
+
 - Versioning strategy
 - Changelog generation
 - Creating releases
@@ -335,6 +380,7 @@ Overview of:
 - Update mechanism
 
 **File**: `CI-CD.md`
+
 - GitHub Actions workflows
 - Automated testing
 - Build automation
@@ -346,9 +392,11 @@ Overview of:
 ## 🏗️ Architecture Section
 
 ### Architecture Home
+
 **File**: `Architecture.md`
 
 Overview of:
+
 - System design
 - Key decisions
 - Technology choices
@@ -357,6 +405,7 @@ Overview of:
 ### Core Architecture
 
 **File**: `System-Design.md`
+
 - High-level architecture
 - Component diagram
 - Data flow
@@ -364,6 +413,7 @@ Overview of:
 - Scalability considerations
 
 **File**: `Data-Model.md`
+
 - Core entities (Note, Vault, Link)
 - Relationships
 - Data structures
@@ -371,6 +421,7 @@ Overview of:
 - Validation
 
 **File**: `File-System-Design.md`
+
 - Vault structure
 - File organization
 - Metadata storage
@@ -378,6 +429,7 @@ Overview of:
 - Sync considerations
 
 **File**: `IPC-Layer.md`
+
 - Tauri IPC architecture
 - Command patterns
 - Event patterns
@@ -385,6 +437,7 @@ Overview of:
 - Type safety
 
 **File**: `State-Management-Architecture.md`
+
 - Frontend state
 - Backend state
 - State synchronization
@@ -394,6 +447,7 @@ Overview of:
 ### Subsystems
 
 **File**: `Database-Design.md`
+
 - Schema design
 - Indexing strategy
 - Query optimization
@@ -401,6 +455,7 @@ Overview of:
 - Backup and recovery
 
 **File**: `Search-Engine.md`
+
 - Tantivy integration
 - Indexing pipeline
 - Query processing
@@ -408,6 +463,7 @@ Overview of:
 - Performance optimization
 
 **File**: `Graph-Engine.md`
+
 - Graph data structure
 - Layout algorithms
 - Rendering pipeline
@@ -415,6 +471,7 @@ Overview of:
 - Performance optimization
 
 **File**: `Theme-System.md`
+
 - CSS architecture
 - Variable system
 - Theme loading
@@ -424,32 +481,37 @@ Overview of:
 ### Architecture Decisions
 
 **File**: `ADR-Index.md`
+
 - List of all ADRs
 - Decision categories
 - Status tracking
 
 **File**: `ADR-001-Tech-Stack.md`
+
 - Context
 - Decision
 - Consequences
 - Status
 
 **File**: `ADR-002-Local-First.md`
+
 - Context
 - Decision
 - Consequences
 - Status
 
-*(Continue with more ADRs as needed)*
+_(Continue with more ADRs as needed)_
 
 ---
 
 ## 📋 Processes Section
 
 ### Processes Home
+
 **File**: `Processes.md`
 
 Overview of:
+
 - Project management
 - Contribution process
 - Release process
@@ -458,6 +520,7 @@ Overview of:
 ### Contributing
 
 **File**: `Contributing.md`
+
 - Code of conduct
 - How to contribute
 - Issue guidelines
@@ -465,6 +528,7 @@ Overview of:
 - Review process
 
 **File**: `Git-Workflow.md`
+
 - Branch naming
 - Commit messages
 - PR process
@@ -472,6 +536,7 @@ Overview of:
 - Release branches
 
 **File**: `Versioning.md`
+
 - Semantic versioning
 - Version bumping
 - Changelog
@@ -481,6 +546,7 @@ Overview of:
 ### Project Management
 
 **File**: `Status.md`
+
 - Current phase
 - Progress metrics
 - Completed tasks
@@ -488,6 +554,7 @@ Overview of:
 - Blockers
 
 **File**: `Roadmap.md`
+
 - Vision
 - Phases
 - Milestones
@@ -495,6 +562,7 @@ Overview of:
 - Release schedule
 
 **File**: `Assets-Tracker.md`
+
 - Visual assets
 - Configuration files
 - Documentation
@@ -504,12 +572,14 @@ Overview of:
 ### Communication
 
 **File**: `Issue-Templates.md`
+
 - Bug report template
 - Feature request template
 - Documentation template
 - Question template
 
 **File**: `PR-Templates.md`
+
 - Standard PR template
 - Checklist
 - Review guidelines
@@ -521,6 +591,7 @@ Overview of:
 ### Creating Wiki Pages
 
 1. Clone the wiki repository:
+
    ```bash
    git clone https://github.com/yeabsiraretta/bismuth.wiki.git
    ```
@@ -552,6 +623,7 @@ Create `_Sidebar.md` with navigation:
 
 ```markdown
 **User Guide**
+
 - [[Home]]
 - [[Getting Started]]
 - [[Note Taking]]
@@ -559,17 +631,20 @@ Create `_Sidebar.md` with navigation:
 - [[Graph View]]
 
 **Developer Guide**
+
 - [[Developer Guide]]
 - [[Development Setup]]
 - [[API Reference]]
 - [[Testing Guide]]
 
 **Architecture**
+
 - [[Architecture]]
 - [[System Design]]
 - [[Data Model]]
 
 **Processes**
+
 - [[Contributing]]
 - [[Roadmap]]
 - [[Status]]
@@ -594,6 +669,7 @@ Create `_Footer.md`:
 ### Documentation in Repository
 
 Keep these in `/docs`:
+
 - Technical architecture documents
 - Implementation status
 - Asset tracker
@@ -602,6 +678,7 @@ Keep these in `/docs`:
 ### Documentation in Wiki
 
 Move these to wiki:
+
 - User-facing documentation
 - Getting started guides
 - Feature documentation

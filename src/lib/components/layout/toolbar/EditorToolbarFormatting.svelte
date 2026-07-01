@@ -5,7 +5,9 @@
   export let onFormat: ((format: string) => void) | undefined = undefined;
   export let onFullscreen: (() => void) | undefined = undefined;
 
-  function handleFormat(format: string) { onFormat?.(format); }
+  function handleFormat(format: string) {
+    onFormat?.(format);
+  }
 </script>
 
 <button class="toolbar-btn" on:click={() => handleFormat('bold')} title="Bold (Cmd+B)">
@@ -17,11 +19,7 @@
 <button class="toolbar-btn" on:click={() => handleFormat('underline')} title="Underline (Cmd+U)">
   <Icon name="underline" size={16} />
 </button>
-<button
-  class="toolbar-btn"
-  on:click={() => handleFormat('strikethrough')}
-  title="Strikethrough"
->
+<button class="toolbar-btn" on:click={() => handleFormat('strikethrough')} title="Strikethrough">
   <Icon name="strikethrough" size={16} />
 </button>
 

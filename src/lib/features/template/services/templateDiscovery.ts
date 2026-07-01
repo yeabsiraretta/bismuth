@@ -34,7 +34,7 @@ export async function discoverTemplates(config: SmartTemplateConfig): Promise<Sm
   if (config.includeBuiltins) {
     for (const builtin of BUILTIN_TEMPLATES) {
       // Don't add if a vault template with the same name exists
-      if (!templates.some(t => t.name === builtin.name)) {
+      if (!templates.some((t) => t.name === builtin.name)) {
         templates.push(builtin);
       }
     }
@@ -79,23 +79,19 @@ export function extractDescription(content: string): string | undefined {
 // ─── Search / filter ───────────────────────────────────────────────────────────
 
 /** Filter templates by search query. */
-export function filterTemplates(
-  templates: SmartTemplate[],
-  query: string,
-): SmartTemplate[] {
+export function filterTemplates(templates: SmartTemplate[], query: string): SmartTemplate[] {
   if (!query.trim()) return templates;
   const q = query.toLowerCase();
-  return templates.filter(t =>
-    t.name.toLowerCase().includes(q)
-    || (t.description ?? '').toLowerCase().includes(q)
-    || t.source.includes(q),
+  return templates.filter(
+    (t) =>
+      t.name.toLowerCase().includes(q) ||
+      (t.description ?? '').toLowerCase().includes(q) ||
+      t.source.includes(q)
   );
 }
 
 /** Group templates by source. */
-export function groupBySource(
-  templates: SmartTemplate[],
-): Record<string, SmartTemplate[]> {
+export function groupBySource(templates: SmartTemplate[]): Record<string, SmartTemplate[]> {
   const groups: Record<string, SmartTemplate[]> = {};
   for (const t of templates) {
     const key = t.source;

@@ -18,7 +18,7 @@ export class InteractiveClozeWidget extends WidgetType {
     private text: string,
     private hint: string | undefined,
     private config: ClozeConfig,
-    private globalRevealed: boolean,
+    private globalRevealed: boolean
   ) {
     super();
     this.revealed = globalRevealed || config.defaultRevealed;
@@ -102,10 +102,14 @@ export class InteractiveClozeWidget extends WidgetType {
 
   eq(other: WidgetType): boolean {
     if (!(other instanceof InteractiveClozeWidget)) return false;
-    return this.text === other.text
-      && this.hint === other.hint
-      && this.globalRevealed === other.globalRevealed;
+    return (
+      this.text === other.text &&
+      this.hint === other.hint &&
+      this.globalRevealed === other.globalRevealed
+    );
   }
 
-  ignoreEvent(): boolean { return false; }
+  ignoreEvent(): boolean {
+    return false;
+  }
 }

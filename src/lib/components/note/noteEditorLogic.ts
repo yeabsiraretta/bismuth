@@ -35,28 +35,55 @@ export function computeStats(content: string) {
 // ─── Formatting helpers ──────────────────────────────────────────────────────
 
 const prefixMap: Record<string, string> = {
-  bold: '**', italic: '*', underline: '<u>', strikethrough: '~~',
-  superscript: '<sup>', subscript: '<sub>',
-  code: '`', 'code-block': '```\n',
+  bold: '**',
+  italic: '*',
+  underline: '<u>',
+  strikethrough: '~~',
+  superscript: '<sup>',
+  subscript: '<sub>',
+  code: '`',
+  'code-block': '```\n',
   highlight: '==',
-  heading: '## ', h1: '# ', h2: '## ', h3: '### ', h4: '#### ', h5: '##### ', h6: '###### ',
-  quote: '> ', callout: '> [!info]\n> ',
-  list: '- ', 'list-ordered': '1. ', ul: '- ', ol: '1. ', checklist: '- [ ] ',
-  link: '[[', image: '![',
+  heading: '## ',
+  h1: '# ',
+  h2: '## ',
+  h3: '### ',
+  h4: '#### ',
+  h5: '##### ',
+  h6: '###### ',
+  quote: '> ',
+  callout: '> [!info]\n> ',
+  list: '- ',
+  'list-ordered': '1. ',
+  ul: '- ',
+  ol: '1. ',
+  checklist: '- [ ] ',
+  link: '[[',
+  image: '![',
   table: '| Column 1 | Column 2 |\n|---|---|\n| cell | cell |',
   hr: '---\n',
-  'align-left': '<p align="left">', 'align-center': '<center>',
-  'align-right': '<p align="right">', 'align-justify': '<p align="justify">',
+  'align-left': '<p align="left">',
+  'align-center': '<center>',
+  'align-right': '<p align="right">',
+  'align-justify': '<p align="justify">',
 };
 
 const suffixMap: Record<string, string> = {
-  bold: '**', italic: '*', underline: '</u>', strikethrough: '~~',
-  superscript: '</sup>', subscript: '</sub>',
-  code: '`', 'code-block': '\n```',
+  bold: '**',
+  italic: '*',
+  underline: '</u>',
+  strikethrough: '~~',
+  superscript: '</sup>',
+  subscript: '</sub>',
+  code: '`',
+  'code-block': '\n```',
   highlight: '==',
-  link: ']]', image: '](url)',
-  'align-left': '</p>', 'align-center': '</center>',
-  'align-right': '</p>', 'align-justify': '</p>',
+  link: ']]',
+  image: '](url)',
+  'align-left': '</p>',
+  'align-center': '</center>',
+  'align-right': '</p>',
+  'align-justify': '</p>',
 };
 
 export function getFormatStrings(type: string): { prefix: string; suffix: string } {
@@ -69,11 +96,12 @@ export async function navigateToWikilink(title: string, vaultRootPath: string): 
   log.debug('Navigate to wikilink', { title });
 
   let found: Note | null = null;
-  const unsub = allNotes.subscribe(list => {
-    found = list.find(n => {
-      const fileName = n.path.split('/').pop()?.replace(/\.md$/, '') || '';
-      return fileName.toLowerCase() === title.toLowerCase();
-    }) || null;
+  const unsub = allNotes.subscribe((list) => {
+    found =
+      list.find((n) => {
+        const fileName = n.path.split('/').pop()?.replace(/\.md$/, '') || '';
+        return fileName.toLowerCase() === title.toLowerCase();
+      }) || null;
   });
   unsub();
 

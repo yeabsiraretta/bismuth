@@ -23,7 +23,9 @@ export interface MCPRequest {
 export interface MCPResponse {
   jsonrpc: '2.0';
   id: number | string;
-  result?: { content: Array<{ type: 'text' | 'image'; text?: string; data?: string; mimeType?: string }> };
+  result?: {
+    content: Array<{ type: 'text' | 'image'; text?: string; data?: string; mimeType?: string }>;
+  };
   error?: { code: number; message: string; data?: unknown };
 }
 
@@ -108,7 +110,12 @@ export interface CodeMapping {
 // ─── Re-exports ─────────────────────────────────────────────────────────────
 
 export { parseBismuthUrl, buildBismuthUrl, handleMCPToolCall, formatMCPResponse } from './protocol';
-export { extractCanvasTree, generateDesignSummary, generateSvelteComponent, BISMUTH_CODE_MAPPINGS } from './endpoints';
+export {
+  extractCanvasTree,
+  generateDesignSummary,
+  generateSvelteComponent,
+  BISMUTH_CODE_MAPPINGS,
+} from './endpoints';
 export {
   handleGetDesignDocument,
   handleListDesignDocuments,

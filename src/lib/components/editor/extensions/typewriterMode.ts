@@ -48,19 +48,32 @@ const defaultZen: ZenConfig = {
 };
 
 export const typewriterFacet = Facet.define<TypewriterConfig, TypewriterConfig>({
-  combine(values) { return values[0] ?? defaultTypewriter; },
+  combine(values) {
+    return values[0] ?? defaultTypewriter;
+  },
 });
 
 export const zenFacet = Facet.define<ZenConfig, ZenConfig>({
-  combine(values) { return values[0] ?? defaultZen; },
+  combine(values) {
+    return values[0] ?? defaultZen;
+  },
 });
 
 // ─── Input source tracking ─────────────────────────────────────────────────
 
 const KEYBOARD_KEYS = new Set([
-  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-  'Home', 'End', 'PageUp', 'PageDown',
-  'Enter', 'Backspace', 'Delete', 'Tab',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'Home',
+  'End',
+  'PageUp',
+  'PageDown',
+  'Enter',
+  'Backspace',
+  'Delete',
+  'Tab',
 ]);
 
 /** Track whether the last interaction was keyboard-driven. */
@@ -75,12 +88,16 @@ class InputSourceTracker {
     this._onKey = (e: KeyboardEvent) => {
       this.isKeyboard = KEYBOARD_KEYS.has(e.key) || e.key.length === 1;
     };
-    this._onMouse = () => { this.isKeyboard = false; };
+    this._onMouse = () => {
+      this.isKeyboard = false;
+    };
     view.dom.addEventListener('keydown', this._onKey);
     view.dom.addEventListener('mousedown', this._onMouse);
   }
 
-  update(_update: ViewUpdate) { /* state tracked via DOM events */ }
+  update(_update: ViewUpdate) {
+    /* state tracked via DOM events */
+  }
 
   destroy() {
     this._view.dom.removeEventListener('keydown', this._onKey);
@@ -115,7 +132,7 @@ const scrollPlugin = ViewPlugin.fromClass(
       const offset = Math.max(0, Math.min(1, config.offset));
       centerCursorAt(update.view, head, offset);
     }
-  },
+  }
 );
 
 function centerCursorAt(view: EditorView, pos: number, offset: number): void {
@@ -150,7 +167,7 @@ const paddingPlugin = ViewPlugin.fromClass(
       content.style.paddingTop = `${topPad}px`;
       content.style.paddingBottom = `${bottomPad}px`;
     }
-  },
+  }
 );
 
 // ─── Zen Mode (line dimming) ────────────────────────────────────────────────
@@ -197,7 +214,7 @@ const zenPlugin = ViewPlugin.fromClass(
     destroy() {
       // Cleanup handled by CM6 tearing down the DOM
     }
-  },
+  }
 );
 
 // ─── Public API ─────────────────────────────────────────────────────────────
@@ -205,28 +222,19 @@ const zenPlugin = ViewPlugin.fromClass(
 /** Create the typewriter scroll extension. */
 export function typewriterScroll(config?: Partial<TypewriterConfig>): Extension[] {
   const merged = { ...defaultTypewriter, ...config };
-  return [
-    typewriterFacet.of(merged),
-    inputSourcePlugin,
-    scrollPlugin,
-    paddingPlugin,
-  ];
+  return [typewriterFacet.of(merged), inputSourcePlugin, scrollPlugin, paddingPlugin];
 }
 
 /** Create the zen mode (focus dimming) extension. */
 export function zenMode(config?: Partial<ZenConfig>): Extension[] {
   const merged = { ...defaultZen, ...config };
-  return [
-    zenFacet.of(merged),
-    zenPlugin,
-    zenTheme,
-  ];
+  return [zenFacet.of(merged), zenPlugin, zenTheme];
 }
 
 /** Combined extension for both typewriter scroll + zen mode. */
 export function typewriterMode(
   twConfig?: Partial<TypewriterConfig>,
-  zmConfig?: Partial<ZenConfig>,
+  zmConfig?: Partial<ZenConfig>
 ): Extension[] {
   return [...typewriterScroll(twConfig), ...zenMode(zmConfig)];
 }

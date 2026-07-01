@@ -27,8 +27,8 @@
   let noteReviews = new Map<string, ReviewableNote>();
   let unsubNotes: (() => void) | null = null;
 
-  $: dueNotes = reviewableNotes.filter(n => new Date(n.nextReview) <= new Date());
-  $: laterNotes = reviewableNotes.filter(n => new Date(n.nextReview) > new Date());
+  $: dueNotes = reviewableNotes.filter((n) => new Date(n.nextReview) <= new Date());
+  $: laterNotes = reviewableNotes.filter((n) => new Date(n.nextReview) > new Date());
 
   onMount(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -36,10 +36,15 @@
     unsubNotes = notes.subscribe(scanForReviewNotes);
   });
 
-  onDestroy(() => { unsubNotes?.(); });
+  onDestroy(() => {
+    unsubNotes?.();
+  });
 
   function scanForReviewNotes(noteList: Array<{ path: string; content: string }>) {
-    if (!noteList || noteList.length === 0) { reviewableNotes = []; return; }
+    if (!noteList || noteList.length === 0) {
+      reviewableNotes = [];
+      return;
+    }
     const result: ReviewableNote[] = [];
     for (const note of noteList) {
       if (!note.content) continue;
@@ -61,7 +66,8 @@
     noteReviews = noteReviews;
     localStorage.setItem(STORAGE_KEY, serializeNoteReviews(noteReviews));
     // Re-sort
-    reviewableNotes = reviewableNotes.map(n => n.path === note.path ? updated : n)
+    reviewableNotes = reviewableNotes
+      .map((n) => (n.path === note.path ? updated : n))
       .sort((a, b) => new Date(a.nextReview).getTime() - new Date(b.nextReview).getTime());
   }
 
@@ -137,21 +143,102 @@
 </div>
 
 <style>
-  .note-review-queue { display: flex; flex-direction: column; height: 100%; overflow: hidden; background: var(--background-secondary); }
-  .queue-header { display: flex; align-items: center; gap: var(--spacing-s); padding: var(--spacing-s) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .queue-title { font-size: var(--font-smaller); font-weight: var(--font-semibold); text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
-  .badge { font-size: 10px; padding: 1px 6px; border-radius: var(--radius-s); background: var(--interactive-accent); color: var(--text-on-accent); }
-  .empty-state { padding: var(--spacing-xl) var(--spacing-m); text-align: center; color: var(--text-muted); font-size: var(--font-smaller); }
-  .empty-state p { margin: 0 0 var(--spacing-xs); }
-  .hint { font-size: var(--font-smallest); color: var(--text-faint); }
-  .hint code { background: var(--background-primary-alt); padding: 1px 4px; border-radius: 3px; }
-  .section-label { font-size: var(--font-smallest); font-weight: var(--font-semibold); color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; padding: var(--spacing-s) var(--spacing-m) var(--spacing-xs); }
-  .note-item { padding: var(--spacing-s) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .note-item.due { background: color-mix(in srgb, var(--interactive-accent) 5%, transparent); }
-  .note-info { display: flex; align-items: baseline; gap: var(--spacing-xs); margin-bottom: var(--spacing-xs); }
-  .note-title { font-size: var(--font-smaller); font-weight: var(--font-medium); color: var(--text-normal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .note-meta { font-size: var(--font-smallest); color: var(--text-faint); margin-left: auto; flex-shrink: 0; }
-  .rating-buttons { display: flex; gap: var(--spacing-xs); }
-  .rate-btn { font-size: 10px; padding: 2px var(--spacing-s); border-radius: var(--radius-s); border: 1px solid; background: var(--background-primary); cursor: pointer; font-weight: var(--font-semibold); }
-  .rate-btn:hover { filter: brightness(0.9); transform: translateY(-1px); }
+  .note-review-queue {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--background-secondary);
+  }
+  .queue-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .queue-title {
+    font-size: var(--font-smaller);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+  .badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: var(--radius-s);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+  }
+  .empty-state {
+    padding: var(--spacing-xl) var(--spacing-m);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--font-smaller);
+  }
+  .empty-state p {
+    margin: 0 0 var(--spacing-xs);
+  }
+  .hint {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+  }
+  .hint code {
+    background: var(--background-primary-alt);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .section-label {
+    font-size: var(--font-smallest);
+    font-weight: var(--font-semibold);
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--spacing-s) var(--spacing-m) var(--spacing-xs);
+  }
+  .note-item {
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .note-item.due {
+    background: color-mix(in srgb, var(--interactive-accent) 5%, transparent);
+  }
+  .note-info {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+  }
+  .note-title {
+    font-size: var(--font-smaller);
+    font-weight: var(--font-medium);
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .note-meta {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .rating-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+  }
+  .rate-btn {
+    font-size: 10px;
+    padding: 2px var(--spacing-s);
+    border-radius: var(--radius-s);
+    border: 1px solid;
+    background: var(--background-primary);
+    cursor: pointer;
+    font-weight: var(--font-semibold);
+  }
+  .rate-btn:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+  }
 </style>

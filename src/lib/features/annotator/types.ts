@@ -196,7 +196,8 @@ export interface PdfPlusConfig {
 export const DEFAULT_PDF_PLUS_CONFIG: PdfPlusConfig = {
   highlightBacklinks: true,
   defaultColor: 'yellow',
-  copyTemplate: '[[{{filePath}}#page={{page}}&selection={{selection}}&color={{color}}|{{displayText}}]]',
+  copyTemplate:
+    '[[{{filePath}}#page={{page}}&selection={{selection}}&color={{color}}|{{displayText}}]]',
   displayTextTemplate: '{{fileName}}, page {{page}}',
   filterBacklinksByPage: true,
   clearHighlightDelay: 0,

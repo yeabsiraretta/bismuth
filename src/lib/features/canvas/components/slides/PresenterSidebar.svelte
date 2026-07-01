@@ -20,7 +20,8 @@
   export let elapsedFormatted = '00:00';
   export let onResetTimer: (() => void) | undefined = undefined;
   export let onSelectSlide: ((detail: { frameId: string }) => void) | undefined = undefined;
-  export let onUpdateNotes: ((detail: { frameId: string; notes: string }) => void) | undefined = undefined;
+  export let onUpdateNotes: ((detail: { frameId: string; notes: string }) => void) | undefined =
+    undefined;
   export let onCollapse: (() => void) | undefined = undefined;
 </script>
 
@@ -28,9 +29,7 @@
   <!-- Timer bar -->
   <div class="timer-bar">
     <span class="timer-display" aria-label="Elapsed time">{elapsedFormatted}</span>
-    <button class="icon-btn" on:click={() => onResetTimer?.()} title="Reset timer">
-      Reset
-    </button>
+    <button class="icon-btn" on:click={() => onResetTimer?.()} title="Reset timer"> Reset </button>
     <button
       class="icon-btn"
       on:click={() => onCollapse?.()}
@@ -43,19 +42,11 @@
 
   <!-- Thumbnail strip -->
   <div class="thumbnail-area">
-    <SlideThumbnailStrip
-      {doc}
-      activeFrameId={frameId}
-      onSelectSlide={(d) => onSelectSlide?.(d)}
-    />
+    <SlideThumbnailStrip {doc} activeFrameId={frameId} onSelectSlide={(d) => onSelectSlide?.(d)} />
   </div>
 
   <!-- Speaker notes -->
-  <SpeakerNotesPanel
-    {frameId}
-    {notes}
-    onUpdateNotes={(d) => onUpdateNotes?.(d)}
-  />
+  <SpeakerNotesPanel {frameId} {notes} onUpdateNotes={(d) => onUpdateNotes?.(d)} />
 </div>
 
 <style>

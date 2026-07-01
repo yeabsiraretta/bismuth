@@ -30,7 +30,7 @@ export function extractBody(content: string): string {
 /** Extract creation date from frontmatter or return null */
 export function extractCreatedDate(
   content: string,
-  createdField: string = 'created',
+  createdField: string = 'created'
 ): string | null {
   const fm = parseFrontmatter(content);
   const raw = fm[createdField];
@@ -123,11 +123,11 @@ export function extractTags(content: string): string[] {
   // YAML array: [tag1, tag2]
   const arrayMatch = tagsRaw.match(/^\[(.+)\]$/);
   if (arrayMatch) {
-    return arrayMatch[1].split(',').map(t => t.trim().replace(/^["']|["']$/g, ''));
+    return arrayMatch[1].split(',').map((t) => t.trim().replace(/^["']|["']$/g, ''));
   }
 
   // Comma-separated
-  return tagsRaw.split(',').map(t => t.trim().replace(/^["']|["']$/g, ''));
+  return tagsRaw.split(',').map((t) => t.trim().replace(/^["']|["']$/g, ''));
 }
 
 // ─── Title extraction ───────────────────────────────────────────────────────
@@ -150,10 +150,7 @@ export function extractTitle(content: string, filePath: string): string {
 // ─── Frontmatter generation ─────────────────────────────────────────────────
 
 /** Generate frontmatter block with creation date for a new file */
-export function generateCreatedFrontmatter(
-  createdField: string = 'created',
-  date?: Date,
-): string {
+export function generateCreatedFrontmatter(createdField: string = 'created', date?: Date): string {
   const d = date ?? new Date();
   const iso = d.toISOString().slice(0, 10);
   return `---\n${createdField}: ${iso}\n---\n`;
@@ -163,7 +160,7 @@ export function generateCreatedFrontmatter(
 export function ensureCreatedField(
   content: string,
   createdField: string = 'created',
-  date?: string,
+  date?: string
 ): string {
   const fm = parseFrontmatter(content);
 

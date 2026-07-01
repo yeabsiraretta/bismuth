@@ -1,6 +1,11 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { statusItemsLeft, statusItemsCenter, statusItemsRight, reorderStatusItems } from '@/stores/status/status';
+  import {
+    statusItemsLeft,
+    statusItemsCenter,
+    statusItemsRight,
+    reorderStatusItems,
+  } from '@/stores/status/status';
   import type { StatusItem } from '@/types/layout';
 
   let draggedId: string | null = null;
@@ -27,13 +32,16 @@
   function handleDrop(e: DragEvent, items: StatusItem[], position: 'left' | 'center' | 'right') {
     e.preventDefault();
     if (!draggedId) return;
-    const fromIdx = items.findIndex(i => i.id === draggedId);
-    const toIdx = items.findIndex(i => i.id === dropTargetId);
+    const fromIdx = items.findIndex((i) => i.id === draggedId);
+    const toIdx = items.findIndex((i) => i.id === dropTargetId);
     if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
       const reordered = [...items];
       const [moved] = reordered.splice(fromIdx, 1);
       reordered.splice(toIdx, 0, moved);
-      reorderStatusItems(position, reordered.map(i => i.id));
+      reorderStatusItems(
+        position,
+        reordered.map((i) => i.id)
+      );
     }
     draggedId = null;
     dropTargetId = null;
@@ -87,11 +95,7 @@
   <div class="status-center">
     {#each $statusItemsCenter as item (item.id)}
       {#if item.onClick}
-        <button
-          class="status-item clickable"
-          title={item.tooltip || ''}
-          on:click={item.onClick}
-        >
+        <button class="status-item clickable" title={item.tooltip || ''} on:click={item.onClick}>
           {#if item.icon}<Icon name={item.icon} size={12} />{/if}
           {item.label}
         </button>

@@ -10,7 +10,15 @@
 
 import { Decoration } from '@codemirror/view';
 import type { Range } from '@codemirror/state';
-export { TableWidget, HrWidget, ImageWidget, CheckboxWidget, CalloutWidget, renderTable, charToTaskState } from './livePreviewWidgets';
+export {
+  TableWidget,
+  HrWidget,
+  ImageWidget,
+  CheckboxWidget,
+  CalloutWidget,
+  renderTable,
+  charToTaskState,
+} from './livePreviewWidgets';
 export type { TaskState } from './livePreviewWidgets';
 
 // ─── Decoration marks (visual styling only, no hiding) ───────────────────────
@@ -126,8 +134,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
     const end = start + m[0].length;
     const altStart = start + 2;
     const altEnd = altStart + m[1].length;
-    decos.push(hiddenMark.range(start, altStart));    // hide ![
-    decos.push(hiddenMark.range(altEnd, end));        // hide ](url)
+    decos.push(hiddenMark.range(start, altStart)); // hide ![
+    decos.push(hiddenMark.range(altEnd, end)); // hide ](url)
     if (m[1]) decos.push(link.range(altStart, altEnd));
   }
 
@@ -138,8 +146,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
     const end = start + m[0].length;
     const titleStart = start + 1;
     const titleEnd = titleStart + m[1].length;
-    decos.push(hiddenMark.range(start, titleStart));  // hide [
-    decos.push(hiddenMark.range(titleEnd, end));      // hide ](url)
+    decos.push(hiddenMark.range(start, titleStart)); // hide [
+    decos.push(hiddenMark.range(titleEnd, end)); // hide ](url)
     decos.push(link.range(titleStart, titleEnd));
   }
 
@@ -177,8 +185,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
   while ((m = uRe.exec(text)) !== null) {
     const start = offset + m.index;
     const end = start + m[0].length;
-    decos.push(hiddenMark.range(start, start + 3));    // hide <u>
-    decos.push(hiddenMark.range(end - 4, end));        // hide </u>
+    decos.push(hiddenMark.range(start, start + 3)); // hide <u>
+    decos.push(hiddenMark.range(end - 4, end)); // hide </u>
     decos.push(underline.range(start + 3, end - 4));
   }
 
@@ -187,8 +195,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
   while ((m = supRe.exec(text)) !== null) {
     const start = offset + m.index;
     const end = start + m[0].length;
-    decos.push(hiddenMark.range(start, start + 5));    // hide <sup>
-    decos.push(hiddenMark.range(end - 6, end));        // hide </sup>
+    decos.push(hiddenMark.range(start, start + 5)); // hide <sup>
+    decos.push(hiddenMark.range(end - 6, end)); // hide </sup>
     decos.push(superscript.range(start + 5, end - 6));
   }
 
@@ -197,8 +205,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
   while ((m = subRe.exec(text)) !== null) {
     const start = offset + m.index;
     const end = start + m[0].length;
-    decos.push(hiddenMark.range(start, start + 5));    // hide <sub>
-    decos.push(hiddenMark.range(end - 6, end));        // hide </sub>
+    decos.push(hiddenMark.range(start, start + 5)); // hide <sub>
+    decos.push(hiddenMark.range(end - 6, end)); // hide </sub>
     decos.push(subscriptMark.range(start + 5, end - 6));
   }
 
@@ -207,8 +215,8 @@ export function decorateInline(decos: Range<Decoration>[], offset: number, text:
   while ((m = fnRefRe.exec(text)) !== null) {
     const start = offset + m.index;
     const end = start + m[0].length;
-    decos.push(hiddenMark.range(start, start + 2));    // hide [^
-    decos.push(hiddenMark.range(end - 1, end));        // hide ]
+    decos.push(hiddenMark.range(start, start + 2)); // hide [^
+    decos.push(hiddenMark.range(end - 1, end)); // hide ]
     decos.push(footnoteRef.range(start + 2, end - 1));
   }
 }

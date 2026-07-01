@@ -21,9 +21,15 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { store = {}; },
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
   };
 })();
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
@@ -33,17 +39,24 @@ Object.defineProperty(globalThis, 'crypto', {
 });
 
 vi.mock('date-fns', () => ({
-  addDays: (date: Date, n: number) => { const d = new Date(date); d.setDate(d.getDate() + n); return d; },
-  addWeeks: (date: Date, n: number) => { const d = new Date(date); d.setDate(d.getDate() + n * 7); return d; },
-  addMonths: (date: Date, n: number) => { const d = new Date(date); d.setMonth(d.getMonth() + n); return d; },
+  addDays: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n);
+    return d;
+  },
+  addWeeks: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n * 7);
+    return d;
+  },
+  addMonths: (date: Date, n: number) => {
+    const d = new Date(date);
+    d.setMonth(d.getMonth() + n);
+    return d;
+  },
 }));
 
-import {
-  gamifyTasks,
-  gamifyCoins,
-  addGamifiedTask,
-  incrementCounter,
-} from '../stores/gamifyStore';
+import { gamifyTasks, gamifyCoins, addGamifiedTask, incrementCounter } from '../stores/gamifyStore';
 import { processRecurrence } from '../services/gamifyService';
 import type { GamifiedTask } from '../types';
 
@@ -57,7 +70,7 @@ describe('Counter task increment', () => {
     addGamifiedTask('Counter task', 'medium', { current: 0, target: 5 });
     const [task] = get(gamifyTasks);
     incrementCounter(task.id);
-    const updated = get(gamifyTasks).find(t => t.id === task.id)!;
+    const updated = get(gamifyTasks).find((t) => t.id === task.id)!;
     expect(updated.counter!.current).toBe(1);
   });
 
@@ -65,7 +78,7 @@ describe('Counter task increment', () => {
     addGamifiedTask('Counter task at cap', 'easy', { current: 3, target: 3 });
     const [task] = get(gamifyTasks);
     incrementCounter(task.id);
-    const updated = get(gamifyTasks).find(t => t.id === task.id)!;
+    const updated = get(gamifyTasks).find((t) => t.id === task.id)!;
     expect(updated.counter!.current).toBe(3);
   });
 
@@ -73,7 +86,7 @@ describe('Counter task increment', () => {
     addGamifiedTask('Plain task', 'medium');
     const [task] = get(gamifyTasks);
     incrementCounter(task.id);
-    const after = get(gamifyTasks).find(t => t.id === task.id)!;
+    const after = get(gamifyTasks).find((t) => t.id === task.id)!;
     expect(after.counter).toBeUndefined();
     expect(after.completed).toBe(false);
   });
@@ -83,7 +96,7 @@ describe('Counter task increment', () => {
     const [task] = get(gamifyTasks);
     incrementCounter(task.id);
     incrementCounter(task.id);
-    const updated = get(gamifyTasks).find(t => t.id === task.id)!;
+    const updated = get(gamifyTasks).find((t) => t.id === task.id)!;
     expect(updated.counter!.current).toBe(2);
   });
 });

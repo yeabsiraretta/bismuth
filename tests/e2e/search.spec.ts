@@ -14,7 +14,9 @@ test.describe('Search Panel', () => {
 
   test('should open search panel with Cmd+P', async ({ page }) => {
     await page.keyboard.press('Meta+p');
-    const searchPanel = page.locator('[data-testid="search-panel"], .search-panel, .command-palette');
+    const searchPanel = page.locator(
+      '[data-testid="search-panel"], .search-panel, .command-palette'
+    );
     await expect(searchPanel).toBeVisible({ timeout: 2000 });
   });
 
@@ -31,7 +33,9 @@ test.describe('Search Panel', () => {
     await page.keyboard.press('Meta+p');
     await page.waitForTimeout(300);
     await page.keyboard.press('Escape');
-    const searchPanel = page.locator('[data-testid="search-panel"], .search-panel, .command-palette');
+    const searchPanel = page.locator(
+      '[data-testid="search-panel"], .search-panel, .command-palette'
+    );
     await expect(searchPanel).not.toBeVisible({ timeout: 2000 });
   });
 

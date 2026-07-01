@@ -1,8 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  createRelationship, deleteRelationship, deleteRelationshipsForElement,
-  getRelationshipsForElement, getVisibleRelationships, getOtherElementId,
-  areRelated, getAllRelationships, updateRelationship,
+  createRelationship,
+  deleteRelationship,
+  deleteRelationshipsForElement,
+  getRelationshipsForElement,
+  getVisibleRelationships,
+  getOtherElementId,
+  areRelated,
+  getAllRelationships,
+  updateRelationship,
 } from '../services/relationshipService';
 
 beforeEach(() => {

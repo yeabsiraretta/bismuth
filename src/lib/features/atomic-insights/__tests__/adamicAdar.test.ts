@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  buildAdjacency, adamicAdarScore, getCommonNeighbors, rankByAdamicAdar,
+  buildAdjacency,
+  adamicAdarScore,
+  getCommonNeighbors,
+  rankByAdamicAdar,
 } from '../services/adamicAdar';
 
 /**
@@ -115,7 +118,7 @@ describe('rankByAdamicAdar', () => {
     // Direct neighbors of A: C, D, E — these should still appear
     // because they're 2-hop reachable through other paths
     const ranked = rankByAdamicAdar(adj, 'A');
-    const ids = ranked.map(r => r.nodeId);
+    const ids = ranked.map((r) => r.nodeId);
     // B, F, G, H, I are 2-hop reachable
     expect(ids).toContain('B');
   });

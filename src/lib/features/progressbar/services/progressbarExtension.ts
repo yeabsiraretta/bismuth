@@ -3,10 +3,7 @@
  * as visual progress bars. Same ViewPlugin + WidgetType pattern as other
  * fenced block extensions (abc, chords, audio-player).
  */
-import {
-  Decoration, EditorView,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, EditorView, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { findProgressBarBlocks } from './progressbarParser';
@@ -38,17 +35,13 @@ export function progressBarExtension() {
 
         for (const block of blocks) {
           const widget = new ProgressBarWidget(block);
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         this.decorations = builder.finish();
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 
   return [plugin, progressBarTheme];

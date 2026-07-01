@@ -36,7 +36,7 @@
     try {
       loading = true;
       error = null;
-      const data = await getOutgoingLinks(noteId) as unknown as OutgoingLinksData;
+      const data = (await getOutgoingLinks(noteId)) as unknown as OutgoingLinksData;
       outgoingData = data;
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load outgoing links';
@@ -74,7 +74,11 @@
 </script>
 
 <div class="outgoing-links">
-  <PanelHeader icon="external-link" title="Outgoing Links" count={outgoingData.links.length || undefined} />
+  <PanelHeader
+    icon="external-link"
+    title="Outgoing Links"
+    count={outgoingData.links.length || undefined}
+  />
 
   {#if loading}
     <div class="loading">
@@ -159,29 +163,150 @@
 </div>
 
 <style>
-  .outgoing-links { display: flex; flex-direction: column; height: 100%; background: var(--color-bg); color: var(--color-text); overflow: hidden; }
-  .loading, .error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-6); color: var(--color-text-muted); }
-  .error { color: var(--color-error, #ef4444); }
-  .section { border-bottom: 1px solid var(--color-border); }
-  .section-header { padding: var(--space-3); background: var(--color-surface); }
-  .section-header h4 { margin: 0; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); }
-  .count { font-weight: normal; color: var(--color-text-muted); }
-  .empty-state { padding: var(--space-4); text-align: center; color: var(--color-text-muted); font-size: 0.875rem; }
-  .links-list, .mentions-list { overflow-y: auto; max-height: 400px; }
-  .link-item { width: 100%; display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-3); background: none; border: none; border-bottom: 1px solid var(--color-border); cursor: pointer; text-align: left; color: var(--color-text); transition: background 0.15s; }
-  .link-item:hover { background: var(--color-surface); }
-  .link-item:last-child { border-bottom: none; }
-  .link-item.unresolved { opacity: 0.6; }
-  .link-info { flex: 1; display: flex; flex-direction: column; gap: var(--space-1); }
-  .link-name { font-weight: 500; font-size: 0.875rem; }
-  .link-path { font-size: 0.75rem; color: var(--color-text-muted); }
-  .unresolved-badge { padding: var(--space-1) var(--space-2); background: var(--color-error, #ef4444); color: white; font-size: 0.625rem; font-weight: 600; text-transform: uppercase; border-radius: 4px; }
-  .mention-item { padding: var(--space-3); border-bottom: 1px solid var(--color-border); }
-  .mention-item:last-child { border-bottom: none; }
-  .mention-text { font-weight: 500; font-size: 0.875rem; margin-bottom: var(--space-2); }
-  .mention-context { font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: var(--space-2); max-height: 3em; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .matching-notes { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-  .matching-label { font-size: 0.75rem; color: var(--color-text-muted); }
-  .match-btn { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); background: var(--color-primary); border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 0.75rem; transition: opacity 0.15s; }
-  .match-btn:hover { opacity: 0.8; }
+  .outgoing-links {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-text);
+    overflow: hidden;
+  }
+  .loading,
+  .error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    color: var(--color-text-muted);
+  }
+  .error {
+    color: var(--color-error, #ef4444);
+  }
+  .section {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .section-header {
+    padding: var(--space-3);
+    background: var(--color-surface);
+  }
+  .section-header h4 {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+  .count {
+    font-weight: normal;
+    color: var(--color-text-muted);
+  }
+  .empty-state {
+    padding: var(--space-4);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+  .links-list,
+  .mentions-list {
+    overflow-y: auto;
+    max-height: 400px;
+  }
+  .link-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    text-align: left;
+    color: var(--color-text);
+    transition: background 0.15s;
+  }
+  .link-item:hover {
+    background: var(--color-surface);
+  }
+  .link-item:last-child {
+    border-bottom: none;
+  }
+  .link-item.unresolved {
+    opacity: 0.6;
+  }
+  .link-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .link-name {
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  .link-path {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  .unresolved-badge {
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-error, #ef4444);
+    color: white;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+  .mention-item {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mention-item:last-child {
+    border-bottom: none;
+  }
+  .mention-text {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: var(--space-2);
+  }
+  .mention-context {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2);
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .matching-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+  .matching-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  .match-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-primary);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 0.75rem;
+    transition: opacity 0.15s;
+  }
+  .match-btn:hover {
+    opacity: 0.8;
+  }
 </style>

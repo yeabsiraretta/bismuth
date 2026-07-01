@@ -44,7 +44,7 @@ interface FilterCall {
 
 /** Parse a template expression like "author.name | upper | replace(a,b)" */
 function parseExpression(expr: string): ParsedExpr | null {
-  const parts = expr.split('|').map(s => s.trim());
+  const parts = expr.split('|').map((s) => s.trim());
   if (parts.length === 0) return null;
 
   const key = parts[0];
@@ -56,7 +56,7 @@ function parseExpression(expr: string): ParsedExpr | null {
     if (argMatch) {
       filters.push({
         name: argMatch[1],
-        args: argMatch[2].split(',').map(a => a.trim()),
+        args: argMatch[2].split(',').map((a) => a.trim()),
       });
     } else {
       filters.push({ name: f, args: [] });
@@ -81,7 +81,10 @@ function resolveValue(key: string, ctx: TemplateContext): string {
 function applyFilter(value: string, filter: FilterCall): string {
   switch (filter.name) {
     case 'blockquote':
-      return value.split('\n').map(l => `> ${l}`).join('\n');
+      return value
+        .split('\n')
+        .map((l) => `> ${l}`)
+        .join('\n');
     case 'capitalize':
       return value.charAt(0).toUpperCase() + value.slice(1);
     case 'lower':
@@ -136,7 +139,9 @@ export function loadClipperConfig(): ClipperConfig {
   try {
     const raw = localStorage.getItem('bismuth-clipper-config');
     if (raw) return JSON.parse(raw);
-  } catch { /* use defaults */ }
+  } catch {
+    /* use defaults */
+  }
   return {
     inboxDir: 'ReadItLater Inbox',
     assetsDir: 'ReadItLater Inbox/assets',
@@ -152,5 +157,7 @@ export function loadClipperConfig(): ClipperConfig {
 export function saveClipperConfig(config: ClipperConfig): void {
   try {
     localStorage.setItem('bismuth-clipper-config', JSON.stringify(config));
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }

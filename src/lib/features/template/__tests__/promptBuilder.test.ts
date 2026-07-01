@@ -50,7 +50,11 @@ describe('buildPrompt', () => {
   });
 
   it('merges multiple templates in order', () => {
-    const t2: SmartTemplate = { name: 'Action items', content: 'Extract action items.', source: 'builtin' };
+    const t2: SmartTemplate = {
+      name: 'Action items',
+      content: 'Extract action items.',
+      source: 'builtin',
+    };
     const result = buildPrompt(mockContext, [mockTemplate, t2], '', 8000);
     const instrIdx = result.text.indexOf('Summarize');
     const actionIdx = result.text.indexOf('Extract action');

@@ -57,8 +57,10 @@ export function extractDirectives(frontmatter: Record<string, unknown>): MarpDir
   if (typeof frontmatter['header'] === 'string') d.header = frontmatter['header'];
   if (typeof frontmatter['footer'] === 'string') d.footer = frontmatter['footer'];
   if (typeof frontmatter['class'] === 'string') d.class = frontmatter['class'];
-  if (typeof frontmatter['backgroundColor'] === 'string') d.backgroundColor = frontmatter['backgroundColor'];
-  if (typeof frontmatter['backgroundImage'] === 'string') d.backgroundImage = frontmatter['backgroundImage'];
+  if (typeof frontmatter['backgroundColor'] === 'string')
+    d.backgroundColor = frontmatter['backgroundColor'];
+  if (typeof frontmatter['backgroundImage'] === 'string')
+    d.backgroundImage = frontmatter['backgroundImage'];
   if (typeof frontmatter['color'] === 'string') d.color = frontmatter['color'];
   if (typeof frontmatter['size'] === 'string') d.size = frontmatter['size'];
   if (typeof frontmatter['transition'] === 'string') d.transition = frontmatter['transition'];
@@ -92,7 +94,7 @@ export function splitSlides(body: string): string[] {
     slides.push(current.join('\n'));
   }
 
-  return slides.filter(s => s.trim().length > 0 || slides.length === 1);
+  return slides.filter((s) => s.trim().length > 0 || slides.length === 1);
 }
 
 // ─── Per-slide directives & speaker notes ────────────────────────────────────
@@ -183,7 +185,7 @@ export function markdownToHtml(md: string): string {
 /** Parse a full markdown note into a MarpPresentation */
 export function parseMarpPresentation(
   markdown: string,
-  notePath: string = '',
+  notePath: string = ''
 ): MarpPresentation | null {
   const { frontmatter, body } = parseFrontmatter(markdown);
   if (frontmatter['marp'] !== true) return null;

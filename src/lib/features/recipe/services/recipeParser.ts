@@ -9,13 +9,12 @@
  * - Quantities with fractions, decimals, ranges, and mixed numbers
  */
 
-import type {
-  RecipeData, RecipeMetadata, Ingredient, RecipeStep,
-} from '../types';
+import type { RecipeData, RecipeMetadata, Ingredient, RecipeStep } from '../types';
 import { DEFAULT_METADATA, COMMON_UNITS, FRACTION_MAP } from '../types';
 
 const INGREDIENT_HEADINGS = /^#{1,3}\s*(ingredients?|what you['']?ll? need)/i;
-const STEP_HEADINGS = /^#{1,3}\s*(instructions?|directions?|steps?|method|preparation|how to make)/i;
+const STEP_HEADINGS =
+  /^#{1,3}\s*(instructions?|directions?|steps?|method|preparation|how to make)/i;
 const NOTES_HEADINGS = /^#{1,3}\s*(notes?|tips?|variations?|substitutions?)/i;
 const SUB_HEADING = /^#{2,4}\s+(.+)/;
 const LIST_ITEM = /^\s*[-*+]\s+(.+)/;
@@ -31,7 +30,9 @@ export function parseQuantity(str: string): number | null {
 
   for (const [char, val] of Object.entries(FRACTION_MAP)) {
     if (trimmed === char) return val;
-    const mixedMatch = trimmed.match(new RegExp(`^(\\d+)\\s*${char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+    const mixedMatch = trimmed.match(
+      new RegExp(`^(\\d+)\\s*${char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`)
+    );
     if (mixedMatch) return parseInt(mixedMatch[1], 10) + val;
   }
 
@@ -40,7 +41,10 @@ export function parseQuantity(str: string): number | null {
 
   const fractionMatch = trimmed.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/);
   if (fractionMatch) {
-    return parseInt(fractionMatch[1], 10) + parseInt(fractionMatch[2], 10) / parseInt(fractionMatch[3], 10);
+    return (
+      parseInt(fractionMatch[1], 10) +
+      parseInt(fractionMatch[2], 10) / parseInt(fractionMatch[3], 10)
+    );
   }
 
   const simpleFraction = trimmed.match(/^(\d+)\s*\/\s*(\d+)$/);
@@ -106,9 +110,12 @@ export function extractMetadata(content: string): RecipeMetadata {
   meta.source = get('source') || get('url') || get('from');
   meta.image = get('image') || get('cover');
 
-  const tagsMatch = fm.match(/^tags?:\s*\[?(.+?)\]?\s*$/mi);
+  const tagsMatch = fm.match(/^tags?:\s*\[?(.+?)\]?\s*$/im);
   if (tagsMatch) {
-    meta.tags = tagsMatch[1].split(',').map(t => t.trim().replace(/^#/, '')).filter(Boolean);
+    meta.tags = tagsMatch[1]
+      .split(',')
+      .map((t) => t.trim().replace(/^#/, ''))
+      .filter(Boolean);
   }
 
   return meta;
@@ -143,9 +150,20 @@ export function parseRecipe(content: string): RecipeData {
   };
 
   for (const line of lines) {
-    if (INGREDIENT_HEADINGS.test(line)) { section = 'ingredients'; continue; }
-    if (STEP_HEADINGS.test(line)) { flushStep(); section = 'steps'; continue; }
-    if (NOTES_HEADINGS.test(line)) { flushStep(); section = 'notes'; continue; }
+    if (INGREDIENT_HEADINGS.test(line)) {
+      section = 'ingredients';
+      continue;
+    }
+    if (STEP_HEADINGS.test(line)) {
+      flushStep();
+      section = 'steps';
+      continue;
+    }
+    if (NOTES_HEADINGS.test(line)) {
+      flushStep();
+      section = 'notes';
+      continue;
+    }
 
     if (SUB_HEADING.test(line) && section !== 'preamble') {
       if (section === 'steps') flushStep();
@@ -206,17 +224,22 @@ export function scaleQuantity(qty: number | null, factor: number): number | null
 export function formatQuantity(qty: number | null): string {
   if (qty === null) return '';
   if (Number.isInteger(qty)) return String(qty);
-  const thirds = [1/3, 2/3];
+  const thirds = [1 / 3, 2 / 3];
   for (const t of thirds) {
-    if (Math.abs(qty - Math.round(qty - qty % 1) - t) < 0.02) {
+    if (Math.abs(qty - Math.round(qty - (qty % 1)) - t) < 0.02) {
       const whole = Math.floor(qty);
-      const frac = t === 1/3 ? '\u2153' : '\u2154';
+      const frac = t === 1 / 3 ? '\u2153' : '\u2154';
       return whole > 0 ? `${whole} ${frac}` : frac;
     }
   }
   const fractions: [number, string][] = [
-    [0.25, '\u00BC'], [0.5, '\u00BD'], [0.75, '\u00BE'],
-    [0.125, '\u215B'], [0.375, '\u215C'], [0.625, '\u215D'], [0.875, '\u215E'],
+    [0.25, '\u00BC'],
+    [0.5, '\u00BD'],
+    [0.75, '\u00BE'],
+    [0.125, '\u215B'],
+    [0.375, '\u215C'],
+    [0.625, '\u215D'],
+    [0.875, '\u215E'],
   ];
   const whole = Math.floor(qty);
   const remainder = qty - whole;

@@ -121,6 +121,7 @@ SVELTE STORES (reactive state)
 ```
 
 **Rules**:
+
 - Filesystem owns the data
 - Cache is always reconstructible
 - State is derived from cache or filesystem
@@ -131,60 +132,66 @@ SVELTE STORES (reactive state)
 
 **Standard Frontmatter Fields**:
 
-| Field | Meaning | UI Behavior |
-|-------|---------|-------------|
-| `type:` | Note type (Project, Person, etc.) | Type chip in note list |
-| `status:` | Lifecycle stage (active, done, blocked) | Colored status badge |
-| `tags:` | Topic tags | Tag chips, filterable |
-| `aliases:` | Alternative names | Wikilink resolution |
-| `belongs_to:` | Parent relationships | Humanized to "Belongs to" |
-| `related_to:` | Lateral relationships | Humanized to "Related to" |
-| `url:` | External link | Clickable link chip |
-| `date:` | Single date | Formatted date badge |
-| `start_date:` + `end_date:` | Duration | Date range badge |
+| Field                       | Meaning                                 | UI Behavior               |
+| --------------------------- | --------------------------------------- | ------------------------- |
+| `type:`                     | Note type (Project, Person, etc.)       | Type chip in note list    |
+| `status:`                   | Lifecycle stage (active, done, blocked) | Colored status badge      |
+| `tags:`                     | Topic tags                              | Tag chips, filterable     |
+| `aliases:`                  | Alternative names                       | Wikilink resolution       |
+| `belongs_to:`               | Parent relationships                    | Humanized to "Belongs to" |
+| `related_to:`               | Lateral relationships                   | Humanized to "Related to" |
+| `url:`                      | External link                           | Clickable link chip       |
+| `date:`                     | Single date                             | Formatted date badge      |
+| `start_date:` + `end_date:` | Duration                                | Date range badge          |
 
 **Johnny.Decimal Fields**:
-| Field | Meaning | UI Behavior |
-|-------|---------|-------------|
-| `jd_id:` | Full JD ID (e.g., "15.52") | Badge, category filter |
-| `jd_area:` | Area number (10, 20, etc.) | Sidebar grouping |
-| `jd_category:` | Category number (15, 21, etc.) | Category badge |
+
+| Field          | Meaning                        | UI Behavior            |
+| -------------- | ------------------------------ | ---------------------- |
+| `jd_id:`       | Full JD ID (e.g., "15.52")     | Badge, category filter |
+| `jd_area:`     | Area number (10, 20, etc.)     | Sidebar grouping       |
+| `jd_category:` | Category number (15, 21, etc.) | Category badge         |
 
 **Zettelkasten Fields**:
-| Field | Meaning | UI Behavior |
-|-------|---------|-------------|
-| `zk_id:` | Zettel ID (timestamp) | Unique identifier |
-| `zk_type:` | Note type (permanent, literature, fleeting, structure) | Icon, color |
-| `zk_source:` | Source reference | Citation link |
+
+| Field        | Meaning                                                | UI Behavior       |
+| ------------ | ------------------------------------------------------ | ----------------- |
+| `zk_id:`     | Zettel ID (timestamp)                                  | Unique identifier |
+| `zk_type:`   | Note type (permanent, literature, fleeting, structure) | Icon, color       |
+| `zk_source:` | Source reference                                       | Citation link     |
 
 **Ontology Fields**:
-| Field | Meaning | UI Behavior |
-|-------|---------|-------------|
-| `concepts:` | Extracted concepts | Concept chips, graph nodes |
-| `subsumes:` | Broader concepts | Hierarchy visualization |
-| `subsumed_by:` | Narrower concepts | Hierarchy visualization |
+
+| Field          | Meaning            | UI Behavior                |
+| -------------- | ------------------ | -------------------------- |
+| `concepts:`    | Extracted concepts | Concept chips, graph nodes |
+| `subsumes:`    | Broader concepts   | Hierarchy visualization    |
+| `subsumed_by:` | Narrower concepts  | Hierarchy visualization    |
 
 **System Properties (Underscore Convention)**:
+
 ```yaml
-_pinned_properties:       # Properties in editor inline bar
+_pinned_properties: # Properties in editor inline bar
   - key: status
     icon: circle-dot
-_icon: shapes             # Note icon
-_color: blue              # Note color
-_width: wide              # Editor width override
-_jd_auto_suggest: true    # Auto-suggest next JD ID
-_zk_auto_link: true       # Auto-create backlinks
+_icon: shapes # Note icon
+_color: blue # Note color
+_width: wide # Editor width override
+_jd_auto_suggest: true # Auto-suggest next JD ID
+_zk_auto_link: true # Auto-create backlinks
 ```
 
 ### 3. Knowledge Trinity Integration
 
 **Layer 1: Physical Organization (Johnny.Decimal)**
+
 - 10-folder limit at Area and Category levels
 - Auto-suggest next decimal number
 - JDex (index) integration with notes
 - Category-based search and filtering
 
 **Layer 2: Conceptual Connections (Zettelkasten)**
+
 - Atomic notes with unique IDs
 - Wikilinks for connections
 - Backlinks panel
@@ -192,18 +199,21 @@ _zk_auto_link: true       # Auto-create backlinks
 - Structure notes (MOCs)
 
 **Layer 3: Semantic Intelligence (Ontologies)**
+
 - Concept extraction from notes
 - Subsumption relationships (⊑)
 - Semantic search
 - Concept recommendations
 
 **Layer 4: Multi-Hop Retrieval (GraphRAG)**
+
 - Hierarchical lexical graph
 - Vector + graph hybrid search
 - Multi-hop query processing
 - Answer synthesis with citations
 
 **Layer 5: Research Workflow (Posner)**
+
 - Capture (web clipper, file import)
 - Metadata (auto-capture source, date, location)
 - Organization (JD + ZK + Ontology)
@@ -212,12 +222,14 @@ _zk_auto_link: true       # Auto-create backlinks
 ### 4. Disk-First Writes with Optimistic UI
 
 **Invariants** (from Tolaria):
+
 1. All vault changes write to disk first (via Tauri)
 2. State updates only after successful disk write
 3. Optimistic UI for responsiveness, with rollback on error
 4. Recovery via `Reload Vault` command
 
 **Example Flow**:
+
 ```typescript
 // ❌ WRONG: Update state before disk
 entries.update(e => [...e, newEntry])
@@ -232,18 +244,20 @@ entries.update(e => [...e, newEntry])
 ### 5. Where to Store State
 
 **Decision Framework** (from Tolaria):
+
 > "Would the user want this to follow them across all installations?"
 
-| Follows Vault | Stays with Installation |
-|---------------|-------------------------|
-| JD structure | Editor zoom level |
-| ZK templates | Window size/position |
-| Ontology config | API keys |
-| Note icons/colors | Auto-sync interval |
-| Saved views | Theme preference |
-| Type definitions | Panel widths |
+| Follows Vault     | Stays with Installation |
+| ----------------- | ----------------------- |
+| JD structure      | Editor zoom level       |
+| ZK templates      | Window size/position    |
+| Ontology config   | API keys                |
+| Note icons/colors | Auto-sync interval      |
+| Saved views       | Theme preference        |
+| Type definitions  | Panel widths            |
 
 **Storage Locations**:
+
 - **Vault**: `.bismuth/config/*.yml`, frontmatter, note content
 - **Installation**: `~/.config/com.bismuth.app/settings.json`, localStorage
 
@@ -257,59 +271,59 @@ entries.update(e => [...e, newEntry])
 // src/types/vault.ts
 interface BismuthEntry {
   // Core identifiers
-  path: string              // Absolute file path
-  filename: string          // Just the filename
-  title: string             // From first # heading or filename
-  
+  path: string; // Absolute file path
+  filename: string; // Just the filename
+  title: string; // From first # heading or filename
+
   // Johnny.Decimal
-  jdId: string | null       // "15.52"
-  jdArea: number | null     // 10
-  jdCategory: number | null // 15
-  jdItemNumber: number | null // 52
-  jdDescription: string | null // From JDex
-  jdLocation: string | null    // Where to find it
-  jdKeywords: string[]         // Search keywords
-  
+  jdId: string | null; // "15.52"
+  jdArea: number | null; // 10
+  jdCategory: number | null; // 15
+  jdItemNumber: number | null; // 52
+  jdDescription: string | null; // From JDex
+  jdLocation: string | null; // Where to find it
+  jdKeywords: string[]; // Search keywords
+
   // Zettelkasten
-  zkId: string | null       // "202405251912"
-  zkType: 'permanent' | 'literature' | 'fleeting' | 'structure' | null
-  zkSource: string | null   // Source reference
-  zkTags: string[]          // ZK-specific tags
-  
+  zkId: string | null; // "202405251912"
+  zkType: 'permanent' | 'literature' | 'fleeting' | 'structure' | null;
+  zkSource: string | null; // Source reference
+  zkTags: string[]; // ZK-specific tags
+
   // Ontology
-  concepts: string[]        // Extracted concepts
-  subsumes: string[]        // Broader concepts (this ⊑ X)
-  subsumedBy: string[]      // Narrower concepts (X ⊑ this)
-  ontologyRelations: Record<string, string[]> // Custom relations
-  
+  concepts: string[]; // Extracted concepts
+  subsumes: string[]; // Broader concepts (this ⊑ X)
+  subsumedBy: string[]; // Narrower concepts (X ⊑ this)
+  ontologyRelations: Record<string, string[]>; // Custom relations
+
   // Standard fields
-  type: string | null       // Note type
-  status: string | null     // Status
-  tags: string[]            // Tags
-  aliases: string[]         // Aliases
-  
+  type: string | null; // Note type
+  status: string | null; // Status
+  tags: string[]; // Tags
+  aliases: string[]; // Aliases
+
   // Relationships
-  belongsTo: string[]       // Parent links
-  relatedTo: string[]       // Related links
-  has: string[]             // Child links
-  outgoingLinks: string[]   // All wikilinks in body
-  backlinks: string[]       // Incoming links
-  
+  belongsTo: string[]; // Parent links
+  relatedTo: string[]; // Related links
+  has: string[]; // Child links
+  outgoingLinks: string[]; // All wikilinks in body
+  backlinks: string[]; // Incoming links
+
   // Metadata
-  modifiedAt: number | null // Unix timestamp
-  createdAt: number | null  // Unix timestamp
-  fileSize: number
-  wordCount: number | null
-  snippet: string | null    // First 200 chars
-  
+  modifiedAt: number | null; // Unix timestamp
+  createdAt: number | null; // Unix timestamp
+  fileSize: number;
+  wordCount: number | null;
+  snippet: string | null; // First 200 chars
+
   // System
-  archived: boolean
-  properties: Record<string, any> // Custom properties
-  fileKind: 'markdown' | 'text' | 'binary'
-  
+  archived: boolean;
+  properties: Record<string, any>; // Custom properties
+  fileKind: 'markdown' | 'text' | 'binary';
+
   // Graph
-  graphNodeId: string | null    // Graph database node ID
-  graphEmbedding: number[] | null // Vector embedding
+  graphNodeId: string | null; // Graph database node ID
+  graphEmbedding: number[] | null; // Vector embedding
 }
 ```
 
@@ -318,18 +332,18 @@ interface BismuthEntry {
 ```typescript
 // src/types/jd.ts
 interface JDexEntry {
-  id: string                // "15.52"
-  area: number              // 10
-  category: number          // 15
-  itemNumber: number        // 52
-  title: string             // "Trip to NYC"
-  description: string       // What this is about
-  location: string          // Where to find it (filesystem, email, etc.)
-  relatesTo: string[]       // Links to other JD IDs
-  keywords: string[]        // Search keywords
-  createdAt: number
-  updatedAt: number
-  notePath: string | null   // Path to associated note
+  id: string; // "15.52"
+  area: number; // 10
+  category: number; // 15
+  itemNumber: number; // 52
+  title: string; // "Trip to NYC"
+  description: string; // What this is about
+  location: string; // Where to find it (filesystem, email, etc.)
+  relatesTo: string[]; // Links to other JD IDs
+  keywords: string[]; // Search keywords
+  createdAt: number;
+  updatedAt: number;
+  notePath: string | null; // Path to associated note
 }
 ```
 
@@ -338,17 +352,17 @@ interface JDexEntry {
 ```typescript
 // src/types/zk.ts
 interface ZettelEntry {
-  zkId: string              // "202405251912"
-  title: string
-  type: 'permanent' | 'literature' | 'fleeting' | 'structure'
-  source: string | null     // Source reference
-  tags: string[]
-  links: string[]           // Outgoing wikilinks
-  backlinks: string[]       // Incoming wikilinks
-  content: string
-  createdAt: number
-  modifiedAt: number
-  path: string
+  zkId: string; // "202405251912"
+  title: string;
+  type: 'permanent' | 'literature' | 'fleeting' | 'structure';
+  source: string | null; // Source reference
+  tags: string[];
+  links: string[]; // Outgoing wikilinks
+  backlinks: string[]; // Incoming wikilinks
+  content: string;
+  createdAt: number;
+  modifiedAt: number;
+  path: string;
 }
 ```
 
@@ -357,16 +371,16 @@ interface ZettelEntry {
 ```typescript
 // src/types/ontology.ts
 interface ConceptNode {
-  id: string                // Unique concept ID
-  label: string             // Human-readable label
-  definition: string | null // Concept definition
-  subsumes: string[]        // Broader concepts (this ⊑ X)
-  subsumedBy: string[]      // Narrower concepts (X ⊑ this)
-  relatedConcepts: string[] // Lateral relationships
-  instances: string[]       // Notes that mention this concept
-  frequency: number         // How often mentioned
-  createdAt: number
-  updatedAt: number
+  id: string; // Unique concept ID
+  label: string; // Human-readable label
+  definition: string | null; // Concept definition
+  subsumes: string[]; // Broader concepts (this ⊑ X)
+  subsumedBy: string[]; // Narrower concepts (X ⊑ this)
+  relatedConcepts: string[]; // Lateral relationships
+  instances: string[]; // Notes that mention this concept
+  frequency: number; // How often mentioned
+  createdAt: number;
+  updatedAt: number;
 }
 ```
 
@@ -375,23 +389,23 @@ interface ConceptNode {
 ```typescript
 // src/types/graph.ts
 interface GraphNode {
-  id: string
-  nodeType: 'document' | 'chunk' | 'entity' | 'fact' | 'concept'
-  label: string
-  properties: Record<string, any>
-  embedding: number[] | null // Vector embedding
-  createdAt: number
-  updatedAt: number
+  id: string;
+  nodeType: 'document' | 'chunk' | 'entity' | 'fact' | 'concept';
+  label: string;
+  properties: Record<string, any>;
+  embedding: number[] | null; // Vector embedding
+  createdAt: number;
+  updatedAt: number;
 }
 
 interface GraphEdge {
-  id: string
-  fromNodeId: string
-  toNodeId: string
-  edgeType: string          // "CONTAINS", "LINKS_TO", "IS_A", etc.
-  properties: Record<string, any>
-  weight: number            // Relationship strength
-  createdAt: number
+  id: string;
+  fromNodeId: string;
+  toNodeId: string;
+  edgeType: string; // "CONTAINS", "LINKS_TO", "IS_A", etc.
+  properties: Record<string, any>;
+  weight: number; // Relationship strength
+  createdAt: number;
 }
 ```
 
@@ -424,6 +438,7 @@ interface GraphEdge {
 #### 1. Sidebar (220-400px, resizable)
 
 **Sections**:
+
 ```svelte
 <aside class="sidebar">
   <!-- Top Filters -->
@@ -433,28 +448,28 @@ interface GraphEdge {
     <FilterItem icon="git-branch" label="Changes" />
     <FilterItem icon="pulse" label="Pulse" />
   </SidebarFilters>
-  
+
   <!-- Saved Views -->
   <SidebarViews>
     {#each savedViews as view}
       <ViewItem {view} />
     {/each}
   </SidebarViews>
-  
+
   <!-- Johnny.Decimal Areas -->
   <SidebarAreas>
     <AreaSection area={10} label="Life Admin" />
     <AreaSection area={20} label="Projects" />
     <AreaSection area={30} label="Research" />
   </SidebarAreas>
-  
+
   <!-- Zettelkasten -->
   <SidebarZettelkasten>
     <ZKSection type="permanent" label="Permanent Notes" />
     <ZKSection type="literature" label="Literature Notes" />
     <ZKSection type="structure" label="Structure Notes" />
   </SidebarZettelkasten>
-  
+
   <!-- Folder Tree -->
   <SidebarFolders>
     <FolderTree root={vaultPath} />
@@ -463,6 +478,7 @@ interface GraphEdge {
 ```
 
 **Features**:
+
 - Collapsible sections
 - Drag-and-drop reordering
 - Right-click context menus
@@ -472,12 +488,14 @@ interface GraphEdge {
 #### 2. Note List (220-500px, resizable)
 
 **Modes**:
+
 1. **Filtered List**: Notes matching selected filter
 2. **JD Category View**: Notes in selected JD category
 3. **ZK Graph View**: Connected notes in Zettelkasten
 4. **Search Results**: Full-text search results
 
 **Features**:
+
 ```svelte
 <div class="note-list">
   <!-- Controls -->
@@ -486,21 +504,18 @@ interface GraphEdge {
     <SortDropdown options={sortOptions} />
     <FilterBuilder />
   </div>
-  
+
   <!-- List -->
   <VirtualList items={filteredNotes} itemHeight={80}>
     {#each visibleNotes as note}
-      <NoteItem 
-        {note}
-        selected={note.path === activeNote?.path}
-        on:click={() => openNote(note)}
-      />
+      <NoteItem {note} selected={note.path === activeNote?.path} on:click={() => openNote(note)} />
     {/each}
   </VirtualList>
 </div>
 ```
 
 **NoteItem Display**:
+
 ```
 ┌─────────────────────────────────────────┐
 │ 📄 Machine Learning Basics              │
@@ -513,12 +528,14 @@ interface GraphEdge {
 #### 3. Editor (flex, fills remaining space)
 
 **View Modes**:
+
 1. **Rich Editor**: CodeMirror with syntax highlighting
 2. **Preview**: Rendered markdown
 3. **Raw**: Plain text editing
 4. **Diff**: Git diff view
 
 **Features**:
+
 ```svelte
 <div class="editor">
   <!-- Breadcrumb Bar -->
@@ -531,13 +548,10 @@ interface GraphEdge {
       <WordCount count={wordCount} />
     </div>
   </BreadcrumbBar>
-  
+
   <!-- Editor Content -->
   {#if viewMode === 'rich'}
-    <CodeMirrorEditor 
-      content={note.content}
-      on:change={handleChange}
-    />
+    <CodeMirrorEditor content={note.content} on:change={handleChange} />
   {:else if viewMode === 'preview'}
     <MarkdownPreview content={note.content} />
   {:else if viewMode === 'raw'}
@@ -551,6 +565,7 @@ interface GraphEdge {
 #### 4. Right Panel (200-500px or hidden)
 
 **Panels** (mutually exclusive):
+
 1. **Properties**: Frontmatter, metadata, relationships
 2. **Table of Contents**: H1/H2/H3 hierarchy
 3. **Graph**: Local graph view
@@ -558,6 +573,7 @@ interface GraphEdge {
 5. **Ontology**: Concept hierarchy
 
 **Features**:
+
 ```svelte
 <aside class="right-panel">
   <!-- Panel Switcher -->
@@ -568,7 +584,7 @@ interface GraphEdge {
     <Tab icon="link" label="Backlinks" active={activePanel === 'backlinks'} />
     <Tab icon="brain" label="Ontology" active={activePanel === 'ontology'} />
   </div>
-  
+
   <!-- Panel Content -->
   {#if activePanel === 'properties'}
     <PropertiesPanel {note} />
@@ -591,6 +607,7 @@ interface GraphEdge {
 ### 1. Johnny.Decimal Module
 
 **Files**:
+
 ```
 src/lib/features/johnny-decimal/
 ├── JDNavigator.svelte        # Category browser
@@ -602,12 +619,13 @@ src/lib/features/johnny-decimal/
 ```
 
 **JD Navigator**:
+
 ```svelte
 <!-- JDNavigator.svelte -->
 <script lang="ts">
-  import { jdex } from '$lib/stores/jdex'
-  
-  $: areas = groupByArea($jdex.entries)
+  import { jdex } from '$lib/stores/jdex';
+
+  $: areas = groupByArea($jdex.entries);
 </script>
 
 <div class="jd-navigator">
@@ -626,12 +644,13 @@ src/lib/features/johnny-decimal/
 ```
 
 **JD Auto-Suggest**:
+
 ```svelte
 <!-- JDAutoSuggest.svelte -->
 <script lang="ts">
-  export let category: number
-  
-  $: nextId = suggestNextId(category)
+  export let category: number;
+
+  $: nextId = suggestNextId(category);
 </script>
 
 <div class="jd-auto-suggest">
@@ -644,31 +663,32 @@ src/lib/features/johnny-decimal/
 ```
 
 **JDex Panel**:
+
 ```svelte
 <!-- JDexPanel.svelte -->
 <script lang="ts">
-  import { jdex } from '$lib/stores/jdex'
-  
-  export let jdId: string
-  
-  $: entry = $jdex.entries.find(e => e.id === jdId)
+  import { jdex } from '$lib/stores/jdex';
+
+  export let jdId: string;
+
+  $: entry = $jdex.entries.find((e) => e.id === jdId);
 </script>
 
 <div class="jdex-panel">
   <h3>{entry.id} {entry.title}</h3>
-  
+
   <Field label="Description">
     <EditableText bind:value={entry.description} />
   </Field>
-  
+
   <Field label="Location">
     <EditableText bind:value={entry.location} />
   </Field>
-  
+
   <Field label="Keywords">
     <TagInput bind:tags={entry.keywords} />
   </Field>
-  
+
   <Field label="Relates to">
     <RelationshipInput bind:relations={entry.relatesTo} />
   </Field>
@@ -678,6 +698,7 @@ src/lib/features/johnny-decimal/
 ### 2. Zettelkasten Module
 
 **Files**:
+
 ```
 src/lib/features/zettelkasten/
 ├── ZKNoteCreator.svelte      # Note creation dialog
@@ -689,54 +710,56 @@ src/lib/features/zettelkasten/
 ```
 
 **ZK Note Creator**:
+
 ```svelte
 <!-- ZKNoteCreator.svelte -->
 <script lang="ts">
-  import { zkActions } from '$lib/stores/zkActions'
-  
-  let title = ''
-  let type: ZKType = 'permanent'
-  let tags: string[] = []
-  
+  import { zkActions } from '$lib/stores/zkActions';
+
+  let title = '';
+  let type: ZKType = 'permanent';
+  let tags: string[] = [];
+
   async function createNote() {
-    const zkId = generateZKId() // "202405251912"
+    const zkId = generateZKId(); // "202405251912"
     await zkActions.createNote({
       zkId,
       title,
       type,
       tags,
-    })
+    });
   }
 </script>
 
 <Dialog title="Create Zettelkasten Note">
   <Input label="Title" bind:value={title} />
-  
+
   <Select label="Type" bind:value={type}>
     <option value="permanent">Permanent Note</option>
     <option value="literature">Literature Note</option>
     <option value="fleeting">Fleeting Note</option>
     <option value="structure">Structure Note</option>
   </Select>
-  
+
   <TagInput label="Tags" bind:tags />
-  
+
   <Button on:click={createNote}>Create</Button>
 </Dialog>
 ```
 
 **ZK Backlinks**:
+
 ```svelte
 <!-- ZKBacklinks.svelte -->
 <script lang="ts">
-  export let note: BismuthEntry
-  
-  $: backlinks = getBacklinks(note.path)
+  export let note: BismuthEntry;
+
+  $: backlinks = getBacklinks(note.path);
 </script>
 
 <div class="zk-backlinks">
   <h3>Backlinks ({backlinks.length})</h3>
-  
+
   {#each backlinks as backlink}
     <BacklinkItem {backlink} />
   {/each}
@@ -744,28 +767,26 @@ src/lib/features/zettelkasten/
 ```
 
 **ZK Graph**:
+
 ```svelte
 <!-- ZKGraph.svelte -->
 <script lang="ts">
-  import { ForceGraph } from '@svelte-force-graph'
-  
-  export let note: BismuthEntry
-  
-  $: graphData = buildLocalGraph(note, 2) // 2 hops
+  import { ForceGraph } from '@svelte-force-graph';
+
+  export let note: BismuthEntry;
+
+  $: graphData = buildLocalGraph(note, 2); // 2 hops
 </script>
 
 <div class="zk-graph">
-  <ForceGraph
-    nodes={graphData.nodes}
-    links={graphData.links}
-    on:nodeClick={handleNodeClick}
-  />
+  <ForceGraph nodes={graphData.nodes} links={graphData.links} on:nodeClick={handleNodeClick} />
 </div>
 ```
 
 ### 3. Ontology Module
 
 **Files**:
+
 ```
 src/lib/features/ontology/
 ├── OntologyPanel.svelte      # Concept hierarchy panel
@@ -776,68 +797,63 @@ src/lib/features/ontology/
 ```
 
 **Ontology Panel**:
+
 ```svelte
 <!-- OntologyPanel.svelte -->
 <script lang="ts">
-  export let note: BismuthEntry
-  
-  $: concepts = note.concepts || []
-  $: hierarchy = buildConceptHierarchy(concepts)
+  export let note: BismuthEntry;
+
+  $: concepts = note.concepts || [];
+  $: hierarchy = buildConceptHierarchy(concepts);
 </script>
 
 <div class="ontology-panel">
   <h3>Concepts</h3>
-  
+
   <!-- Concept List -->
   <div class="concepts">
     {#each concepts as concept}
       <ConceptChip {concept} />
     {/each}
   </div>
-  
+
   <!-- Concept Hierarchy -->
   <div class="hierarchy">
     <ConceptTree {hierarchy} />
   </div>
-  
+
   <!-- Actions -->
-  <Button on:click={extractConcepts}>
-    Extract Concepts
-  </Button>
+  <Button on:click={extractConcepts}>Extract Concepts</Button>
 </div>
 ```
 
 **Concept Extractor**:
+
 ```svelte
 <!-- ConceptExtractor.svelte -->
 <script lang="ts">
-  import { ontologyActions } from '$lib/stores/ontologyActions'
-  
-  export let note: BismuthEntry
-  
-  let extracting = false
-  let extractedConcepts: string[] = []
-  
+  import { ontologyActions } from '$lib/stores/ontologyActions';
+
+  export let note: BismuthEntry;
+
+  let extracting = false;
+  let extractedConcepts: string[] = [];
+
   async function extract() {
-    extracting = true
-    extractedConcepts = await ontologyActions.extractConcepts(note.content)
-    extracting = false
+    extracting = true;
+    extractedConcepts = await ontologyActions.extractConcepts(note.content);
+    extracting = false;
   }
 </script>
 
 <div class="concept-extractor">
-  <Button on:click={extract} loading={extracting}>
-    Extract Concepts
-  </Button>
-  
+  <Button on:click={extract} loading={extracting}>Extract Concepts</Button>
+
   {#if extractedConcepts.length > 0}
     <div class="extracted">
       <h4>Extracted Concepts:</h4>
       {#each extractedConcepts as concept}
-        <ConceptChip 
-          {concept}
-          on:add={() => addConcept(concept)}
-        />
+        <ConceptChip {concept} on:add={() => addConcept(concept)} />
       {/each}
     </div>
   {/if}
@@ -847,6 +863,7 @@ src/lib/features/ontology/
 ### 4. GraphRAG Module
 
 **Files**:
+
 ```
 src/lib/features/graphrag/
 ├── GraphRAGSearch.svelte     # Multi-hop search UI
@@ -857,40 +874,35 @@ src/lib/features/graphrag/
 ```
 
 **GraphRAG Search**:
+
 ```svelte
 <!-- GraphRAGSearch.svelte -->
 <script lang="ts">
-  import { graphragActions } from '$lib/stores/graphragActions'
-  
-  let query = ''
-  let strategy: 'vector' | 'graph' | 'hybrid' = 'hybrid'
-  let results: QueryResult | null = null
-  let loading = false
-  
+  import { graphragActions } from '$lib/stores/graphragActions';
+
+  let query = '';
+  let strategy: 'vector' | 'graph' | 'hybrid' = 'hybrid';
+  let results: QueryResult | null = null;
+  let loading = false;
+
   async function search() {
-    loading = true
-    results = await graphragActions.query(query, strategy)
-    loading = false
+    loading = true;
+    results = await graphragActions.query(query, strategy);
+    loading = false;
   }
 </script>
 
 <div class="graphrag-search">
-  <Input 
-    placeholder="Ask a question..."
-    bind:value={query}
-    on:submit={search}
-  />
-  
+  <Input placeholder="Ask a question..." bind:value={query} on:submit={search} />
+
   <Select bind:value={strategy}>
     <option value="vector">Vector Only</option>
     <option value="graph">Graph Only</option>
     <option value="hybrid">Hybrid (Vector + Graph)</option>
   </Select>
-  
-  <Button on:click={search} {loading}>
-    Search
-  </Button>
-  
+
+  <Button on:click={search} {loading}>Search</Button>
+
   {#if results}
     <AnswerPanel {results} />
   {/if}
@@ -900,6 +912,7 @@ src/lib/features/graphrag/
 ### 5. Search Module
 
 **Files**:
+
 ```
 src/lib/features/search/
 ├── SearchPanel.svelte        # Main search UI
@@ -910,27 +923,25 @@ src/lib/features/search/
 ```
 
 **Search Panel**:
+
 ```svelte
 <!-- SearchPanel.svelte -->
 <script lang="ts">
-  import { searchStore } from '$lib/stores/search'
-  
-  let query = ''
-  let filters: Filter[] = []
-  
-  $: results = $searchStore.results
+  import { searchStore } from '$lib/stores/search';
+
+  let query = '';
+  let filters: Filter[] = [];
+
+  $: results = $searchStore.results;
 </script>
 
 <div class="search-panel">
   <!-- Search Input -->
-  <SearchInput 
-    bind:value={query}
-    on:search={() => searchStore.search(query, filters)}
-  />
-  
+  <SearchInput bind:value={query} on:search={() => searchStore.search(query, filters)} />
+
   <!-- Filter Builder -->
   <FilterBuilder bind:filters />
-  
+
   <!-- Results -->
   <SearchResults {results} />
 </div>
@@ -943,89 +954,87 @@ src/lib/features/search/
 ### Svelte Stores Architecture
 
 **Core Stores**:
+
 ```typescript
 // stores/vault.ts
-export const vault = createVaultStore()
+export const vault = createVaultStore();
 
 // stores/entries.ts
-export const entries = derived(vault, $vault => $vault.entries)
+export const entries = derived(vault, ($vault) => $vault.entries);
 
 // stores/selection.ts
-export const selection = createSelectionStore()
+export const selection = createSelectionStore();
 
 // stores/layout.ts
-export const layout = createLayoutStore()
+export const layout = createLayoutStore();
 
 // stores/jdex.ts
-export const jdex = createJDexStore()
+export const jdex = createJDexStore();
 
 // stores/zettelkasten.ts
-export const zettelkasten = createZettelkastenStore()
+export const zettelkasten = createZettelkastenStore();
 
 // stores/ontology.ts
-export const ontology = createOntologyStore()
+export const ontology = createOntologyStore();
 
 // stores/graph.ts
-export const graph = createGraphStore()
+export const graph = createGraphStore();
 
 // stores/search.ts
-export const search = createSearchStore()
+export const search = createSearchStore();
 ```
 
 **Vault Store**:
+
 ```typescript
 // stores/vault.ts
-import { writable, derived } from 'svelte/store'
-import { invoke } from '@tauri-apps/api/tauri'
+import { writable, derived } from 'svelte/store';
+import { invoke } from '@tauri-apps/api/tauri';
 
 function createVaultStore() {
-  const entries = writable<BismuthEntry[]>([])
-  const isLoading = writable(true)
-  const error = writable<Error | null>(null)
-  const currentVaultPath = writable<string | null>(null)
-  
+  const entries = writable<BismuthEntry[]>([]);
+  const isLoading = writable(true);
+  const error = writable<Error | null>(null);
+  const currentVaultPath = writable<string | null>(null);
+
   async function loadVault(vaultPath: string) {
     try {
-      isLoading.set(true)
-      error.set(null)
-      
+      isLoading.set(true);
+      error.set(null);
+
       const result = await invoke<BismuthEntry[]>('scan_vault_cached', {
-        vaultPath
-      })
-      
-      entries.set(result)
-      currentVaultPath.set(vaultPath)
+        vaultPath,
+      });
+
+      entries.set(result);
+      currentVaultPath.set(vaultPath);
     } catch (err) {
-      error.set(err as Error)
+      error.set(err as Error);
     } finally {
-      isLoading.set(false)
+      isLoading.set(false);
     }
   }
-  
+
   async function reloadVault() {
-    const path = get(currentVaultPath)
+    const path = get(currentVaultPath);
     if (path) {
-      await invoke('invalidate_cache', { vaultPath: path })
-      await loadVault(path)
+      await invoke('invalidate_cache', { vaultPath: path });
+      await loadVault(path);
     }
   }
-  
+
   function updateEntry(entry: BismuthEntry) {
-    entries.update(e => 
-      e.map(existing => 
-        existing.path === entry.path ? entry : existing
-      )
-    )
+    entries.update((e) => e.map((existing) => (existing.path === entry.path ? entry : existing)));
   }
-  
+
   function removeEntry(path: string) {
-    entries.update(e => e.filter(existing => existing.path !== path))
+    entries.update((e) => e.filter((existing) => existing.path !== path));
   }
-  
+
   function addEntry(entry: BismuthEntry) {
-    entries.update(e => [...e, entry])
+    entries.update((e) => [...e, entry]);
   }
-  
+
   return {
     entries,
     isLoading,
@@ -1036,85 +1045,77 @@ function createVaultStore() {
     updateEntry,
     removeEntry,
     addEntry,
-  }
+  };
 }
 
-export const vault = createVaultStore()
+export const vault = createVaultStore();
 
 // Derived stores
-export const entriesByType = derived(
-  vault.entries,
-  $entries => groupBy($entries, 'type')
-)
+export const entriesByType = derived(vault.entries, ($entries) => groupBy($entries, 'type'));
 
-export const entriesByJDArea = derived(
-  vault.entries,
-  $entries => groupBy($entries, 'jdArea')
-)
+export const entriesByJDArea = derived(vault.entries, ($entries) => groupBy($entries, 'jdArea'));
 
-export const entriesByZKType = derived(
-  vault.entries,
-  $entries => groupBy($entries, 'zkType')
-)
+export const entriesByZKType = derived(vault.entries, ($entries) => groupBy($entries, 'zkType'));
 ```
 
 **Actions Pattern**:
+
 ```typescript
 // stores/noteActions.ts
-import { get } from 'svelte/store'
-import { invoke } from '@tauri-apps/api/tauri'
-import { vault } from './vault'
+import { get } from 'svelte/store';
+import { invoke } from '@tauri-apps/api/tauri';
+import { vault } from './vault';
 
 export const noteActions = {
   async createNote(title: string, options?: CreateNoteOptions) {
     // Disk-first write
-    const path = await invoke<string>('create_note', { 
-      title, 
-      ...options 
-    })
-    
+    const path = await invoke<string>('create_note', {
+      title,
+      ...options,
+    });
+
     // Get fresh entry from disk
-    const newEntry = await invoke<BismuthEntry>('get_entry', { path })
-    
+    const newEntry = await invoke<BismuthEntry>('get_entry', { path });
+
     // Update state
-    vault.addEntry(newEntry)
-    
-    return newEntry
+    vault.addEntry(newEntry);
+
+    return newEntry;
   },
-  
+
   async deleteNote(path: string) {
     // Disk-first write
-    await invoke('delete_note', { path })
-    
+    await invoke('delete_note', { path });
+
     // Update state
-    vault.removeEntry(path)
+    vault.removeEntry(path);
   },
-  
+
   async updateFrontmatter(path: string, key: string, value: any) {
     // Disk-first write
-    await invoke('update_frontmatter', { path, key, value })
-    
+    await invoke('update_frontmatter', { path, key, value });
+
     // Get fresh entry from disk
-    const updatedEntry = await invoke<BismuthEntry>('get_entry', { path })
-    
+    const updatedEntry = await invoke<BismuthEntry>('get_entry', { path });
+
     // Update state
-    vault.updateEntry(updatedEntry)
+    vault.updateEntry(updatedEntry);
   },
-  
+
   async moveNote(oldPath: string, newPath: string) {
     // Disk-first write
-    await invoke('move_note', { oldPath, newPath })
-    
+    await invoke('move_note', { oldPath, newPath });
+
     // Get fresh entry from disk
-    const movedEntry = await invoke<BismuthEntry>('get_entry', { 
-      path: newPath 
-    })
-    
+    const movedEntry = await invoke<BismuthEntry>('get_entry', {
+      path: newPath,
+    });
+
     // Update state
-    vault.removeEntry(oldPath)
-    vault.addEntry(movedEntry)
+    vault.removeEntry(oldPath);
+    vault.addEntry(movedEntry);
   },
-}
+};
 ```
 
 ---
@@ -1132,41 +1133,42 @@ export const APP_STORAGE_KEYS = {
   viewMode: 'bismuth:view-mode',
   editorFont: 'bismuth:editor-font',
   editorFontSize: 'bismuth:editor-font-size',
-  
+
   // Colors
   tagColors: 'bismuth:tag-color-overrides',
   statusColors: 'bismuth:status-color-overrides',
   jdAreaColors: 'bismuth:jd-area-colors',
   zkTypeColors: 'bismuth:zk-type-colors',
-  
+
   // Layout
   sidebarCollapsed: 'bismuth:sidebar-collapsed',
   sidebarWidth: 'bismuth:sidebar-width',
   noteListWidth: 'bismuth:note-list-width',
   inspectorWidth: 'bismuth:inspector-width',
-  
+
   // Preferences
   sortPreferences: 'bismuth:sort-preferences',
   filterPreferences: 'bismuth:filter-preferences',
-  
+
   // Features
   jdEnabled: 'bismuth:jd-enabled',
   zkEnabled: 'bismuth:zk-enabled',
   ontologyEnabled: 'bismuth:ontology-enabled',
   graphragEnabled: 'bismuth:graphrag-enabled',
-  
+
   // Onboarding
   welcomeDismissed: 'bismuth:welcome-dismissed',
   tutorialCompleted: 'bismuth:tutorial-completed',
-  
+
   // Migration
   configMigrated: 'bismuth:config-migrated-to-vault',
-} as const
+} as const;
 ```
 
 ### Vault Configuration Files
 
 **Johnny.Decimal Config** (`.bismuth/config/johnny-decimal.yml`):
+
 ```yaml
 enabled: true
 auto_suggest: true
@@ -1188,10 +1190,11 @@ areas:
 ```
 
 **Zettelkasten Config** (`.bismuth/config/zettelkasten.yml`):
+
 ```yaml
 enabled: true
 auto_link: true
-id_format: timestamp  # or uuid
+id_format: timestamp # or uuid
 templates:
   permanent: templates/permanent-note.md
   literature: templates/literature-note.md
@@ -1200,6 +1203,7 @@ templates:
 ```
 
 **Ontology Config** (`.bismuth/config/ontology.yml`):
+
 ```yaml
 enabled: true
 auto_extract: true
@@ -1211,6 +1215,7 @@ concept_sources:
 ```
 
 **GraphRAG Config** (`.bismuth/config/graphrag.yml`):
+
 ```yaml
 enabled: true
 embedding_model: all-MiniLM-L6-v2
@@ -1228,6 +1233,7 @@ graph_search_depth: 2
 ### Saved Views
 
 **View Definition** (`.bismuth/views/active-projects.yml`):
+
 ```yaml
 name: Active Projects
 description: All active projects sorted by modified date
@@ -1248,18 +1254,19 @@ groupBy: jdCategory
 ```
 
 **View Component**:
+
 ```svelte
 <!-- SavedView.svelte -->
 <script lang="ts">
-  export let view: SavedView
-  
-  $: filteredNotes = applyView(view, $vault.entries)
+  export let view: SavedView;
+
+  $: filteredNotes = applyView(view, $vault.entries);
 </script>
 
 <div class="saved-view">
   <h2>{view.name}</h2>
   <p>{view.description}</p>
-  
+
   <NoteList notes={filteredNotes} />
 </div>
 ```
@@ -1267,8 +1274,9 @@ groupBy: jdCategory
 ### Filter Builder
 
 **Filter Types**:
+
 ```typescript
-type FilterOperator = 
+type FilterOperator =
   | 'equals'
   | 'not_equals'
   | 'contains'
@@ -1278,38 +1286,36 @@ type FilterOperator =
   | 'greater_than'
   | 'less_than'
   | 'in'
-  | 'not_in'
+  | 'not_in';
 
 interface Filter {
-  field: string
-  operator: FilterOperator
-  value: any
+  field: string;
+  operator: FilterOperator;
+  value: any;
 }
 
 interface FilterGroup {
-  operator: 'AND' | 'OR'
-  filters: (Filter | FilterGroup)[]
+  operator: 'AND' | 'OR';
+  filters: (Filter | FilterGroup)[];
 }
 ```
 
 **Filter Builder Component**:
+
 ```svelte
 <!-- FilterBuilder.svelte -->
 <script lang="ts">
   let filterGroup: FilterGroup = {
     operator: 'AND',
-    filters: []
-  }
-  
+    filters: [],
+  };
+
   function addFilter() {
-    filterGroup.filters = [
-      ...filterGroup.filters,
-      { field: '', operator: 'equals', value: '' }
-    ]
+    filterGroup.filters = [...filterGroup.filters, { field: '', operator: 'equals', value: '' }];
   }
-  
+
   function removeFilter(index: number) {
-    filterGroup.filters = filterGroup.filters.filter((_, i) => i !== index)
+    filterGroup.filters = filterGroup.filters.filter((_, i) => i !== index);
   }
 </script>
 
@@ -1318,15 +1324,15 @@ interface FilterGroup {
     <option value="AND">Match all (AND)</option>
     <option value="OR">Match any (OR)</option>
   </Select>
-  
+
   {#each filterGroup.filters as filter, index}
-    <FilterRow 
+    <FilterRow
       {filter}
       on:change={(e) => updateFilter(index, e.detail)}
       on:remove={() => removeFilter(index)}
     />
   {/each}
-  
+
   <Button on:click={addFilter}>Add Filter</Button>
 </div>
 ```
@@ -1340,9 +1346,9 @@ interface FilterGroup {
 ```svelte
 <!-- ui/button/Button.svelte -->
 <script lang="ts">
-  import { cn } from '$lib/utils'
-  import { cva, type VariantProps } from 'class-variance-authority'
-  
+  import { cn } from '$lib/utils';
+  import { cva, type VariantProps } from 'class-variance-authority';
+
   const buttonVariants = cva(
     'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
     {
@@ -1367,18 +1373,18 @@ interface FilterGroup {
         size: 'default',
       },
     }
-  )
-  
-  type Variant = VariantProps<typeof buttonVariants>['variant']
-  type Size = VariantProps<typeof buttonVariants>['size']
-  
-  export let variant: Variant = 'default'
-  export let size: Size = 'default'
-  export let disabled = false
-  export let loading = false
-  
-  let className = ''
-  export { className as class }
+  );
+
+  type Variant = VariantProps<typeof buttonVariants>['variant'];
+  type Size = VariantProps<typeof buttonVariants>['size'];
+
+  export let variant: Variant = 'default';
+  export let size: Size = 'default';
+  export let disabled = false;
+  export let loading = false;
+
+  let className = '';
+  export { className as class };
 </script>
 
 <button
@@ -1397,21 +1403,25 @@ interface FilterGroup {
 ### Common Button Patterns
 
 **1. Primary Action**:
+
 ```svelte
 <Button>Create Note</Button>
 ```
 
 **2. Secondary Action**:
+
 ```svelte
 <Button variant="outline">Cancel</Button>
 ```
 
 **3. Destructive Action**:
+
 ```svelte
 <Button variant="destructive">Delete Note</Button>
 ```
 
 **4. Icon Button**:
+
 ```svelte
 <Button variant="ghost" size="icon">
   <Icon name="plus" />
@@ -1419,6 +1429,7 @@ interface FilterGroup {
 ```
 
 **5. Button with Icon**:
+
 ```svelte
 <Button>
   <Icon name="plus" class="mr-2 h-4 w-4" />
@@ -1427,10 +1438,9 @@ interface FilterGroup {
 ```
 
 **6. Loading Button**:
+
 ```svelte
-<Button loading={isCreating}>
-  Create Note
-</Button>
+<Button loading={isCreating}>Create Note</Button>
 ```
 
 ---
@@ -1440,12 +1450,14 @@ interface FilterGroup {
 ### Phase 1: Core Infrastructure (Weeks 1-2)
 
 **Week 1: Layout & Data Model**
+
 - ✅ Four-panel layout with resizable panels
 - ✅ BismuthEntry type definition
 - ✅ Vault store with Svelte stores
 - ✅ Tauri commands for vault operations
 
 **Week 2: Component Library**
+
 - ✅ shadcn/ui Svelte components (Button, Input, Dialog, etc.)
 - ✅ NoteItem, FolderTree, BreadcrumbBar
 - ✅ ResizeHandle, VirtualList
@@ -1454,21 +1466,25 @@ interface FilterGroup {
 ### Phase 2: MVP Features (Weeks 3-6)
 
 **Week 3: Vault Management (US1)**
+
 - ✅ Vault creation, opening, closing
 - ✅ Vault switcher
 - ✅ Vault settings
 
 **Week 4: Wikilinks (US2)**
+
 - ✅ Wikilink parsing
 - ✅ Wikilink autocomplete
 - ✅ Backlinks panel
 
 **Week 5: Search (US7)**
+
 - ✅ Full-text search with Tantivy
 - ✅ Search panel UI
 - ✅ Filter builder
 
 **Week 6: Graph View (US8)**
+
 - ✅ Local graph visualization
 - ✅ Global graph view
 - ✅ Graph filtering
@@ -1476,21 +1492,25 @@ interface FilterGroup {
 ### Phase 3: Johnny.Decimal (Weeks 7-10)
 
 **Week 7: JD Core**
+
 - ✅ JD structure validation
 - ✅ 10-folder limit enforcement
 - ✅ JD ID parsing and validation
 
 **Week 8: JD Navigator**
+
 - ✅ Category browser
 - ✅ Area sections in sidebar
 - ✅ JD badge components
 
 **Week 9: JDex**
+
 - ✅ JDex index creation
 - ✅ JDex panel UI
 - ✅ Metadata fields (Description, Location, Keywords)
 
 **Week 10: JD Auto-Suggest**
+
 - ✅ Next ID suggestion
 - ✅ Folder creation dialog
 - ✅ Auto-categorization
@@ -1498,21 +1518,25 @@ interface FilterGroup {
 ### Phase 4: Zettelkasten (Weeks 11-14)
 
 **Week 11: ZK Core**
+
 - ✅ ZK ID generation (timestamp)
 - ✅ ZK note types (permanent, literature, fleeting, structure)
 - ✅ ZK templates
 
 **Week 12: ZK Backlinks**
+
 - ✅ Backlink detection
 - ✅ Backlinks panel
 - ✅ Bidirectional linking
 
 **Week 13: ZK Graph**
+
 - ✅ Local graph view
 - ✅ Graph navigation
 - ✅ Graph filtering
 
 **Week 14: ZK Structure Notes**
+
 - ✅ MOC creation
 - ✅ Structure note templates
 - ✅ Hierarchical organization
@@ -1520,21 +1544,25 @@ interface FilterGroup {
 ### Phase 5: Ontology (Weeks 15-18)
 
 **Week 15: Concept Extraction**
+
 - ✅ NLP-based concept extraction
 - ✅ Concept frequency analysis
 - ✅ Concept normalization
 
 **Week 16: Subsumption**
+
 - ✅ Subsumption relationship detection
 - ✅ Concept hierarchy building
 - ✅ Subsumption editor
 
 **Week 17: Ontology Panel**
+
 - ✅ Concept hierarchy visualization
 - ✅ Concept graph view
 - ✅ Concept recommendations
 
 **Week 18: Semantic Search**
+
 - ✅ Concept-based search
 - ✅ Semantic similarity
 - ✅ Concept filtering
@@ -1542,21 +1570,25 @@ interface FilterGroup {
 ### Phase 6: GraphRAG (Weeks 19-22)
 
 **Week 19: Graph Construction**
+
 - ✅ Hierarchical lexical graph
 - ✅ Document/chunk/entity nodes
 - ✅ Relationship extraction
 
 **Week 20: Vector Search**
+
 - ✅ Embedding generation
 - ✅ Vector similarity search
 - ✅ Hybrid search (vector + graph)
 
 **Week 21: Multi-Hop Queries**
+
 - ✅ Graph traversal (BFS, DFS)
 - ✅ Path finding
 - ✅ Multi-hop retrieval
 
 **Week 22: Answer Synthesis**
+
 - ✅ LLM integration
 - ✅ Answer generation
 - ✅ Citation tracking
@@ -1564,24 +1596,28 @@ interface FilterGroup {
 ### Phase 7: Polish & Optimization (Weeks 23-26)
 
 **Week 23: Performance**
+
 - ✅ Virtual scrolling
 - ✅ Debounced operations
 - ✅ Web Workers
 - ✅ Lazy loading
 
 **Week 24: Accessibility**
+
 - ✅ Keyboard navigation
 - ✅ Screen reader support
 - ✅ Focus management
 - ✅ ARIA labels
 
 **Week 25: Testing**
+
 - ✅ Unit tests (Vitest)
 - ✅ E2E tests (Playwright)
 - ✅ Integration tests
 - ✅ Performance tests
 
 **Week 26: Documentation**
+
 - ✅ User guide
 - ✅ Developer docs
 - ✅ API reference
@@ -1598,11 +1634,12 @@ This architecture proposal integrates:
 ✅ **Zettelkasten**: Conceptual connections with atomic notes and wikilinks  
 ✅ **Lightweight Ontologies**: Semantic intelligence with concept extraction  
 ✅ **GraphRAG**: Multi-hop retrieval with knowledge graph + vector search  
-✅ **Posner Workflow**: Research asset management with capture, metadata, retrieval  
+✅ **Posner Workflow**: Research asset management with capture, metadata, retrieval
 
 **Result**: A next-generation PKM system that combines the best of all methodologies into a cohesive, production-ready application.
 
 **Next Steps**:
+
 1. Review and approve architecture
 2. Set up project structure
 3. Implement Phase 1 (Core Infrastructure)

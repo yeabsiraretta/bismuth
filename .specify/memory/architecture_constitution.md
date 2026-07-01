@@ -41,32 +41,32 @@ Dependencies MUST flow downward only:
 
 ### Component Boundaries
 
-| Directory | Responsibility | MUST NOT |
-|-----------|---------------|----------|
-| `components/sidebar/` | Sidebar panels, tab bars | Contain canvas logic |
-| `components/note/` | Markdown editor, preview | Import canvas stores |
-| `components/canvas/` | Canvas workspace, tools | Import note/editor stores |
-| `components/editor/` | CodeMirror wrapper, extensions | Have direct vault knowledge |
-| `components/vault/` | File tree, toolbar | Import canvas internals |
-| `components/overlays/` | Modals, palettes, settings | (May cross-reference stores) |
-| `components/icons/` | Icon components | Have state or side effects |
+| Directory              | Responsibility                 | MUST NOT                     |
+| ---------------------- | ------------------------------ | ---------------------------- |
+| `components/sidebar/`  | Sidebar panels, tab bars       | Contain canvas logic         |
+| `components/note/`     | Markdown editor, preview       | Import canvas stores         |
+| `components/canvas/`   | Canvas workspace, tools        | Import note/editor stores    |
+| `components/editor/`   | CodeMirror wrapper, extensions | Have direct vault knowledge  |
+| `components/vault/`    | File tree, toolbar             | Import canvas internals      |
+| `components/overlays/` | Modals, palettes, settings     | (May cross-reference stores) |
+| `components/icons/`    | Icon components                | Have state or side effects   |
 
 ### Store Boundaries
 
-| Store | Owns | MUST NOT Import |
-|-------|------|-----------------|
-| `stores/vault/` | Notes, active note, vault state | Canvas or layout stores |
-| `stores/canvas/` | Canvas elements, tools, components | Vault or note content |
-| `stores/layout/` | Sidebar, tabs, widths | Domain-specific stores |
-| `stores/theme/` | Theme preference | Anything except types |
+| Store            | Owns                               | MUST NOT Import         |
+| ---------------- | ---------------------------------- | ----------------------- |
+| `stores/vault/`  | Notes, active note, vault state    | Canvas or layout stores |
+| `stores/canvas/` | Canvas elements, tools, components | Vault or note content   |
+| `stores/layout/` | Sidebar, tabs, widths              | Domain-specific stores  |
+| `stores/theme/`  | Theme preference                   | Anything except types   |
 
 ### Service Boundaries
 
-| Service | Responsibility |
-|---------|---------------|
-| `services/vault/` | Tauri IPC for vault/note CRUD |
-| `services/canvas/` | Tauri IPC for component persistence |
-| `services/design-docs/` | Design document generation |
+| Service                 | Responsibility                      |
+| ----------------------- | ----------------------------------- |
+| `services/vault/`       | Tauri IPC for vault/note CRUD       |
+| `services/canvas/`      | Tauri IPC for component persistence |
+| `services/design-docs/` | Design document generation          |
 
 ---
 
@@ -90,15 +90,15 @@ Dependencies MUST flow downward only:
 
 Each layer MUST live in its own directory. Layers MUST NOT be mixed:
 
-| Layer | Directory | Contains | MUST NOT Contain |
-|-------|-----------|----------|-----------------|
-| Services | `services/` | IPC/API adapters, external communication | UI logic, store imports, components |
-| Stores | `stores/` | Global reactive state (writables, derived) | Orchestration logic, side effects beyond store updates |
-| Types | `types/` | Interfaces, type definitions, enums | Runtime code, imports with side effects |
-| Constants | `config/` | Shared config, route defs, static data | Logic, functions, class instances |
-| Components | `components/` | Svelte UI components | Direct IPC calls, business orchestration |
-| Utils | `utils/` | Pure helper functions | Store/service imports, side effects |
-| Tests | `__tests__/` or co-located `.spec.ts` | Test files only | Production logic |
+| Layer      | Directory                             | Contains                                   | MUST NOT Contain                                       |
+| ---------- | ------------------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| Services   | `services/`                           | IPC/API adapters, external communication   | UI logic, store imports, components                    |
+| Stores     | `stores/`                             | Global reactive state (writables, derived) | Orchestration logic, side effects beyond store updates |
+| Types      | `types/`                              | Interfaces, type definitions, enums        | Runtime code, imports with side effects                |
+| Constants  | `config/`                             | Shared config, route defs, static data     | Logic, functions, class instances                      |
+| Components | `components/`                         | Svelte UI components                       | Direct IPC calls, business orchestration               |
+| Utils      | `utils/`                              | Pure helper functions                      | Store/service imports, side effects                    |
+| Tests      | `__tests__/` or co-located `.spec.ts` | Test files only                            | Production logic                                       |
 
 ### Feature-Scoped vs Global Logic
 
@@ -123,6 +123,7 @@ it MUST be organized as a feature module in `src/lib/features/<feature-name>/`:
 `stores/vault/`, `stores/layout/`, `stores/settings/`, `stores/theme/`, `services/vault/`, `utils/`, `types/`, `config/`, `components/ui/`
 
 **Feature eligibility triggers**:
+
 1. Code exists in 2+ layer directories (e.g., stores + services + components)
 2. Feature is NOT consumed as infrastructure by 5+ other features
 3. Feature has a clear single-domain boundary
@@ -210,13 +211,13 @@ When a file exceeds size limits:
 
 The Rust backend preserves physical layer separation:
 
-| Layer | Directory | Contains |
-|-------|-----------|----------|
+| Layer    | Directory   | Contains                                 |
+| -------- | ----------- | ---------------------------------------- |
 | Commands | `commands/` | Tauri IPC handlers (`#[tauri::command]`) |
-| Services | `services/` | Business logic, orchestration |
-| Models | `models/` | Data structures, serialization types |
-| Domains | `domains/` | Thin facade re-exports (no logic) |
-| Utils | `utils/` | Pure shared helpers |
+| Services | `services/` | Business logic, orchestration            |
+| Models   | `models/`   | Data structures, serialization types     |
+| Domains  | `domains/`  | Thin facade re-exports (no logic)        |
+| Utils    | `utils/`    | Pure shared helpers                      |
 
 ### Domain Facade Pattern (`src-tauri/src/domains/`)
 
@@ -305,12 +306,12 @@ When a `.rs` file exceeds size limits:
 
 ## Violation Severity
 
-| Level | Action | Examples |
-|-------|--------|----------|
-| P0 (Blocking) | Stop, require fix | Store imports component; component calls `invoke()` directly |
-| P1 (High) | Create refactor task | File at 380 lines; missing barrel re-export; barrel using absolute internal paths |
-| P2 (Medium) | Track in tech debt | Hardcoded hex without token; missing return type; component calls `.set()` directly on store |
-| P3 (Low) | Note in review | Naming drift; unused import; `export *` in feature root barrel |
+| Level         | Action               | Examples                                                                                     |
+| ------------- | -------------------- | -------------------------------------------------------------------------------------------- |
+| P0 (Blocking) | Stop, require fix    | Store imports component; component calls `invoke()` directly                                 |
+| P1 (High)     | Create refactor task | File at 380 lines; missing barrel re-export; barrel using absolute internal paths            |
+| P2 (Medium)   | Track in tech debt   | Hardcoded hex without token; missing return type; component calls `.set()` directly on store |
+| P3 (Low)      | Note in review       | Naming drift; unused import; `export *` in feature root barrel                               |
 
 ---
 
@@ -387,11 +388,12 @@ export function selectClip(clipId: string, trackId: string): void {
 
 // WRONG — component mutates store directly
 import { selectedClipId, selectedTrackId } from '../stores/musicStore';
-selectedClipId.set(clip.id);           // P2 violation
-selectedTrackId.set(clip.trackId);     // P2 violation
+selectedClipId.set(clip.id); // P2 violation
+selectedTrackId.set(clip.trackId); // P2 violation
 ```
 
 **Exceptions**:
+
 - A component MAY call `.set()` on a store that is purely component-local state accidentally
   exported (discouraged — prefer component-local `let` variables for local state).
 - Feature-internal simple state (e.g., `isLoading`) used by exactly one component MAY use `.set()`
@@ -424,4 +426,3 @@ Before any tagged release, verify:
 9. Sourcemaps disabled in production (`sourcemap: isDev` in `vite.config.ts`)
 10. `sideEffects: false` in `package.json` (enables full tree-shaking)
 11. All new `components/ui/` components have a co-located `.contract.md` file
-

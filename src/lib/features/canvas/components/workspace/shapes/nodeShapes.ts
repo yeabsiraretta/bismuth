@@ -6,7 +6,13 @@
 import type { NodeShape } from '@/features/canvas/types/elements';
 
 /** Traces a pill (fully rounded) shape path. */
-export function pillPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function pillPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const r = Math.min(w, h) / 2;
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -18,7 +24,13 @@ export function pillPath(ctx: CanvasRenderingContext2D, x: number, y: number, w:
 }
 
 /** Traces a diamond (decision) shape path. */
-export function diamondPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function diamondPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const cx = x + w / 2;
   const cy = y + h / 2;
   ctx.beginPath();
@@ -30,7 +42,13 @@ export function diamondPath(ctx: CanvasRenderingContext2D, x: number, y: number,
 }
 
 /** Traces a parallelogram (I/O) shape path. */
-export function parallelogramPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function parallelogramPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const skew = w * 0.2;
   ctx.beginPath();
   ctx.moveTo(x + skew, y);
@@ -41,7 +59,13 @@ export function parallelogramPath(ctx: CanvasRenderingContext2D, x: number, y: n
 }
 
 /** Traces a hexagon shape path. */
-export function hexagonPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function hexagonPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const indent = w * 0.2;
   const cy = y + h / 2;
   ctx.beginPath();
@@ -55,7 +79,13 @@ export function hexagonPath(ctx: CanvasRenderingContext2D, x: number, y: number,
 }
 
 /** Traces a stadium (rounded rect with semicircle ends, wider than pill). */
-export function stadiumPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function stadiumPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const r = h / 2;
   ctx.beginPath();
   ctx.moveTo(x + r, y);
@@ -67,7 +97,13 @@ export function stadiumPath(ctx: CanvasRenderingContext2D, x: number, y: number,
 }
 
 /** Traces a cylinder (database) shape path — body + top ellipse. */
-export function cylinderPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function cylinderPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const ellipseH = h * 0.15;
 
   // Body
@@ -81,7 +117,13 @@ export function cylinderPath(ctx: CanvasRenderingContext2D, x: number, y: number
 }
 
 /** Traces the top ellipse cap of a cylinder (drawn separately for fill layering). */
-export function cylinderTopPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function cylinderTopPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const ellipseH = h * 0.15;
   ctx.beginPath();
   ctx.ellipse(x + w / 2, y + ellipseH, w / 2, ellipseH, 0, 0, Math.PI * 2);
@@ -89,29 +131,43 @@ export function cylinderTopPath(ctx: CanvasRenderingContext2D, x: number, y: num
 }
 
 /** Traces a document (wavy bottom) shape path. */
-export function documentPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function documentPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const waveH = h * 0.1;
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x + w, y);
   ctx.lineTo(x + w, y + h - waveH);
   // Wavy bottom edge
-  ctx.bezierCurveTo(
-    x + w * 0.75, y + h - waveH * 3,
-    x + w * 0.25, y + h + waveH,
-    x, y + h - waveH,
-  );
+  ctx.bezierCurveTo(x + w * 0.75, y + h - waveH * 3, x + w * 0.25, y + h + waveH, x, y + h - waveH);
   ctx.closePath();
 }
 
 /** Traces a predefined process (double-walled rectangle) outer path. */
-export function predefinedProcessPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function predefinedProcessPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   ctx.beginPath();
   ctx.rect(x, y, w, h);
 }
 
 /** Draws the inner vertical dividers for a predefined process shape. */
-export function predefinedProcessDividers(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number): void {
+export function predefinedProcessDividers(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+): void {
   const inset = w * 0.1;
   ctx.beginPath();
   ctx.moveTo(x + inset, y);
@@ -128,8 +184,11 @@ export function predefinedProcessDividers(ctx: CanvasRenderingContext2D, x: numb
 export function traceNodeShape(
   ctx: CanvasRenderingContext2D,
   shape: NodeShape | undefined,
-  x: number, y: number, w: number, h: number,
-  radius: number,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  radius: number
 ): void {
   switch (shape) {
     case 'pill':
@@ -171,13 +230,24 @@ export function traceNodeShape(
 }
 
 /** Standalone rounded rect path tracer (avoids importing from canvasShapeDrawing). */
-function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundedRectPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
   r = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
-  ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-  ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
-  ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
   ctx.closePath();
 }

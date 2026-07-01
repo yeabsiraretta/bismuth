@@ -4,7 +4,11 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { generateDocuments } from '@/features/canvas/services/documentGenerator';
-import { handleGetDesignDocument, handlePutDesignDocument, handleListDesignDocuments } from './documentTools';
+import {
+  handleGetDesignDocument,
+  handlePutDesignDocument,
+  handleListDesignDocuments,
+} from './documentTools';
 import type { CanvasDocument, CanvasVariable, Page } from '@/features/canvas/types';
 import type { DesignDocumentAny } from '@/types/design-documents';
 
@@ -22,13 +26,15 @@ vi.mock('@/services/design-docs', () => ({
   listDocuments: vi.fn((type?: string) => {
     const docs = Array.from(mockStore.values());
     const filtered = type ? docs.filter((d) => d.document_type === type) : docs;
-    return Promise.resolve(filtered.map((d) => ({
-      document_type: d.document_type,
-      document_id: d.document_id,
-      name: d.name,
-      version: d.version,
-      modified_at: d.modified_at || '',
-    })));
+    return Promise.resolve(
+      filtered.map((d) => ({
+        document_type: d.document_type,
+        document_id: d.document_id,
+        name: d.name,
+        version: d.version,
+        modified_at: d.modified_at || '',
+      }))
+    );
   }),
 }));
 
@@ -47,8 +53,22 @@ function mockCanvasDoc(): CanvasDocument {
   ];
 
   const variables: CanvasVariable[] = [
-    { id: 'v1', name: 'primary', type: 'color', collection: 'Colors', values: { Light: '#3b82f6', Dark: '#60a5fa' }, scopes: ['fill'] },
-    { id: 'v2', name: 'spacing-m', type: 'number', collection: 'Spacing', values: { default: 16 }, scopes: ['spacing'] },
+    {
+      id: 'v1',
+      name: 'primary',
+      type: 'color',
+      collection: 'Colors',
+      values: { Light: '#3b82f6', Dark: '#60a5fa' },
+      scopes: ['fill'],
+    },
+    {
+      id: 'v2',
+      name: 'spacing-m',
+      type: 'number',
+      collection: 'Spacing',
+      values: { default: 16 },
+      scopes: ['spacing'],
+    },
   ];
 
   return {

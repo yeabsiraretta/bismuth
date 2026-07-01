@@ -25,7 +25,7 @@ Jolly Nature
     expect(slot?.nature).toBe('Jolly');
     expect(slot?.evs.atk).toBe(252);
     expect(slot?.evs.spe).toBe(252);
-    expect(slot?.moves.filter(m => m !== null)).toHaveLength(4);
+    expect(slot?.moves.filter((m) => m !== null)).toHaveLength(4);
   });
 
   it('returns error for empty input', async () => {
@@ -91,9 +91,20 @@ describe('Pokemon feature — Damage Calculator', () => {
       baseStats: { hp: 95, atk: 70, def: 73, spa: 85, spd: 90, spe: 60 },
       types: ['Fairy'] as [PokemonType],
     };
-    const move: Move = { id: 'earthquake', name: 'Earthquake', type: 'Ground', power: 100, category: 'physical', accuracy: 100 };
+    const move: Move = {
+      id: 'earthquake',
+      name: 'Earthquake',
+      type: 'Ground',
+      power: 100,
+      category: 'physical',
+      accuracy: 100,
+    };
 
-    const result = calculateDamage(attacker as unknown as TeamSlot, defender as unknown as TeamSlot, move);
+    const result = calculateDamage(
+      attacker as unknown as TeamSlot,
+      defender as unknown as TeamSlot,
+      move
+    );
     expect(result.min).toBeGreaterThan(0);
     expect(result.max).toBeGreaterThanOrEqual(result.min);
     expect(result.rolls).toHaveLength(16);
@@ -119,19 +130,33 @@ describe('Pokemon feature — Damage Calculator', () => {
       baseStats: { hp: 45, atk: 30, def: 35, spa: 100, spd: 35, spe: 80 },
       types: ['Ghost'] as [PokemonType],
     };
-    const move: Move = { id: 'hyper-voice', name: 'Hyper Voice', type: 'Normal', power: 90, category: 'special', accuracy: 100 };
+    const move: Move = {
+      id: 'hyper-voice',
+      name: 'Hyper Voice',
+      type: 'Normal',
+      power: 90,
+      category: 'special',
+      accuracy: 100,
+    };
 
-    const result = calculateDamage(attacker as unknown as TeamSlot, defender as unknown as TeamSlot, move);
+    const result = calculateDamage(
+      attacker as unknown as TeamSlot,
+      defender as unknown as TeamSlot,
+      move
+    );
     expect(result.min).toBe(0);
     expect(result.max).toBe(0);
-    expect(result.rolls.every(r => r === 0)).toBe(true);
+    expect(result.rolls.every((r) => r === 0)).toBe(true);
   });
 });
 
 // T25 — Coverage logic verification via type chart
 describe('Type coverage logic (T25)', () => {
   it('Fire moves hit Grass, Ice, Steel, Bug super-effectively (2x)', async () => {
-    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<string, Record<string, number>>;
+    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<
+      string,
+      Record<string, number>
+    >;
     const fireTargets = Object.entries(typeChart['Fire'] ?? {})
       .filter(([, v]) => v >= 2)
       .map(([k]) => k);
@@ -142,12 +167,18 @@ describe('Type coverage logic (T25)', () => {
   });
 
   it('Fire moves do not super-effectively hit Water', async () => {
-    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<string, Record<string, number>>;
+    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<
+      string,
+      Record<string, number>
+    >;
     expect(typeChart['Fire']['Water']).toBeLessThan(2);
   });
 
   it('Water hits Fire/Rock/Ground super-effectively', async () => {
-    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<string, Record<string, number>>;
+    const typeChart = (await import('@/config/pokemon/gen9-types.json')).default as Record<
+      string,
+      Record<string, number>
+    >;
     expect(typeChart['Water']['Fire']).toBeGreaterThanOrEqual(2);
     expect(typeChart['Water']['Rock']).toBeGreaterThanOrEqual(2);
     expect(typeChart['Water']['Ground']).toBeGreaterThanOrEqual(2);

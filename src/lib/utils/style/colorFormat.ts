@@ -17,8 +17,16 @@ export type ColorFormat =
   | 'hsl-split'
   | 'hsl-split-decimal';
 
-interface RGB { r: number; g: number; b: number; }
-interface HSL { h: number; s: number; l: number; }
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+interface HSL {
+  h: number;
+  s: number;
+  l: number;
+}
 
 /** Parse a hex color string to RGB components (0-255) */
 export function hexToRgb(hex: string): RGB | null {
@@ -48,7 +56,7 @@ export function formatColor(
   hex: string,
   format: ColorFormat,
   varName: string,
-  opacity?: number,
+  opacity?: number
 ): Record<string, string> {
   const rgb = hexToRgb(hex);
   if (!rgb) return { [`--${varName}`]: hex };
@@ -60,7 +68,10 @@ export function formatColor(
   switch (format) {
     case 'hex': {
       if (hasOpacity) {
-        const alphaHex = Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase();
+        const alphaHex = Math.round(a * 255)
+          .toString(16)
+          .padStart(2, '0')
+          .toUpperCase();
         return { [`--${varName}`]: `${hex}${alphaHex}` };
       }
       return { [`--${varName}`]: hex };
@@ -157,7 +168,7 @@ export function generateGradientVars(
   toHex: string,
   step: number,
   format: ColorFormat,
-  pad?: number,
+  pad?: number
 ): Record<string, string> {
   const vars: Record<string, string> = {};
 

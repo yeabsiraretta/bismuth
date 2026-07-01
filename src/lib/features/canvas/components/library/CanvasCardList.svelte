@@ -30,7 +30,13 @@
       <span class="col-elements">Elements</span>
     </div>
     {#each canvases as canvas (canvas.id)}
-      <div class="list-row" on:click={() => onOpen?.({ id: canvas.id })} on:keydown={(e) => e.key === 'Enter' && onOpen?.({ id: canvas.id })} role="button" tabindex="0">
+      <div
+        class="list-row"
+        on:click={() => onOpen?.({ id: canvas.id })}
+        on:keydown={(e) => e.key === 'Enter' && onOpen?.({ id: canvas.id })}
+        role="button"
+        tabindex="0"
+      >
         <div class="col-name">
           <div class="row-thumbnail">
             <Icon name="layout" size={16} color="var(--text-faint)" />
@@ -54,7 +60,6 @@
 {/if}
 
 <style>
-
   .list-table {
     display: flex;
     flex-direction: column;
@@ -147,7 +152,9 @@
     color: var(--text-faint);
     cursor: pointer;
     opacity: 0;
-    transition: opacity var(--transition-fast), color var(--transition-fast);
+    transition:
+      opacity var(--transition-fast),
+      color var(--transition-fast);
   }
 
   .list-row:hover .row-delete {

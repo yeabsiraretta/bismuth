@@ -16,12 +16,7 @@ export {
 } from './extensions/vimExtension';
 
 // Services — Parser
-export {
-  parseVimrc,
-  expandLeader,
-  extractLeader,
-  extractSetOptions,
-} from './services/vimrcParser';
+export { parseVimrc, expandLeader, extractLeader, extractSetOptions } from './services/vimrcParser';
 export type {
   VimrcCommand,
   VimrcCommandType,

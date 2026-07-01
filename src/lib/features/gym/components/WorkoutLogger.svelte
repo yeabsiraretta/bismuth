@@ -42,7 +42,7 @@
   }
 
   function getExerciseName(exerciseId: string): string {
-    return exercises.find(e => e.id === exerciseId)?.name ?? exerciseId;
+    return exercises.find((e) => e.id === exerciseId)?.name ?? exerciseId;
   }
 
   function formatElapsed(startMs: number | null): string {
@@ -120,11 +120,7 @@
   {:else}
     <div class="session-content">
       {#each Object.entries(sessionSets) as [exerciseId, sets]}
-        <section
-          class="exercise-group"
-          aria-label={getExerciseName(exerciseId)}
-          role="group"
-        >
+        <section class="exercise-group" aria-label={getExerciseName(exerciseId)} role="group">
           <h4 class="exercise-title">{getExerciseName(exerciseId)}</h4>
           {#each sets as set, idx}
             <div class="set-row">
@@ -151,8 +147,8 @@
           <button
             class="add-set-btn"
             on:click={() => handleAddSet(exerciseId)}
-            aria-label="Add set for {getExerciseName(exerciseId)}"
-          >+ Add Set</button>
+            aria-label="Add set for {getExerciseName(exerciseId)}">+ Add Set</button
+          >
         </section>
       {/each}
 
@@ -174,55 +170,134 @@
         aria-label="Session notes"
       ></textarea>
 
-      <button
-        class="finish-btn"
-        on:click={handleFinishSession}
-        aria-label="Finish workout session"
-      >Finish Workout</button>
+      <button class="finish-btn" on:click={handleFinishSession} aria-label="Finish workout session"
+        >Finish Workout</button
+      >
     </div>
   {/if}
 </div>
 
 <style>
-  .workout-logger { display: flex; flex-direction: column; gap: var(--spacing-m); padding: var(--spacing-m); height: 100%; overflow-y: auto; }
-  .session-header { display: flex; justify-content: space-between; align-items: center; }
-  .date-header { font-size: var(--font-ui-medium); font-weight: 600; color: var(--text-normal); margin: 0; }
-  .elapsed-timer { font-size: var(--font-ui-small); color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .loading-state, .empty-state { color: var(--text-muted); text-align: center; padding: var(--spacing-xl); }
-  .start-btn {
-    margin-top: var(--spacing-m); padding: var(--spacing-s) var(--spacing-l);
-    background: var(--interactive-accent); color: var(--text-on-accent);
-    border: none; border-radius: var(--radius-m); cursor: pointer; font-size: var(--font-ui-small);
+  .workout-logger {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+    padding: var(--spacing-m);
+    height: 100%;
+    overflow-y: auto;
   }
-  .session-content { display: flex; flex-direction: column; gap: var(--spacing-m); }
-  .exercise-group { background: var(--background-secondary); border-radius: var(--radius-m); padding: var(--spacing-m); }
-  .exercise-title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); margin: 0 0 var(--spacing-s); }
-  .set-row { display: flex; align-items: center; gap: var(--spacing-s); margin-bottom: var(--spacing-xs); }
-  .set-number { width: 20px; color: var(--text-muted); font-size: var(--font-ui-small); text-align: center; }
+  .session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .date-header {
+    font-size: var(--font-ui-medium);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0;
+  }
+  .elapsed-timer {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .loading-state,
+  .empty-state {
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-xl);
+  }
+  .start-btn {
+    margin-top: var(--spacing-m);
+    padding: var(--spacing-s) var(--spacing-l);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-m);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+  }
+  .session-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+  }
+  .exercise-group {
+    background: var(--background-secondary);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-m);
+  }
+  .exercise-title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0 0 var(--spacing-s);
+  }
+  .set-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    margin-bottom: var(--spacing-xs);
+  }
+  .set-number {
+    width: 20px;
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+  }
   .set-input {
-    width: 80px; padding: var(--spacing-xs) var(--spacing-s);
-    background: var(--background-primary); border: 1px solid var(--background-modifier-border);
-    border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-small);
+    width: 80px;
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
   }
   .add-set-btn {
-    margin-top: var(--spacing-xs); padding: 2px var(--spacing-s); background: transparent;
-    border: 1px dashed var(--background-modifier-border); border-radius: var(--radius-s);
-    color: var(--text-muted); cursor: pointer; font-size: var(--font-smallest);
+    margin-top: var(--spacing-xs);
+    padding: 2px var(--spacing-s);
+    background: transparent;
+    border: 1px dashed var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: var(--font-smallest);
   }
   .add-exercise-btn {
-    padding: var(--spacing-s); background: transparent;
-    border: 1px dashed var(--interactive-accent); border-radius: var(--radius-m);
-    color: var(--interactive-accent); cursor: pointer;
+    padding: var(--spacing-s);
+    background: transparent;
+    border: 1px dashed var(--interactive-accent);
+    border-radius: var(--radius-m);
+    color: var(--interactive-accent);
+    cursor: pointer;
   }
-  .picker-container { border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); padding: var(--spacing-m); max-height: 300px; overflow-y: auto; }
+  .picker-container {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-m);
+    max-height: 300px;
+    overflow-y: auto;
+  }
   .session-notes {
-    width: 100%; padding: var(--spacing-s); background: var(--background-secondary);
-    border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s);
-    color: var(--text-normal); font-size: var(--font-ui-small); resize: vertical;
+    width: 100%;
+    padding: var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+    resize: vertical;
   }
   .finish-btn {
-    padding: var(--spacing-s) var(--spacing-l); background: var(--interactive-accent);
-    color: var(--text-on-accent); border: none; border-radius: var(--radius-m);
-    cursor: pointer; font-size: var(--font-ui-small); align-self: flex-start;
+    padding: var(--spacing-s) var(--spacing-l);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-m);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    align-self: flex-start;
   }
 </style>

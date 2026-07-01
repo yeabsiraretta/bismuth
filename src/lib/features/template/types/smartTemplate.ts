@@ -8,10 +8,10 @@
 // ─── Template sources ──────────────────────────────────────────────────────────
 
 export type TemplateSource =
-  | 'folder'        // From configured template folders
-  | 'tagged'        // Notes with `smart_template: true` frontmatter
-  | 'builtin'       // Built-in default templates
-  | 'vault';        // Obsidian Templates folder fallback
+  | 'folder' // From configured template folders
+  | 'tagged' // Notes with `smart_template: true` frontmatter
+  | 'builtin' // Built-in default templates
+  | 'vault'; // Obsidian Templates folder fallback
 
 export interface SmartTemplate {
   name: string;

@@ -62,9 +62,7 @@ test.describe('Capture Note Interaction', () => {
       await page.waitForTimeout(500);
 
       // Look for note cards or list items
-      const cards = page.locator(
-        '[data-testid="capture-note-card"], .capture-note, .inbox-item'
-      );
+      const cards = page.locator('[data-testid="capture-note-card"], .capture-note, .inbox-item');
       const count = await cards.count();
       if (count > 0) {
         // Click first card

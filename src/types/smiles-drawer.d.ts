@@ -5,11 +5,16 @@
 declare module 'smiles-drawer' {
   export class SmiDrawer {
     constructor(options?: Record<string, unknown>);
-    draw(tree: unknown, target: HTMLCanvasElement | SVGElement, theme?: string, isInDark?: boolean): void;
+    draw(
+      tree: unknown,
+      target: HTMLCanvasElement | SVGElement,
+      theme?: string,
+      isInDark?: boolean
+    ): void;
   }
   export function parse(
     smiles: string,
     successCallback: (tree: unknown) => void,
-    errorCallback: (error: unknown) => void,
+    errorCallback: (error: unknown) => void
   ): void;
 }

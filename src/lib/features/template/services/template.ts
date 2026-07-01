@@ -68,9 +68,9 @@ export function buildTemplateContext(
     title,
     'file.path': targetPath,
     'file.title': title,
-    'date': now.toISOString().slice(0, 10),
-    'time': now.toTimeString().slice(0, 5),
-    'datetime': now.toISOString().slice(0, 19).replace('T', ' '),
+    date: now.toISOString().slice(0, 10),
+    time: now.toTimeString().slice(0, 5),
+    datetime: now.toISOString().slice(0, 19).replace('T', ' '),
     ...extra,
   };
 }

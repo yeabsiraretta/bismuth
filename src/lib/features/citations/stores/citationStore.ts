@@ -22,13 +22,20 @@ const STORAGE_KEY = 'bismuth-citation-config';
 function loadConfig(): CitationConfig {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? { ...DEFAULT_CITATION_CONFIG, ...JSON.parse(stored) } : { ...DEFAULT_CITATION_CONFIG };
-  } catch { return { ...DEFAULT_CITATION_CONFIG }; }
+    return stored
+      ? { ...DEFAULT_CITATION_CONFIG, ...JSON.parse(stored) }
+      : { ...DEFAULT_CITATION_CONFIG };
+  } catch {
+    return { ...DEFAULT_CITATION_CONFIG };
+  }
 }
 
 function persistConfig(config: CitationConfig): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); }
-  catch { /* non-fatal */ }
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  } catch {
+    /* non-fatal */
+  }
 }
 
 // ─── Stores ─────────────────────────────────────────────────────────────────
@@ -43,18 +50,15 @@ export const citationSearchQuery = writable('');
 export const entryCount = derived(citationLibrary, ($lib) => $lib?.entries.length ?? 0);
 
 /** Derived: filtered entries based on search query. */
-export const filteredEntries = derived(
-  [citationLibrary, citationSearchQuery],
-  ([$lib, $query]) => {
-    if (!$lib) return [];
-    if (!$query.trim()) return $lib.entries;
-    const q = $query.toLowerCase().trim();
-    return $lib.entries.filter((entry) => {
-      const text = buildSearchText(entry);
-      return q.split(/\s+/).every((term) => text.includes(term));
-    });
-  },
-);
+export const filteredEntries = derived([citationLibrary, citationSearchQuery], ([$lib, $query]) => {
+  if (!$lib) return [];
+  if (!$query.trim()) return $lib.entries;
+  const q = $query.toLowerCase().trim();
+  return $lib.entries.filter((entry) => {
+    const text = buildSearchText(entry);
+    return q.split(/\s+/).every((term) => text.includes(term));
+  });
+});
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 

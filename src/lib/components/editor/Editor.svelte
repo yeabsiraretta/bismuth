@@ -1,6 +1,13 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { EditorView, lineNumbers, drawSelection, dropCursor, keymap, scrollPastEnd } from '@codemirror/view';
+  import {
+    EditorView,
+    lineNumbers,
+    drawSelection,
+    dropCursor,
+    keymap,
+    scrollPastEnd,
+  } from '@codemirror/view';
   import { EditorState, Compartment, type Extension } from '@codemirror/state';
   import { indentUnit } from '@codemirror/language';
   import { buildEditorTheme } from '@/components/editor/extensions/editorTheme';
@@ -9,20 +16,32 @@
   import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
   import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
   import { wikilinkExtension } from '@/components/editor/extensions/wikilink';
-  import { livePreviewPlugin, livePreviewTheme } from '@/components/editor/extensions/live-preview/livePreview';
+  import {
+    livePreviewPlugin,
+    livePreviewTheme,
+  } from '@/components/editor/extensions/live-preview/livePreview';
   import { formattingKeymap } from '@/components/editor/extensions/formattingKeymap';
   import { markdownAutoPair } from '@/components/editor/extensions/markdownAutoPair';
   import { loadDeferredExtensions } from '@/components/editor/extensions/lazyExtensions';
-  import { highlightClickPlugin, highlightClickTheme } from '@/components/editor/extensions/highlightClick';
+  import {
+    highlightClickPlugin,
+    highlightClickTheme,
+  } from '@/components/editor/extensions/highlightClick';
   import { pasteUrlIntoSelection } from '@/components/editor/extensions/pasteUrlIntoSelection';
   import {
     typewriterMode,
-    typewriterFacet, zenFacet,
+    typewriterFacet,
+    zenFacet,
   } from '@/components/editor/extensions/typewriterMode';
   import { zoomExtension, setZoomRange, zoomIn, zoomOnClick } from '@/features/zoom';
   import { editorSettings } from '@/features/settings';
   import { get } from 'svelte/store';
-  import { buildVimExtension, reconfigureVim, loadAndApplyVimrc, vimModeLabel } from '@/features/vim';
+  import {
+    buildVimExtension,
+    reconfigureVim,
+    loadAndApplyVimrc,
+    vimModeLabel,
+  } from '@/features/vim';
   import { registerStatusItem, removeStatusItem } from '@/stores/status/status';
   import { buildKeyshotsKeymap, getKeyshotsConfig, onPresetChange } from '@/features/keyshots';
   import { log } from '@/utils/logger';
@@ -61,9 +80,22 @@
 
   $: livePreviewEnabled = livePreview;
   $: if (mounted && view && typeof livePreviewEnabled === 'boolean') {
-    log.debug('Editor: reconfiguring live preview', { livePreviewEnabled, mounted, hasView: !!view });
+    log.debug('Editor: reconfiguring live preview', {
+      livePreviewEnabled,
+      mounted,
+      hasView: !!view,
+    });
     try {
-      const extensions = livePreviewEnabled ? [livePreviewPlugin, livePreviewTheme, codeStylerTheme, flashcardWidgetTheme, highlightClickPlugin, highlightClickTheme] : [];
+      const extensions = livePreviewEnabled
+        ? [
+            livePreviewPlugin,
+            livePreviewTheme,
+            codeStylerTheme,
+            flashcardWidgetTheme,
+            highlightClickPlugin,
+            highlightClickTheme,
+          ]
+        : [];
       view.dispatch({
         effects: livePreviewCompartment.reconfigure(extensions),
       });
@@ -101,7 +133,11 @@
           onContentChange?.(newContent);
         }
       }),
-      livePreviewCompartment.of(livePreview ? [livePreviewPlugin, livePreviewTheme, highlightClickPlugin, highlightClickTheme] : []),
+      livePreviewCompartment.of(
+        livePreview
+          ? [livePreviewPlugin, livePreviewTheme, highlightClickPlugin, highlightClickTheme]
+          : []
+      ),
       readOnlyCompartment.of(EditorState.readOnly.of(readonly)),
       themeCompartment.of(buildEditorTheme(es)),
       spellCheckCompartment.of(
@@ -112,12 +148,12 @@
     baseExtensions.push(
       wordWrapCompartment.of(es.wordWrap ? EditorView.lineWrapping : []),
       closeBracketsCompartment.of(
-        es.closeBrackets ? [closeBrackets(), keymap.of(closeBracketsKeymap)] as Extension[] : []
+        es.closeBrackets ? ([closeBrackets(), keymap.of(closeBracketsKeymap)] as Extension[]) : []
       ),
       indentCompartment.of([
         indentUnit.of(es.insertSpaces ? ' '.repeat(es.tabSize) : '	'),
         EditorState.tabSize.of(es.tabSize),
-      ]),
+      ])
     );
 
     baseExtensions.push(scrollPastEnd());
@@ -131,17 +167,21 @@
 
     // Typewriter scroll + zen mode (hot-reconfigurable via compartments)
     baseExtensions.push(
-      typewriterCompartment.of(typewriterFacet.of({
-        enabled: es.typewriterEnabled,
-        offset: es.typewriterOffset,
-        onlyKeyboard: es.typewriterOnlyKeyboard,
-      })),
-      zenCompartment.of(zenFacet.of({
-        enabled: es.zenModeEnabled,
-        visibleLines: es.zenModeVisibleLines,
-        dimOpacity: es.zenModeDimOpacity,
-      })),
-      ...typewriterMode(),
+      typewriterCompartment.of(
+        typewriterFacet.of({
+          enabled: es.typewriterEnabled,
+          offset: es.typewriterOffset,
+          onlyKeyboard: es.typewriterOnlyKeyboard,
+        })
+      ),
+      zenCompartment.of(
+        zenFacet.of({
+          enabled: es.zenModeEnabled,
+          visibleLines: es.zenModeVisibleLines,
+          dimOpacity: es.zenModeDimOpacity,
+        })
+      ),
+      ...typewriterMode()
     );
 
     // Vim mode (hot-reconfigurable via vimCompartment inside buildVimExtension)
@@ -149,13 +189,15 @@
     lastVimEnabled = es.vimMode;
 
     // Zoom: heading/list zoom with keyboard shortcuts + bullet click
-    baseExtensions.push(...zoomExtension(
-      (target) => {
-        const doc = view?.state.doc.toString() ?? '';
-        zoomIn(doc, target);
-      },
-      () => get(zoomOnClick),
-    ));
+    baseExtensions.push(
+      ...zoomExtension(
+        (target) => {
+          const doc = view?.state.doc.toString() ?? '';
+          zoomIn(doc, target);
+        },
+        () => get(zoomOnClick)
+      )
+    );
 
     return baseExtensions;
   }
@@ -170,19 +212,25 @@
           spellCheckCompartment.reconfigure(
             EditorView.contentAttributes.of({ spellcheck: String(es.spellCheck) })
           ),
-          typewriterCompartment.reconfigure(typewriterFacet.of({
-            enabled: es.typewriterEnabled,
-            offset: es.typewriterOffset,
-            onlyKeyboard: es.typewriterOnlyKeyboard,
-          })),
-          zenCompartment.reconfigure(zenFacet.of({
-            enabled: es.zenModeEnabled,
-            visibleLines: es.zenModeVisibleLines,
-            dimOpacity: es.zenModeDimOpacity,
-          })),
+          typewriterCompartment.reconfigure(
+            typewriterFacet.of({
+              enabled: es.typewriterEnabled,
+              offset: es.typewriterOffset,
+              onlyKeyboard: es.typewriterOnlyKeyboard,
+            })
+          ),
+          zenCompartment.reconfigure(
+            zenFacet.of({
+              enabled: es.zenModeEnabled,
+              visibleLines: es.zenModeVisibleLines,
+              dimOpacity: es.zenModeDimOpacity,
+            })
+          ),
           wordWrapCompartment.reconfigure(es.wordWrap ? EditorView.lineWrapping : []),
           closeBracketsCompartment.reconfigure(
-            es.closeBrackets ? [closeBrackets(), keymap.of(closeBracketsKeymap)] as Extension[] : []
+            es.closeBrackets
+              ? ([closeBrackets(), keymap.of(closeBracketsKeymap)] as Extension[])
+              : []
           ),
           indentCompartment.reconfigure([
             indentUnit.of(es.insertSpaces ? ' '.repeat(es.tabSize) : '\t'),
@@ -195,7 +243,7 @@
         reconfigureVim(view, es.vimMode);
         lastVimEnabled = es.vimMode;
         if (es.vimMode && es.vimrcPath) {
-          loadAndApplyVimrc(es.vimrcPath).catch(err =>
+          loadAndApplyVimrc(es.vimrcPath).catch((err) =>
             log.warn('Editor: vimrc reload failed', { error: String(err) })
           );
         }
@@ -225,7 +273,10 @@
     const doc = view.state.doc;
     const lineNum = Math.min(line + 1, doc.lines);
     const pos = doc.line(lineNum).from;
-    view.dispatch({ selection: { anchor: pos }, effects: EditorView.scrollIntoView(pos, { y: 'start', yMargin: 50 }) });
+    view.dispatch({
+      selection: { anchor: pos },
+      effects: EditorView.scrollIntoView(pos, { y: 'start', yMargin: 50 }),
+    });
     view.focus();
   }
 
@@ -237,7 +288,7 @@
     log.info('Editor: mounted successfully', { livePreview, mounted });
     const es = $editorSettings;
     if (es.vimMode && es.vimrcPath) {
-      loadAndApplyVimrc(es.vimrcPath).catch(err =>
+      loadAndApplyVimrc(es.vimrcPath).catch((err) =>
         log.warn('Editor: vimrc load failed on mount', { error: String(err) })
       );
     }
@@ -252,17 +303,20 @@
     });
 
     // Load deferred feature extensions after initial paint
-    const scheduleDeferred = typeof requestIdleCallback === 'function'
-      ? requestIdleCallback
-      : (cb: () => void) => setTimeout(cb, 16);
+    const scheduleDeferred =
+      typeof requestIdleCallback === 'function'
+        ? requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 16);
 
     scheduleDeferred(() => {
       if (!view) return;
-      loadDeferredExtensions({ view }).then((exts) => {
-        if (view && exts.length > 0) {
-          view.dispatch({ effects: deferredCompartment.reconfigure(exts) });
-        }
-      }).catch((err) => log.warn('Editor: deferred extension load failed', { error: String(err) }));
+      loadDeferredExtensions({ view })
+        .then((exts) => {
+          if (view && exts.length > 0) {
+            view.dispatch({ effects: deferredCompartment.reconfigure(exts) });
+          }
+        })
+        .catch((err) => log.warn('Editor: deferred extension load failed', { error: String(err) }));
     });
   });
 
@@ -273,13 +327,17 @@
     view = null;
   });
 
-  export function getContent(): string { return view?.state.doc.toString() ?? content; }
+  export function getContent(): string {
+    return view?.state.doc.toString() ?? content;
+  }
   export function getSelectedText(): string {
     if (!view) return '';
     const { from, to } = view.state.selection.main;
     return from === to ? '' : view.state.sliceDoc(from, to);
   }
-  export function focus() { view?.focus(); }
+  export function focus() {
+    view?.focus();
+  }
 
   export function applyZoomRange(range: { from: number; to: number } | null) {
     if (!view) return;
@@ -294,7 +352,10 @@
     const replacement = selected ? `${prefix}${selected}${suffix}` : `${prefix}text${suffix}`;
     view.dispatch({
       changes: { from, to, insert: replacement },
-      selection: { anchor: from + prefix.length, head: from + prefix.length + (selected || 'text').length },
+      selection: {
+        anchor: from + prefix.length,
+        head: from + prefix.length + (selected || 'text').length,
+      },
     });
     view.focus();
   }
@@ -303,7 +364,17 @@
 <div class="editor-container" bind:this={editorElement}></div>
 
 <style>
-  .editor-container { width: 100%; height: 100%; overflow: auto; background: var(--background-primary); color: var(--text-normal); }
-  .editor-container :global(.cm-editor) { height: 100%; }
-  .editor-container :global(.cm-scroller) { overflow: auto; }
+  .editor-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: var(--background-primary);
+    color: var(--text-normal);
+  }
+  .editor-container :global(.cm-editor) {
+    height: 100%;
+  }
+  .editor-container :global(.cm-scroller) {
+    overflow: auto;
+  }
 </style>

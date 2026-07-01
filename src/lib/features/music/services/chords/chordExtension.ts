@@ -4,10 +4,7 @@
  *
  * Follows the same ViewPlugin + WidgetType pattern as abcExtension.ts.
  */
-import {
-  Decoration,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate, EditorView } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { findChordBlocks } from './chordParser';
@@ -21,7 +18,7 @@ import type { ChordInstrument } from '../../types/chords';
  */
 export function chordSheetExtension(
   defaultInstrument: ChordInstrument = 'guitar',
-  blockLanguage: string = 'chords',
+  blockLanguage: string = 'chords'
 ) {
   return ViewPlugin.fromClass(
     class {
@@ -43,20 +40,13 @@ export function chordSheetExtension(
         const blocks = findChordBlocks(text, blockLanguage);
 
         for (const block of blocks) {
-          const widget = new ChordSheetWidget(
-            block,
-            block.instrument ?? defaultInstrument,
-          );
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          const widget = new ChordSheetWidget(block, block.instrument ?? defaultInstrument);
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         this.decorations = builder.finish();
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 }

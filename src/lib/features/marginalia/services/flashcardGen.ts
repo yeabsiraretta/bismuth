@@ -9,12 +9,9 @@ import { parseMarginNotes, lineMainText } from './marginParser';
 // ─── Extraction ──────────────────────────────────────────────────────────────
 
 /** Extract flashcard entries from content based on blur-tagged margin notes */
-export function extractFlashcards(
-  content: string,
-  filePath: string,
-): FlashcardEntry[] {
+export function extractFlashcards(content: string, filePath: string): FlashcardEntry[] {
   const notes = parseMarginNotes(content, filePath);
-  const blurNotes = notes.filter(n => n.isBlur);
+  const blurNotes = notes.filter((n) => n.isBlur);
   const lines = content.split('\n');
   const cards: FlashcardEntry[] = [];
 
@@ -53,7 +50,7 @@ export function formatFlashcardsSection(cards: FlashcardEntry[]): string {
 
 /** Format flashcards in Anki-compatible format (tab-separated) */
 export function formatAnkiExport(cards: FlashcardEntry[]): string {
-  return cards.map(c => `${c.question}\t${c.answer}`).join('\n');
+  return cards.map((c) => `${c.question}\t${c.answer}`).join('\n');
 }
 
 // ─── Content injection ───────────────────────────────────────────────────────
@@ -78,7 +75,10 @@ export function injectFlashcards(content: string, filePath: string): string {
 
 // ─── Stats ───────────────────────────────────────────────────────────────────
 
-export function flashcardStats(content: string, filePath: string): {
+export function flashcardStats(
+  content: string,
+  filePath: string
+): {
   total: number;
   blurCount: number;
   cardCount: number;
@@ -87,7 +87,7 @@ export function flashcardStats(content: string, filePath: string): {
   const cards = extractFlashcards(content, filePath);
   return {
     total: notes.length,
-    blurCount: notes.filter(n => n.isBlur).length,
+    blurCount: notes.filter((n) => n.isBlur).length,
     cardCount: cards.length,
   };
 }

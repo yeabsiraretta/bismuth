@@ -25,23 +25,28 @@ function loadConfig(): ExtractorConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_EXTRACTOR_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_EXTRACTOR_CONFIG };
 }
 
 function persistConfig(config: ExtractorConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch (e) { log.warn('extractor: config persist failed', { error: String(e) }); }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch (e) {
+    log.warn('extractor: config persist failed', { error: String(e) });
+  }
 }
 
 const configStore = writable<ExtractorConfig>(loadConfig());
 configStore.subscribe(persistConfig);
 
-export const extractorConfig = derived(configStore, $c => $c);
-export const extractorEnabled = derived(configStore, $c => $c.enabled);
+export const extractorConfig = derived(configStore, ($c) => $c);
+export const extractorEnabled = derived(configStore, ($c) => $c.enabled);
 
 export function updateExtractorConfig(partial: Partial<ExtractorConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetExtractorConfig(): void {
@@ -68,7 +73,7 @@ export function startSchedule(exportAll: () => Promise<void>): void {
 
   const ms = config.frequencyMinutes * 60 * 1000;
   scheduleTimer = setInterval(() => {
-    exportAll().catch(e => log.warn('Scheduled export failed', { error: String(e) }));
+    exportAll().catch((e) => log.warn('Scheduled export failed', { error: String(e) }));
   }, ms);
 
   log.info('Metadata export schedule started', { frequencyMinutes: config.frequencyMinutes });
@@ -84,7 +89,9 @@ export function stopSchedule(): void {
 // ─── Export runners ────────────────────────────────────────────────────────────
 
 interface VaultAccessors {
-  scanNotes: () => Promise<Array<{ path: string; title: string; content: string; frontmatter: Record<string, unknown> }>>;
+  scanNotes: () => Promise<
+    Array<{ path: string; title: string; content: string; frontmatter: Record<string, unknown> }>
+  >;
   listFolders: () => Promise<string[]>;
   listNonMdFiles: () => Promise<Array<{ name: string; relativePath: string }>>;
   listCanvasFiles: () => Promise<Array<{ name: string; relativePath: string }>>;

@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { selectedStyle, updateStyle, deleteStyle } from '@/features/canvas/stores/design/styleLibrary';
+  import {
+    selectedStyle,
+    updateStyle,
+    deleteStyle,
+  } from '@/features/canvas/stores/design/styleLibrary';
   import { openConfirm } from '@/stores/confirm';
   import StyleSwatch from './StyleSwatch.svelte';
 
@@ -17,7 +21,7 @@
 
   function handleSave() {
     if (!$selectedStyle) return;
-    const props: Record<string, unknown> = { ...($selectedStyle.properties) };
+    const props: Record<string, unknown> = { ...$selectedStyle.properties };
     props.color = editColor;
     if ($selectedStyle.type === 'stroke') props.width = editWidth;
     props.opacity = editOpacity;
@@ -31,7 +35,9 @@
       message: `Delete style "${$selectedStyle.name}"?`,
       confirmLabel: 'Delete',
       variant: 'danger',
-      onConfirm: () => { deleteStyle($selectedStyle!.id); },
+      onConfirm: () => {
+        deleteStyle($selectedStyle!.id);
+      },
     });
   }
 </script>
@@ -77,19 +83,89 @@
 </div>
 
 <style>
-  .style-editor { display: flex; flex-direction: column; gap: var(--spacing-sm); padding: var(--spacing-sm); }
-  .editor-header { display: flex; align-items: center; gap: var(--spacing-sm); }
-  .name-input { flex: 1; padding: var(--spacing-xs); border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 500; }
-  .editor-fields { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .field { display: flex; align-items: center; gap: var(--spacing-sm); font-size: var(--font-size-sm); }
-  .field span:first-child { min-width: 60px; color: var(--text-muted); }
-  .field input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0; cursor: pointer; }
-  .field input[type="number"] { width: 60px; padding: 2px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
-  .field input[type="range"] { flex: 1; }
-  .value { font-size: var(--font-size-xs); min-width: 32px; text-align: right; }
-  .editor-info { font-size: var(--font-size-sm); color: var(--text-muted); }
-  .editor-actions { display: flex; gap: var(--spacing-xs); }
-  .save-btn { flex: 1; padding: var(--spacing-xs); background: var(--accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-sm); cursor: pointer; }
-  .delete-btn { padding: var(--spacing-xs) var(--spacing-sm); background: none; border: 1px solid var(--text-error); color: var(--text-error); border-radius: var(--radius-sm); cursor: pointer; }
-  .empty { color: var(--text-muted); text-align: center; padding: var(--spacing-lg); }
+  .style-editor {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+  .editor-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+  .name-input {
+    flex: 1;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+  }
+  .editor-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+  .field span:first-child {
+    min-width: 60px;
+    color: var(--text-muted);
+  }
+  .field input[type='color'] {
+    width: 32px;
+    height: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0;
+    cursor: pointer;
+  }
+  .field input[type='number'] {
+    width: 60px;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .field input[type='range'] {
+    flex: 1;
+  }
+  .value {
+    font-size: var(--font-size-xs);
+    min-width: 32px;
+    text-align: right;
+  }
+  .editor-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+  .editor-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+  }
+  .save-btn {
+    flex: 1;
+    padding: var(--spacing-xs);
+    background: var(--accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .delete-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: none;
+    border: 1px solid var(--text-error);
+    color: var(--text-error);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
 </style>

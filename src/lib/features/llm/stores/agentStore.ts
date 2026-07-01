@@ -37,7 +37,7 @@ export const isLoading: Writable<boolean> = writable(false);
  * Prunes to MAX_HISTORY when the list exceeds that limit.
  */
 export function addMessage(msg: AgentMessage): void {
-  conversationHistory.update(history => {
+  conversationHistory.update((history) => {
     const next = [...history, msg];
     return next.length > MAX_HISTORY ? next.slice(next.length - MAX_HISTORY) : next;
   });
@@ -67,7 +67,7 @@ export async function loadPendingChanges(vaultRoot: string): Promise<void> {
  * Adds a proposed change to the local pending changes list.
  */
 export function addProposedChange(change: AgentProposedChange): void {
-  pendingChanges.update(changes => [...changes, change]);
+  pendingChanges.update((changes) => [...changes, change]);
 }
 
 /**
@@ -75,7 +75,7 @@ export function addProposedChange(change: AgentProposedChange): void {
  */
 export async function approveChange(vaultRoot: string, changeId: string): Promise<void> {
   await ipcCall<void>('apply_change', { vaultRoot, changeId });
-  pendingChanges.update(changes => changes.filter(c => c.changeId !== changeId));
+  pendingChanges.update((changes) => changes.filter((c) => c.changeId !== changeId));
   log.info('Change approved', { changeId });
 }
 
@@ -84,7 +84,7 @@ export async function approveChange(vaultRoot: string, changeId: string): Promis
  */
 export async function rejectChange(vaultRoot: string, changeId: string): Promise<void> {
   await ipcCall<void>('reject_change', { vaultRoot, changeId });
-  pendingChanges.update(changes => changes.filter(c => c.changeId !== changeId));
+  pendingChanges.update((changes) => changes.filter((c) => c.changeId !== changeId));
   log.info('Change rejected', { changeId });
 }
 
@@ -95,26 +95,26 @@ export function setLoading(value: boolean): void {
 
 /** Updates the active LLM provider, resetting the model to a default. */
 export function setProvider(provider: LlmConfig['provider'], model?: string): void {
-  llmConfig.update(c => ({ ...c, provider, model: model ?? c.model }));
+  llmConfig.update((c) => ({ ...c, provider, model: model ?? c.model }));
   log.debug('LLM provider changed', { provider });
 }
 
 /** Updates the active model for the current provider. */
 export function setModel(model: string): void {
-  llmConfig.update(c => ({ ...c, model }));
+  llmConfig.update((c) => ({ ...c, model }));
   log.debug('LLM model changed', { model });
 }
 
 /** Updates the Ollama server base URL. */
 export function setOllamaUrl(url: string): void {
   const normalized = url.replace(/\/+$/, '') || DEFAULT_OLLAMA_URL;
-  llmConfig.update(c => ({ ...c, ollamaUrl: normalized }));
+  llmConfig.update((c) => ({ ...c, ollamaUrl: normalized }));
   log.debug('Ollama URL changed', { url: normalized });
 }
 
 /** Updates the max tokens for Claude API responses. */
 export function setMaxTokens(tokens: number): void {
   const clamped = Math.max(256, Math.min(tokens, 128000));
-  llmConfig.update(c => ({ ...c, maxTokens: clamped }));
+  llmConfig.update((c) => ({ ...c, maxTokens: clamped }));
   log.debug('LLM max tokens changed', { maxTokens: clamped });
 }

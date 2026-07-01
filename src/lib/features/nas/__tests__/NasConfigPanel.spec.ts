@@ -21,15 +21,22 @@ const _nasConfigStore = writable<{
   username: string;
   lastSync: string | null;
   offlineModeEnabled: boolean;
-} | null>(null); void _nasConfigStore;
+} | null>(null);
+void _nasConfigStore;
 
-const _syncStatusStore = writable<string>('disabled'); void _syncStatusStore;
-const _lastSyncAtStore = writable<string | null>(null); void _lastSyncAtStore;
+const _syncStatusStore = writable<string>('disabled');
+void _syncStatusStore;
+const _lastSyncAtStore = writable<string | null>(null);
+void _lastSyncAtStore;
 
-const _mockConnectNas = vi.fn(); void _mockConnectNas;
-const _mockDisconnectNas = vi.fn(); void _mockDisconnectNas;
-const _mockSyncNow = vi.fn(); void _mockSyncNow;
-const _mockUpdateConfig = vi.fn(); void _mockUpdateConfig;
+const _mockConnectNas = vi.fn();
+void _mockConnectNas;
+const _mockDisconnectNas = vi.fn();
+void _mockDisconnectNas;
+const _mockSyncNow = vi.fn();
+void _mockSyncNow;
+const _mockUpdateConfig = vi.fn();
+void _mockUpdateConfig;
 
 // vi.mock is hoisted but the factory function closes over the module-scope variables.
 // This works in Vitest because the factory is a function reference, not executed
@@ -95,7 +102,14 @@ function mountPanel(props: { vaultPath?: string; nasEnabled?: boolean } = {}): H
   return container;
 }
 
-function setNasConfig(value: { url: string; username: string; lastSync: string | null; offlineModeEnabled: boolean } | null): void {
+function setNasConfig(
+  value: {
+    url: string;
+    username: string;
+    lastSync: string | null;
+    offlineModeEnabled: boolean;
+  } | null
+): void {
   (nasStore.nasConfig as ReturnType<typeof writable>).set(value);
 }
 
@@ -298,9 +312,9 @@ describe('NasConfigPanel — disconnect flow', () => {
     expect(container.textContent).toContain('admin');
 
     // Click Disconnect
-    const disconnectBtn = Array.from(
-      container.querySelectorAll<HTMLButtonElement>('button'),
-    ).find((b) => b.textContent?.trim() === 'Disconnect');
+    const disconnectBtn = Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(
+      (b) => b.textContent?.trim() === 'Disconnect'
+    );
 
     expect(disconnectBtn).not.toBeNull();
     disconnectBtn!.click();

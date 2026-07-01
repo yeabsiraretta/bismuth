@@ -56,8 +56,8 @@ export function hasCycle(tasks: PMTask[]): boolean {
 
 /** Check if adding a dependency would create a cycle */
 export function wouldCreateCycle(tasks: PMTask[], taskId: string, newDepId: string): boolean {
-  const virtualTasks = tasks.map(t =>
-    t.id === taskId ? { ...t, dependencies: [...t.dependencies, newDepId] } : t,
+  const virtualTasks = tasks.map((t) =>
+    t.id === taskId ? { ...t, dependencies: [...t.dependencies, newDepId] } : t
   );
   return hasCycle(virtualTasks);
 }
@@ -65,7 +65,7 @@ export function wouldCreateCycle(tasks: PMTask[], taskId: string, newDepId: stri
 // ─── Topological sort ────────────────────────────────────────────────────────
 
 export function topologicalSort(tasks: PMTask[]): PMTask[] {
-  const byId = new Map(tasks.map(t => [t.id, t]));
+  const byId = new Map(tasks.map((t) => [t.id, t]));
   const inDegree = new Map<string, number>();
   const adj = new Map<string, string[]>();
 
@@ -126,14 +126,14 @@ export function taskDuration(task: PMTask): number {
  * Returns updated task list; does not mutate input.
  */
 export function autoSchedule(tasks: PMTask[], changedId: string): PMTask[] {
-  const byId = new Map(tasks.map(t => [t.id, { ...t }]));
+  const byId = new Map(tasks.map((t) => [t.id, { ...t }]));
   const changed = byId.get(changedId);
   if (!changed?.dueDate) return tasks;
 
   const sorted = topologicalSort(tasks);
   for (const task of sorted) {
     if (task.id === changedId) continue;
-    const deps = task.dependencies.filter(d => byId.has(d));
+    const deps = task.dependencies.filter((d) => byId.has(d));
     if (deps.length === 0) continue;
 
     const latestBlockerEnd = deps.reduce((latest, depId) => {
@@ -156,7 +156,7 @@ export function autoSchedule(tasks: PMTask[], changedId: string): PMTask[] {
     }
   }
 
-  return tasks.map(t => byId.get(t.id) ?? t);
+  return tasks.map((t) => byId.get(t.id) ?? t);
 }
 
 // ─── Recurrence ──────────────────────────────────────────────────────────────
@@ -164,10 +164,18 @@ export function autoSchedule(tasks: PMTask[], changedId: string): PMTask[] {
 function addInterval(date: string, interval: RecurrenceInterval): string {
   const d = new Date(date);
   switch (interval) {
-    case 'daily': d.setDate(d.getDate() + 1); break;
-    case 'weekly': d.setDate(d.getDate() + 7); break;
-    case 'monthly': d.setMonth(d.getMonth() + 1); break;
-    case 'yearly': d.setFullYear(d.getFullYear() + 1); break;
+    case 'daily':
+      d.setDate(d.getDate() + 1);
+      break;
+    case 'weekly':
+      d.setDate(d.getDate() + 7);
+      break;
+    case 'monthly':
+      d.setMonth(d.getMonth() + 1);
+      break;
+    case 'yearly':
+      d.setFullYear(d.getFullYear() + 1);
+      break;
   }
   return d.toISOString().slice(0, 10);
 }

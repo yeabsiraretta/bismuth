@@ -3,9 +3,15 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
-  clear: vi.fn(() => { Object.keys(mockStorage).forEach((k) => delete mockStorage[k]); }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
+  clear: vi.fn(() => {
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+  }),
   length: 0,
   key: vi.fn(() => null),
 });
@@ -70,7 +76,7 @@ describe('MetricsCollector', () => {
     const duration = end();
     expect(duration).toBeGreaterThanOrEqual(0);
     const all = m.getAll();
-    const timerMetric = all.find(x => x.name === 'test.timer');
+    const timerMetric = all.find((x) => x.name === 'test.timer');
     expect(timerMetric).toBeDefined();
     expect(timerMetric?.type).toBe('histogram');
     expect(timerMetric?.count).toBe(1);
@@ -84,7 +90,7 @@ describe('MetricsCollector', () => {
     m.histogram('h1').observe(100);
     const all = m.getAll();
     expect(all.length).toBe(3);
-    expect(all.map(x => x.name).sort()).toEqual(['c1', 'g1', 'h1']);
+    expect(all.map((x) => x.name).sort()).toEqual(['c1', 'g1', 'h1']);
   });
 
   it('resetAll clears everything', async () => {

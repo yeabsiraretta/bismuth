@@ -7,12 +7,7 @@
 
 // ─── IDE presets ───────────────────────────────────────────────────────────────
 
-export type KeyshotsPreset =
-  | 'clear'
-  | 'keyshots'
-  | 'vscode'
-  | 'jetbrains'
-  | 'visual-studio';
+export type KeyshotsPreset = 'clear' | 'keyshots' | 'vscode' | 'jetbrains' | 'visual-studio';
 
 export const PRESET_LABELS: Record<KeyshotsPreset, string> = {
   clear: 'Clear (no hotkeys)',
@@ -70,8 +65,8 @@ export const KEYSHOTS_MAPPINGS: PresetMapping = {
   'reverse-lines': 'Alt-r',
   'sort-lines': 'Ctrl-Shift-s',
   'shuffle-lines': 'Ctrl-Shift-Alt-s',
-  'indent': 'Alt-]',
-  'outdent': 'Alt-[',
+  indent: 'Alt-]',
+  outdent: 'Alt-[',
   'add-cursor-up': 'Ctrl-Alt-ArrowUp',
   'add-cursor-down': 'Ctrl-Alt-ArrowDown',
   'select-all-instances': 'Ctrl-Shift-l',

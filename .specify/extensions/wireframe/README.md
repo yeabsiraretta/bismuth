@@ -59,23 +59,23 @@ specify extension list
 
 ## Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/speckit.wireframe.prep` | Load spec + rules context before generating |
-| `/speckit.wireframe.generate` | Create SVG wireframes from spec.md (light/dark/both themes) |
-| `/speckit.wireframe.review` | Review wireframes, classify issues, **sign off into spec.md** |
-| `/speckit.wireframe.inspect` | Cross-SVG consistency check |
-| `/speckit.wireframe.screenshots` | Capture standardized PNGs (Tier-2, needs Python or Docker) |
+| Command                          | Purpose                                                       |
+| -------------------------------- | ------------------------------------------------------------- |
+| `/speckit.wireframe.prep`        | Load spec + rules context before generating                   |
+| `/speckit.wireframe.generate`    | Create SVG wireframes from spec.md (light/dark/both themes)   |
+| `/speckit.wireframe.review`      | Review wireframes, classify issues, **sign off into spec.md** |
+| `/speckit.wireframe.inspect`     | Cross-SVG consistency check                                   |
+| `/speckit.wireframe.screenshots` | Capture standardized PNGs (Tier-2, needs Python or Docker)    |
 
 ## Hooks
 
 The extension registers three optional hooks into SpecKit's workflow:
 
-| Hook | Prompts | What it offers |
-|------|---------|----------------|
-| `after_specify` | "Generate wireframes for this feature now?" | Runs `wireframe.generate` right after spec creation |
-| `before_plan` | "Review and sign off wireframes before planning?" | Ensures wireframes are signed off before `/speckit.plan` locks in the implementation plan |
-| `after_implement` | "Capture implementation screenshots and compare?" | Regression check: captures the built UI and compares against signed-off wireframes |
+| Hook              | Prompts                                           | What it offers                                                                            |
+| ----------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `after_specify`   | "Generate wireframes for this feature now?"       | Runs `wireframe.generate` right after spec creation                                       |
+| `before_plan`     | "Review and sign off wireframes before planning?" | Ensures wireframes are signed off before `/speckit.plan` locks in the implementation plan |
+| `after_implement` | "Capture implementation screenshots and compare?" | Regression check: captures the built UI and compares against signed-off wireframes        |
 
 All hooks are **optional** — the extension prompts before executing, and you can decline to continue the SpecKit workflow unchanged.
 
@@ -98,15 +98,15 @@ Copy `config-template.yml` to `.specify/extensions/wireframe/wireframe-config.ym
 
 ```yaml
 themes:
-  frontend: "light"   # default
-  backend: "dark"     # default
-  hybrid: "both"      # default
+  frontend: 'light' # default
+  backend: 'dark' # default
+  hybrid: 'both' # default
 
 output:
-  svg_dir: "specs/{feature}/wireframes"  # where SVGs land
+  svg_dir: 'specs/{feature}/wireframes' # where SVGs land
 
 validator:
-  enabled: false      # set true if you install the optional Python validator
+  enabled: false # set true if you install the optional Python validator
 ```
 
 ## Tiers

@@ -68,13 +68,13 @@ See [Folder Structure](../reference/folder-structure.md) for the complete layout
 
 ## Key Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm tauri dev` | Full app with hot reload |
-| `pnpm dev` | Frontend only |
-| `pnpm test` | Run Vitest tests |
-| `pnpm build` | Production build |
-| `pnpm tauri build` | Package desktop app |
+| Command            | Description              |
+| ------------------ | ------------------------ |
+| `pnpm tauri dev`   | Full app with hot reload |
+| `pnpm dev`         | Frontend only            |
+| `pnpm test`        | Run Vitest tests         |
+| `pnpm build`       | Production build         |
+| `pnpm tauri build` | Package desktop app      |
 
 ---
 

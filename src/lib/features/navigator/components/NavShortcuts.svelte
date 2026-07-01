@@ -8,14 +8,18 @@
 
   function getIcon(type: string): string {
     switch (type) {
-      case 'folder': return 'folder';
-      case 'tag': return 'hash';
-      case 'search': return 'search';
-      default: return 'file-text';
+      case 'folder':
+        return 'folder';
+      case 'tag':
+        return 'hash';
+      case 'search':
+        return 'search';
+      default:
+        return 'file-text';
     }
   }
 
-  function handleClick(shortcut: typeof shortcuts[0]) {
+  function handleClick(shortcut: (typeof shortcuts)[0]) {
     switch (shortcut.type) {
       case 'folder':
         selectFolder(shortcut.path);
@@ -29,7 +33,7 @@
     }
   }
 
-  function handleKeydown(e: KeyboardEvent, shortcut: typeof shortcuts[0]) {
+  function handleKeydown(e: KeyboardEvent, shortcut: (typeof shortcuts)[0]) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleClick(shortcut);

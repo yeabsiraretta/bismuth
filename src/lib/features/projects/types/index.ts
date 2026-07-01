@@ -28,7 +28,8 @@ export interface PriorityConfig {
 
 // ─── Custom Fields ───────────────────────────────────────────────────────────
 
-export type CustomFieldType = 'text' | 'number' | 'date' | 'select' | 'multi-select' | 'person' | 'checkbox' | 'url';
+export type CustomFieldType =
+  'text' | 'number' | 'date' | 'select' | 'multi-select' | 'person' | 'checkbox' | 'url';
 
 export interface CustomFieldDef {
   id: string;
@@ -160,17 +161,17 @@ export const DEFAULT_PM_SETTINGS: PMSettings = {
 };
 
 export const DEFAULT_STATUSES: StatusConfig[] = [
-  { id: 'todo',        label: 'To Do',       color: '#6b7280', icon: 'circle' },
+  { id: 'todo', label: 'To Do', color: '#6b7280', icon: 'circle' },
   { id: 'in-progress', label: 'In Progress', color: '#3b82f6', icon: 'play' },
-  { id: 'blocked',     label: 'Blocked',     color: '#ef4444', icon: 'alert-circle' },
-  { id: 'in-review',   label: 'In Review',   color: '#f59e0b', icon: 'eye' },
-  { id: 'done',        label: 'Done',        color: '#10b981', icon: 'check-circle' },
-  { id: 'cancelled',   label: 'Cancelled',   color: '#9ca3af', icon: 'x-circle' },
+  { id: 'blocked', label: 'Blocked', color: '#ef4444', icon: 'alert-circle' },
+  { id: 'in-review', label: 'In Review', color: '#f59e0b', icon: 'eye' },
+  { id: 'done', label: 'Done', color: '#10b981', icon: 'check-circle' },
+  { id: 'cancelled', label: 'Cancelled', color: '#9ca3af', icon: 'x-circle' },
 ];
 
 export const DEFAULT_PRIORITIES: PriorityConfig[] = [
   { id: 'critical', label: 'Critical', color: '#ef4444', icon: 'alert-circle' },
-  { id: 'high',     label: 'High',     color: '#f97316', icon: 'arrow-up' },
-  { id: 'medium',   label: 'Medium',   color: '#eab308', icon: 'minus' },
-  { id: 'low',      label: 'Low',      color: '#6b7280', icon: 'arrow-down' },
+  { id: 'high', label: 'High', color: '#f97316', icon: 'arrow-up' },
+  { id: 'medium', label: 'Medium', color: '#eab308', icon: 'minus' },
+  { id: 'low', label: 'Low', color: '#6b7280', icon: 'arrow-down' },
 ];

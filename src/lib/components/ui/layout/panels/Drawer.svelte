@@ -52,12 +52,7 @@
 </script>
 
 {#if open}
-  <div
-    class="drawer-backdrop"
-    role="presentation"
-    on:click={onClose}
-    on:keydown={() => {}}
-  ></div>
+  <div class="drawer-backdrop" role="presentation" on:click={onClose} on:keydown={() => {}}></div>
   <div
     bind:this={panelEl}
     class="drawer-panel"
@@ -74,9 +69,7 @@
           <p class="drawer-subtitle bismuth-body-sm">{subtitle}</p>
         {/if}
       </div>
-      <button class="drawer-close" on:click={onClose} aria-label="Close panel">
-        &times;
-      </button>
+      <button class="drawer-close" on:click={onClose} aria-label="Close panel"> &times; </button>
     </div>
     <div class="drawer-body">
       <slot />
@@ -123,12 +116,18 @@
   }
 
   @keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
 
   @media (max-width: 600px) {
-    .drawer-panel { width: 100vw; }
+    .drawer-panel {
+      width: 100vw;
+    }
   }
 
   .drawer-header {
@@ -141,9 +140,15 @@
     flex-shrink: 0;
   }
 
-  .drawer-header-text { flex: 1; min-width: 0; }
+  .drawer-header-text {
+    flex: 1;
+    min-width: 0;
+  }
 
-  .drawer-subtitle { color: var(--text-muted); margin: 4px 0 0; }
+  .drawer-subtitle {
+    color: var(--text-muted);
+    margin: 4px 0 0;
+  }
 
   .drawer-close {
     min-width: 44px;
@@ -160,8 +165,14 @@
     flex-shrink: 0;
   }
 
-  .drawer-close:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
-  .drawer-close:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
+  .drawer-close:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
+  .drawer-close:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+  }
 
   .drawer-body {
     flex: 1;
@@ -185,6 +196,13 @@
     flex-shrink: 0;
   }
 
-  .drawer-footer-regressive { display: flex; gap: var(--spacing-s, 8px); }
-  .drawer-footer-progressive { display: flex; gap: var(--spacing-s, 8px); margin-left: auto; }
+  .drawer-footer-regressive {
+    display: flex;
+    gap: var(--spacing-s, 8px);
+  }
+  .drawer-footer-progressive {
+    display: flex;
+    gap: var(--spacing-s, 8px);
+    margin-left: auto;
+  }
 </style>

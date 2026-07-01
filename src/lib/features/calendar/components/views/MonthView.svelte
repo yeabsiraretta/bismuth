@@ -1,6 +1,10 @@
 <script lang="ts">
   import EventChip from '../atoms/EventChip.svelte';
-  import { calendarFocusDate, allCalendarItems, toggleCalendarEventComplete } from '../../stores/calendarStore';
+  import {
+    calendarFocusDate,
+    allCalendarItems,
+    toggleCalendarEventComplete,
+  } from '../../stores/calendarStore';
   import type { CalendarEvent } from '../../types';
 
   export let onDayClick: ((detail: { date: string }) => void) | undefined = undefined;
@@ -41,7 +45,7 @@
           day: current.getDate(),
           isCurrentMonth: current.getMonth() === m,
           isToday: dateStr === today,
-          events: items.filter(e => e.date === dateStr),
+          events: items.filter((e) => e.date === dateStr),
         });
         current.setDate(current.getDate() + 1);
       }

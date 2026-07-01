@@ -18,13 +18,18 @@
   }
 
   function toggleInspectMode() {
-    inspectEnabled.update(v => !v);
+    inspectEnabled.update((v) => !v);
   }
 </script>
 
 <div class="inspect-panel">
   <div class="inspect-mode-bar">
-    <button class="mode-toggle" class:active={$inspectEnabled} on:click={toggleInspectMode} title="Toggle Inspect Mode (Cmd+Shift+I)">
+    <button
+      class="mode-toggle"
+      class:active={$inspectEnabled}
+      on:click={toggleInspectMode}
+      title="Toggle Inspect Mode (Cmd+Shift+I)"
+    >
       Inspect {$inspectEnabled ? 'ON' : 'OFF'}
     </button>
   </div>
@@ -33,64 +38,72 @@
   {#if $inspectEnabled && selectedElement}
     <PropertyInspector elementId={selectedElement.id} />
   {:else}
-  <div class="inspect-header">
-    <button
-      class="inspect-tab"
-      class:active={activeView === 'list'}
-      on:click={() => (activeView = 'list')}
-    >
-      List
-    </button>
-    <button
-      class="inspect-tab"
-      class:active={activeView === 'code'}
-      on:click={() => (activeView = 'code')}
-    >
-      Code
-    </button>
-    <button
-      class="inspect-tab"
-      class:active={activeView === 'css'}
-      on:click={() => (activeView = 'css')}
-    >
-      CSS
-    </button>
-  </div>
+    <div class="inspect-header">
+      <button
+        class="inspect-tab"
+        class:active={activeView === 'list'}
+        on:click={() => (activeView = 'list')}
+      >
+        List
+      </button>
+      <button
+        class="inspect-tab"
+        class:active={activeView === 'code'}
+        on:click={() => (activeView = 'code')}
+      >
+        Code
+      </button>
+      <button
+        class="inspect-tab"
+        class:active={activeView === 'css'}
+        on:click={() => (activeView = 'css')}
+      >
+        CSS
+      </button>
+    </div>
 
-  {#if !selectedElement}
-    <div class="inspect-empty">
-      <p>Select an element to inspect</p>
-    </div>
-  {:else if activeView === 'list'}
-    <div class="inspect-list">
-      {#each cssProperties as prop}
-        <div class="inspect-row">
-          <span class="inspect-property">{prop.property}</span>
-          <span class="inspect-value">{prop.value}</span>
+    {#if !selectedElement}
+      <div class="inspect-empty">
+        <p>Select an element to inspect</p>
+      </div>
+    {:else if activeView === 'list'}
+      <div class="inspect-list">
+        {#each cssProperties as prop}
+          <div class="inspect-row">
+            <span class="inspect-property">{prop.property}</span>
+            <span class="inspect-value">{prop.value}</span>
+          </div>
+        {/each}
+      </div>
+    {:else if activeView === 'code'}
+      <div class="inspect-code">
+        <div class="code-header">
+          <span class="code-lang">CSS</span>
+          <button class="copy-btn" on:click={copyCSS} title="Copy CSS">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          </button>
         </div>
-      {/each}
-    </div>
-  {:else if activeView === 'code'}
-    <div class="inspect-code">
-      <div class="code-header">
-        <span class="code-lang">CSS</span>
-        <button class="copy-btn" on:click={copyCSS} title="Copy CSS">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-          </svg>
-        </button>
+        <pre class="code-block"><code>{cssCode}</code></pre>
       </div>
-      <pre class="code-block"><code>{cssCode}</code></pre>
-    </div>
-  {:else}
-    <div class="inspect-code">
-      <div class="code-header">
-        <span class="code-lang">Properties</span>
+    {:else}
+      <div class="inspect-code">
+        <div class="code-header">
+          <span class="code-lang">Properties</span>
+        </div>
+        <pre class="code-block"><code>{JSON.stringify(selectedElement.properties, null, 2)}</code
+          ></pre>
       </div>
-      <pre class="code-block"><code>{JSON.stringify(selectedElement.properties, null, 2)}</code></pre>
-    </div>
-  {/if}
+    {/if}
   {/if}
 </div>
 

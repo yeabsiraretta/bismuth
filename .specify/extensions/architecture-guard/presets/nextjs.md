@@ -14,62 +14,62 @@ When reviewing a Next.js project, map generic architecture boundaries to Next.js
 
 ### Entry Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Pages (`page.tsx`) |
-| Entry point for API / Webhooks | Route Handlers (`route.ts`) |
-| Entry point for user actions | Server Actions (`'use server'`) |
-| Entry point for layout/nesting | Layouts (`layout.tsx`) |
-| Global request filtering | Middleware (`middleware.ts`) |
-| Client-side entry points | Client Components (`'use client'`) |
+| Generic Concept                | Next.js Equivalent                 |
+| ------------------------------ | ---------------------------------- |
+| Entry point for HTTP requests  | Pages (`page.tsx`)                 |
+| Entry point for API / Webhooks | Route Handlers (`route.ts`)        |
+| Entry point for user actions   | Server Actions (`'use server'`)    |
+| Entry point for layout/nesting | Layouts (`layout.tsx`)             |
+| Global request filtering       | Middleware (`middleware.ts`)       |
+| Client-side entry points       | Client Components (`'use client'`) |
 
 ### Validation Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Input validation | Zod / Yup / Valibot schemas |
+| Generic Concept          | Next.js Equivalent                                             |
+| ------------------------ | -------------------------------------------------------------- |
+| Input validation         | Zod / Yup / Valibot schemas                                    |
 | Server Action validation | Schema parsing inside the Action or `zsa` / `next-safe-action` |
-| Route Handler validation | Schema parsing of `request.json()` or `searchParams` |
+| Route Handler validation | Schema parsing of `request.json()` or `searchParams`           |
 
 ### Contract Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Stable request shapes | Zod Schemas or TypeScript Interfaces |
+| Generic Concept        | Next.js Equivalent                                       |
+| ---------------------- | -------------------------------------------------------- |
+| Stable request shapes  | Zod Schemas or TypeScript Interfaces                     |
 | Stable response shapes | Route Handler return types or Server Action return types |
-| Component contracts | Component Props (TypeScript interfaces) |
+| Component contracts    | Component Props (TypeScript interfaces)                  |
 
 ### Application Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Use case coordination | Service Layer (`lib/services/`) or Server Actions |
-| Data loading coordination | Server Components (calling data access layers) |
-| Revalidation logic | `revalidatePath`, `revalidateTag` |
+| Generic Concept           | Next.js Equivalent                                |
+| ------------------------- | ------------------------------------------------- |
+| Use case coordination     | Service Layer (`lib/services/`) or Server Actions |
+| Data loading coordination | Server Components (calling data access layers)    |
+| Revalidation logic        | `revalidatePath`, `revalidateTag`                 |
 
 ### Domain Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
+| Generic Concept              | Next.js Equivalent                          |
+| ---------------------------- | ------------------------------------------- |
 | Business rules and decisions | Pure Domain Functions (agnostic of Next.js) |
-| Domain models | TypeScript Entities or Database Models |
+| Domain models                | TypeScript Entities or Database Models      |
 
 ### Data Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Persistence abstraction | Data Access Layer (DAL - `lib/data/`) |
-| Query building | Prisma, Drizzle, or Kysely clients |
-| Cache management | `unstable_cache`, `fetch` cache options |
+| Generic Concept         | Next.js Equivalent                      |
+| ----------------------- | --------------------------------------- |
+| Persistence abstraction | Data Access Layer (DAL - `lib/data/`)   |
+| Query building          | Prisma, Drizzle, or Kysely clients      |
+| Cache management        | `unstable_cache`, `fetch` cache options |
 
 ### Presentation Boundary
 
-| Generic Concept | Next.js Equivalent |
-| --- | --- |
-| Server-rendered UI | React Server Components (RSC) |
-| Client-side interactivity | Client Components (`'use client'`) |
-| Global state | Context Providers or Zustand/Jotai stores |
-| Meta information | `metadata` exports or `generateMetadata()` |
+| Generic Concept           | Next.js Equivalent                         |
+| ------------------------- | ------------------------------------------ |
+| Server-rendered UI        | React Server Components (RSC)              |
+| Client-side interactivity | Client Components (`'use client'`)         |
+| Global state              | Context Providers or Zustand/Jotai stores  |
+| Meta information          | `metadata` exports or `generateMetadata()` |
 
 ---
 
@@ -78,6 +78,7 @@ When reviewing a Next.js project, map generic architecture boundaries to Next.js
 ### The RSC vs. Client Boundary
 
 Detect when:
+
 - A Client Component (`'use client'`) contains heavy business logic or performs direct database queries (impossible by design, but check for "leaky" abstractions).
 - Sensitive data is passed from an RSC to a Client Component without filtering (e.g., passing a full `user` object with a hashed password).
 - An RSC is marked as `'use client'` unnecessarily, increasing bundle size.
@@ -85,6 +86,7 @@ Detect when:
 ### Server Action Responsibility
 
 Detect when:
+
 - Server Actions contain massive business workflows (they should delegate to a Service layer).
 - Server Actions are used for "data fetching" instead of RSCs (Server Actions are for mutations).
 - Server Actions lack proper error handling, leaking raw server errors to the client.
@@ -92,6 +94,7 @@ Detect when:
 ### Data Fetching Isolation [Focus: db]
 
 Detect when:
+
 - Components (RSC or Client) import database clients (Prisma/Drizzle) directly instead of using a Data Access Layer (DAL).
 - Database queries are duplicated across multiple `page.tsx` files instead of being in a shared `lib/data/` file.
 - `unstable_cache` is used without clear tags, making revalidation difficult.
@@ -99,6 +102,7 @@ Detect when:
 ### Missing Validation Boundary [Focus: api]
 
 Detect when:
+
 - Server Actions use `formData.get()` directly without parsing via a schema (e.g., Zod).
 - Route Handlers process `request.json()` without validation.
 - `searchParams` are used in Pages without type-safe parsing.
@@ -119,7 +123,7 @@ export default async function Page() {
 
 ```tsx
 // ✅ RSC calls DAL
-import { getUsers } from "@/lib/data/users";
+import { getUsers } from '@/lib/data/users';
 
 export default async function Page() {
   const users = await getUsers();

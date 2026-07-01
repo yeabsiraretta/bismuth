@@ -1,7 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { buildKeyshotsKeymap, buildKeymapFromMapping, getCommandDescriptions } from '../services/keyshotsKeymap';
+import {
+  buildKeyshotsKeymap,
+  buildKeymapFromMapping,
+  getCommandDescriptions,
+} from '../services/keyshotsKeymap';
 import type { KeyshotsPreset } from '../types/keyshots';
-import { PRESET_MAP, KEYSHOTS_MAPPINGS, VSCODE_MAPPINGS, JETBRAINS_MAPPINGS, VISUAL_STUDIO_MAPPINGS } from '../types/keyshots';
+import {
+  PRESET_MAP,
+  KEYSHOTS_MAPPINGS,
+  VSCODE_MAPPINGS,
+  JETBRAINS_MAPPINGS,
+  VISUAL_STUDIO_MAPPINGS,
+} from '../types/keyshots';
 
 describe('buildKeyshotsKeymap', () => {
   it('returns empty for clear preset', () => {
@@ -11,7 +21,7 @@ describe('buildKeyshotsKeymap', () => {
   it('returns keybindings for keyshots preset', () => {
     const bindings = buildKeyshotsKeymap('keyshots');
     expect(bindings.length).toBeGreaterThan(0);
-    expect(bindings.every(b => b.key && b.run)).toBe(true);
+    expect(bindings.every((b) => b.key && b.run)).toBe(true);
   });
 
   it('returns keybindings for vscode preset', () => {

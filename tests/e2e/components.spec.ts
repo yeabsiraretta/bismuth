@@ -41,19 +41,28 @@ test.describe('Component Creation Workflow (T052)', () => {
 
   test('T052-03: component library panel opens from sidebar', async ({ page }) => {
     // Try data-testid first, then aria-label, then text content
-    const componentTab = page.locator(
-      '[data-testid="components-tab"], [aria-label*="Components"], button:has-text("Components")'
-    ).first();
+    const componentTab = page
+      .locator(
+        '[data-testid="components-tab"], [aria-label*="Components"], button:has-text("Components")'
+      )
+      .first();
 
     if (await componentTab.isVisible({ timeout: 2000 })) {
       await componentTab.click();
       await page.waitForTimeout(300);
-      const panel = page.locator('.component-browser, .component-list, [data-testid="component-library"]');
+      const panel = page.locator(
+        '.component-browser, .component-list, [data-testid="component-library"]'
+      );
       await expect(panel).toBeVisible({ timeout: 3000 });
     } else {
       // Panel may be in a different sidebar structure — verify the canvas sidebar exists
-      const sidebar = page.locator('.canvas-sidebar, .sidebar-panel, [data-testid="canvas-sidebar"]');
-      test.skip(!await sidebar.isVisible({ timeout: 1000 }), 'Canvas sidebar not found in current layout');
+      const sidebar = page.locator(
+        '.canvas-sidebar, .sidebar-panel, [data-testid="canvas-sidebar"]'
+      );
+      test.skip(
+        !(await sidebar.isVisible({ timeout: 1000 })),
+        'Canvas sidebar not found in current layout'
+      );
     }
   });
 
@@ -62,31 +71,37 @@ test.describe('Component Creation Workflow (T052)', () => {
     const canvas = page.locator('.canvas-workspace');
     await canvas.click({ button: 'right', position: { x: 200, y: 200 } });
 
-    const createItem = page.locator('text=Create Component, [data-action="create-component"]').first();
-    if (!await createItem.isVisible({ timeout: 1500 })) {
+    const createItem = page
+      .locator('text=Create Component, [data-action="create-component"]')
+      .first();
+    if (!(await createItem.isVisible({ timeout: 1500 }))) {
       test.skip(true, 'Create Component context item not visible — no elements selected');
       return;
     }
 
     await createItem.click();
 
-    const nameInput = page.locator(
-      'input[placeholder*="name"], input[placeholder*="component"], input[name="componentName"], input[name="name"]'
-    ).first();
+    const nameInput = page
+      .locator(
+        'input[placeholder*="name"], input[placeholder*="component"], input[name="componentName"], input[name="name"]'
+      )
+      .first();
     await expect(nameInput).toBeVisible({ timeout: 2000 });
 
     await nameInput.fill('E2ETestComponent');
 
-    const confirmBtn = page.locator(
-      'button:has-text("Create"), button:has-text("Confirm"), button[type="submit"]'
-    ).first();
+    const confirmBtn = page
+      .locator('button:has-text("Create"), button:has-text("Confirm"), button[type="submit"]')
+      .first();
     await confirmBtn.click();
 
     // Dialog should close
     await expect(nameInput).not.toBeVisible({ timeout: 3000 });
   });
 
-  test('T052-05: keyboard shortcut Cmd+Shift+K triggers component creation flow', async ({ page }) => {
+  test('T052-05: keyboard shortcut Cmd+Shift+K triggers component creation flow', async ({
+    page,
+  }) => {
     // Focus the canvas area first
     const canvas = page.locator('.canvas-workspace');
     await canvas.click({ position: { x: 200, y: 200 } });

@@ -39,7 +39,7 @@ describe('parseIcsText', () => {
     const events = parseIcsText(SAMPLE_ICS);
     expect(events.length).toBeGreaterThanOrEqual(3);
 
-    const timed = events.find(e => e.uid === 'evt-001@example.com');
+    const timed = events.find((e) => e.uid === 'evt-001@example.com');
     expect(timed).toBeDefined();
     expect(timed!.summary).toBe('Team Meeting');
     expect(timed!.description).toBe('Weekly sync');
@@ -51,7 +51,7 @@ describe('parseIcsText', () => {
 
   it('parses all-day events', () => {
     const events = parseIcsText(SAMPLE_ICS);
-    const allDay = events.find(e => e.uid === 'evt-002@example.com');
+    const allDay = events.find((e) => e.uid === 'evt-002@example.com');
     expect(allDay).toBeDefined();
     expect(allDay!.summary).toBe('All Day Conference');
     expect(allDay!.allDay).toBe(true);
@@ -60,7 +60,7 @@ describe('parseIcsText', () => {
 
   it('unescapes ICS special characters', () => {
     const events = parseIcsText(SAMPLE_ICS);
-    const escaped = events.find(e => e.uid === 'evt-003@example.com');
+    const escaped = events.find((e) => e.uid === 'evt-003@example.com');
     expect(escaped).toBeDefined();
     expect(escaped!.summary).toBe('Escaped, special; chars\nwith newline');
   });

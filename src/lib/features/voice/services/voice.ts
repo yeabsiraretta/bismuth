@@ -16,16 +16,8 @@ export function generateRecordingFilename(mimeType: string): string {
   const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp3') ? 'mp3' : 'webm';
   const now = new Date();
   const pad = (n: number, len = 2) => String(n).padStart(len, '0');
-  const datePart = [
-    now.getFullYear(),
-    pad(now.getMonth() + 1),
-    pad(now.getDate()),
-  ].join('-');
-  const timePart = [
-    pad(now.getHours()),
-    pad(now.getMinutes()),
-    pad(now.getSeconds()),
-  ].join('');
+  const datePart = [now.getFullYear(), pad(now.getMonth() + 1), pad(now.getDate())].join('-');
+  const timePart = [pad(now.getHours()), pad(now.getMinutes()), pad(now.getSeconds())].join('');
   return `recording-${datePart}-${timePart}.${ext}`;
 }
 
@@ -82,10 +74,7 @@ export async function deleteRecording(recordingId: string): Promise<void> {
 /**
  * Attaches a recording to a note (adds embed link to note content).
  */
-export async function attachRecordingToNote(
-  recordingId: string,
-  notePath: string
-): Promise<void> {
+export async function attachRecordingToNote(recordingId: string, notePath: string): Promise<void> {
   log.info('Voice: attaching to note', { recordingId, notePath });
   try {
     await invoke('attach_voice_recording', { recordingId, notePath });

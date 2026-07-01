@@ -24,20 +24,29 @@ export interface GitStatus {
 
 function parseStatusCode(code: string): FileChange['status'] {
   switch (code) {
-    case 'A': return 'added';
-    case 'M': return 'modified';
-    case 'D': return 'deleted';
-    default: return 'untracked';
+    case 'A':
+      return 'added';
+    case 'M':
+      return 'modified';
+    case 'D':
+      return 'deleted';
+    default:
+      return 'untracked';
   }
 }
 
 export function getStatusLabel(status: string): string {
   switch (status) {
-    case 'added': return 'A';
-    case 'modified': return 'M';
-    case 'deleted': return 'D';
-    case 'untracked': return '?';
-    default: return '';
+    case 'added':
+      return 'A';
+    case 'modified':
+      return 'M';
+    case 'deleted':
+      return 'D';
+    case 'untracked':
+      return '?';
+    default:
+      return '';
   }
 }
 

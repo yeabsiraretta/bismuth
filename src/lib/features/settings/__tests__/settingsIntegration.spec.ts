@@ -27,11 +27,19 @@ type LocalStorageMock = {
 function buildLocalStorageMock(): LocalStorageMock {
   let store: Record<string, string> = {};
   return {
-    get _store() { return store; },
+    get _store() {
+      return store;
+    },
     getItem: (k: string) => store[k] ?? null,
-    setItem: (k: string, v: string) => { store[k] = v; },
-    removeItem: (k: string) => { delete store[k]; },
-    clear: () => { store = {}; },
+    setItem: (k: string, v: string) => {
+      store[k] = v;
+    },
+    removeItem: (k: string) => {
+      delete store[k];
+    },
+    clear: () => {
+      store = {};
+    },
   };
 }
 
@@ -46,7 +54,9 @@ Object.defineProperty(globalThis, 'localStorage', {
 
 const cssVars: Record<string, string> = {};
 const mockStyle = {
-  setProperty: (prop: string, value: string) => { cssVars[prop] = value; },
+  setProperty: (prop: string, value: string) => {
+    cssVars[prop] = value;
+  },
   getPropertyValue: (prop: string) => cssVars[prop] ?? '',
 };
 Object.defineProperty(document.documentElement, 'style', {
@@ -75,7 +85,9 @@ async function freshPersistence() {
 describe('settings persist cycle', () => {
   beforeEach(() => {
     localStorageMock.clear();
-    Object.keys(cssVars).forEach(k => { delete cssVars[k]; });
+    Object.keys(cssVars).forEach((k) => {
+      delete cssVars[k];
+    });
     vi.resetModules();
   });
 
@@ -120,7 +132,9 @@ describe('settings persist cycle', () => {
 describe('applyCSS sets CSS custom properties', () => {
   beforeEach(() => {
     localStorageMock.clear();
-    Object.keys(cssVars).forEach(k => { delete cssVars[k]; });
+    Object.keys(cssVars).forEach((k) => {
+      delete cssVars[k];
+    });
     vi.resetModules();
   });
 
@@ -162,21 +176,65 @@ describe('DEFAULT_SETTINGS has all required fields', () => {
   it('contains every key declared in BismuthSettings interface', async () => {
     const { DEFAULT_SETTINGS } = await import('../types/settings.types');
     const required: Array<keyof typeof DEFAULT_SETTINGS> = [
-      'autoSave', 'autoSaveDelay', 'confirmBeforeDelete', 'defaultNoteLocation',
-      'dateFormat', 'timeFormat', 'newFileNameTemplate', 'language',
-      'autoCheckUpdates', 'lastUpdateCheck', 'updateChannel', 'startupThresholdMs',
-      'calendarCategories', 'fontSize', 'lineHeight', 'showLineNumbers',
-      'wordWrap', 'hardLineBreaks', 'spellCheck', 'tabSize', 'insertSpaces',
-      'trimTrailingWhitespace', 'livePreview', 'livePreviewMode', 'closeBrackets',
-      'accentColor', 'showStatusBar', 'compactMode', 'activeThemePath',
-      'fontInterface', 'fontText', 'fontMono',
-      'enableGit', 'autoCommit', 'syncOnStartup', 'commitMessageTemplate', 'enableBackups',
-      'changelogAutoUpdate', 'changelogPath', 'changelogDatetimeFormat',
-      'changelogMaxFiles', 'changelogUseWikilinks', 'changelogHeading', 'changelogExcludedFolders',
-      'nativeFrame', 'versioningEnabled', 'versionRetentionCount', 'versioningLlmClassify',
-      'musicEnabled', 'ocrEnabled', 'ocrDefaultLanguage', 'ocrLlmCorrection',
-      'ocrLlmCloudEnabled', 'ocrModelPath', 'ocrAmharicModelPath',
-      'llmEnabled', 'llmNoteContext', 'llmMaxHistory', 'nasEnabled',
+      'autoSave',
+      'autoSaveDelay',
+      'confirmBeforeDelete',
+      'defaultNoteLocation',
+      'dateFormat',
+      'timeFormat',
+      'newFileNameTemplate',
+      'language',
+      'autoCheckUpdates',
+      'lastUpdateCheck',
+      'updateChannel',
+      'startupThresholdMs',
+      'calendarCategories',
+      'fontSize',
+      'lineHeight',
+      'showLineNumbers',
+      'wordWrap',
+      'hardLineBreaks',
+      'spellCheck',
+      'tabSize',
+      'insertSpaces',
+      'trimTrailingWhitespace',
+      'livePreview',
+      'livePreviewMode',
+      'closeBrackets',
+      'accentColor',
+      'showStatusBar',
+      'compactMode',
+      'activeThemePath',
+      'fontInterface',
+      'fontText',
+      'fontMono',
+      'enableGit',
+      'autoCommit',
+      'syncOnStartup',
+      'commitMessageTemplate',
+      'enableBackups',
+      'changelogAutoUpdate',
+      'changelogPath',
+      'changelogDatetimeFormat',
+      'changelogMaxFiles',
+      'changelogUseWikilinks',
+      'changelogHeading',
+      'changelogExcludedFolders',
+      'nativeFrame',
+      'versioningEnabled',
+      'versionRetentionCount',
+      'versioningLlmClassify',
+      'musicEnabled',
+      'ocrEnabled',
+      'ocrDefaultLanguage',
+      'ocrLlmCorrection',
+      'ocrLlmCloudEnabled',
+      'ocrModelPath',
+      'ocrAmharicModelPath',
+      'llmEnabled',
+      'llmNoteContext',
+      'llmMaxHistory',
+      'nasEnabled',
     ];
     for (const key of required) {
       expect(DEFAULT_SETTINGS).toHaveProperty(key);
@@ -207,14 +265,35 @@ describe('DEFAULT_SETTINGS has all required fields', () => {
   it('all boolean fields default to a boolean', async () => {
     const { DEFAULT_SETTINGS } = await import('../types/settings.types');
     const boolFields: Array<keyof typeof DEFAULT_SETTINGS> = [
-      'autoSave', 'confirmBeforeDelete', 'autoCheckUpdates', 'showLineNumbers',
-      'wordWrap', 'hardLineBreaks', 'spellCheck', 'insertSpaces',
-      'trimTrailingWhitespace', 'livePreview', 'closeBrackets',
-      'showStatusBar', 'compactMode', 'enableGit', 'autoCommit',
-      'syncOnStartup', 'enableBackups', 'changelogAutoUpdate', 'changelogUseWikilinks',
-      'nativeFrame', 'versioningEnabled', 'versioningLlmClassify',
-      'musicEnabled', 'ocrEnabled', 'ocrLlmCorrection', 'ocrLlmCloudEnabled',
-      'llmEnabled', 'llmNoteContext', 'nasEnabled',
+      'autoSave',
+      'confirmBeforeDelete',
+      'autoCheckUpdates',
+      'showLineNumbers',
+      'wordWrap',
+      'hardLineBreaks',
+      'spellCheck',
+      'insertSpaces',
+      'trimTrailingWhitespace',
+      'livePreview',
+      'closeBrackets',
+      'showStatusBar',
+      'compactMode',
+      'enableGit',
+      'autoCommit',
+      'syncOnStartup',
+      'enableBackups',
+      'changelogAutoUpdate',
+      'changelogUseWikilinks',
+      'nativeFrame',
+      'versioningEnabled',
+      'versioningLlmClassify',
+      'musicEnabled',
+      'ocrEnabled',
+      'ocrLlmCorrection',
+      'ocrLlmCloudEnabled',
+      'llmEnabled',
+      'llmNoteContext',
+      'nasEnabled',
     ];
     for (const field of boolFields) {
       expect(typeof DEFAULT_SETTINGS[field]).toBe('boolean');

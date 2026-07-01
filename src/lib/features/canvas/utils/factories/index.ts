@@ -6,11 +6,7 @@ export {
   createScreen,
 } from './elementFactory.node';
 
-export {
-  createLine,
-  createArrow,
-  createPenPath,
-} from './elementFactory.edge';
+export { createLine, createArrow, createPenPath } from './elementFactory.edge';
 
 export { generateId } from '@/utils/id';
 

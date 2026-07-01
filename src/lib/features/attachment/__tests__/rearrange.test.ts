@@ -42,17 +42,16 @@ describe('extractAttachmentLinks', () => {
 
 describe('resolveLink', () => {
   it('resolves relative path', () => {
-    expect(resolveLink('assets/img.png', '/vault/notes', '/vault'))
-      .toBe('/vault/notes/assets/img.png');
+    expect(resolveLink('assets/img.png', '/vault/notes', '/vault')).toBe(
+      '/vault/notes/assets/img.png'
+    );
   });
 
   it('resolves absolute path', () => {
-    expect(resolveLink('/media/img.png', '/vault/notes', '/vault'))
-      .toBe('/vault/media/img.png');
+    expect(resolveLink('/media/img.png', '/vault/notes', '/vault')).toBe('/vault/media/img.png');
   });
 
   it('collapses double slashes', () => {
-    expect(resolveLink('img.png', '/vault/notes/', '/vault'))
-      .toBe('/vault/notes/img.png');
+    expect(resolveLink('img.png', '/vault/notes/', '/vault')).toBe('/vault/notes/img.png');
   });
 });

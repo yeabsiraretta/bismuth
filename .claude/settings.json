@@ -1,7 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Read(/Users/nqv886/Desktop/bismuth/src/lib/components/vault/**)"
-    ]
+    "allow": ["Read(/Users/nqv886/Desktop/bismuth/src/lib/components/vault/**)"]
   }
 }

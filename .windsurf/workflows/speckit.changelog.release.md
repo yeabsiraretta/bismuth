@@ -1,5 +1,5 @@
 ---
-description: "Generate release notes and bump version for a completed milestone"
+description: 'Generate release notes and bump version for a completed milestone'
 ---
 
 # Changelog Release

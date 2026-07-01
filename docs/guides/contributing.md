@@ -135,15 +135,15 @@ Commit format: `<type>: <description>` (e.g., `feat: add tag merge`, `fix: vault
 
 ## Key Files
 
-| Purpose | Location |
-|---------|----------|
-| Command registration | `src-tauri/src/app/handlers.rs` |
-| API spec | `docs/reference/api-spec.md` |
+| Purpose                   | Location                                       |
+| ------------------------- | ---------------------------------------------- |
+| Command registration      | `src-tauri/src/app/handlers.rs`                |
+| API spec                  | `docs/reference/api-spec.md`                   |
 | Architecture constitution | `.specify/memory/architecture_constitution.md` |
-| Design tokens | `src/lib/styles/tokens.css` |
-| Typography | `src/lib/styles/typography.css` |
-| Path validation | `src-tauri/src/utils/path.rs` |
-| Error types | `src-tauri/src/error.rs` |
+| Design tokens             | `src/lib/styles/tokens.css`                    |
+| Typography                | `src/lib/styles/typography.css`                |
+| Path validation           | `src-tauri/src/utils/path.rs`                  |
+| Error types               | `src-tauri/src/error.rs`                       |
 
 ---
 
@@ -159,6 +159,7 @@ Bismuth uses a governed workflow pipeline for feature development:
 ```
 
 The governed pipeline automatically applies:
+
 - Memory synthesis (constitution + durable decisions)
 - Security review (trust boundaries, authorization)
 - Architecture validation (drift detection)
@@ -172,4 +173,4 @@ Bismuth uses 7 Spec Kit extensions. See `docs/development/extension-integration.
 
 ---
 
-*Last Updated: 2026-06-13*
+_Last Updated: 2026-06-13_

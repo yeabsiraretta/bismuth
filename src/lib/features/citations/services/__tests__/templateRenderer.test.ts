@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { renderTemplate, renderNoteTitle, extractVariables, buildSearchText } from '../templateRenderer';
+import {
+  renderTemplate,
+  renderNoteTitle,
+  extractVariables,
+  buildSearchText,
+} from '../templateRenderer';
 import type { CslEntry } from '../../types/citation';
 
 const ENTRY: CslEntry = {

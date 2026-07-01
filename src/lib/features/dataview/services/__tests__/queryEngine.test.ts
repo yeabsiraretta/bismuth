@@ -1,9 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { executeQuery } from '../queryEngine';
 import { parseQuery, parseExpr } from '../queryParser';
-import type { DvPage, DvTableResult, DvListResult, DvTaskResult, DvGroupedResult, DvCalendarResult } from '../../types/dataview';
+import type {
+  DvPage,
+  DvTableResult,
+  DvListResult,
+  DvTaskResult,
+  DvGroupedResult,
+  DvCalendarResult,
+} from '../../types/dataview';
 
-function makePage(overrides: Partial<DvPage> & { name: string; fields?: Record<string, unknown> }): DvPage {
+function makePage(
+  overrides: Partial<DvPage> & { name: string; fields?: Record<string, unknown> }
+): DvPage {
   const name = overrides.name;
   return {
     path: overrides.path ?? `${name}.md`,
@@ -29,10 +38,30 @@ function makePage(overrides: Partial<DvPage> & { name: string; fields?: Record<s
 }
 
 const BOOKS: DvPage[] = [
-  makePage({ name: 'Dune', path: 'books/Dune.md', fields: { rating: 9, genre: 'sci-fi' }, tags: ['book', 'fiction'] }),
-  makePage({ name: 'LOTR', path: 'books/LOTR.md', fields: { rating: 10, genre: 'fantasy' }, tags: ['book', 'fiction'] }),
-  makePage({ name: 'Clean Code', path: 'books/Clean Code.md', fields: { rating: 7, genre: 'tech' }, tags: ['book', 'nonfiction'] }),
-  makePage({ name: 'React Guide', path: 'guides/React.md', fields: { rating: 6, genre: 'tech' }, tags: ['guide'] }),
+  makePage({
+    name: 'Dune',
+    path: 'books/Dune.md',
+    fields: { rating: 9, genre: 'sci-fi' },
+    tags: ['book', 'fiction'],
+  }),
+  makePage({
+    name: 'LOTR',
+    path: 'books/LOTR.md',
+    fields: { rating: 10, genre: 'fantasy' },
+    tags: ['book', 'fiction'],
+  }),
+  makePage({
+    name: 'Clean Code',
+    path: 'books/Clean Code.md',
+    fields: { rating: 7, genre: 'tech' },
+    tags: ['book', 'nonfiction'],
+  }),
+  makePage({
+    name: 'React Guide',
+    path: 'guides/React.md',
+    fields: { rating: 6, genre: 'tech' },
+    tags: ['guide'],
+  }),
 ];
 
 describe('executeQuery — TABLE', () => {
@@ -104,7 +133,13 @@ describe('executeQuery — TASK', () => {
           tags: ['project'],
           outlinks: [],
           tasks: [
-            { text: 'Fix bug', completed: false, line: 5, path: 'projects/project.md', tags: ['bug'] },
+            {
+              text: 'Fix bug',
+              completed: false,
+              line: 5,
+              path: 'projects/project.md',
+              tags: ['bug'],
+            },
             { text: 'Write docs', completed: true, line: 6, path: 'projects/project.md', tags: [] },
           ],
           day: null,

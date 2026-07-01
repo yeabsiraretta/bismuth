@@ -1,15 +1,18 @@
 import { listen } from '@tauri-apps/api/event';
 import { log } from '@/utils/logger';
 
-export type VaultFileEvent = 'vault://file-created' | 'vault://file-modified' | 'vault://file-deleted';
+export type VaultFileEvent =
+  'vault://file-created' | 'vault://file-modified' | 'vault://file-deleted';
 
-export interface VaultFilePayload { path: string; }
+export interface VaultFilePayload {
+  path: string;
+}
 
 /** Subscribe to a vault file event. Validates payload before calling handler.
  * Returns an async unsubscribe function — call on component/store teardown. */
 export function subscribeVaultEvent(
   eventName: VaultFileEvent,
-  handler: (payload: VaultFilePayload) => void,
+  handler: (payload: VaultFilePayload) => void
 ): () => Promise<void> {
   let unlisten: (() => void) | null = null;
 
@@ -20,7 +23,12 @@ export function subscribeVaultEvent(
       return;
     }
     handler(payload as VaultFilePayload);
-  }).then((fn) => { unlisten = fn; });
+  }).then((fn) => {
+    unlisten = fn;
+  });
 
-  return async () => { await promise; unlisten?.(); };
+  return async () => {
+    await promise;
+    unlisten?.();
+  };
 }

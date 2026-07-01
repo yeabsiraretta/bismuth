@@ -56,9 +56,7 @@ export interface JournalConfig {
 
 /** When to stop creating new entries */
 export type EndCondition =
-  | { mode: 'never' }
-  | { mode: 'date'; endDate: string }
-  | { mode: 'count'; maxEntries: number };
+  { mode: 'never' } | { mode: 'date'; endDate: string } | { mode: 'count'; maxEntries: number };
 
 /** Auto-numbering configuration for entries (Sprint 1, Sprint 2, ...) */
 export interface IndexConfig {

@@ -63,22 +63,18 @@ export interface Constraints {
 
 /** Predefined device frame presets for screen elements. */
 export type DeviceType =
-  | 'iphone-15'
-  | 'iphone-15-pro-max'
-  | 'ipad'
-  | 'desktop-1440'
-  | 'desktop-1920'
-  | 'custom';
+  'iphone-15' | 'iphone-15-pro-max' | 'ipad' | 'desktop-1440' | 'desktop-1920' | 'custom';
 
 /** Pixel dimensions and display labels for each device preset. */
-export const DEVICE_PRESETS: Record<DeviceType, { width: number; height: number; label: string }> = {
-  'iphone-15': { width: 393, height: 852, label: 'iPhone 15' },
-  'iphone-15-pro-max': { width: 430, height: 932, label: 'iPhone 15 Pro Max' },
-  'ipad': { width: 1024, height: 1366, label: 'iPad Pro 12.9"' },
-  'desktop-1440': { width: 1440, height: 900, label: 'Desktop 1440' },
-  'desktop-1920': { width: 1920, height: 1080, label: 'Desktop 1080p' },
-  'custom': { width: 800, height: 600, label: 'Custom' },
-};
+export const DEVICE_PRESETS: Record<DeviceType, { width: number; height: number; label: string }> =
+  {
+    'iphone-15': { width: 393, height: 852, label: 'iPhone 15' },
+    'iphone-15-pro-max': { width: 430, height: 932, label: 'iPhone 15 Pro Max' },
+    ipad: { width: 1024, height: 1366, label: 'iPad Pro 12.9"' },
+    'desktop-1440': { width: 1440, height: 900, label: 'Desktop 1440' },
+    'desktop-1920': { width: 1920, height: 1080, label: 'Desktop 1080p' },
+    custom: { width: 800, height: 600, label: 'Custom' },
+  };
 
 export type Tool =
   | 'select'

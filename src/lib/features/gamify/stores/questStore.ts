@@ -82,7 +82,7 @@ export const questProgress = derived(questProfile, ($p) => {
 
 /** Derived: unlocked achievement IDs */
 export const unlockedAchievements = derived(questProfile, ($p) => {
-  return ACHIEVEMENTS.filter(a => a.condition($p)).map(a => a.id);
+  return ACHIEVEMENTS.filter((a) => a.condition($p)).map((a) => a.id);
 });
 
 /** Derived: recent activity (last 20 entries) */
@@ -92,7 +92,7 @@ export const recentActivity = derived(questProfile, ($p) => {
 
 /** Award XP and log an activity */
 export function awardXp(type: ActivityType, xp: number, label: string): void {
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const prevLevel = getLevelFromXp(p.totalXp);
     const entry: ActivityEntry = {
       id: generateId(),
@@ -118,9 +118,9 @@ export function awardXp(type: ActivityType, xp: number, label: string): void {
     }
 
     // Check for new achievements
-    const newAchievements = ACHIEVEMENTS
-      .filter(a => a.condition(updated) && !updated.achievements.includes(a.id))
-      .map(a => a.id);
+    const newAchievements = ACHIEVEMENTS.filter(
+      (a) => a.condition(updated) && !updated.achievements.includes(a.id)
+    ).map((a) => a.id);
 
     if (newAchievements.length > 0) {
       updated.achievements = [...updated.achievements, ...newAchievements];
@@ -133,7 +133,7 @@ export function awardXp(type: ActivityType, xp: number, label: string): void {
 
 /** Record daily presence and update streak */
 export function recordDailyPresence(): void {
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const today = todayStr();
     if (p.lastActiveDate === today) return p;
 
@@ -164,7 +164,7 @@ export function recordDailyPresence(): void {
 
 /** Track writing progress and award XP */
 export function recordWritingProgress(wordCount: number): void {
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const today = todayStr();
     const newDayTotal = (p.todayDate === today ? p.wordCountToday : 0) + wordCount;
     let xpGained = 0;
@@ -212,13 +212,14 @@ export function recordWritingProgress(wordCount: number): void {
 
 /** Record a task completion — called from task store integration */
 export function recordTaskCompleted(taskText: string, priority: string): void {
-  const xp = priority === 'critical'
-    ? XP_VALUES.task_completed_critical
-    : priority === 'high'
-      ? XP_VALUES.task_completed_high
-      : XP_VALUES.task_completed;
+  const xp =
+    priority === 'critical'
+      ? XP_VALUES.task_completed_critical
+      : priority === 'high'
+        ? XP_VALUES.task_completed_high
+        : XP_VALUES.task_completed;
 
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const today = todayStr();
     return {
       ...p,
@@ -233,7 +234,7 @@ export function recordTaskCompleted(taskText: string, priority: string): void {
 /** Record a note creation */
 export function recordNoteCreated(title: string): void {
   let noteXp = 30;
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const today = todayStr();
     const count = (p.todayDate === today ? p.notesCreatedToday : 0) + 1;
     // Diminishing returns: 30 for first 10, 15 for next 20, 5 after
@@ -255,11 +256,11 @@ export function recordCalendarEventCompleted(title: string): void {
 
 /** Record a milestone completion */
 export function completeMilestone(projectName: string, milestoneLabel: string, xp: number): void {
-  questProfile.update(p => {
+  questProfile.update((p) => {
     const projects = [...p.activeProjects];
-    const proj = projects.find(pr => pr.name === projectName);
+    const proj = projects.find((pr) => pr.name === projectName);
     if (proj) {
-      const ms = proj.milestones.find(m => m.label === milestoneLabel);
+      const ms = proj.milestones.find((m) => m.label === milestoneLabel);
       if (ms && !ms.completed) {
         ms.completed = true;
         ms.completedAt = new Date().toISOString();
@@ -272,9 +273,14 @@ export function completeMilestone(projectName: string, milestoneLabel: string, x
 }
 
 /** Get an XP summary for display */
-export function getXpSummary(): { level: number; totalXp: number; todayXp: number; streak: number } {
+export function getXpSummary(): {
+  level: number;
+  totalXp: number;
+  todayXp: number;
+  streak: number;
+} {
   let result = { level: 1, totalXp: 0, todayXp: 0, streak: 0 };
-  questProfile.subscribe(p => {
+  questProfile.subscribe((p) => {
     result = {
       level: getLevelFromXp(p.totalXp),
       totalXp: p.totalXp,
@@ -286,8 +292,10 @@ export function getXpSummary(): { level: number; totalXp: number; todayXp: numbe
 }
 
 /** Persist profile to localStorage on change */
-questProfile.subscribe(profile => {
+questProfile.subscribe((profile) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-  } catch (e) { log.warn('Failed to persist quest profile to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist quest profile to localStorage', { error: String(e) });
+  }
 });

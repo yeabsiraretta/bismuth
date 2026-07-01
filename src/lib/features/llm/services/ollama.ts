@@ -38,7 +38,7 @@ export async function listOllamaModels(): Promise<string[]> {
 export async function chatOllama(model: string, messages: AgentMessage[]): Promise<string> {
   const body = {
     model,
-    messages: messages.map(m => ({ role: m.role, content: m.content })),
+    messages: messages.map((m) => ({ role: m.role, content: m.content })),
     stream: false,
   };
 
@@ -61,11 +61,11 @@ export async function chatOllama(model: string, messages: AgentMessage[]): Promi
  */
 export async function* chatOllamaStream(
   model: string,
-  messages: AgentMessage[],
+  messages: AgentMessage[]
 ): AsyncGenerator<string> {
   const body = {
     model,
-    messages: messages.map(m => ({ role: m.role, content: m.content })),
+    messages: messages.map((m) => ({ role: m.role, content: m.content })),
     stream: true,
   };
 

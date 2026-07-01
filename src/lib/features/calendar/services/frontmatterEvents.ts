@@ -11,7 +11,9 @@ import { DEFAULT_FM_EVENT_CONFIG } from '../types/prisma';
 
 /** Parse ISO date or datetime string to { date, startMinute, durationMinutes } */
 export function parseFrontmatterDate(value: unknown): {
-  date: string; startMinute: number | null; isAllDay: boolean;
+  date: string;
+  startMinute: number | null;
+  isAllDay: boolean;
 } | null {
   if (!value || typeof value !== 'string') return null;
   const s = value.trim();
@@ -33,11 +35,9 @@ export function parseFrontmatterDate(value: unknown): {
 }
 
 /** Compute duration in minutes between two datetime strings */
-export function computeDuration(
-  startVal: unknown,
-  endVal: unknown,
-): number | null {
-  if (!startVal || !endVal || typeof startVal !== 'string' || typeof endVal !== 'string') return null;
+export function computeDuration(startVal: unknown, endVal: unknown): number | null {
+  if (!startVal || !endVal || typeof startVal !== 'string' || typeof endVal !== 'string')
+    return null;
   const start = new Date(startVal);
   const end = new Date(endVal);
   if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
@@ -56,7 +56,7 @@ export interface NoteWithFrontmatter {
 /** Extract a calendar event from a note's frontmatter */
 export function extractFrontmatterEvent(
   note: NoteWithFrontmatter,
-  config: FrontmatterEventConfig = DEFAULT_FM_EVENT_CONFIG,
+  config: FrontmatterEventConfig = DEFAULT_FM_EVENT_CONFIG
 ): FrontmatterEvent | null {
   const fm = note.frontmatter;
   if (!fm) return null;
@@ -69,10 +69,7 @@ export function extractFrontmatterEvent(
   if (!parsed) return null;
 
   const isAllDay = fm[config.allDayProperty] === true || parsed.isAllDay;
-  const duration = computeDuration(
-    fm[config.startProperty],
-    fm[config.endProperty],
-  );
+  const duration = computeDuration(fm[config.startProperty], fm[config.endProperty]);
 
   // Map additional fields
   const event: FrontmatterEvent = {
@@ -104,7 +101,7 @@ export function extractFrontmatterEvent(
 /** Extract events from multiple notes */
 export function extractAllFrontmatterEvents(
   notes: NoteWithFrontmatter[],
-  config: FrontmatterEventConfig = DEFAULT_FM_EVENT_CONFIG,
+  config: FrontmatterEventConfig = DEFAULT_FM_EVENT_CONFIG
 ): FrontmatterEvent[] {
   const events: FrontmatterEvent[] = [];
   for (const note of notes) {
@@ -118,10 +115,10 @@ export function extractAllFrontmatterEvents(
 /** Apply smart category rules to events */
 export function applySmartCategories(
   events: CalendarEvent[],
-  rules: Array<{ pattern: string; categoryId: string }>,
+  rules: Array<{ pattern: string; categoryId: string }>
 ): CalendarEvent[] {
   if (!rules.length) return events;
-  return events.map(e => {
+  return events.map((e) => {
     if (e.categoryId) return e;
     for (const rule of rules) {
       if (e.title.toLowerCase().includes(rule.pattern.toLowerCase())) {

@@ -10,7 +10,9 @@ import type { ProgressBarBlock } from '../types/progressbar';
 const idValueMap = new Map<string, number>();
 
 export class ProgressBarWidget extends WidgetType {
-  constructor(private block: ProgressBarBlock) { super(); }
+  constructor(private block: ProgressBarBlock) {
+    super();
+  }
 
   eq(other: ProgressBarWidget): boolean {
     return this.block.raw === other.block.raw;
@@ -30,8 +32,10 @@ export class ProgressBarWidget extends WidgetType {
       idValueMap.set(data.id, currentValue);
     }
 
-    const pct = data.max - data.min > 0
-      ? Math.round(((currentValue - data.min) / (data.max - data.min)) * 100) : 0;
+    const pct =
+      data.max - data.min > 0
+        ? Math.round(((currentValue - data.min) / (data.max - data.min)) * 100)
+        : 0;
 
     // Label row
     const labelRow = document.createElement('div');

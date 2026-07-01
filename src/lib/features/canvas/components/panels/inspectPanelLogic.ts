@@ -37,11 +37,21 @@ export function generateCSS(el: CanvasElement): CSSProperty[] {
     });
     props.push({
       property: 'align-items',
-      value: al.alignItems === 'start' ? 'flex-start' : al.alignItems === 'end' ? 'flex-end' : al.alignItems,
+      value:
+        al.alignItems === 'start'
+          ? 'flex-start'
+          : al.alignItems === 'end'
+            ? 'flex-end'
+            : al.alignItems,
     });
     props.push({
       property: 'justify-content',
-      value: al.justifyContent === 'start' ? 'flex-start' : al.justifyContent === 'end' ? 'flex-end' : al.justifyContent,
+      value:
+        al.justifyContent === 'start'
+          ? 'flex-start'
+          : al.justifyContent === 'end'
+            ? 'flex-end'
+            : al.justifyContent,
     });
   }
 
@@ -61,7 +71,11 @@ export function generateCSS(el: CanvasElement): CSSProperty[] {
   // Border radius
   if (el.properties.borderRadius) {
     const br = el.properties.borderRadius;
-    if (br.topLeft === br.topRight && br.topRight === br.bottomRight && br.bottomRight === br.bottomLeft) {
+    if (
+      br.topLeft === br.topRight &&
+      br.topRight === br.bottomRight &&
+      br.bottomRight === br.bottomLeft
+    ) {
       props.push({ property: 'border-radius', value: `${br.topLeft}px` });
     } else {
       props.push({
@@ -128,10 +142,7 @@ export function generateCSSCode(el: CanvasElement): string {
 }
 
 /** Resolves the single selected element from selection state. */
-export function getSelectedElement(
-  ids: string[],
-  elements: CanvasElement[]
-): CanvasElement | null {
+export function getSelectedElement(ids: string[], elements: CanvasElement[]): CanvasElement | null {
   if (ids.length !== 1) return null;
   return elements.find((el) => el.id === ids[0]) ?? null;
 }

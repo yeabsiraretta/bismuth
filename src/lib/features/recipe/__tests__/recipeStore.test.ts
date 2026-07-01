@@ -6,10 +6,21 @@ vi.mock('@/utils/logger', () => ({
 }));
 
 import {
-  activeRecipe, recipeViewState, hasRecipe, scaledIngredients,
-  loadRecipe, clearRecipe, setScale, scaleToServings,
-  setViewMode, toggleIngredientCrossOff,
-  highlightStep, nextStep, prevStep, resetCrossOff, detectRecipe,
+  activeRecipe,
+  recipeViewState,
+  hasRecipe,
+  scaledIngredients,
+  loadRecipe,
+  clearRecipe,
+  setScale,
+  scaleToServings,
+  setViewMode,
+  toggleIngredientCrossOff,
+  highlightStep,
+  nextStep,
+  prevStep,
+  resetCrossOff,
+  detectRecipe,
 } from '../stores/recipeStore';
 
 const SAMPLE_RECIPE = `---

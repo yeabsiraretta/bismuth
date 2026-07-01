@@ -21,8 +21,12 @@ vi.mock('@/features/gamify', () => ({
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
 });
 
 import {
@@ -143,7 +147,12 @@ describe('taskStore', () => {
     });
 
     it('toggleTask changes done back to open', async () => {
-      const task = makeTask({ text: 'Done task', status: 'done', status_symbol: '[x]', status_type: 'DONE' });
+      const task = makeTask({
+        text: 'Done task',
+        status: 'done',
+        status_symbol: '[x]',
+        status_type: 'DONE',
+      });
       tasks.set([task]);
       vi.mocked(taskService.updateTaskStatus).mockResolvedValue(undefined);
 
@@ -192,9 +201,30 @@ describe('taskStore', () => {
   // ---------------------------------------------------------------------------
 
   describe('query filtering', () => {
-    const taskOpen = makeTask({ text: 'Buy groceries', status: 'open', tags: ['shopping'], project: 'home', due_date: '2026-07-01' });
-    const taskDone = makeTask({ text: 'Write report', status: 'done', status_symbol: '[x]', status_type: 'DONE', priority: 'high', tags: ['work'], project: 'bismuth', line: 2 });
-    const taskCancelled = makeTask({ text: 'Old todo', status: 'cancelled', tags: [], line: 3, due_date: '2026-06-01' });
+    const taskOpen = makeTask({
+      text: 'Buy groceries',
+      status: 'open',
+      tags: ['shopping'],
+      project: 'home',
+      due_date: '2026-07-01',
+    });
+    const taskDone = makeTask({
+      text: 'Write report',
+      status: 'done',
+      status_symbol: '[x]',
+      status_type: 'DONE',
+      priority: 'high',
+      tags: ['work'],
+      project: 'bismuth',
+      line: 2,
+    });
+    const taskCancelled = makeTask({
+      text: 'Old todo',
+      status: 'cancelled',
+      tags: [],
+      line: 3,
+      due_date: '2026-06-01',
+    });
 
     beforeEach(() => {
       tasks.set([taskOpen, taskDone, taskCancelled]);

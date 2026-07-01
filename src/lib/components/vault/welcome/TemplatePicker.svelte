@@ -9,9 +9,26 @@
   export let isCreating = false;
 
   const templates = [
-    { value: VaultTemplate.PARA, icon: 'layers', title: 'PARA', description: 'Projects, Areas, Resources, and Archive — ideal for GTD-style workflows' },
-    { value: VaultTemplate.JohnnyDecimal, icon: 'grid', title: 'Johnny.Decimal', description: 'Structured numbering system (10–19, 20–29, …) for strict hierarchical organization' },
-    { value: VaultTemplate.Zettelkasten, icon: 'share-2', title: 'Zettelkasten', description: 'Atomic, interconnected notes with unique IDs — ideal for research and creative writing' },
+    {
+      value: VaultTemplate.PARA,
+      icon: 'layers',
+      title: 'PARA',
+      description: 'Projects, Areas, Resources, and Archive — ideal for GTD-style workflows',
+    },
+    {
+      value: VaultTemplate.JohnnyDecimal,
+      icon: 'grid',
+      title: 'Johnny.Decimal',
+      description:
+        'Structured numbering system (10–19, 20–29, …) for strict hierarchical organization',
+    },
+    {
+      value: VaultTemplate.Zettelkasten,
+      icon: 'share-2',
+      title: 'Zettelkasten',
+      description:
+        'Atomic, interconnected notes with unique IDs — ideal for research and creative writing',
+    },
   ];
 
   async function handleSelect(template: VaultTemplate) {
@@ -79,7 +96,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    transition: color var(--transition-fast), background-color var(--transition-fast);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
   }
 
   .back-btn:hover {

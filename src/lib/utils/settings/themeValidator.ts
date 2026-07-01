@@ -77,7 +77,8 @@ export function validateThemeManifest(json: unknown): json is ThemeManifest {
   if (typeof obj['name'] !== 'string' || !(obj['name'] as string).trim()) return false;
   if (typeof obj['author'] !== 'string') return false;
   if (typeof obj['version'] !== 'string') return false;
-  if (!obj['tokens'] || typeof obj['tokens'] !== 'object' || Array.isArray(obj['tokens'])) return false;
+  if (!obj['tokens'] || typeof obj['tokens'] !== 'object' || Array.isArray(obj['tokens']))
+    return false;
 
   const tokens = obj['tokens'] as Record<string, unknown>;
   for (const [key, value] of Object.entries(tokens)) {

@@ -42,6 +42,7 @@ pnpm run check
 ### Starting Development Server
 
 **Desktop App (Tauri)**:
+
 ```bash
 ./bismuth.sh dev
 # or
@@ -49,6 +50,7 @@ pnpm start
 ```
 
 **Web Only (Vite)**:
+
 ```bash
 ./bismuth.sh dev:web
 # or
@@ -90,6 +92,7 @@ pnpm run build:all
 ### Unit Tests
 
 **Watch Mode** (interactive):
+
 ```bash
 ./bismuth.sh test
 # or
@@ -97,6 +100,7 @@ pnpm test
 ```
 
 **CI Mode** (run once with coverage):
+
 ```bash
 ./bismuth.sh test:ci
 # or
@@ -104,6 +108,7 @@ pnpm run test:ci
 ```
 
 **UI Mode** (visual test runner):
+
 ```bash
 ./bismuth.sh test:ui
 # or
@@ -113,6 +118,7 @@ pnpm run test:ui
 ### End-to-End Tests
 
 **Run E2E Tests**:
+
 ```bash
 ./bismuth.sh e2e
 # or
@@ -120,6 +126,7 @@ pnpm run e2e
 ```
 
 **E2E with UI**:
+
 ```bash
 ./bismuth.sh e2e:ui
 # or
@@ -127,6 +134,7 @@ pnpm run e2e:ui
 ```
 
 **Debug E2E**:
+
 ```bash
 ./bismuth.sh e2e:debug
 # or
@@ -170,6 +178,7 @@ pnpm run verify
 ### Individual Checks
 
 **Linting**:
+
 ```bash
 ./bismuth.sh lint
 # or
@@ -177,6 +186,7 @@ pnpm run lint
 ```
 
 **Formatting**:
+
 ```bash
 ./bismuth.sh format
 # or
@@ -184,6 +194,7 @@ pnpm run format
 ```
 
 **Type Checking**:
+
 ```bash
 ./bismuth.sh type-check
 # or
@@ -243,6 +254,7 @@ pnpm run commit
 ### Create Release
 
 **Automatic Versioning** (based on commits):
+
 ```bash
 ./bismuth.sh release
 # or
@@ -250,6 +262,7 @@ pnpm run release
 ```
 
 **Specific Version Bump**:
+
 ```bash
 # Patch (0.0.x)
 ./bismuth.sh release:patch
@@ -265,6 +278,7 @@ pnpm run release:major
 ```
 
 **Pre-release Versions**:
+
 ```bash
 # Alpha
 pnpm run release:alpha
@@ -277,6 +291,7 @@ pnpm run release:rc
 ```
 
 **Dry Run** (preview without committing):
+
 ```bash
 pnpm run release:dry
 ```
@@ -302,6 +317,7 @@ The governed pipeline is the preferred way to develop features with AI assistanc
 ```
 
 The governed pipeline automatically integrates:
+
 - Memory synthesis (constitutions + durable decisions)
 - Security review (trust boundaries, authorization)
 - Architecture validation (drift detection, constitution compliance)

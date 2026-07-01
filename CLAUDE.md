@@ -7,6 +7,7 @@
 **AI/ML policy**: All AI features use open-source, locally-run implementations (Ollama, Tesseract, TrOCR ONNX, Demucs, ffmpeg.wasm) by default. Cloud APIs (Claude, OpenAI, etc.) are always opt-in — user supplies their own key via keychain. No paid API is ever required for core functionality.
 
 **Active expansion specs** (spec 038 roadmap — each requires its own governed-plan before implementation):
+
 - `specs/039-music-production/` — DAW canvas mode, Web Audio API, Demucs stem splitter
 - `specs/040-llm-agent-access/` — Local/cloud LLM agents, REST API (extends SearchServer), all AI off by default
 - `specs/041-calendar-enhancements/` — Day view, event types, colors, recurring events
@@ -40,6 +41,7 @@ The three governed workflows form a sequential pipeline. Always follow this orde
 ```
 
 Each governed workflow integrates ALL quality skills automatically:
+
 - **code-review**: Applied during governed-implement (Step 5 architecture review)
 - **ux-review**: Applied when tasks involve UI components
 - **component-gen**: Applied when implementing UI tasks (follows .claude/component-guide.md)
@@ -62,24 +64,24 @@ Each governed workflow integrates ALL quality skills automatically:
 
 ## Skill Integration Map
 
-| Governed Step | Skills Activated |
-|---|---|
-| Plan: Architecture Validation | violation-detection, security-review.plan |
-| Tasks: Generation | pict-test-designer (for test tasks), security-review.tasks |
-| Tasks: Refactor Generation | refactor-generator, code-review (quality bar) |
-| Implement: Coding | component-gen (UI tasks), coding-principles |
-| Implement: Review | code-review, ux-review (UI changes), architecture-review |
-| Implement: Memory Capture | memory-md.capture |
+| Governed Step                 | Skills Activated                                           |
+| ----------------------------- | ---------------------------------------------------------- |
+| Plan: Architecture Validation | violation-detection, security-review.plan                  |
+| Tasks: Generation             | pict-test-designer (for test tasks), security-review.tasks |
+| Tasks: Refactor Generation    | refactor-generator, code-review (quality bar)              |
+| Implement: Coding             | component-gen (UI tasks), coding-principles                |
+| Implement: Review             | code-review, ux-review (UI changes), architecture-review   |
+| Implement: Memory Capture     | memory-md.capture                                          |
 
 ## Three-Layer Integration
 
 The skill system is mirrored across three locations for full agent compatibility:
 
-| Layer | Location | Purpose |
-|-------|----------|---------|
-| Agent Config | `.claude/skills/*/SKILL.md` | Claude/Windsurf skill definitions |
-| Windsurf Workflows | `.windsurf/workflows/*.md` | Windsurf slash-command definitions |
-| Extension Commands | `.specify/extensions/architecture-guard/commands/*.md` | Spec-Kit extension commands |
+| Layer              | Location                                               | Purpose                            |
+| ------------------ | ------------------------------------------------------ | ---------------------------------- |
+| Agent Config       | `.claude/skills/*/SKILL.md`                            | Claude/Windsurf skill definitions  |
+| Windsurf Workflows | `.windsurf/workflows/*.md`                             | Windsurf slash-command definitions |
+| Extension Commands | `.specify/extensions/architecture-guard/commands/*.md` | Spec-Kit extension commands        |
 
 All three layers contain identical cross-skill integration sections. The canonical source of truth for the skill integration map is this file (`CLAUDE.md`).
 
@@ -98,6 +100,7 @@ src/lib/features/<name>/
 ```
 
 Rules:
+
 - Import from other features via barrel ONLY: `import { x } from '@/features/<name>'`
 - Never import internal paths: `@/features/<name>/stores/...` is PROHIBITED externally
 - Core layer (vault, layout, settings, theme, editor, canvas, ui) stays in top-level directories

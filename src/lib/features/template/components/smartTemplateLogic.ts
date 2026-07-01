@@ -47,7 +47,7 @@ export function initContext(selection?: string): PromptContext | null {
 export function assemblePrompt(
   context: PromptContext,
   selectedTemplates: SmartTemplate[],
-  instructions: string,
+  instructions: string
 ): BuiltPrompt {
   const prompt = buildSmartPrompt(context, selectedTemplates, instructions);
   addRecentPrompt(prompt);
@@ -69,9 +69,9 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 /** Toggle template selection. */
 export function toggleTemplateSelection(
   selected: SmartTemplate[],
-  template: SmartTemplate,
+  template: SmartTemplate
 ): SmartTemplate[] {
-  const idx = selected.findIndex(t => t.name === template.name);
+  const idx = selected.findIndex((t) => t.name === template.name);
   if (idx >= 0) {
     return [...selected.slice(0, idx), ...selected.slice(idx + 1)];
   }

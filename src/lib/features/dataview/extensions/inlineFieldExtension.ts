@@ -10,12 +10,7 @@
  *   - `(Key:: Value)`    (paren inline field, hidden in preview)
  */
 
-import {
-  Decoration,
-  ViewPlugin,
-  EditorView,
-  WidgetType,
-} from '@codemirror/view';
+import { Decoration, ViewPlugin, EditorView, WidgetType } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 
@@ -32,7 +27,9 @@ const keyMark = Decoration.mark({ class: 'cm-dv-inline-key' });
 const valueMark = Decoration.mark({ class: 'cm-dv-inline-value' });
 
 class InlineFieldHintWidget extends WidgetType {
-  constructor(private key: string) { super(); }
+  constructor(private key: string) {
+    super();
+  }
   toDOM(): HTMLElement {
     const span = document.createElement('span');
     span.className = 'cm-dv-field-hint';
@@ -40,7 +37,9 @@ class InlineFieldHintWidget extends WidgetType {
     span.textContent = '◆';
     return span;
   }
-  eq(other: InlineFieldHintWidget) { return this.key === other.key; }
+  eq(other: InlineFieldHintWidget) {
+    return this.key === other.key;
+  }
 }
 
 function buildDecorations(view: EditorView): DecorationSet {
@@ -56,11 +55,20 @@ function buildDecorations(view: EditorView): DecorationSet {
     const text = line.text;
 
     // Skip frontmatter
-    if (i === 1 && text === '---') { inFrontmatter = true; continue; }
-    if (inFrontmatter) { if (text === '---') inFrontmatter = false; continue; }
+    if (i === 1 && text === '---') {
+      inFrontmatter = true;
+      continue;
+    }
+    if (inFrontmatter) {
+      if (text === '---') inFrontmatter = false;
+      continue;
+    }
 
     // Skip code blocks
-    if (/^(`{3,}|~{3,})/.test(text)) { inCodeBlock = !inCodeBlock; continue; }
+    if (/^(`{3,}|~{3,})/.test(text)) {
+      inCodeBlock = !inCodeBlock;
+      continue;
+    }
     if (inCodeBlock) continue;
 
     // Full-line inline field
@@ -106,7 +114,7 @@ function buildDecorations(view: EditorView): DecorationSet {
         Decoration.widget({
           widget: new InlineFieldHintWidget(m[1]),
           side: -1,
-        }),
+        })
       );
     }
   }
@@ -133,7 +141,7 @@ export function inlineFieldExtension() {
         }
       }
     },
-    { decorations: (instance) => instance.decorations },
+    { decorations: (instance) => instance.decorations }
   );
 
   const theme = EditorView.baseTheme({

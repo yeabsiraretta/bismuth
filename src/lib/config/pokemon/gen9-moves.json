@@ -1,138 +1,274 @@
 {
   "earthquake": {
-    "id": "earthquake", "name": "Earthquake",
-    "type": "Ground", "power": 100, "category": "physical", "accuracy": 100
+    "id": "earthquake",
+    "name": "Earthquake",
+    "type": "Ground",
+    "power": 100,
+    "category": "physical",
+    "accuracy": 100
   },
   "close-combat": {
-    "id": "close-combat", "name": "Close Combat",
-    "type": "Fighting", "power": 120, "category": "physical", "accuracy": 100
+    "id": "close-combat",
+    "name": "Close Combat",
+    "type": "Fighting",
+    "power": 120,
+    "category": "physical",
+    "accuracy": 100
   },
   "iron-head": {
-    "id": "iron-head", "name": "Iron Head",
-    "type": "Steel", "power": 80, "category": "physical", "accuracy": 100
+    "id": "iron-head",
+    "name": "Iron Head",
+    "type": "Steel",
+    "power": 80,
+    "category": "physical",
+    "accuracy": 100
   },
   "dragon-claw": {
-    "id": "dragon-claw", "name": "Dragon Claw",
-    "type": "Dragon", "power": 80, "category": "physical", "accuracy": 100
+    "id": "dragon-claw",
+    "name": "Dragon Claw",
+    "type": "Dragon",
+    "power": 80,
+    "category": "physical",
+    "accuracy": 100
   },
   "shadow-ball": {
-    "id": "shadow-ball", "name": "Shadow Ball",
-    "type": "Ghost", "power": 80, "category": "special", "accuracy": 100
+    "id": "shadow-ball",
+    "name": "Shadow Ball",
+    "type": "Ghost",
+    "power": 80,
+    "category": "special",
+    "accuracy": 100
   },
   "flamethrower": {
-    "id": "flamethrower", "name": "Flamethrower",
-    "type": "Fire", "power": 90, "category": "special", "accuracy": 100
+    "id": "flamethrower",
+    "name": "Flamethrower",
+    "type": "Fire",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "hydro-pump": {
-    "id": "hydro-pump", "name": "Hydro Pump",
-    "type": "Water", "power": 110, "category": "special", "accuracy": 80
+    "id": "hydro-pump",
+    "name": "Hydro Pump",
+    "type": "Water",
+    "power": 110,
+    "category": "special",
+    "accuracy": 80
   },
   "thunderbolt": {
-    "id": "thunderbolt", "name": "Thunderbolt",
-    "type": "Electric", "power": 90, "category": "special", "accuracy": 100
+    "id": "thunderbolt",
+    "name": "Thunderbolt",
+    "type": "Electric",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "psychic": {
-    "id": "psychic", "name": "Psychic",
-    "type": "Psychic", "power": 90, "category": "special", "accuracy": 100
+    "id": "psychic",
+    "name": "Psychic",
+    "type": "Psychic",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "ice-beam": {
-    "id": "ice-beam", "name": "Ice Beam",
-    "type": "Ice", "power": 90, "category": "special", "accuracy": 100
+    "id": "ice-beam",
+    "name": "Ice Beam",
+    "type": "Ice",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "scald": {
-    "id": "scald", "name": "Scald",
-    "type": "Water", "power": 80, "category": "special", "accuracy": 100
+    "id": "scald",
+    "name": "Scald",
+    "type": "Water",
+    "power": 80,
+    "category": "special",
+    "accuracy": 100
   },
   "moonblast": {
-    "id": "moonblast", "name": "Moonblast",
-    "type": "Fairy", "power": 95, "category": "special", "accuracy": 100
+    "id": "moonblast",
+    "name": "Moonblast",
+    "type": "Fairy",
+    "power": 95,
+    "category": "special",
+    "accuracy": 100
   },
   "focus-blast": {
-    "id": "focus-blast", "name": "Focus Blast",
-    "type": "Fighting", "power": 120, "category": "special", "accuracy": 70
+    "id": "focus-blast",
+    "name": "Focus Blast",
+    "type": "Fighting",
+    "power": 120,
+    "category": "special",
+    "accuracy": 70
   },
   "dark-pulse": {
-    "id": "dark-pulse", "name": "Dark Pulse",
-    "type": "Dark", "power": 80, "category": "special", "accuracy": 100
+    "id": "dark-pulse",
+    "name": "Dark Pulse",
+    "type": "Dark",
+    "power": 80,
+    "category": "special",
+    "accuracy": 100
   },
   "energy-ball": {
-    "id": "energy-ball", "name": "Energy Ball",
-    "type": "Grass", "power": 90, "category": "special", "accuracy": 100
+    "id": "energy-ball",
+    "name": "Energy Ball",
+    "type": "Grass",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "surf": {
-    "id": "surf", "name": "Surf",
-    "type": "Water", "power": 90, "category": "special", "accuracy": 100
+    "id": "surf",
+    "name": "Surf",
+    "type": "Water",
+    "power": 90,
+    "category": "special",
+    "accuracy": 100
   },
   "overheat": {
-    "id": "overheat", "name": "Overheat",
-    "type": "Fire", "power": 130, "category": "special", "accuracy": 90
+    "id": "overheat",
+    "name": "Overheat",
+    "type": "Fire",
+    "power": 130,
+    "category": "special",
+    "accuracy": 90
   },
   "flare-blitz": {
-    "id": "flare-blitz", "name": "Flare Blitz",
-    "type": "Fire", "power": 120, "category": "physical", "accuracy": 100
+    "id": "flare-blitz",
+    "name": "Flare Blitz",
+    "type": "Fire",
+    "power": 120,
+    "category": "physical",
+    "accuracy": 100
   },
   "u-turn": {
-    "id": "u-turn", "name": "U-turn",
-    "type": "Bug", "power": 70, "category": "physical", "accuracy": 100
+    "id": "u-turn",
+    "name": "U-turn",
+    "type": "Bug",
+    "power": 70,
+    "category": "physical",
+    "accuracy": 100
   },
   "knock-off": {
-    "id": "knock-off", "name": "Knock Off",
-    "type": "Dark", "power": 65, "category": "physical", "accuracy": 100
+    "id": "knock-off",
+    "name": "Knock Off",
+    "type": "Dark",
+    "power": 65,
+    "category": "physical",
+    "accuracy": 100
   },
   "will-o-wisp": {
-    "id": "will-o-wisp", "name": "Will-O-Wisp",
-    "type": "Fire", "power": null, "category": "status", "accuracy": 85
+    "id": "will-o-wisp",
+    "name": "Will-O-Wisp",
+    "type": "Fire",
+    "power": null,
+    "category": "status",
+    "accuracy": 85
   },
   "stealth-rock": {
-    "id": "stealth-rock", "name": "Stealth Rock",
-    "type": "Rock", "power": null, "category": "status", "accuracy": null
+    "id": "stealth-rock",
+    "name": "Stealth Rock",
+    "type": "Rock",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "spikes": {
-    "id": "spikes", "name": "Spikes",
-    "type": "Ground", "power": null, "category": "status", "accuracy": null
+    "id": "spikes",
+    "name": "Spikes",
+    "type": "Ground",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "taunt": {
-    "id": "taunt", "name": "Taunt",
-    "type": "Dark", "power": null, "category": "status", "accuracy": 100
+    "id": "taunt",
+    "name": "Taunt",
+    "type": "Dark",
+    "power": null,
+    "category": "status",
+    "accuracy": 100
   },
   "swords-dance": {
-    "id": "swords-dance", "name": "Swords Dance",
-    "type": "Normal", "power": null, "category": "status", "accuracy": null
+    "id": "swords-dance",
+    "name": "Swords Dance",
+    "type": "Normal",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "calm-mind": {
-    "id": "calm-mind", "name": "Calm Mind",
-    "type": "Psychic", "power": null, "category": "status", "accuracy": null
+    "id": "calm-mind",
+    "name": "Calm Mind",
+    "type": "Psychic",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "nasty-plot": {
-    "id": "nasty-plot", "name": "Nasty Plot",
-    "type": "Dark", "power": null, "category": "status", "accuracy": null
+    "id": "nasty-plot",
+    "name": "Nasty Plot",
+    "type": "Dark",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "protect": {
-    "id": "protect", "name": "Protect",
-    "type": "Normal", "power": null, "category": "status", "accuracy": null
+    "id": "protect",
+    "name": "Protect",
+    "type": "Normal",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "substitute": {
-    "id": "substitute", "name": "Substitute",
-    "type": "Normal", "power": null, "category": "status", "accuracy": null
+    "id": "substitute",
+    "name": "Substitute",
+    "type": "Normal",
+    "power": null,
+    "category": "status",
+    "accuracy": null
   },
   "stone-edge": {
-    "id": "stone-edge", "name": "Stone Edge",
-    "type": "Rock", "power": 100, "category": "physical", "accuracy": 80
+    "id": "stone-edge",
+    "name": "Stone Edge",
+    "type": "Rock",
+    "power": 100,
+    "category": "physical",
+    "accuracy": 80
   },
   "outrage": {
-    "id": "outrage", "name": "Outrage",
-    "type": "Dragon", "power": 120, "category": "physical", "accuracy": 100
+    "id": "outrage",
+    "name": "Outrage",
+    "type": "Dragon",
+    "power": 120,
+    "category": "physical",
+    "accuracy": 100
   },
   "body-press": {
-    "id": "body-press", "name": "Body Press",
-    "type": "Fighting", "power": 80, "category": "physical", "accuracy": 100
+    "id": "body-press",
+    "name": "Body Press",
+    "type": "Fighting",
+    "power": 80,
+    "category": "physical",
+    "accuracy": 100
   },
   "ice-spinner": {
-    "id": "ice-spinner", "name": "Ice Spinner",
-    "type": "Ice", "power": 80, "category": "physical", "accuracy": 100
+    "id": "ice-spinner",
+    "name": "Ice Spinner",
+    "type": "Ice",
+    "power": 80,
+    "category": "physical",
+    "accuracy": 100
   },
   "tera-blast": {
-    "id": "tera-blast", "name": "Tera Blast",
-    "type": "Normal", "power": 80, "category": "special", "accuracy": 100
+    "id": "tera-blast",
+    "name": "Tera Blast",
+    "type": "Normal",
+    "power": 80,
+    "category": "special",
+    "accuracy": 100
   }
 }

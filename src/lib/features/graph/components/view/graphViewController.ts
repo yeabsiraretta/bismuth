@@ -84,11 +84,21 @@ export function render(
   settings: GraphSettings,
   colorGroups: Array<{ query: string; color: string }>,
   width: number,
-  height: number,
+  height: number
 ): GraphViewController {
   if (!ctx) return ctrl;
   const graphColors = canvasEl ? resolveGraphColors(canvasEl) : ctrl.graphColors;
-  renderGraph(ctx, ctrl.nodes, ctrl.edges, settings, colorGroups, ctrl.rState, width, height, graphColors);
+  renderGraph(
+    ctx,
+    ctrl.nodes,
+    ctrl.edges,
+    settings,
+    colorGroups,
+    ctrl.rState,
+    width,
+    height,
+    graphColors
+  );
   return { ...ctrl, graphColors };
 }
 
@@ -99,13 +109,24 @@ export async function loadGraphData(
   settings: GraphSettings,
   colorGroups: Array<{ query: string; color: string }>,
   filterParams: GraphFilterParams,
-  onUpdate: (ctrl: GraphViewController) => void,
+  onUpdate: (ctrl: GraphViewController) => void
 ): Promise<GraphViewController> {
   try {
     const graphData = await getGraphData();
-    log.debug('Graph data loaded', { nodes: graphData.nodes.length, edges: graphData.edges.length });
+    log.debug('Graph data loaded', {
+      nodes: graphData.nodes.length,
+      edges: graphData.edges.length,
+    });
     ctrl = { ...ctrl, graphData };
-    return await initializeSimulation(ctx, canvasEl, ctrl, settings, colorGroups, filterParams, onUpdate);
+    return await initializeSimulation(
+      ctx,
+      canvasEl,
+      ctrl,
+      settings,
+      colorGroups,
+      filterParams,
+      onUpdate
+    );
   } catch (error) {
     log.error('Failed to load graph data', error);
     return ctrl;
@@ -119,28 +140,72 @@ export async function initializeSimulation(
   settings: GraphSettings,
   colorGroups: Array<{ query: string; color: string }>,
   filterParams: GraphFilterParams,
-  onUpdate: (ctrl: GraphViewController) => void,
+  onUpdate: (ctrl: GraphViewController) => void
 ): Promise<GraphViewController> {
   ctrl = { ...ctrl, initializing: true };
   // Use bloom=true so nodes start at center and animate outward
   const result = applyFilters(ctrl.graphData, filterParams, [], true);
-  ctrl = { ...ctrl, nodes: result.nodes, edges: result.edges, availableTags: [], availableTypes: extractAvailableTypes(ctrl.graphData) };
-  log.debug('Graph simulation init', { filteredNodes: ctrl.nodes.length, filteredEdges: ctrl.edges.length });
+  ctrl = {
+    ...ctrl,
+    nodes: result.nodes,
+    edges: result.edges,
+    availableTags: [],
+    availableTypes: extractAvailableTypes(ctrl.graphData),
+  };
+  log.debug('Graph simulation init', {
+    filteredNodes: ctrl.nodes.length,
+    filteredEdges: ctrl.edges.length,
+  });
 
   try {
     const layoutNodes = await applyBackendLayout(ctrl.nodes, {
-      centerForce: settings.centerForce, repelForce: settings.repelForce,
-      linkForce: settings.linkForce, linkDistance: settings.linkDistance,
-      width: filterParams.width, height: filterParams.height, nodeCount: ctrl.nodes.length,
+      centerForce: settings.centerForce,
+      repelForce: settings.repelForce,
+      linkForce: settings.linkForce,
+      linkDistance: settings.linkDistance,
+      width: filterParams.width,
+      height: filterParams.height,
+      nodeCount: ctrl.nodes.length,
     });
     const off = computeCentreOffset(layoutNodes, filterParams.width, filterParams.height);
-    ctrl = { ...ctrl, nodes: layoutNodes, rState: { ...ctrl.rState, offsetX: off.offsetX, offsetY: off.offsetY }, initializing: false };
-    ctrl = render(ctx, canvasEl, ctrl, settings, colorGroups, filterParams.width, filterParams.height);
+    ctrl = {
+      ...ctrl,
+      nodes: layoutNodes,
+      rState: { ...ctrl.rState, offsetX: off.offsetX, offsetY: off.offsetY },
+      initializing: false,
+    };
+    ctrl = render(
+      ctx,
+      canvasEl,
+      ctrl,
+      settings,
+      colorGroups,
+      filterParams.width,
+      filterParams.height
+    );
     // Always auto-animate on first load for smooth entrance
-    ctrl = startAnimationLoop(ctx, canvasEl, ctrl, settings, colorGroups, filterParams.width, filterParams.height, onUpdate);
+    ctrl = startAnimationLoop(
+      ctx,
+      canvasEl,
+      ctrl,
+      settings,
+      colorGroups,
+      filterParams.width,
+      filterParams.height,
+      onUpdate
+    );
   } catch {
     log.debug('Backend layout unavailable, running frontend simulation');
-    ctrl = startWarmup(ctx, canvasEl, ctrl, settings, colorGroups, filterParams.width, filterParams.height, onUpdate);
+    ctrl = startWarmup(
+      ctx,
+      canvasEl,
+      ctrl,
+      settings,
+      colorGroups,
+      filterParams.width,
+      filterParams.height,
+      onUpdate
+    );
     ctrl = { ...ctrl, initializing: false };
   }
   return ctrl;
@@ -154,15 +219,36 @@ export function startWarmup(
   colorGroups: Array<{ query: string; color: string }>,
   width: number,
   height: number,
-  onUpdate: (ctrl: GraphViewController) => void,
+  onUpdate: (ctrl: GraphViewController) => void
 ): GraphViewController {
-  runWarmupSimulation(ctrl.nodes, ctrl.edges, settings, width, height, ctrl.layoutWorker, (updated) => {
-    const off = computeCentreOffset(updated, width, height);
-    ctrl = { ...ctrl, nodes: updated, rState: { ...ctrl.rState, offsetX: off.offsetX, offsetY: off.offsetY } };
-    ctrl = render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
-    ctrl = startAnimationLoop(ctx, canvasEl, ctrl, settings, colorGroups, width, height, onUpdate);
-    onUpdate(ctrl);
-  });
+  runWarmupSimulation(
+    ctrl.nodes,
+    ctrl.edges,
+    settings,
+    width,
+    height,
+    ctrl.layoutWorker,
+    (updated) => {
+      const off = computeCentreOffset(updated, width, height);
+      ctrl = {
+        ...ctrl,
+        nodes: updated,
+        rState: { ...ctrl.rState, offsetX: off.offsetX, offsetY: off.offsetY },
+      };
+      ctrl = render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
+      ctrl = startAnimationLoop(
+        ctx,
+        canvasEl,
+        ctrl,
+        settings,
+        colorGroups,
+        width,
+        height,
+        onUpdate
+      );
+      onUpdate(ctrl);
+    }
+  );
   return ctrl;
 }
 
@@ -174,15 +260,23 @@ export function startAnimationLoop(
   colorGroups: Array<{ query: string; color: string }>,
   width: number,
   height: number,
-  onUpdate: (ctrl: GraphViewController) => void,
+  onUpdate: (ctrl: GraphViewController) => void
 ): GraphViewController {
   function animate() {
-    runAnimationTick(ctrl.nodes, ctrl.edges, settings, width, height, ctrl.layoutWorker, (updated) => {
-      ctrl = { ...ctrl, nodes: updated };
-      ctrl = render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
-      onUpdate(ctrl);
-      if (settings.animate) ctrl = { ...ctrl, animationFrame: requestAnimationFrame(animate) };
-    });
+    runAnimationTick(
+      ctrl.nodes,
+      ctrl.edges,
+      settings,
+      width,
+      height,
+      ctrl.layoutWorker,
+      (updated) => {
+        ctrl = { ...ctrl, nodes: updated };
+        ctrl = render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
+        onUpdate(ctrl);
+        if (settings.animate) ctrl = { ...ctrl, animationFrame: requestAnimationFrame(animate) };
+      }
+    );
   }
   animate();
   return ctrl;
@@ -192,7 +286,7 @@ export function handleClick(
   e: MouseEvent,
   canvasEl: HTMLCanvasElement,
   ctrl: GraphViewController,
-  openNote: (id: string) => void,
+  openNote: (id: string) => void
 ): GraphViewController {
   const { x, y } = screenToGraph(e, canvasEl, ctrl.rState);
   const node = hitTestNode(ctrl.nodes, x, y);
@@ -206,7 +300,7 @@ export function handleClick(
 export function handleContextMenu(
   e: MouseEvent,
   canvasEl: HTMLCanvasElement,
-  ctrl: GraphViewController,
+  ctrl: GraphViewController
 ): { ctrl: GraphViewController; node: GraphNode | null; x: number; y: number; visible: boolean } {
   e.preventDefault();
   const { x, y } = screenToGraph(e, canvasEl, ctrl.rState);
@@ -221,7 +315,7 @@ export function handleContextAction(
   action: string,
   node: GraphNode | null,
   openNote: (id: string) => void,
-  onLocalView: (nid: string) => void,
+  onLocalView: (nid: string) => void
 ): void {
   if (!node) return;
   const id = dispatchContextMenuAction(action, node.id, onLocalView);
@@ -230,7 +324,7 @@ export function handleContextAction(
 
 export function applyFilterUpdate(
   ctrl: GraphViewController,
-  filterParams: GraphFilterParams,
+  filterParams: GraphFilterParams
 ): GraphViewController {
   if (ctrl.graphData.nodes.length === 0 || ctrl.initializing) return ctrl;
   const r = applyFilters(ctrl.graphData, filterParams, ctrl.nodes);
@@ -245,10 +339,13 @@ export function fitToView(
   settings: GraphSettings,
   colorGroups: Array<{ query: string; color: string }>,
   width: number,
-  height: number,
+  height: number
 ): GraphViewController {
   if (ctrl.nodes.length === 0) return ctrl;
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
   for (const n of ctrl.nodes) {
     if (n.x < minX) minX = n.x;
     if (n.x > maxX) maxX = n.x;
@@ -256,12 +353,17 @@ export function fitToView(
     if (n.y > maxY) maxY = n.y;
   }
   const pad = 60;
-  const graphW = (maxX - minX) || 1;
-  const graphH = (maxY - minY) || 1;
+  const graphW = maxX - minX || 1;
+  const graphH = maxY - minY || 1;
   const scale = Math.min((width - pad * 2) / graphW, (height - pad * 2) / graphH, 3);
   const cx = (minX + maxX) / 2;
   const cy = (minY + maxY) / 2;
-  const rState = { ...ctrl.rState, scale, offsetX: width / 2 - cx * scale, offsetY: height / 2 - cy * scale };
+  const rState = {
+    ...ctrl.rState,
+    scale,
+    offsetX: width / 2 - cx * scale,
+    offsetY: height / 2 - cy * scale,
+  };
   ctrl = { ...ctrl, rState };
   return render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
 }
@@ -274,12 +376,21 @@ export function resetView(
   settings: GraphSettings,
   colorGroups: Array<{ query: string; color: string }>,
   width: number,
-  height: number,
+  height: number
 ): GraphViewController {
   const off = computeCentreOffset(ctrl.nodes, width, height);
-  ctrl = { ...ctrl, rState: { ...ctrl.rState, scale: 1, offsetX: off.offsetX, offsetY: off.offsetY } };
+  ctrl = {
+    ...ctrl,
+    rState: { ...ctrl.rState, scale: 1, offsetX: off.offsetX, offsetY: off.offsetY },
+  };
   return render(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
 }
 
-export { handleGraphMouseDown, handleGraphMouseMove, handleGraphMouseUp, handleGraphWheel, handleGraphKeyDown };
+export {
+  handleGraphMouseDown,
+  handleGraphMouseMove,
+  handleGraphMouseUp,
+  handleGraphWheel,
+  handleGraphKeyDown,
+};
 export { resolveGraphColors, renderGraph };

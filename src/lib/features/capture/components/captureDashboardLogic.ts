@@ -1,9 +1,4 @@
-import {
-  assignType,
-  setLifecycleState,
-  batchClassify,
-  quickCapture,
-} from '../stores/capture';
+import { assignType, setLifecycleState, batchClassify, quickCapture } from '../stores/capture';
 import { archiveNoteCmd, organizeNoteCmd } from '../services/capture';
 import { refreshNotes, setActiveNote } from '@/stores/vault/vault';
 import type { PortentType, LifecycleState } from '@/types/data/entity';
@@ -24,7 +19,7 @@ export async function openClassification(path: string) {
 export async function handleClassificationSave(
   activeNotePath: string,
   data: ClassificationData,
-  closeClassification: () => void,
+  closeClassification: () => void
 ) {
   try {
     if (data.type) await assignType(activeNotePath, data.type);
@@ -39,7 +34,7 @@ export async function handleClassificationSave(
 
 export function handleClassificationDelete(
   activeNotePath: string,
-  closeClassification: () => void,
+  closeClassification: () => void
 ): void {
   openConfirm({
     title: 'Delete Note',

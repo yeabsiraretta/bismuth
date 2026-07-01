@@ -48,7 +48,14 @@ describe('Stepper', () => {
 
   it('renders sub-steps when activeStepId matches step with subSteps', () => {
     const stepsWithSubs: StepItem[] = [
-      { id: 'x', label: 'Step X', subSteps: [{ id: 's1', label: 'Sub 1' }, { id: 's2', label: 'Sub 2' }] },
+      {
+        id: 'x',
+        label: 'Step X',
+        subSteps: [
+          { id: 's1', label: 'Sub 1' },
+          { id: 's2', label: 'Sub 2' },
+        ],
+      },
     ];
     const { getByText } = render(Stepper, { props: { steps: stepsWithSubs, activeStepId: 'x' } });
     expect(getByText('Sub 1')).toBeTruthy();

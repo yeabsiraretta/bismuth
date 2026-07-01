@@ -47,7 +47,11 @@
   title={event.title}
 >
   {#if showCheckbox}
-    <button class="chip-checkbox" on:click={handleCheckbox} aria-label={event.completed ? 'Mark incomplete' : 'Mark complete'}>
+    <button
+      class="chip-checkbox"
+      on:click={handleCheckbox}
+      aria-label={event.completed ? 'Mark incomplete' : 'Mark complete'}
+    >
       <Icon name={event.completed ? 'check-square' : 'square'} size={compact ? 12 : 14} />
     </button>
   {/if}
@@ -56,8 +60,20 @@
     <span class="chip-time">{formatTime(event.startMinute)}</span>
   {/if}
   {#if hasLinks}
-    <span class="link-badge" aria-label="{event.linkedNotePaths?.length} linked note{event.linkedNotePaths?.length === 1 ? '' : 's'}">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <span
+      class="link-badge"
+      aria-label="{event.linkedNotePaths?.length} linked note{event.linkedNotePaths?.length === 1
+        ? ''
+        : 's'}"
+    >
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
         <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
         <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
       </svg>

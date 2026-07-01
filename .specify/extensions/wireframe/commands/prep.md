@@ -1,5 +1,5 @@
 ---
-description: "Load spec context and validation rules before generating wireframes"
+description: 'Load spec context and validation rules before generating wireframes'
 ---
 
 # speckit.wireframe.prep
@@ -13,6 +13,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - Feature identifier (e.g. `001-user-auth` or `001`) — prep for specific feature
 - No args — prep for patch mode (load prior issues only)
 
@@ -47,6 +48,7 @@ If any of these files don't exist, continue without them — they're convenience
 **If `FEATURE_DIR` is set:**
 
 Read `<FEATURE_DIR>/spec.md` and extract:
+
 - Feature ID and title
 - Overview / description
 - User Stories (each `### User Story N` section)

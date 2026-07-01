@@ -4,7 +4,12 @@
  */
 
 import { writable, derived, get } from 'svelte/store';
-import type { SmartTemplateConfig, SmartTemplate, BuiltPrompt, PromptContext } from '../types/smartTemplate';
+import type {
+  SmartTemplateConfig,
+  SmartTemplate,
+  BuiltPrompt,
+  PromptContext,
+} from '../types/smartTemplate';
 import { DEFAULT_SMART_TEMPLATE_CONFIG } from '../types/smartTemplate';
 import { discoverTemplates } from '../services/templateDiscovery';
 import { buildPrompt, buildContextFromNote, stripFrontmatter } from '../services/promptBuilder';
@@ -20,22 +25,27 @@ function loadConfig(): SmartTemplateConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_SMART_TEMPLATE_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_SMART_TEMPLATE_CONFIG };
 }
 
 function persistConfig(config: SmartTemplateConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch {
+    /* ignore */
+  }
 }
 
 const configStore = writable<SmartTemplateConfig>(loadConfig());
 configStore.subscribe(persistConfig);
 
-export const smartTemplateConfig = derived(configStore, $c => $c);
+export const smartTemplateConfig = derived(configStore, ($c) => $c);
 
 export function updateSmartTemplateConfig(partial: Partial<SmartTemplateConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetSmartTemplateConfig(): void {
@@ -81,7 +91,7 @@ export function buildCurrentContext(selection?: string): PromptContext | null {
 export function buildSmartPrompt(
   context: PromptContext,
   selectedTemplates: SmartTemplate[],
-  instructions: string,
+  instructions: string
 ): BuiltPrompt {
   const config = get(configStore);
   return buildPrompt(context, selectedTemplates, instructions, config.maxContextLength);
@@ -93,19 +103,24 @@ function loadRecent(): BuiltPrompt[] {
   try {
     const raw = localStorage.getItem(RECENT_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function persistRecent(recent: BuiltPrompt[]): void {
-  try { localStorage.setItem(RECENT_KEY, JSON.stringify(recent)); }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  } catch {
+    /* ignore */
+  }
 }
 
 export const recentPrompts = writable<BuiltPrompt[]>(loadRecent());
 
 export function addRecentPrompt(prompt: BuiltPrompt): void {
   const config = get(configStore);
-  recentPrompts.update(list => {
+  recentPrompts.update((list) => {
     const next = [prompt, ...list].slice(0, config.recentLimit);
     persistRecent(next);
     return next;

@@ -4,7 +4,8 @@
 
   export let group: TaskGroup;
   export let display: DisplayOptions;
-  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined = undefined;
+  export let onToggle: ((sourcePath: string, line: number, newStatus: string) => void) | undefined =
+    undefined;
   export let onNavigate: ((sourcePath: string, line: number) => void) | undefined = undefined;
 
   let collapsed = false;

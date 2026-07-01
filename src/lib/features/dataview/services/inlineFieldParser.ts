@@ -124,7 +124,11 @@ export function parseDocumentInlineFields(content: string): InlineField[] {
     const line = lines[i];
 
     // Track frontmatter
-    if (i === 0 && line === '---') { inFrontmatter = true; offset += line.length + 1; continue; }
+    if (i === 0 && line === '---') {
+      inFrontmatter = true;
+      offset += line.length + 1;
+      continue;
+    }
     if (inFrontmatter) {
       if (line === '---') inFrontmatter = false;
       offset += line.length + 1;
@@ -137,7 +141,10 @@ export function parseDocumentInlineFields(content: string): InlineField[] {
       offset += line.length + 1;
       continue;
     }
-    if (inCodeBlock) { offset += line.length + 1; continue; }
+    if (inCodeBlock) {
+      offset += line.length + 1;
+      continue;
+    }
 
     fields.push(...parseLineInlineFields(line, offset));
     offset += line.length + 1;
@@ -149,14 +156,23 @@ export function parseDocumentInlineFields(content: string): InlineField[] {
 /**
  * Extract markdown tasks from document content.
  */
-export function parseDocumentTasks(content: string, path: string): Array<{
+export function parseDocumentTasks(
+  content: string,
+  path: string
+): Array<{
   text: string;
   completed: boolean;
   line: number;
   path: string;
   tags: string[];
 }> {
-  const tasks: Array<{ text: string; completed: boolean; line: number; path: string; tags: string[] }> = [];
+  const tasks: Array<{
+    text: string;
+    completed: boolean;
+    line: number;
+    path: string;
+    tags: string[];
+  }> = [];
   const lines = content.split('\n');
   const TASK_RE = /^[\s>]*- \[([ xX])\]\s*(.*)$/;
   const TAG_RE = /#([\w/-]+)/g;

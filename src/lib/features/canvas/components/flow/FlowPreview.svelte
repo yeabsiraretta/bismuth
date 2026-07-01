@@ -1,6 +1,10 @@
 <script lang="ts">
   import { currentCanvas } from '@/features/canvas/stores';
-  import { buildFlowGraph, resolveFlowTarget, findEntryFrame } from '@/features/canvas/utils/data/flowGraph';
+  import {
+    buildFlowGraph,
+    resolveFlowTarget,
+    findEntryFrame,
+  } from '@/features/canvas/utils/data/flowGraph';
   import type { CanvasElement } from '@/features/canvas/types';
 
   export let show = false;
@@ -55,9 +59,7 @@
     <div class="preview-header">
       <span class="preview-label">Preview Mode</span>
       <span class="preview-frame-name">{currentFrame.name ?? 'Frame'}</span>
-      <button class="preview-exit" on:click|stopPropagation={exitPreview}>
-        Exit (Esc)
-      </button>
+      <button class="preview-exit" on:click|stopPropagation={exitPreview}> Exit (Esc) </button>
     </div>
 
     <div class="preview-canvas">

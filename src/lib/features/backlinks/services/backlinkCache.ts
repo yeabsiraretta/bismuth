@@ -3,8 +3,12 @@
  * backlinks across the vault for O(1) lookup per file.
  */
 import type {
-  CachedBacklink, BacklinkCacheEntry, OutgoingLink,
-  BacklinkCacheSettings, CacheStats, BacklinkSource,
+  CachedBacklink,
+  BacklinkCacheEntry,
+  OutgoingLink,
+  BacklinkCacheSettings,
+  CacheStats,
+  BacklinkSource,
 } from '../types';
 import { WIKILINK_RE, MD_LINK_RE, DEFAULT_CACHE_SETTINGS } from '../types';
 import { extractFrontmatterLinks } from './frontmatterLinks';
@@ -21,10 +25,7 @@ export function hashContent(s: string): number {
 
 // ─── Link extraction from markdown ───────────────────────────────────────────
 
-export function extractWikilinks(
-  content: string,
-  contextLen: number = 120,
-): OutgoingLink[] {
+export function extractWikilinks(content: string, contextLen: number = 120): OutgoingLink[] {
   const links: OutgoingLink[] = [];
   const lines = content.split('\n');
 
@@ -46,10 +47,7 @@ export function extractWikilinks(
   return links;
 }
 
-export function extractMarkdownLinks(
-  content: string,
-  contextLen: number = 120,
-): OutgoingLink[] {
+export function extractMarkdownLinks(content: string, contextLen: number = 120): OutgoingLink[] {
   const links: OutgoingLink[] = [];
   const lines = content.split('\n');
 
@@ -89,8 +87,12 @@ export class BacklinkCache {
   private reverseIndex = new Map<string, CachedBacklink[]>();
   private settings: BacklinkCacheSettings;
   private stats: CacheStats = {
-    totalFiles: 0, totalLinks: 0, buildTime: 0,
-    canvasFiles: 0, isComplete: false, lastBuild: 0,
+    totalFiles: 0,
+    totalLinks: 0,
+    buildTime: 0,
+    canvasFiles: 0,
+    isComplete: false,
+    lastBuild: 0,
   };
 
   constructor(settings: Partial<BacklinkCacheSettings> = {}) {
@@ -161,9 +163,11 @@ export class BacklinkCache {
     // Canvas files
     if (isCanvasFile(note.path) && this.settings.includeCanvas) {
       const canvasLinks = extractCanvasLinks(note.path, note.content);
-      return canvasLinks.map(cl => ({
+      return canvasLinks.map((cl) => ({
         target: cl.targetPath,
-        resolvedPath: cl.targetPath.endsWith('.md') ? cl.targetPath : this.resolveTarget(cl.targetPath),
+        resolvedPath: cl.targetPath.endsWith('.md')
+          ? cl.targetPath
+          : this.resolveTarget(cl.targetPath),
         source: 'canvas' as BacklinkSource,
         line: 0,
         context: `Canvas ${cl.cardType} card`,
@@ -285,16 +289,27 @@ export class BacklinkCache {
   }
 
   /** Get cache statistics */
-  getStats(): CacheStats { return { ...this.stats }; }
+  getStats(): CacheStats {
+    return { ...this.stats };
+  }
 
   /** Get all cached file paths */
-  getCachedPaths(): string[] { return [...this.entries.keys()]; }
+  getCachedPaths(): string[] {
+    return [...this.entries.keys()];
+  }
 
   /** Clear entire cache */
   clear(): void {
     this.entries.clear();
     this.reverseIndex.clear();
     this.titleToPath.clear();
-    this.stats = { totalFiles: 0, totalLinks: 0, buildTime: 0, canvasFiles: 0, isComplete: false, lastBuild: 0 };
+    this.stats = {
+      totalFiles: 0,
+      totalLinks: 0,
+      buildTime: 0,
+      canvasFiles: 0,
+      isComplete: false,
+      lastBuild: 0,
+    };
   }
 }

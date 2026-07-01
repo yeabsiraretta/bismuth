@@ -37,7 +37,7 @@ export class GraphLayoutWorker {
     settings: GraphSettings,
     width: number,
     height: number,
-    onDone: (nodes: SimNode[]) => void,
+    onDone: (nodes: SimNode[]) => void
   ): void {
     if (!this.worker || !this.ready) {
       tickForces(nodes, edges, settings, width, height);
@@ -56,7 +56,7 @@ export class GraphLayoutWorker {
     width: number,
     height: number,
     ticks: number,
-    onDone: (nodes: SimNode[]) => void,
+    onDone: (nodes: SimNode[]) => void
   ): void {
     if (!this.worker || !this.ready) {
       for (let i = 0; i < ticks; i++) tickForces(nodes, edges, settings, width, height);

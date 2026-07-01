@@ -21,7 +21,9 @@ function formatNames(names?: CslName[]): string {
   if (!names || names.length === 0) return '';
   if (names.length === 1) return formatName(names[0]);
   if (names.length === 2) return `${formatName(names[0])} and ${formatName(names[1])}`;
-  return names.slice(0, -1).map(formatName).join(', ') + ', and ' + formatName(names[names.length - 1]);
+  return (
+    names.slice(0, -1).map(formatName).join(', ') + ', and ' + formatName(names[names.length - 1])
+  );
 }
 
 function formatNameList(names?: CslName[]): string[] {

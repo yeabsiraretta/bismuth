@@ -71,5 +71,7 @@
     color: var(--text-muted);
   }
 
-  .wbadge-icon { font-size: var(--font-ui-xs); }
+  .wbadge-icon {
+    font-size: var(--font-ui-xs);
+  }
 </style>

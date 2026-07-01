@@ -20,14 +20,7 @@ This guide explains how to add a new interactive tool to the Bismuth canvas tool
 Open `src/lib/features/canvas/types/settings.ts`. Find the `Tool` type and append your new tool name.
 
 ```typescript
-export type Tool =
-  | 'select'
-  | 'frame'
-  | 'text'
-  | 'shape'
-  | 'pen'
-  | 'preview'
-  | 'my-tool'; // add this
+export type Tool = 'select' | 'frame' | 'text' | 'shape' | 'pen' | 'preview' | 'my-tool'; // add this
 ```
 
 The `activeTool` store in `canvasStore.ts` is typed against `Tool`, so TypeScript will now enforce correct usage everywhere.
@@ -37,11 +30,7 @@ The `activeTool` store in `canvasStore.ts` is typed against `Tool`, so TypeScrip
 Open `src/lib/features/canvas/components/workspace/canvasInteractions.ts`. Find the `handleMouseDown` function and add a branch for your tool.
 
 ```typescript
-export function handleMouseDown(
-  e: MouseEvent,
-  tool: Tool,
-  ctx: CanvasInteractionContext
-): void {
+export function handleMouseDown(e: MouseEvent, tool: Tool, ctx: CanvasInteractionContext): void {
   switch (tool) {
     case 'select':
       handleSelectMouseDown(e, ctx);
@@ -57,10 +46,7 @@ export function handleMouseDown(
   }
 }
 
-function handleMyToolMouseDown(
-  e: MouseEvent,
-  ctx: CanvasInteractionContext
-): void {
+function handleMyToolMouseDown(e: MouseEvent, ctx: CanvasInteractionContext): void {
   const { x, y } = ctx.toCanvasCoords(e.clientX, e.clientY);
   log.debug('my-tool: mousedown at', { x, y });
   // implement tool-specific behavior here
@@ -103,10 +89,7 @@ Use a keyboard shortcut hint in the `title` attribute to match what you register
 Open `src/lib/features/canvas/components/workspace/canvasShortcuts.ts`. Find the `handleCanvasShortcut` function and add your key binding.
 
 ```typescript
-export function handleCanvasShortcut(
-  e: KeyboardEvent,
-  handlers: CanvasShortcutHandlers
-): void {
+export function handleCanvasShortcut(e: KeyboardEvent, handlers: CanvasShortcutHandlers): void {
   const { key, metaKey, ctrlKey, shiftKey } = e;
 
   // existing shortcuts ...

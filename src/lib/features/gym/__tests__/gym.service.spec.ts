@@ -206,4 +206,3 @@ describe('gym.service — getSessionsForDate', () => {
     expect(result).toEqual([]);
   });
 });
-

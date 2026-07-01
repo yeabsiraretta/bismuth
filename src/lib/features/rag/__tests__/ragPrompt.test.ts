@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { buildRagSystemPrompt, buildRagMessages, formatCitationFooter } from '../services/ragPrompt';
+import {
+  buildRagSystemPrompt,
+  buildRagMessages,
+  formatCitationFooter,
+} from '../services/ragPrompt';
 import type { RagContext, RagCitation } from '../types';
 import { DEFAULT_RAG_CONFIG } from '../types';
 
@@ -17,7 +21,9 @@ function makeCitation(index: number, overrides?: Partial<RagCitation>): RagCitat
 
 function makeContext(citationCount: number): RagContext {
   const citations = Array.from({ length: citationCount }, (_, i) => makeCitation(i + 1));
-  const contextText = citations.map(c => `[${c.index}] ${c.noteTitle}:\n${c.excerpt}`).join('\n\n');
+  const contextText = citations
+    .map((c) => `[${c.index}] ${c.noteTitle}:\n${c.excerpt}`)
+    .join('\n\n');
   return { citations, contextText, tokenEstimate: contextText.length / 4 };
 }
 
@@ -69,7 +75,10 @@ describe('buildRagMessages', () => {
   it('limits history to last 10', () => {
     const ctx = makeContext(1);
     const history = Array.from({ length: 15 }, (_, i) => ({
-      id: `${i}`, role: 'user' as const, content: `msg ${i}`, createdAt: '',
+      id: `${i}`,
+      role: 'user' as const,
+      content: `msg ${i}`,
+      createdAt: '',
     }));
     const msgs = buildRagMessages('q', ctx, DEFAULT_RAG_CONFIG, history);
     expect(msgs.length).toBe(12);

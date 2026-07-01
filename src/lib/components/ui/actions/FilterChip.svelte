@@ -7,12 +7,7 @@
   export let count: number | undefined = undefined;
 </script>
 
-<button
-  class="filter-chip"
-  class:active
-  title={label}
-  on:click
->
+<button class="filter-chip" class:active title={label} on:click>
   <span>{label}</span>
   {#if count !== undefined}
     <span class="chip-count">{count}</span>

@@ -11,14 +11,25 @@ import { isDarkTheme, type ViewportState } from './canvasRendering';
 import { traceNodeShape, cylinderTopPath, predefinedProcessDividers } from './shapes/nodeShapes';
 import { drawArrowHead, getDashPattern, computeEdgePath, drawEdgeLabel } from './shapes/edgeStyles';
 
-export function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+export function roundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
   r = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
-  ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-  ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
-  ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
   ctx.closePath();
 }
 
@@ -118,16 +129,20 @@ export function drawLine(ctx: CanvasRenderingContext2D, element: CanvasElement) 
 
   const pathPts = computeEdgePath(
     element.properties.pathfinding,
-    points[0], points[points.length - 1],
+    points[0],
+    points[points.length - 1]
   );
 
   ctx.beginPath();
   ctx.moveTo(element.x + pathPts[0].x, element.y + pathPts[0].y);
   if (element.properties.pathfinding === 'curved' && pathPts.length === 4) {
     ctx.bezierCurveTo(
-      element.x + pathPts[1].x, element.y + pathPts[1].y,
-      element.x + pathPts[2].x, element.y + pathPts[2].y,
-      element.x + pathPts[3].x, element.y + pathPts[3].y,
+      element.x + pathPts[1].x,
+      element.y + pathPts[1].y,
+      element.x + pathPts[2].x,
+      element.y + pathPts[2].y,
+      element.x + pathPts[3].x,
+      element.y + pathPts[3].y
     );
   } else {
     for (let i = 1; i < pathPts.length; i++) {
@@ -155,16 +170,20 @@ export function drawArrow(ctx: CanvasRenderingContext2D, element: CanvasElement)
 
   const pathPts = computeEdgePath(
     element.properties.pathfinding,
-    points[0], points[points.length - 1],
+    points[0],
+    points[points.length - 1]
   );
 
   ctx.beginPath();
   ctx.moveTo(element.x + pathPts[0].x, element.y + pathPts[0].y);
   if (element.properties.pathfinding === 'curved' && pathPts.length === 4) {
     ctx.bezierCurveTo(
-      element.x + pathPts[1].x, element.y + pathPts[1].y,
-      element.x + pathPts[2].x, element.y + pathPts[2].y,
-      element.x + pathPts[3].x, element.y + pathPts[3].y,
+      element.x + pathPts[1].x,
+      element.y + pathPts[1].y,
+      element.x + pathPts[2].x,
+      element.y + pathPts[2].y,
+      element.x + pathPts[3].x,
+      element.y + pathPts[3].y
     );
   } else {
     for (let i = 1; i < pathPts.length; i++) {
@@ -178,8 +197,15 @@ export function drawArrow(ctx: CanvasRenderingContext2D, element: CanvasElement)
     const lastPt = pathPts[pathPts.length - 1];
     const prevPt = pathPts.length > 1 ? pathPts[pathPts.length - 2] : pathPts[0];
     const angle = Math.atan2(lastPt.y - prevPt.y, lastPt.x - prevPt.x);
-    drawArrowHead(ctx, element.properties.endArrowStyle ?? 'triangle',
-      element.x + lastPt.x, element.y + lastPt.y, angle, 12, color);
+    drawArrowHead(
+      ctx,
+      element.properties.endArrowStyle ?? 'triangle',
+      element.x + lastPt.x,
+      element.y + lastPt.y,
+      angle,
+      12,
+      color
+    );
   }
 
   // Start arrow head
@@ -187,8 +213,15 @@ export function drawArrow(ctx: CanvasRenderingContext2D, element: CanvasElement)
     const firstPt = pathPts[0];
     const nextPt = pathPts.length > 1 ? pathPts[1] : pathPts[0];
     const angle = Math.atan2(firstPt.y - nextPt.y, firstPt.x - nextPt.x);
-    drawArrowHead(ctx, element.properties.startArrowStyle ?? 'triangle',
-      element.x + firstPt.x, element.y + firstPt.y, angle, 12, color);
+    drawArrowHead(
+      ctx,
+      element.properties.startArrowStyle ?? 'triangle',
+      element.x + firstPt.x,
+      element.y + firstPt.y,
+      angle,
+      12,
+      color
+    );
   }
 
   if (element.properties.edgeLabel) {
@@ -221,7 +254,12 @@ export function drawComponentInstance(
   ctx: CanvasRenderingContext2D,
   element: CanvasElement,
   viewport: ViewportState,
-  drawElementFn: (ctx: CanvasRenderingContext2D, el: CanvasElement, sel: boolean, vp: ViewportState) => void
+  drawElementFn: (
+    ctx: CanvasRenderingContext2D,
+    el: CanvasElement,
+    sel: boolean,
+    vp: ViewportState
+  ) => void
 ) {
   ctx.globalAlpha = element.properties.opacity ?? 1;
 
@@ -271,7 +309,14 @@ export function drawSelectionBox(
   ctx.strokeStyle = isDarkTheme() ? '#ef4444' : '#dc2626';
   ctx.lineWidth = 1.5 / viewport.scale;
   ctx.setLineDash([]);
-  roundedRect(ctx, element.x - pad, element.y - pad, element.width + pad * 2, element.height + pad * 2, r);
+  roundedRect(
+    ctx,
+    element.x - pad,
+    element.y - pad,
+    element.width + pad * 2,
+    element.height + pad * 2,
+    r
+  );
   ctx.stroke();
 
   const handleSize = 6 / viewport.scale;

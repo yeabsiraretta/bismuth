@@ -5,7 +5,12 @@
    * Reads from `versionStore`. Dispatches `select-version` when an entry is clicked.
    * Renders empty state when no history is loaded.
    */
-  import { activeVersionHistory, selectedEntry, isLoading, selectEntry } from '../stores/versionStore';
+  import {
+    activeVersionHistory,
+    selectedEntry,
+    isLoading,
+    selectEntry,
+  } from '../stores/versionStore';
   import VersionBadge from './VersionBadge.svelte';
   import type { VersionEntry } from '../types/versioning';
 
@@ -56,7 +61,8 @@
       {#each entries as entry (entry.version + entry.timestamp)}
         <li
           class="timeline-entry"
-          class:selected={$selectedEntry?.version === entry.version && $selectedEntry?.timestamp === entry.timestamp}
+          class:selected={$selectedEntry?.version === entry.version &&
+            $selectedEntry?.timestamp === entry.timestamp}
           role="listitem"
         >
           <div class="entry-header">
@@ -142,17 +148,17 @@
     flex-direction: column;
     gap: 4px;
     padding: 10px 12px;
-    border-bottom: 1px solid var(--background-modifier-border, rgba(0,0,0,0.08));
+    border-bottom: 1px solid var(--background-modifier-border, rgba(0, 0, 0, 0.08));
     cursor: default;
     transition: background 0.1s;
   }
 
   .timeline-entry:hover {
-    background: var(--background-modifier-hover, rgba(0,0,0,0.04));
+    background: var(--background-modifier-hover, rgba(0, 0, 0, 0.04));
   }
 
   .timeline-entry.selected {
-    background: var(--background-modifier-active-hover, rgba(0,0,0,0.07));
+    background: var(--background-modifier-active-hover, rgba(0, 0, 0, 0.07));
   }
 
   .entry-header {
@@ -207,12 +213,14 @@
     margin-top: 2px;
     padding: 3px 8px;
     font-size: 0.75rem;
-    border: 1px solid var(--background-modifier-border, rgba(0,0,0,0.15));
+    border: 1px solid var(--background-modifier-border, rgba(0, 0, 0, 0.15));
     border-radius: 4px;
     background: transparent;
     color: var(--text-muted, #6b7280);
     cursor: pointer;
-    transition: background 0.1s, color 0.1s;
+    transition:
+      background 0.1s,
+      color 0.1s;
   }
 
   .view-diff-btn:hover {

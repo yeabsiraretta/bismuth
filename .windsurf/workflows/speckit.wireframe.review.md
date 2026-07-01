@@ -3,9 +3,9 @@ description: Review wireframes, classify issues as PATCH or REGENERATE, sign off
   wireframes into spec.md
 ---
 
-
 <!-- Extension: wireframe -->
 <!-- Config: .specify/extensions/wireframe/ -->
+
 # speckit.wireframe.review
 
 **The critical binding step.** When a wireframe is approved, paths get written into `spec.md` under `## UI Mockup`. Because SpecKit's `/speckit.plan`, `/speckit.tasks`, and `/speckit.implement` all load `spec.md` as context, signed-off wireframes automatically become visual constraints on the downstream chain.
@@ -17,6 +17,7 @@ $ARGUMENTS
 ```
 
 Accepts:
+
 - Feature identifier (e.g. `001`) — review all wireframes for that feature
 - `NNN:NN` — review a single wireframe (e.g. `002:01` → `002-*/01-*.svg`)
 - No args — review the current feature
@@ -45,38 +46,38 @@ For each SVG being reviewed:
 
 **Structural checks** (from the SVG source):
 
-| Check | Rule | Code |
-|-------|------|------|
-| Canvas size | 1920×1080 viewBox | STR-001 |
-| Title position | y=28, centered | STR-002 |
-| Signature | y=1060, bold, correct format | STR-003 |
-| Desktop mockup bounds | x=40, y=60, 1280×720 (light) | STR-004 |
-| Mobile mockup bounds | x=1360, y=60, 360×720 (light) | STR-005 |
-| Annotation panel | y=800, full width | STR-006 |
-| Font sizes | All text ≥ 14px | STR-007 |
-| Panel color | `#e8d4b8` (light), never `#ffffff` | STR-008 |
-| Badge containment | All badges within container bounds | STR-009 |
-| US anchoring | Every annotation group has a US badge first | STR-010 |
+| Check                 | Rule                                        | Code    |
+| --------------------- | ------------------------------------------- | ------- |
+| Canvas size           | 1920×1080 viewBox                           | STR-001 |
+| Title position        | y=28, centered                              | STR-002 |
+| Signature             | y=1060, bold, correct format                | STR-003 |
+| Desktop mockup bounds | x=40, y=60, 1280×720 (light)                | STR-004 |
+| Mobile mockup bounds  | x=1360, y=60, 360×720 (light)               | STR-005 |
+| Annotation panel      | y=800, full width                           | STR-006 |
+| Font sizes            | All text ≥ 14px                             | STR-007 |
+| Panel color           | `#e8d4b8` (light), never `#ffffff`          | STR-008 |
+| Badge containment     | All badges within container bounds          | STR-009 |
+| US anchoring          | Every annotation group has a US badge first | STR-010 |
 
 **Visual checks** (from screenshots if available, or from reasoning about SVG):
 
-| Check | What to look for | Code |
-|-------|------------------|------|
-| Theme match | Dark bg on UI wireframe, or vice versa | VIS-001 |
-| Text readability | Truncated, overlapping, or illegible text | VIS-002 |
-| Arrow collisions | Arrows crossing text or UI elements | VIS-003 |
-| Element overflow | Content outside container bounds | VIS-004 |
-| Missing sections | Expected UI components not visible | VIS-005 |
-| Visual balance | Awkward spacing, cramped layout | VIS-006 |
-| Callout placement | Callouts obscuring important UI | VIS-007 |
+| Check             | What to look for                          | Code    |
+| ----------------- | ----------------------------------------- | ------- |
+| Theme match       | Dark bg on UI wireframe, or vice versa    | VIS-001 |
+| Text readability  | Truncated, overlapping, or illegible text | VIS-002 |
+| Arrow collisions  | Arrows crossing text or UI elements       | VIS-003 |
+| Element overflow  | Content outside container bounds          | VIS-004 |
+| Missing sections  | Expected UI components not visible        | VIS-005 |
+| Visual balance    | Awkward spacing, cramped layout           | VIS-006 |
+| Callout placement | Callouts obscuring important UI           | VIS-007 |
 
 **Coverage checks** (cross-referencing spec.md):
 
-| Check | Rule | Code |
-|-------|------|------|
+| Check       | Rule                                                  | Code    |
+| ----------- | ----------------------------------------------------- | ------- |
 | US coverage | Every User Story from spec.md has an annotation group | COV-001 |
-| FR coverage | Every Functional Requirement is badged somewhere | COV-002 |
-| SC coverage | Every Success Criterion is badged somewhere | COV-003 |
+| FR coverage | Every Functional Requirement is badged somewhere      | COV-002 |
+| SC coverage | Every Success Criterion is badged somewhere           | COV-003 |
 
 ### Step 4: Classify each issue
 
@@ -100,10 +101,10 @@ Write findings to `specs/<feature>/wireframes/<svg-name>.issues.md`:
 
 ## Issues
 
-| # | Check | Location | Issue | Classification |
-|---|-------|----------|-------|----------------|
-| 1 | VIS-002 | Desktop header | Text truncated | PATCH |
-| 2 | COV-001 | Annotation panel | US-003 not represented | REGENERATE |
+| #   | Check   | Location         | Issue                  | Classification |
+| --- | ------- | ---------------- | ---------------------- | -------------- |
+| 1   | VIS-002 | Desktop header   | Text truncated         | PATCH          |
+| 2   | COV-001 | Annotation panel | US-003 not represented | REGENERATE     |
 ```
 
 **NEVER delete `.issues.md` files.** They're audit trail — on resolution, append a "Resolved: [date]" note, don't delete.

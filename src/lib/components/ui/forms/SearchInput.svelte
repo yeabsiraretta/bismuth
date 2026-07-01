@@ -30,7 +30,7 @@
     type="text"
     {placeholder}
     {value}
-    autofocus={autofocus}
+    {autofocus}
     on:input={handleInput}
     on:keydown
   />

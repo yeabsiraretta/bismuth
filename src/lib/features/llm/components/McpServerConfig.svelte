@@ -68,7 +68,13 @@
     <div class="add-form">
       <div class="form-row">
         <label class="form-label" for="mcp-name">Name</label>
-        <input id="mcp-name" class="form-input" type="text" bind:value={newName} placeholder="My Server" />
+        <input
+          id="mcp-name"
+          class="form-input"
+          type="text"
+          bind:value={newName}
+          placeholder="My Server"
+        />
       </div>
       <div class="form-row">
         <label class="form-label" for="mcp-transport">Transport</label>
@@ -87,17 +93,29 @@
           class="form-input"
           type="text"
           bind:value={newCommand}
-          placeholder={newTransport === 'stdio' ? 'npx -y @modelcontextprotocol/server' : 'http://localhost:3000'}
+          placeholder={newTransport === 'stdio'
+            ? 'npx -y @modelcontextprotocol/server'
+            : 'http://localhost:3000'}
         />
       </div>
       {#if newTransport === 'stdio'}
         <div class="form-row">
           <label class="form-label" for="mcp-args">Arguments</label>
-          <input id="mcp-args" class="form-input" type="text" bind:value={newArgs} placeholder="arg1 arg2" />
+          <input
+            id="mcp-args"
+            class="form-input"
+            type="text"
+            bind:value={newArgs}
+            placeholder="arg1 arg2"
+          />
         </div>
       {/if}
       <div class="form-actions">
-        <button class="btn btn--primary" on:click={handleAdd} disabled={!newName.trim() || !newCommand.trim()}>
+        <button
+          class="btn btn--primary"
+          on:click={handleAdd}
+          disabled={!newName.trim() || !newCommand.trim()}
+        >
           Add Server
         </button>
         <button class="btn btn--secondary" on:click={() => (showAddForm = false)}>Cancel</button>
@@ -112,7 +130,11 @@
       {#each $mcpServers as server (server.id)}
         <div class="server-card">
           <div class="server-header">
-            <span class="server-status" style="color: {statusColors[server.status ?? 'disconnected']}" title={server.status ?? 'disconnected'}>
+            <span
+              class="server-status"
+              style="color: {statusColors[server.status ?? 'disconnected']}"
+              title={server.status ?? 'disconnected'}
+            >
               <Icon name={statusIcons[server.status ?? 'disconnected']} size={14} />
             </span>
             <span class="server-name">{server.name}</span>
@@ -127,7 +149,9 @@
 
           {#if server.tools && server.tools.length > 0}
             <div class="server-tools">
-              {server.tools.length} tool{server.tools.length !== 1 ? 's' : ''}: {server.tools.map(t => t.name).join(', ')}
+              {server.tools.length} tool{server.tools.length !== 1 ? 's' : ''}: {server.tools
+                .map((t) => t.name)
+                .join(', ')}
             </div>
           {/if}
 
@@ -140,16 +164,28 @@
               {server.enabled ? 'Disable' : 'Enable'}
             </button>
             {#if server.enabled && server.status !== 'connected'}
-              <button class="action-btn" on:click={() => connectMcpServer(server.id)} aria-label="Connect">
+              <button
+                class="action-btn"
+                on:click={() => connectMcpServer(server.id)}
+                aria-label="Connect"
+              >
                 Connect
               </button>
             {/if}
             {#if server.status === 'connected'}
-              <button class="action-btn" on:click={() => disconnectMcpServer(server.id)} aria-label="Disconnect">
+              <button
+                class="action-btn"
+                on:click={() => disconnectMcpServer(server.id)}
+                aria-label="Disconnect"
+              >
                 Disconnect
               </button>
             {/if}
-            <button class="action-btn action-btn--danger" on:click={() => removeMcpServer(server.id)} aria-label="Remove server">
+            <button
+              class="action-btn action-btn--danger"
+              on:click={() => removeMcpServer(server.id)}
+              aria-label="Remove server"
+            >
               <Icon name="trash" size={12} />
             </button>
           </div>
@@ -160,9 +196,17 @@
 </div>
 
 <style>
-  .mcp-config { display: flex; flex-direction: column; gap: var(--spacing-m); }
+  .mcp-config {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+  }
 
-  .section-header { display: flex; align-items: center; justify-content: space-between; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .section-title {
     margin: 0;
     font-size: var(--font-ui-small, 13px);
@@ -172,22 +216,42 @@
     letter-spacing: 0.5px;
   }
   .add-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 24px; height: 24px; padding: 0; border: none;
-    background: transparent; border-radius: var(--radius-s);
-    color: var(--text-muted); cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
   }
-  .add-btn:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+  .add-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--text-normal);
+  }
 
   .add-form {
-    display: flex; flex-direction: column; gap: var(--spacing-s);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
     padding: var(--spacing-m);
     background: var(--background-secondary);
     border-radius: var(--radius-m, 8px);
     border: 1px solid var(--background-modifier-border);
   }
-  .form-row { display: flex; flex-direction: column; gap: 4px; }
-  .form-label { font-size: var(--font-ui-smaller, 12px); font-weight: var(--font-medium, 500); color: var(--text-muted); }
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-label {
+    font-size: var(--font-ui-smaller, 12px);
+    font-weight: var(--font-medium, 500);
+    color: var(--text-muted);
+  }
   .form-input {
     padding: 6px 10px;
     border: 1px solid var(--background-modifier-border);
@@ -196,44 +260,112 @@
     color: var(--text-normal);
     font-size: var(--font-ui-small, 13px);
   }
-  .form-input:focus { border-color: var(--interactive-accent); outline: none; }
-  .form-actions { display: flex; gap: var(--spacing-s); margin-top: var(--spacing-xs); }
-  .btn {
-    padding: 6px 12px; border: none; border-radius: var(--radius-s);
-    font-size: var(--font-ui-small, 13px); font-weight: var(--font-medium, 500); cursor: pointer;
+  .form-input:focus {
+    border-color: var(--interactive-accent);
+    outline: none;
   }
-  .btn--primary { background: var(--interactive-accent); color: var(--text-on-accent, #fff); }
-  .btn--primary:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn--secondary { background: var(--background-modifier-border); color: var(--text-normal); }
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xs);
+  }
+  .btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-small, 13px);
+    font-weight: var(--font-medium, 500);
+    cursor: pointer;
+  }
+  .btn--primary {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+  }
+  .btn--primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn--secondary {
+    background: var(--background-modifier-border);
+    color: var(--text-normal);
+  }
 
-  .empty-hint { margin: 0; font-size: var(--font-ui-small, 13px); color: var(--text-faint); }
+  .empty-hint {
+    margin: 0;
+    font-size: var(--font-ui-small, 13px);
+    color: var(--text-faint);
+  }
 
-  .server-list { display: flex; flex-direction: column; gap: var(--spacing-s); }
+  .server-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
   .server-card {
-    display: flex; flex-direction: column; gap: var(--spacing-xs);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
     padding: var(--spacing-s);
     background: var(--background-secondary);
     border: 1px solid var(--background-modifier-border);
     border-radius: var(--radius-m, 8px);
   }
-  .server-header { display: flex; align-items: center; gap: var(--spacing-xs); }
-  .server-name { font-size: var(--font-ui-small, 13px); font-weight: var(--font-medium, 500); color: var(--text-normal); flex: 1; }
-  .server-transport { font-size: var(--font-ui-smaller, 12px); color: var(--text-faint); text-transform: uppercase; }
-  .server-status { display: flex; align-items: center; }
+  .server-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+  .server-name {
+    font-size: var(--font-ui-small, 13px);
+    font-weight: var(--font-medium, 500);
+    color: var(--text-normal);
+    flex: 1;
+  }
+  .server-transport {
+    font-size: var(--font-ui-smaller, 12px);
+    color: var(--text-faint);
+    text-transform: uppercase;
+  }
+  .server-status {
+    display: flex;
+    align-items: center;
+  }
   .server-command {
-    font-size: var(--font-ui-smaller, 12px); color: var(--text-muted);
+    font-size: var(--font-ui-smaller, 12px);
+    color: var(--text-muted);
     font-family: var(--font-monospace, monospace);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .server-error { font-size: var(--font-ui-smaller, 12px); color: var(--text-error); }
-  .server-tools { font-size: var(--font-ui-smaller, 12px); color: var(--text-faint); }
-  .server-actions { display: flex; gap: var(--spacing-xs); }
+  .server-error {
+    font-size: var(--font-ui-smaller, 12px);
+    color: var(--text-error);
+  }
+  .server-tools {
+    font-size: var(--font-ui-smaller, 12px);
+    color: var(--text-faint);
+  }
+  .server-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+  }
   .action-btn {
-    padding: 4px 8px; border: none; border-radius: var(--radius-s);
-    background: var(--background-modifier-border); color: var(--text-normal);
-    font-size: var(--font-ui-smaller, 12px); cursor: pointer;
-    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: var(--radius-s);
+    background: var(--background-modifier-border);
+    color: var(--text-normal);
+    font-size: var(--font-ui-smaller, 12px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
-  .action-btn:hover { background: var(--background-modifier-hover); }
-  .action-btn--danger:hover { color: var(--text-error); }
+  .action-btn:hover {
+    background: var(--background-modifier-hover);
+  }
+  .action-btn--danger:hover {
+    color: var(--text-error);
+  }
 </style>

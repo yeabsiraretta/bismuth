@@ -6,14 +6,14 @@
 
 ## Quick Navigation
 
-| Section | Description |
-|---------|-------------|
-| [Getting Started](guides/getting-started.md) | Install, configure, and start using Bismuth |
-| [Architecture](architecture/overview.md) | System design and technical decisions |
-| [Developer Guide](guides/feature-development-guide.md) | How to contribute and build features |
-| [Standards](standards/design-system.md) | Design system, naming, and UX principles |
-| [Reference](reference/folder-structure.md) | Technical reference and API documentation |
-| [Specs](../specs/) | Feature specifications and implementation plans |
+| Section                                                | Description                                     |
+| ------------------------------------------------------ | ----------------------------------------------- |
+| [Getting Started](guides/getting-started.md)           | Install, configure, and start using Bismuth     |
+| [Architecture](architecture/overview.md)               | System design and technical decisions           |
+| [Developer Guide](guides/feature-development-guide.md) | How to contribute and build features            |
+| [Standards](standards/design-system.md)                | Design system, naming, and UX principles        |
+| [Reference](reference/folder-structure.md)             | Technical reference and API documentation       |
+| [Specs](../specs/)                                     | Feature specifications and implementation plans |
 
 ---
 

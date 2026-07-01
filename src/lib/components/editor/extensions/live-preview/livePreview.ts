@@ -23,13 +23,34 @@ import {
 import { type Range } from '@codemirror/state';
 import { log } from '@/utils/logger';
 import {
-  h1, h2, h3, h4, h5, h6, hiddenMark, tableLine, tableHiddenLine,
-  listBulletIndent, listOrderedIndent,
-  listResetLine, footnoteDetailLine, footnoteDetailId,
-  CheckboxWidget, HrWidget, ImageWidget, TableWidget, renderTable,
-  charToTaskState, decorateInline,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hiddenMark,
+  tableLine,
+  tableHiddenLine,
+  listBulletIndent,
+  listOrderedIndent,
+  listResetLine,
+  footnoteDetailLine,
+  footnoteDetailId,
+  CheckboxWidget,
+  HrWidget,
+  ImageWidget,
+  TableWidget,
+  renderTable,
+  charToTaskState,
+  decorateInline,
 } from './livePreviewDecorators';
-import { decorateQuoteBlock, decorateFlashcard, decorateCloze, decorateCodeBlock } from './livePreviewBlocks';
+import {
+  decorateQuoteBlock,
+  decorateFlashcard,
+  decorateCloze,
+  decorateCodeBlock,
+} from './livePreviewBlocks';
 import { detectLineTagName } from '@/features/typography';
 
 // ─── Active line detection (used only for table cursor check) ───────────────
@@ -74,7 +95,10 @@ function buildDecorationsInner(view: EditorView): DecorationSet {
   if (doc.line(1).text === '---') {
     fmLines.add(1);
     for (let fl = 2; fl <= doc.lines; fl++) {
-      if (doc.line(fl).text === '---') { fmLines.add(fl); break; }
+      if (doc.line(fl).text === '---') {
+        fmLines.add(fl);
+        break;
+      }
     }
   }
 
@@ -88,8 +112,12 @@ function buildDecorationsInner(view: EditorView): DecorationSet {
   for (let s = 1; s <= doc.lines; s++) {
     const lt = doc.line(s).text;
     if (/^(`{3,}|~{3,})/.test(lt)) {
-      if (cbOpen === -1) { cbOpen = s; }
-      else { codeBlockRanges.push({ startLine: cbOpen, endLine: s }); cbOpen = -1; }
+      if (cbOpen === -1) {
+        cbOpen = s;
+      } else {
+        codeBlockRanges.push({ startLine: cbOpen, endLine: s });
+        cbOpen = -1;
+      }
     }
   }
   if (cbOpen !== -1) {
@@ -116,27 +144,37 @@ function buildDecorationsInner(view: EditorView): DecorationSet {
     // Styled code block rendering — delegated to livePreviewBlocks
     if (isInCodeBlock(i)) {
       const newIdx = decorateCodeBlock(view, decos, i, text, codeBlockRanges, activeLines);
-      if (newIdx > 0) { i = newIdx; }
+      if (newIdx > 0) {
+        i = newIdx;
+      }
       continue;
     }
 
     // Table accumulation
     if (text.trimStart().startsWith('|')) {
-      if (tableStart === -1) { tableStart = line.from; tableFirstLine = i; }
+      if (tableStart === -1) {
+        tableStart = line.from;
+        tableFirstLine = i;
+      }
       tableLines.push(text);
       const nextLine = i < doc.lines ? doc.line(i + 1).text : '';
       if (!nextLine.trimStart().startsWith('|')) {
         // Render as widget unless cursor is anywhere in the table
         let cursorInTable = false;
         for (let tl = tableFirstLine; tl <= i; tl++) {
-          if (activeLines.has(tl)) { cursorInTable = true; break; }
+          if (activeLines.has(tl)) {
+            cursorInTable = true;
+            break;
+          }
         }
         if (tableLines.length >= 2 && !cursorInTable) {
           const html = renderTable(tableLines);
           const firstTLine = doc.line(tableFirstLine);
-          decos.push(Decoration.replace({
-            widget: new TableWidget(html),
-          }).range(firstTLine.from, firstTLine.to));
+          decos.push(
+            Decoration.replace({
+              widget: new TableWidget(html),
+            }).range(firstTLine.from, firstTLine.to)
+          );
           for (let tl = tableFirstLine + 1; tl <= i; tl++) {
             const tLine = doc.line(tl);
             decos.push(tableHiddenLine.range(tLine.from, tLine.from));
@@ -191,9 +229,11 @@ function buildDecorationsInner(view: EditorView): DecorationSet {
     // Image ![alt](url) — always render widget
     const imgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
     if (imgMatch) {
-      decos.push(Decoration.replace({
-        widget: new ImageWidget(imgMatch[2], imgMatch[1]),
-      }).range(line.from, line.from + imgMatch[0].length));
+      decos.push(
+        Decoration.replace({
+          widget: new ImageWidget(imgMatch[2], imgMatch[1]),
+        }).range(line.from, line.from + imgMatch[0].length)
+      );
       if (text.length > imgMatch[0].length) {
         decorateInline(decos, line.from + imgMatch[0].length, text.slice(imgMatch[0].length));
       }
@@ -219,9 +259,11 @@ function buildDecorationsInner(view: EditorView): DecorationSet {
       const taskState = charToTaskState(checkMatch[2]);
       const replaceFrom = line.from + checkMatch[1].length;
       const replaceTo = replaceFrom + 3;
-      decos.push(Decoration.replace({
-        widget: new CheckboxWidget(taskState, cbOffset),
-      }).range(replaceFrom, replaceTo));
+      decos.push(
+        Decoration.replace({
+          widget: new CheckboxWidget(taskState, cbOffset),
+        }).range(replaceFrom, replaceTo)
+      );
       const afterCheck = checkMatch[0].length;
       decorateInline(decos, line.from + afterCheck, text.slice(afterCheck));
       continue;

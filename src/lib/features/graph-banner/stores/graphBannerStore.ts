@@ -47,24 +47,29 @@ function loadConfig(): GraphBannerConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_BANNER_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_BANNER_CONFIG };
 }
 
 function persistConfig(config: GraphBannerConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch { /* ignore */ }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch {
+    /* ignore */
+  }
 }
 
 const configStore = writable<GraphBannerConfig>(loadConfig());
 configStore.subscribe(persistConfig);
 
-export const graphBannerConfig = derived(configStore, $c => $c);
-export const graphBannerEnabled = derived(configStore, $c => $c.enabled);
+export const graphBannerConfig = derived(configStore, ($c) => $c);
+export const graphBannerEnabled = derived(configStore, ($c) => $c.enabled);
 
 export function toggleGraphBanner(): boolean {
   let enabled = false;
-  configStore.update(c => {
+  configStore.update((c) => {
     enabled = !c.enabled;
     return { ...c, enabled };
   });
@@ -72,7 +77,7 @@ export function toggleGraphBanner(): boolean {
 }
 
 export function updateGraphBannerConfig(partial: Partial<GraphBannerConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetGraphBannerConfig(): void {
@@ -85,10 +90,10 @@ export function getGraphBannerConfig(): GraphBannerConfig {
 
 export function setGraphBannerHeight(height: number): void {
   const clamped = Math.max(80, Math.min(400, height));
-  configStore.update(c => ({ ...c, height: clamped }));
+  configStore.update((c) => ({ ...c, height: clamped }));
 }
 
 export function setGraphBannerDepth(depth: number): void {
   const clamped = Math.max(1, Math.min(5, depth));
-  configStore.update(c => ({ ...c, depth: clamped }));
+  configStore.update((c) => ({ ...c, depth: clamped }));
 }

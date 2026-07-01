@@ -1,10 +1,6 @@
 import { writable, derived } from 'svelte/store';
 import { log } from '@/utils/logger';
-import {
-  FEATURE_REGISTRY,
-  getDefaultFlags,
-  isCoreFeature,
-} from './featureRegistry';
+import { FEATURE_REGISTRY, getDefaultFlags, isCoreFeature } from './featureRegistry';
 
 /**
  * Feature flags — keyed by the registry feature ID (which also serves
@@ -32,14 +28,18 @@ function loadFlags(): FeatureFlags {
       }
       return merged;
     }
-  } catch (e) { log.warn('Failed to load feature flags from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load feature flags from localStorage', { error: String(e) });
+  }
   return defaults;
 }
 
 function persistFlags(flags: FeatureFlags): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(flags));
-  } catch (e) { log.warn('Failed to persist feature flags to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist feature flags to localStorage', { error: String(e) });
+  }
 }
 
 function createFeatureStore() {
@@ -60,9 +60,11 @@ function createFeatureStore() {
         return next;
       });
       if (enabling) {
-        import('@/features/lazyloader/stores/lazyloaderStore').then(m => m.loadFeatureOnDemand(key));
+        import('@/features/lazyloader/stores/lazyloaderStore').then((m) =>
+          m.loadFeatureOnDemand(key)
+        );
       } else {
-        import('@/features/lazyloader/stores/lazyloaderStore').then(m => m.unloadFeature(key));
+        import('@/features/lazyloader/stores/lazyloaderStore').then((m) => m.unloadFeature(key));
       }
     },
     /** Set a specific feature flag (no-op for core features) */

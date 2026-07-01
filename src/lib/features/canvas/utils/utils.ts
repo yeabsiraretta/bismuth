@@ -19,11 +19,7 @@ export function snapToGrid(value: number, gridSize: number): number {
 }
 
 // Check if point is inside element bounds
-export function isPointInElement(
-  px: number,
-  py: number,
-  element: CanvasElement
-): boolean {
+export function isPointInElement(px: number, py: number, element: CanvasElement): boolean {
   return (
     px >= element.x &&
     px <= element.x + element.width &&
@@ -105,8 +101,7 @@ export function alignElements(
       return elements.map((el) => ({ ...el, x: minX }));
     }
     case 'center': {
-      const avgCenterX =
-        bounds.reduce((sum, b) => sum + b.x + b.width / 2, 0) / bounds.length;
+      const avgCenterX = bounds.reduce((sum, b) => sum + b.x + b.width / 2, 0) / bounds.length;
       return elements.map((el) => ({
         ...el,
         x: avgCenterX - el.width / 2,
@@ -121,8 +116,7 @@ export function alignElements(
       return elements.map((el) => ({ ...el, y: minY }));
     }
     case 'middle': {
-      const avgCenterY =
-        bounds.reduce((sum, b) => sum + b.y + b.height / 2, 0) / bounds.length;
+      const avgCenterY = bounds.reduce((sum, b) => sum + b.y + b.height / 2, 0) / bounds.length;
       return elements.map((el) => ({
         ...el,
         y: avgCenterY - el.height / 2,
@@ -144,9 +138,7 @@ export function distributeElements(
 ): CanvasElement[] {
   if (elements.length < 3) return elements;
 
-  const sorted = [...elements].sort((a, b) =>
-    direction === 'horizontal' ? a.x - b.x : a.y - b.y
-  );
+  const sorted = [...elements].sort((a, b) => (direction === 'horizontal' ? a.x - b.x : a.y - b.y));
 
   const first = sorted[0];
   const last = sorted[sorted.length - 1];

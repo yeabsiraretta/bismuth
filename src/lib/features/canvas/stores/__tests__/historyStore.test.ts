@@ -25,8 +25,14 @@ function makeCmd(desc = 'test'): Command & { executed: boolean; undone: boolean 
     description: desc,
     executed: false,
     undone: false,
-    execute() { cmd.executed = true; cmd.undone = false; },
-    undo() { cmd.undone = true; cmd.executed = false; },
+    execute() {
+      cmd.executed = true;
+      cmd.undone = false;
+    },
+    undo() {
+      cmd.undone = true;
+      cmd.executed = false;
+    },
   };
   return cmd;
 }
@@ -155,8 +161,20 @@ describe('historyStore', () => {
 
     it('undoes sub-commands in reverse order', () => {
       const order: string[] = [];
-      const a: Command = { description: 'a', execute() {}, undo() { order.push('a'); } };
-      const b: Command = { description: 'b', execute() {}, undo() { order.push('b'); } };
+      const a: Command = {
+        description: 'a',
+        execute() {},
+        undo() {
+          order.push('a');
+        },
+      };
+      const b: Command = {
+        description: 'b',
+        execute() {},
+        undo() {
+          order.push('b');
+        },
+      };
       const batch = new BatchCommand([a, b], 'batch');
       batch.undo();
       expect(order).toEqual(['b', 'a']);

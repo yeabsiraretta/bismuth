@@ -21,9 +21,14 @@ import { get } from 'svelte/store';
 
 export type PanelView = 'list' | 'editor' | 'prompts';
 
-export const DEFAULT_TEMPLATE_CONTENT = '---\ntitle: {{title}}\ndate: {{date.today}}\ntags: []\n---\n\n# {{title}}\n\n{{system.cursor}}\n';
+export const DEFAULT_TEMPLATE_CONTENT =
+  '---\ntitle: {{title}}\ndate: {{date.today}}\ntags: []\n---\n\n# {{title}}\n\n{{system.cursor}}\n';
 
-export async function handleSaveTemplate(name: string, content: string, description: string): Promise<boolean> {
+export async function handleSaveTemplate(
+  name: string,
+  content: string,
+  description: string
+): Promise<boolean> {
   if (!name.trim()) return false;
   try {
     await saveTemplate(name.trim(), content, 'custom', description);
@@ -60,7 +65,7 @@ export async function executeTemplate(
   const context = buildTemplateContext(targetPath, title, promptAnswers);
   try {
     const allTemplates = get(templates);
-    const tmpl = allTemplates.find(t => t.name === templateName);
+    const tmpl = allTemplates.find((t) => t.name === templateName);
     if (tmpl) {
       const result = await renderTemplateAdvanced(tmpl.content, context, promptAnswers);
       await createFromTemplate(templateName, targetPath, context);

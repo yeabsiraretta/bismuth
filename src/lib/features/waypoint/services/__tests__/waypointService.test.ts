@@ -164,7 +164,7 @@ describe('collectTocEntries', () => {
     ]);
     const entries = collectTocEntries('/vault/Latin', allNotes, fnMap, markerMap, cfg);
     // Chapter1 contents pruned — only Chapter1.md folder note + intro + Chapter2 stuff
-    const names = entries.map(e => e.name);
+    const names = entries.map((e) => e.name);
     expect(names).toContain('Chapter1');
     expect(names).not.toContain('vocab');
     expect(names).not.toContain('grammar');
@@ -176,7 +176,7 @@ describe('collectTocEntries', () => {
       ['/vault/Latin/Chapter1/Chapter1.md', 'landmark'],
     ]);
     const entries = collectTocEntries('/vault/Latin', allNotes, fnMap, markerMap, cfg);
-    const names = entries.map(e => e.name);
+    const names = entries.map((e) => e.name);
     // Landmark doesn't prune — all chapter1 files still visible
     expect(names).toContain('vocab');
     expect(names).toContain('grammar');
@@ -186,7 +186,7 @@ describe('collectTocEntries', () => {
     const markerMap = new Map<string, 'waypoint' | 'landmark'>();
     const stopCfg = { ...cfg, stopAtFolderNotes: true };
     const entries = collectTocEntries('/vault/Latin', allNotes, fnMap, markerMap, stopCfg);
-    const names = entries.map(e => e.name);
+    const names = entries.map((e) => e.name);
     // Folder notes prune even without markers
     expect(names).toContain('Chapter1');
     expect(names).toContain('Chapter2');
@@ -197,9 +197,9 @@ describe('collectTocEntries', () => {
   it('sorts folder notes before regular files', () => {
     const markerMap = new Map<string, 'waypoint' | 'landmark'>();
     const entries = collectTocEntries('/vault/Latin', allNotes, fnMap, markerMap, cfg);
-    const depth1 = entries.filter(e => e.depth === 1);
-    const folderNoteIdx = depth1.findIndex(e => e.isFolderNote);
-    const regularIdx = depth1.findIndex(e => !e.isFolderNote);
+    const depth1 = entries.filter((e) => e.depth === 1);
+    const folderNoteIdx = depth1.findIndex((e) => e.isFolderNote);
+    const regularIdx = depth1.findIndex((e) => !e.isFolderNote);
     if (folderNoteIdx >= 0 && regularIdx >= 0) {
       expect(folderNoteIdx).toBeLessThan(regularIdx);
     }
@@ -254,7 +254,9 @@ describe('generateWaypointBlock', () => {
 describe('updateNoteContent', () => {
   it('inserts block after trigger when no existing block', () => {
     const content = '# Latin\n\n%% Waypoint %%\n\nSome text.';
-    const entries = [{ name: 'intro', path: '/vault/Latin/intro.md', depth: 0, isFolderNote: false }];
+    const entries = [
+      { name: 'intro', path: '/vault/Latin/intro.md', depth: 0, isFolderNote: false },
+    ];
     const result = updateNoteContent(content, 'waypoint', entries, cfg);
     expect(result).not.toBeNull();
     expect(result).toContain('%% Waypoint %%');
@@ -265,7 +267,8 @@ describe('updateNoteContent', () => {
   });
 
   it('replaces existing block', () => {
-    const content = '# Latin\n\n%% Waypoint %%\n\n%% Begin Waypoint %%\n- [[old]]\n%% End Waypoint %%\n\nOther text.';
+    const content =
+      '# Latin\n\n%% Waypoint %%\n\n%% Begin Waypoint %%\n- [[old]]\n%% End Waypoint %%\n\nOther text.';
     const entries = [{ name: 'new', path: '/vault/Latin/new.md', depth: 0, isFolderNote: false }];
     const result = updateNoteContent(content, 'waypoint', entries, cfg);
     expect(result).toContain('- [[new]]');

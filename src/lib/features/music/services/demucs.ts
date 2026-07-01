@@ -20,10 +20,7 @@ export interface StemPaths {
  * Returns an object with paths to the four stem files.
  * Throws with message "demucs_not_installed" when Demucs binary is absent.
  */
-export async function splitStems(
-  audioPath: string,
-  vaultRoot: string,
-): Promise<StemPaths> {
+export async function splitStems(audioPath: string, vaultRoot: string): Promise<StemPaths> {
   log.info('[demucs] splitStems', { audioPath });
   const result = await invoke<StemPaths>('split_stems', { audioPath, vaultRoot });
   log.info('[demucs] splitStems complete', { vocals: result.vocals });

@@ -62,8 +62,12 @@ export interface AttachmentPathContext {
 }
 
 export const ATTACHMENT_VARIABLES = [
-  '${notepath}', '${notename}', '${parent}',
-  '${originalname}', '${date}', '${md5}',
+  '${notepath}',
+  '${notename}',
+  '${parent}',
+  '${originalname}',
+  '${date}',
+  '${md5}',
 ] as const;
 
 export interface RearrangeResult {

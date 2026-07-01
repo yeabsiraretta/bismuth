@@ -11,13 +11,13 @@ This document defines the standard YAML frontmatter schema for all Bismuth-gener
 
 These fields are widely supported across PKM tools (Obsidian, Logseq, Zettlr, etc.).
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | string | Yes | Human-readable note title |
-| `created` | string (ISO 8601) | Yes | Creation timestamp (RFC 3339) |
-| `modified` | string (ISO 8601) | No | Last modification timestamp |
-| `tags` | string[] | No | Array of tag strings (without `#` prefix) |
-| `aliases` | string[] | No | Alternative titles for linking |
+| Field      | Type              | Required | Description                               |
+| ---------- | ----------------- | -------- | ----------------------------------------- |
+| `title`    | string            | Yes      | Human-readable note title                 |
+| `created`  | string (ISO 8601) | Yes      | Creation timestamp (RFC 3339)             |
+| `modified` | string (ISO 8601) | No       | Last modification timestamp               |
+| `tags`     | string[]          | No       | Array of tag strings (without `#` prefix) |
+| `aliases`  | string[]          | No       | Alternative titles for linking            |
 
 ---
 
@@ -25,10 +25,10 @@ These fields are widely supported across PKM tools (Obsidian, Logseq, Zettlr, et
 
 Bismuth-specific metadata lives under the `bismuth` key to avoid conflicts with user-defined fields or other tools.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `bismuth.lifecycle` | enum: `"captured"`, `"organized"`, `"archived"` | Note lifecycle state |
-| `bismuth.captured_at` | string (ISO 8601) | When note entered the capture pipeline |
+| Field                 | Type                                            | Description                            |
+| --------------------- | ----------------------------------------------- | -------------------------------------- |
+| `bismuth.lifecycle`   | enum: `"captured"`, `"organized"`, `"archived"` | Note lifecycle state                   |
+| `bismuth.captured_at` | string (ISO 8601)                               | When note entered the capture pipeline |
 
 ---
 

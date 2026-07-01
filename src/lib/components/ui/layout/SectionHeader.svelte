@@ -67,7 +67,9 @@
     margin: calc(-1 * var(--spacing-s)) calc(-1 * var(--spacing-xs));
   }
 
-  .collapse-btn:hover { color: var(--text-normal); }
+  .collapse-btn:hover {
+    color: var(--text-normal);
+  }
 
   .section-title {
     font-size: var(--font-ui-small);

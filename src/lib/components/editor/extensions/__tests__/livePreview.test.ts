@@ -67,7 +67,7 @@ describe('livePreview: italic detection', () => {
     const text = '**bold**';
     const matches = [...text.matchAll(italicRe)];
     // italicRe uses negative lookbehind/ahead to avoid matching inside bold
-    expect(matches.every(m => !m[0].includes('**'))).toBe(true);
+    expect(matches.every((m) => !m[0].includes('**'))).toBe(true);
   });
 });
 
@@ -267,7 +267,7 @@ describe('livePreview: token-level cursor reveal', () => {
   it('bold markers reveal independently (opening vs closing)', () => {
     // Text: "hello **bold** world" — opening ** at [6,8], closing ** at [12,14]
     const cursor = [7]; // inside opening **
-    expect(cursorTouchesRange(cursor, 6, 8)).toBe(true);  // opening revealed
+    expect(cursorTouchesRange(cursor, 6, 8)).toBe(true); // opening revealed
     expect(cursorTouchesRange(cursor, 12, 14)).toBe(false); // closing stays hidden
   });
 });
@@ -284,11 +284,11 @@ describe('livePreview: theme configuration', () => {
     // Design contract: headings get visible size increase but stay in grid
     // Selector uses '& .cm-line .cm-lp-hN' for specificity over CM base
     const styles = [
-      { fontSize: '1.6em', fontWeight: '700', lineHeight: 'inherit' },  // H1
-      { fontSize: '1.4em', fontWeight: '700', lineHeight: 'inherit' },  // H2
-      { fontSize: '1.2em', fontWeight: '600', lineHeight: 'inherit' },  // H3
-      { fontSize: '1.1em', fontWeight: '600', lineHeight: 'inherit' },  // H4
-      { fontSize: '1.0em', fontWeight: '600', lineHeight: 'inherit' },  // H5
+      { fontSize: '1.6em', fontWeight: '700', lineHeight: 'inherit' }, // H1
+      { fontSize: '1.4em', fontWeight: '700', lineHeight: 'inherit' }, // H2
+      { fontSize: '1.2em', fontWeight: '600', lineHeight: 'inherit' }, // H3
+      { fontSize: '1.1em', fontWeight: '600', lineHeight: 'inherit' }, // H4
+      { fontSize: '1.0em', fontWeight: '600', lineHeight: 'inherit' }, // H5
       { fontSize: '0.95em', fontWeight: '600', lineHeight: 'inherit' }, // H6
     ];
 
@@ -347,4 +347,3 @@ describe('livePreview: list indent class names', () => {
     expect(bulletClass(-1)).toBe('cm-lp-list-bullet');
   });
 });
-

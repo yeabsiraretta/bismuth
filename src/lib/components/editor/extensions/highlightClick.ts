@@ -12,7 +12,10 @@ import { log } from '@/utils/logger';
 const HIGHLIGHT_RE = /==(.+?)==/g;
 
 /** Find the ==...== range in the document that contains `pos`. */
-function findHighlightAt(doc: string, pos: number): { from: number; to: number; text: string } | null {
+function findHighlightAt(
+  doc: string,
+  pos: number
+): { from: number; to: number; text: string } | null {
   HIGHLIGHT_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = HIGHLIGHT_RE.exec(doc)) !== null) {
@@ -36,7 +39,8 @@ export const highlightClickPlugin = ViewPlugin.fromClass(
     eventHandlers: {
       mousedown(event: MouseEvent, view: EditorView) {
         const target = event.target as HTMLElement;
-        if (!target.closest('.cm-lp-highlight') && !target.classList.contains('cm-lp-highlight')) return;
+        if (!target.closest('.cm-lp-highlight') && !target.classList.contains('cm-lp-highlight'))
+          return;
 
         const pos = view.posAtCoords({ x: event.clientX, y: event.clientY });
         if (pos === null) return;

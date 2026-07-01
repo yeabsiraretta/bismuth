@@ -38,7 +38,7 @@ export async function extractOutline(doc: unknown): Promise<PDFOutlineItem[]> {
 async function buildOutlineTree(
   doc: PDFDocProxy,
   items: PdfJsOutlineItem[],
-  level: number,
+  level: number
 ): Promise<PDFOutlineItem[]> {
   const result: PDFOutlineItem[] = [];
 
@@ -58,9 +58,7 @@ async function buildOutlineTree(
       }
     }
 
-    const children = item.items?.length
-      ? await buildOutlineTree(doc, item.items, level + 1)
-      : [];
+    const children = item.items?.length ? await buildOutlineTree(doc, item.items, level + 1) : [];
 
     result.push({
       title: item.title || 'Untitled',
@@ -91,10 +89,7 @@ export function flattenOutline(items: PDFOutlineItem[]): PDFOutlineItem[] {
  * Find the outline item for a given page number.
  * Returns the deepest matching item (most specific section).
  */
-export function findOutlineForPage(
-  items: PDFOutlineItem[],
-  page: number,
-): PDFOutlineItem | null {
+export function findOutlineForPage(items: PDFOutlineItem[], page: number): PDFOutlineItem | null {
   let best: PDFOutlineItem | null = null;
 
   for (const item of flattenOutline(items)) {
@@ -112,6 +107,10 @@ export function findOutlineForPage(
  * Generate a section link from an outline item.
  */
 export function outlineToLink(filePath: string, item: PDFOutlineItem): string {
-  const fileName = filePath.split('/').pop()?.replace(/\.pdf$/i, '') ?? filePath;
+  const fileName =
+    filePath
+      .split('/')
+      .pop()
+      ?.replace(/\.pdf$/i, '') ?? filePath;
   return `[[${filePath}#page=${item.page}|${fileName}, ${item.title}]]`;
 }

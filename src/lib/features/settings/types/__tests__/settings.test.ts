@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { get } from 'svelte/store'; void get;
+import { get } from 'svelte/store';
+void get;
 
 vi.mock('@/utils/settings/fontSanitizer', () => ({
   sanitizeFontValue: (v: string) => v,
@@ -10,9 +11,15 @@ Object.defineProperty(globalThis, 'localStorage', {
     let store: Record<string, string> = {};
     return {
       getItem: (k: string) => store[k] ?? null,
-      setItem: (k: string, v: string) => { store[k] = v; },
-      removeItem: (k: string) => { delete store[k]; },
-      clear: () => { store = {}; },
+      setItem: (k: string, v: string) => {
+        store[k] = v;
+      },
+      removeItem: (k: string) => {
+        delete store[k];
+      },
+      clear: () => {
+        store = {};
+      },
     };
   })(),
   writable: true,
@@ -53,7 +60,8 @@ describe('settings feature module', () => {
 
   it('clearSettings removes localStorage entry', async () => {
     const { DEFAULT_SETTINGS } = await import('../settings.types');
-    const { loadSettings, saveSettings, clearSettings } = await import('../../services/settingsPersistence');
+    const { loadSettings, saveSettings, clearSettings } =
+      await import('../../services/settingsPersistence');
     saveSettings({ ...DEFAULT_SETTINGS, fontSize: 20 });
     clearSettings();
     const loaded = loadSettings();

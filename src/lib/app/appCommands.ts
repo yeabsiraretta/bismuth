@@ -1,7 +1,11 @@
 import type { AppCallbacks } from './AppCallbacks';
 
 /** Registers all default app commands with the command palette. */
-export function registerAppCommands(callbacks: AppCallbacks, handleNewNote: () => Promise<void>, handlePublish: () => Promise<void>): void {
+export function registerAppCommands(
+  callbacks: AppCallbacks,
+  handleNewNote: () => Promise<void>,
+  handlePublish: () => Promise<void>
+): void {
   import('@/stores/commands/commands').then(({ registerDefaultCommands }) => {
     import('@/features/capture').then(({ quickCapture }) => {
       import('@/stores/layout/layout').then(({ toggleLeftSidebar, toggleRightSidebar }) => {

@@ -1,10 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import {
-  lookupChord, parseCustomShape, renderChordDiagramSvg, getUniqueChords,
+  lookupChord,
+  parseCustomShape,
+  renderChordDiagramSvg,
+  getUniqueChords,
 } from '../services/chords/chordDiagrams';
 import type { ChordToken } from '../types/chords';
 
-function makeToken(symbol: string, root: string, quality: string = '', customShape?: string): ChordToken {
+function makeToken(
+  symbol: string,
+  root: string,
+  quality: string = '',
+  customShape?: string
+): ChordToken {
   return { symbol, root, quality, column: 0, customShape };
 }
 
@@ -110,14 +118,18 @@ describe('renderChordDiagramSvg', () => {
 describe('getUniqueChords', () => {
   it('extracts unique chord names', () => {
     const lines = [
-      { chords: [
-        { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
-        { symbol: 'C', root: 'C', quality: '', column: 4 },
-      ] },
-      { chords: [
-        { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
-        { symbol: 'G', root: 'G', quality: '', column: 4 },
-      ] },
+      {
+        chords: [
+          { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
+          { symbol: 'C', root: 'C', quality: '', column: 4 },
+        ],
+      },
+      {
+        chords: [
+          { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
+          { symbol: 'G', root: 'G', quality: '', column: 4 },
+        ],
+      },
     ];
     const unique = getUniqueChords(lines);
     expect(unique).toHaveLength(3);

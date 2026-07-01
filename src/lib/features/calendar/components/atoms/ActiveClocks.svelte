@@ -13,7 +13,9 @@
   $: clocks = $activeClocks;
 
   let tick = 0;
-  const interval = setInterval(() => { tick++; }, 10000);
+  const interval = setInterval(() => {
+    tick++;
+  }, 10000);
   onDestroy(() => clearInterval(interval));
 
   function elapsed(clock: ClockRecord): string {
@@ -91,8 +93,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 
   .clock-details {
@@ -124,7 +131,8 @@
     flex-shrink: 0;
   }
 
-  .btn-stop, .btn-cancel {
+  .btn-stop,
+  .btn-cancel {
     display: flex;
     align-items: center;
     justify-content: center;

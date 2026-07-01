@@ -31,11 +31,14 @@ export function isValidEnvelope(doc: unknown): doc is DesignDocument<unknown> {
 export function isValidTokenPayload(payload: unknown): payload is TokenPayload {
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
-  return Array.isArray(p['collections']) && (p['collections'] as unknown[]).every((c: unknown) => {
-    if (!c || typeof c !== 'object') return false;
-    const col = c as Record<string, unknown>;
-    return typeof col['name'] === 'string' && Array.isArray(col['tokens']);
-  });
+  return (
+    Array.isArray(p['collections']) &&
+    (p['collections'] as unknown[]).every((c: unknown) => {
+      if (!c || typeof c !== 'object') return false;
+      const col = c as Record<string, unknown>;
+      return typeof col['name'] === 'string' && Array.isArray(col['tokens']);
+    })
+  );
 }
 
 /** Validate a ComponentPayload. */

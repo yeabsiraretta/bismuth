@@ -32,7 +32,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('parses edit action with data and mode', () => {
-    const result = parseAdvancedUri('bismuth://edit?filepath=note.md&data=Hello%20World&mode=append');
+    const result = parseAdvancedUri(
+      'bismuth://edit?filepath=note.md&data=Hello%20World&mode=append'
+    );
     expect(result!.action).toBe('edit');
     expect(result!.data).toBe('Hello World');
     expect(result!.mode).toBe('append');
@@ -59,7 +61,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('parses command action', () => {
-    const result = parseAdvancedUri('bismuth://command?vault=MyVault&commandid=workspace%3Aexport-pdf');
+    const result = parseAdvancedUri(
+      'bismuth://command?vault=MyVault&commandid=workspace%3Aexport-pdf'
+    );
     expect(result!.action).toBe('command');
     expect(result!.commandid).toBe('workspace:export-pdf');
   });
@@ -71,7 +75,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('parses searchreplace action', () => {
-    const result = parseAdvancedUri('bismuth://searchreplace?filepath=note.md&search=old&replace=new&regex=true');
+    const result = parseAdvancedUri(
+      'bismuth://searchreplace?filepath=note.md&search=old&replace=new&regex=true'
+    );
     expect(result!.action).toBe('searchreplace');
     expect(result!.search).toBe('old');
     expect(result!.replace).toBe('new');
@@ -86,7 +92,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('parses frontmatter write action', () => {
-    const result = parseAdvancedUri('bismuth://frontmatter?filepath=note.md&frontmatterkey=tags&data=%5B%22a%22%2C%22b%22%5D');
+    const result = parseAdvancedUri(
+      'bismuth://frontmatter?filepath=note.md&frontmatterkey=tags&data=%5B%22a%22%2C%22b%22%5D'
+    );
     expect(result!.frontmatterkey).toBe('tags');
     expect(result!.data).toBe('["a","b"]');
   });
@@ -119,7 +127,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('parses boolean flags correctly', () => {
-    const result = parseAdvancedUri('bismuth://open?filepath=note.md&ifnotexists=true&newpane=true');
+    const result = parseAdvancedUri(
+      'bismuth://open?filepath=note.md&ifnotexists=true&newpane=true'
+    );
     expect(result!.ifnotexists).toBe(true);
     expect(result!.newpane).toBe(true);
   });
@@ -154,7 +164,9 @@ describe('parseAdvancedUri', () => {
   });
 
   it('handles URI-encoded values', () => {
-    const result = parseAdvancedUri('bismuth://open?filepath=my%20folder/my%20note.md&heading=Section%201');
+    const result = parseAdvancedUri(
+      'bismuth://open?filepath=my%20folder/my%20note.md&heading=Section%201'
+    );
     expect(result!.filepath).toBe('my folder/my note.md');
     expect(result!.heading).toBe('Section 1');
   });
@@ -184,7 +196,11 @@ describe('buildAdvancedUri', () => {
   });
 
   it('omits undefined and false values', () => {
-    const uri = buildAdvancedUri('edit', { filepath: 'note.md', clipboard: false, mode: undefined });
+    const uri = buildAdvancedUri('edit', {
+      filepath: 'note.md',
+      clipboard: false,
+      mode: undefined,
+    });
     expect(uri).toBe('bismuth://edit?filepath=note.md');
   });
 

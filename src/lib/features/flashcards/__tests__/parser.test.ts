@@ -99,7 +99,7 @@ describe('parseAllCards: deduplication', () => {
     const content = 'Inline :: Card\n\n## Q: Heading?\n**A:** Answer.';
     const cards = parseAllCards('test.md', content);
     expect(cards.length).toBeGreaterThanOrEqual(2);
-    const ids = cards.map(c => c.id);
+    const ids = cards.map((c) => c.id);
     const unique = new Set(ids);
     expect(unique.size).toBe(ids.length);
   });
@@ -143,7 +143,7 @@ describe('parseFlashcards: **bold** cloze', () => {
 
   it('does NOT match **label:** patterns', () => {
     const result = parseFlashcards('test.md', '**A:** This is an answer');
-    const clozeCards = result.cards.filter(c => c.type === 'cloze');
+    const clozeCards = result.cards.filter((c) => c.type === 'cloze');
     expect(clozeCards).toHaveLength(0);
   });
 });

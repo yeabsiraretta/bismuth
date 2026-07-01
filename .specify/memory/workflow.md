@@ -39,22 +39,22 @@ Each governed command handles memory synthesis automatically (Step 2 in each wor
 
 The governed workflows apply quality skills at specific gates:
 
-| Phase | Gate | Skills Applied |
-|-------|------|----------------|
-| Plan | Feasibility | code-review, component-gen, pict-test-designer, ux-review |
-| Tasks | Generation | pict-test-designer, code-review, component-gen, ux-review |
-| Implement | Coding | coding-principles, component-gen, agent-rules |
-| Implement | Review | code-review (Fix Quality Bar), ux-review (smell detection) |
-| Implement | Testing | pict-test-designer (pairwise coverage) |
+| Phase     | Gate        | Skills Applied                                             |
+| --------- | ----------- | ---------------------------------------------------------- |
+| Plan      | Feasibility | code-review, component-gen, pict-test-designer, ux-review  |
+| Tasks     | Generation  | pict-test-designer, code-review, component-gen, ux-review  |
+| Implement | Coding      | coding-principles, component-gen, agent-rules              |
+| Implement | Review      | code-review (Fix Quality Bar), ux-review (smell detection) |
+| Implement | Testing     | pict-test-designer (pairwise coverage)                     |
 
 ## Memory Layers
 
-| Layer | Location | Purpose |
-|-------|----------|---------|
-| Governance | `.specify/memory/` | Constitution, architecture rules, workflow |
-| Durable | `docs/memory/` | Cross-feature knowledge, decisions, patterns |
-| Active | `specs/<feature>/` | Feature-local constraints and synthesis |
-| Ephemeral | Terminal/prompt state | Never committed |
+| Layer      | Location              | Purpose                                      |
+| ---------- | --------------------- | -------------------------------------------- |
+| Governance | `.specify/memory/`    | Constitution, architecture rules, workflow   |
+| Durable    | `docs/memory/`        | Cross-feature knowledge, decisions, patterns |
+| Active     | `specs/<feature>/`    | Feature-local constraints and synthesis      |
+| Ephemeral  | Terminal/prompt state | Never committed                              |
 
 ## Extension Detection
 

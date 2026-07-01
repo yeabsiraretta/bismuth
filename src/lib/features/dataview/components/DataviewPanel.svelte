@@ -1,6 +1,15 @@
 <script lang="ts">
-  import { dataviewPageCount, dataviewIndexing, runDataviewQuery } from '@/features/dataview/stores/dataviewStore';
-  import type { DvResult, DvTableResult, DvListResult, DvTaskResult } from '@/features/dataview/types/dataview';
+  import {
+    dataviewPageCount,
+    dataviewIndexing,
+    runDataviewQuery,
+  } from '@/features/dataview/stores/dataviewStore';
+  import type {
+    DvResult,
+    DvTableResult,
+    DvListResult,
+    DvTaskResult,
+  } from '@/features/dataview/types/dataview';
   import Icon from '@/components/icons/Icon.svelte';
 
   let queryInput = '';
@@ -31,7 +40,12 @@
 
   function formatValue(v: unknown): string {
     if (v === null || v === undefined) return '–';
-    if (typeof v === 'object' && v !== null && 'type' in (v as Record<string, unknown>) && (v as Record<string, unknown>)['type'] === 'link') {
+    if (
+      typeof v === 'object' &&
+      v !== null &&
+      'type' in (v as Record<string, unknown>) &&
+      (v as Record<string, unknown>)['type'] === 'link'
+    ) {
       return `[[${(v as { path: string }).path}]]`;
     }
     if (v instanceof Date) return v.toLocaleDateString();
@@ -119,7 +133,9 @@
         </ul>
       {/if}
 
-      <div class="dv-panel-footer">{result.totalCount} result{result.totalCount !== 1 ? 's' : ''}</div>
+      <div class="dv-panel-footer">
+        {result.totalCount} result{result.totalCount !== 1 ? 's' : ''}
+      </div>
     </div>
   {/if}
 
@@ -204,12 +220,17 @@
     transition: opacity 0.15s;
   }
 
-  .dv-run-btn:hover:not(:disabled) { opacity: 0.9; }
-  .dv-run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .dv-run-btn:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  .dv-run-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .dv-panel-error {
     padding: 8px;
-    background: var(--background-modifier-error, rgba(255,0,0,0.1));
+    background: var(--background-modifier-error, rgba(255, 0, 0, 0.1));
     border-radius: 6px;
     color: var(--text-error, #f38ba8);
     font-size: 0.8rem;
@@ -237,7 +258,9 @@
     line-height: 1.6;
   }
 
-  .dv-help-content p { margin: 2px 0; }
+  .dv-help-content p {
+    margin: 2px 0;
+  }
   .dv-help-content code {
     background: var(--background-secondary);
     padding: 1px 4px;

@@ -17,10 +17,10 @@
  * password is NEVER present in this object — keychain only.
  */
 export interface NasConfig {
-  url: string;                   // WebDAV base URL e.g. https://192.168.1.100/dav
-  username: string;              // Keychain account name for credential lookup
-  lastSync: string | null;       // ISO timestamp of last successful sync, or null
-  offlineModeEnabled: boolean;   // When true, failed sync transitions to 'pending' not 'disconnected'
+  url: string; // WebDAV base URL e.g. https://192.168.1.100/dav
+  username: string; // Keychain account name for credential lookup
+  lastSync: string | null; // ISO timestamp of last successful sync, or null
+  offlineModeEnabled: boolean; // When true, failed sync transitions to 'pending' not 'disconnected'
 }
 
 /**
@@ -33,12 +33,7 @@ export interface NasConfig {
  * - conflict: one or more files have unresolved conflicts
  */
 export type SyncStatus =
-  | 'synced'
-  | 'syncing'
-  | 'pending'
-  | 'conflict'
-  | 'disconnected'
-  | 'disabled';
+  'synced' | 'syncing' | 'pending' | 'conflict' | 'disconnected' | 'disabled';
 
 /**
  * A file conflict detected during sync.
@@ -50,7 +45,7 @@ export interface ConflictRecord {
   remoteMtime: number;
   localContent: string;
   remoteContent: string;
-  detectedAt: string;   // ISO timestamp
+  detectedAt: string; // ISO timestamp
 }
 
 /**
@@ -60,8 +55,8 @@ export interface ConflictRecord {
 export interface ChangeJournalEntry {
   op: 'put' | 'delete' | 'move';
   path: string;
-  destPath?: string;    // Required for 'move' ops
-  timestamp: string;    // ISO timestamp
+  destPath?: string; // Required for 'move' ops
+  timestamp: string; // ISO timestamp
   synced: boolean;
 }
 

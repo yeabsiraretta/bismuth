@@ -6,7 +6,12 @@ import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
 import type { Project, PMSettings, PMViewMode, SavedView } from '../types';
 import { DEFAULT_PM_SETTINGS } from '../types';
-import { readProjectFile, writeProjectFile, deleteProjectFile, generateId } from '../services/projectIO';
+import {
+  readProjectFile,
+  writeProjectFile,
+  deleteProjectFile,
+  generateId,
+} from '../services/projectIO';
 
 // ─── Storage keys ────────────────────────────────────────────────────────────
 
@@ -45,14 +50,14 @@ export const pmSettings = writable<PMSettings>(loadSettings());
 export const savedViews = writable<SavedView[]>(loadSavedViews());
 
 // Persist settings on change
-pmSettings.subscribe(s => persistSettings(s));
-savedViews.subscribe(v => localStorage.setItem(VIEWS_KEY, JSON.stringify(v)));
+pmSettings.subscribe((s) => persistSettings(s));
+savedViews.subscribe((v) => localStorage.setItem(VIEWS_KEY, JSON.stringify(v)));
 
 // ─── Derived ─────────────────────────────────────────────────────────────────
 
 export const activeProject = derived(
   [projects, activeProjectId],
-  ([$projects, $id]) => $projects.find(p => p.id === $id) ?? null,
+  ([$projects, $id]) => $projects.find((p) => p.id === $id) ?? null
 );
 
 export const projectCount = derived(projects, ($p) => $p.length);
@@ -64,8 +69,8 @@ export async function loadProjects(folder: string): Promise<void> {
   try {
     const { scanVault } = await import('@/services/vault/vault');
     const allNotes = await scanVault();
-    const projectNotes = allNotes.filter(n =>
-      n.path.startsWith(folder) && n.frontmatter?.['pm-project'] === true,
+    const projectNotes = allNotes.filter(
+      (n) => n.path.startsWith(folder) && n.frontmatter?.['pm-project'] === true
     );
 
     const loaded: Project[] = [];
@@ -106,7 +111,7 @@ export async function createProject(name: string, color: string, icon: string): 
   };
 
   await writeProjectFile(project);
-  projects.update(list => [...list, project]);
+  projects.update((list) => [...list, project]);
   activeProjectId.set(id);
   activeView.set(project.defaultView);
   log.info('Created project', { id, name });
@@ -115,22 +120,22 @@ export async function createProject(name: string, color: string, icon: string): 
 
 export async function updateProject(updated: Project): Promise<void> {
   await writeProjectFile(updated);
-  projects.update(list => list.map(p => p.id === updated.id ? updated : p));
+  projects.update((list) => list.map((p) => (p.id === updated.id ? updated : p)));
 }
 
 export async function removeProject(id: string): Promise<void> {
   const list = get(projects);
-  const project = list.find(p => p.id === id);
+  const project = list.find((p) => p.id === id);
   if (!project) return;
   await deleteProjectFile(project.path);
-  projects.update(l => l.filter(p => p.id !== id));
+  projects.update((l) => l.filter((p) => p.id !== id));
   if (get(activeProjectId) === id) activeProjectId.set(null);
   log.info('Deleted project', { id });
 }
 
 export function openProject(id: string): void {
   const list = get(projects);
-  const project = list.find(p => p.id === id);
+  const project = list.find((p) => p.id === id);
   activeProjectId.set(id);
   if (project) activeView.set(project.defaultView);
 }
@@ -143,9 +148,9 @@ export function closeProject(): void {
 
 export function addSavedView(view: Omit<SavedView, 'id'>): void {
   const id = generateId();
-  savedViews.update(views => [...views, { ...view, id }]);
+  savedViews.update((views) => [...views, { ...view, id }]);
 }
 
 export function removeSavedView(id: string): void {
-  savedViews.update(views => views.filter(v => v.id !== id));
+  savedViews.update((views) => views.filter((v) => v.id !== id));
 }

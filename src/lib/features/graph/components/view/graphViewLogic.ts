@@ -4,7 +4,13 @@
  * from GraphView.svelte to keep the component under 300 lines.
  */
 
-import { filterGraphData, initNodes, hitTestNode, tickForces, type SimNode } from '../../utils/simulation';
+import {
+  filterGraphData,
+  initNodes,
+  hitTestNode,
+  tickForces,
+  type SimNode,
+} from '../../utils/simulation';
 import { computeGraphLayout } from '../../services/graph';
 import { type GraphLayoutWorker } from '../../workers/layoutWorkerManager';
 import type { GraphData, GraphEdge, GraphSettings } from '../../types';
@@ -38,7 +44,7 @@ export function applyFilters(
   graphData: GraphData,
   params: FilterParams,
   existingNodes: SimNode[],
-  bloom = false,
+  bloom = false
 ): { nodes: SimNode[]; edges: GraphEdge[] } {
   const filtered = filterGraphData(graphData, {
     searchQuery: params.searchQuery,
@@ -51,14 +57,23 @@ export function applyFilters(
     folder: params.folder,
     hiddenTags: params.hiddenTags,
   });
-  const nodes = initNodes(filtered.nodes, filtered.edges, params.width ?? 800, params.height ?? 600, existingNodes, bloom);
+  const nodes = initNodes(
+    filtered.nodes,
+    filtered.edges,
+    params.width ?? 800,
+    params.height ?? 600,
+    existingNodes,
+    bloom
+  );
   return { nodes, edges: filtered.edges };
 }
 
 /** Extracts available node types from graph data. */
 export function extractAvailableTypes(graphData: GraphData): string[] {
   const typeSet = new Set<string>();
-  graphData.nodes.forEach((n) => { if (n.node_type) typeSet.add(n.node_type); });
+  graphData.nodes.forEach((n) => {
+    if (n.node_type) typeSet.add(n.node_type);
+  });
   return Array.from(typeSet).sort();
 }
 
@@ -76,8 +91,8 @@ export async function applyBackendLayout(
     height: params.height,
     iterations: Math.min(100, Math.max(30, params.nodeCount * 2)),
   });
-  const posMap = new Map(positions.map(p => [p.id, p]));
-  const updated = nodes.map(node => {
+  const posMap = new Map(positions.map((p) => [p.id, p]));
+  const updated = nodes.map((node) => {
     const pos = posMap.get(node.id);
     if (pos) return { ...node, x: pos.x, y: pos.y, vx: 0, vy: 0 };
     return node;
@@ -135,11 +150,7 @@ export function computeCentreOffset(
 }
 
 /** Hit-tests the canvas position and returns the matching node id, or null. */
-export function resolveClickedNode(
-  nodes: SimNode[],
-  x: number,
-  y: number
-): string | null {
+export function resolveClickedNode(nodes: SimNode[], x: number, y: number): string | null {
   const node = hitTestNode(nodes, x, y);
   return node ? node.id : null;
 }
@@ -159,11 +170,14 @@ export function dispatchContextMenuAction(
   onShowLocalGraph: (id: string) => void
 ): string | null {
   switch (action) {
-    case 'open': return nodeId;
+    case 'open':
+      return nodeId;
     case 'open-new-pane':
       window.dispatchEvent(new CustomEvent('open-note-new-pane', { detail: { id: nodeId } }));
       break;
-    case 'show-local-graph': onShowLocalGraph(nodeId); break;
+    case 'show-local-graph':
+      onShowLocalGraph(nodeId);
+      break;
     case 'show-backlinks':
       window.dispatchEvent(new CustomEvent('show-backlinks', { detail: { id: nodeId } }));
       break;

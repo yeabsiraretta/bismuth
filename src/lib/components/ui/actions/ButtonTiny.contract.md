@@ -16,25 +16,25 @@ Use only in surfaces explicitly designed for 24px buttons.
 
 ## Props
 
-| Prop | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `variant` | `'primary' \| 'secondary' \| 'tertiary'` | No | `'secondary'` | Visual style: filled, outlined, or text-only |
-| `iconOnly` | `boolean` | No | `false` | Hides label and renders icon only. Requires `ariaLabel`. |
-| `ariaLabel` | `string` | No | `undefined` | Accessible name. Required when `iconOnly={true}`. |
-| `disabled` | `boolean` | No | `false` | Prevents interaction and dims the button |
-| `type` | `'button' \| 'submit' \| 'reset'` | No | `'button'` | HTML button type |
+| Prop        | Type                                     | Required | Default       | Description                                              |
+| ----------- | ---------------------------------------- | -------- | ------------- | -------------------------------------------------------- |
+| `variant`   | `'primary' \| 'secondary' \| 'tertiary'` | No       | `'secondary'` | Visual style: filled, outlined, or text-only             |
+| `iconOnly`  | `boolean`                                | No       | `false`       | Hides label and renders icon only. Requires `ariaLabel`. |
+| `ariaLabel` | `string`                                 | No       | `undefined`   | Accessible name. Required when `iconOnly={true}`.        |
+| `disabled`  | `boolean`                                | No       | `false`       | Prevents interaction and dims the button                 |
+| `type`      | `'button' \| 'submit' \| 'reset'`        | No       | `'button'`    | HTML button type                                         |
 
 ---
 
 ## States
 
-| State | How triggered | Visual change |
-|---|---|---|
-| Default | Always | Normal appearance per variant |
-| Hover | Mouse hover | Background tint (secondary/tertiary) or darker primary |
-| Disabled | `disabled={true}` | 50% opacity, `cursor: not-allowed`, HTML `disabled` set |
-| N/A: Loading | — | Not applicable at this size; use a parent-level spinner |
-| N/A: Error | — | Not applicable |
+| State        | How triggered     | Visual change                                           |
+| ------------ | ----------------- | ------------------------------------------------------- |
+| Default      | Always            | Normal appearance per variant                           |
+| Hover        | Mouse hover       | Background tint (secondary/tertiary) or darker primary  |
+| Disabled     | `disabled={true}` | 50% opacity, `cursor: not-allowed`, HTML `disabled` set |
+| N/A: Loading | —                 | Not applicable at this size; use a parent-level spinner |
+| N/A: Error   | —                 | Not applicable                                          |
 
 ---
 
@@ -43,11 +43,13 @@ Use only in surfaces explicitly designed for 24px buttons.
 **ARIA role**: Native `<button>` — no explicit role needed
 
 **Keyboard behavior**:
+
 - `Tab` — receives focus
 - `Enter` / `Space` — activates the button
 - Focus ring: `2px solid var(--interactive-accent)` on `:focus-visible`
 
 **Screen reader behavior**:
+
 - When `iconOnly={false}`: reads slot content (label text)
 - When `iconOnly={true}`: reads `ariaLabel` — required, enforced via `log.warn` at runtime
 
@@ -57,17 +59,17 @@ Use only in surfaces explicitly designed for 24px buttons.
 
 ## Design tokens used
 
-| CSS property | Token | Fallback |
-|---|---|---|
-| `height` | `--size-4-6` | `24px` |
-| `background` (primary) | `--interactive-accent` | `#dc2626` |
+| CSS property                   | Token                         | Fallback  |
+| ------------------------------ | ----------------------------- | --------- |
+| `height`                       | `--size-4-6`                  | `24px`    |
+| `background` (primary)         | `--interactive-accent`        | `#dc2626` |
 | `background` (secondary hover) | `--background-modifier-hover` | `#f3f4f6` |
-| `color` (primary) | `--text-on-accent` | `#ffffff` |
-| `color` (secondary) | `--text-normal` | `#1f2937` |
-| `color` (tertiary) | `--text-muted` | `#6b7280` |
-| `border` (secondary) | `--border-color` | `#e5e7eb` |
-| `border-radius` | `--radius-s` | `4px` |
-| Focus ring | `--interactive-accent` | `#dc2626` |
+| `color` (primary)              | `--text-on-accent`            | `#ffffff` |
+| `color` (secondary)            | `--text-normal`               | `#1f2937` |
+| `color` (tertiary)             | `--text-muted`                | `#6b7280` |
+| `border` (secondary)           | `--border-color`              | `#e5e7eb` |
+| `border-radius`                | `--radius-s`                  | `4px`     |
+| Focus ring                     | `--interactive-accent`        | `#dc2626` |
 
 ---
 

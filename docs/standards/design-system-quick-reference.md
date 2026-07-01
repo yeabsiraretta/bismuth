@@ -99,7 +99,9 @@
 ### Sidebar Item
 
 ```svelte
-<button class="flex items-center gap-3 w-full px-4 py-2 rounded-md hover:bg-surface-hover transition-colors">
+<button
+  class="flex items-center gap-3 w-full px-4 py-2 rounded-md hover:bg-surface-hover transition-colors"
+>
   <Icon name="file" size={16} />
   <span class="flex-1 text-left truncate">Note Title</span>
   <span class="badge badge-primary">3</span>
@@ -401,6 +403,8 @@
 ### Before
 
 ```svelte
+<div class="header">...</div>
+
 <style>
   .header {
     display: flex;
@@ -411,16 +415,12 @@
     border-bottom: 1px solid var(--color-border);
   }
 </style>
-
-<div class="header">...</div>
 ```
 
 ### After
 
 ```svelte
-<div class="flex items-center justify-between p-4 bg-surface border-b border-border">
-  ...
-</div>
+<div class="flex items-center justify-between p-4 bg-surface border-b border-border">...</div>
 ```
 
 **Result**: Less code, better performance, more maintainable!

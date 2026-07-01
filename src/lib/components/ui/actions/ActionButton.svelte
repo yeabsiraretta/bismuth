@@ -11,13 +11,7 @@
   export let size: 'sm' | 'md' = 'sm';
 </script>
 
-<button
-  class="action-btn action-btn-{size}"
-  {disabled}
-  {title}
-  aria-label={title}
-  on:click
->
+<button class="action-btn action-btn-{size}" {disabled} {title} aria-label={title} on:click>
   <Icon name={icon} size={size === 'sm' ? 14 : 16} />
 </button>
 
@@ -31,8 +25,9 @@
     color: var(--text-muted, #6b7280);
     border-radius: var(--radius-s, 4px);
     cursor: pointer;
-    transition: background-color var(--transition-fast, 150ms ease),
-                color var(--transition-fast, 150ms ease);
+    transition:
+      background-color var(--transition-fast, 150ms ease),
+      color var(--transition-fast, 150ms ease);
     flex-shrink: 0;
   }
 

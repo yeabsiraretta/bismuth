@@ -65,14 +65,7 @@ export const ICON_PRESETS = {
   ],
 
   // Note type icons
-  noteIcons: [
-    'file-text',
-    'sticky-note',
-    'book-open',
-    'clipboard',
-    'edit',
-    'feather',
-  ],
+  noteIcons: ['file-text', 'sticky-note', 'book-open', 'clipboard', 'edit', 'feather'],
 };
 
 export const KEYBOARD_SHORTCUTS = {

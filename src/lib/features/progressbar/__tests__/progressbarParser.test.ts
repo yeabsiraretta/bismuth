@@ -1,8 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parseProgressBarYaml, computeTimeProgress, daysBetween,
-  resolveNameTemplate, defaultNameForKind, computeProgressBar,
-  findProgressBarBlocks, sampleProgressBarBlock,
+  parseProgressBarYaml,
+  computeTimeProgress,
+  daysBetween,
+  resolveNameTemplate,
+  defaultNameForKind,
+  computeProgressBar,
+  findProgressBarBlocks,
+  sampleProgressBarBlock,
 } from '../services/progressbarParser';
 import type { ProgressBarConfig } from '../types/progressbar';
 
@@ -123,21 +128,30 @@ describe('computeTimeProgress', () => {
 describe('resolveNameTemplate', () => {
   it('resolves all template variables', () => {
     const result = resolveNameTemplate('{value}/{max} ({percentage})', {
-      value: 42, min: 0, max: 100, percentage: 42,
+      value: 42,
+      min: 0,
+      max: 100,
+      percentage: 42,
     });
     expect(result).toBe('42/100 (42%)');
   });
 
   it('resolves min template', () => {
     const result = resolveNameTemplate('from {min} to {max}', {
-      value: 5, min: 0, max: 10, percentage: 50,
+      value: 5,
+      min: 0,
+      max: 10,
+      percentage: 50,
     });
     expect(result).toBe('from 0 to 10');
   });
 
   it('leaves unknown templates untouched', () => {
     const result = resolveNameTemplate('{unknown} {value}', {
-      value: 5, min: 0, max: 10, percentage: 50,
+      value: 5,
+      min: 0,
+      max: 10,
+      percentage: 50,
     });
     expect(result).toBe('{unknown} 5');
   });
@@ -157,8 +171,14 @@ describe('defaultNameForKind', () => {
 describe('computeProgressBar', () => {
   it('computes manual progress bar', () => {
     const config: ProgressBarConfig = {
-      kind: 'manual', name: '{value}/{max}', width: '100%',
-      value: 42, min: null, max: 100, button: false, id: null,
+      kind: 'manual',
+      name: '{value}/{max}',
+      width: '100%',
+      value: 42,
+      min: null,
+      max: 100,
+      button: false,
+      id: null,
     };
     const data = computeProgressBar(config);
     expect(data.value).toBe(42);
@@ -169,8 +189,14 @@ describe('computeProgressBar', () => {
 
   it('clamps value to min/max', () => {
     const config: ProgressBarConfig = {
-      kind: 'manual', name: '', width: '100%',
-      value: 150, min: null, max: 100, button: false, id: null,
+      kind: 'manual',
+      name: '',
+      width: '100%',
+      value: 150,
+      min: null,
+      max: 100,
+      button: false,
+      id: null,
     };
     const data = computeProgressBar(config);
     expect(data.value).toBe(100);
@@ -179,8 +205,14 @@ describe('computeProgressBar', () => {
 
   it('computes time-based bar', () => {
     const config: ProgressBarConfig = {
-      kind: 'day-year', name: '', width: '100%',
-      value: null, min: null, max: null, button: false, id: null,
+      kind: 'day-year',
+      name: '',
+      width: '100%',
+      value: null,
+      min: null,
+      max: null,
+      button: false,
+      id: null,
     };
     const data = computeProgressBar(config);
     expect(data.value).toBeGreaterThan(0);
@@ -189,22 +221,40 @@ describe('computeProgressBar', () => {
 
   it('enables buttons only for manual bars', () => {
     const manual: ProgressBarConfig = {
-      kind: 'manual', name: '', width: '100%',
-      value: 5, min: null, max: 10, button: true, id: 'test',
+      kind: 'manual',
+      name: '',
+      width: '100%',
+      value: 5,
+      min: null,
+      max: 10,
+      button: true,
+      id: 'test',
     };
     expect(computeProgressBar(manual).showButtons).toBe(true);
 
     const timeBased: ProgressBarConfig = {
-      kind: 'day-year', name: '', width: '100%',
-      value: null, min: null, max: null, button: true, id: null,
+      kind: 'day-year',
+      name: '',
+      width: '100%',
+      value: null,
+      min: null,
+      max: null,
+      button: true,
+      id: null,
     };
     expect(computeProgressBar(timeBased).showButtons).toBe(false);
   });
 
   it('uses default name when none provided', () => {
     const config: ProgressBarConfig = {
-      kind: 'day-year', name: '', width: '100%',
-      value: null, min: null, max: null, button: false, id: null,
+      kind: 'day-year',
+      name: '',
+      width: '100%',
+      value: null,
+      min: null,
+      max: null,
+      button: false,
+      id: null,
     };
     const data = computeProgressBar(config);
     expect(data.label).toContain('Year');

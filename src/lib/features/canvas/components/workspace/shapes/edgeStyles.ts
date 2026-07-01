@@ -3,7 +3,11 @@
  * Used by drawArrow / drawLine in canvasShapeDrawing.ts.
  */
 
-import type { ArrowHeadStyle, BorderStyle, EdgePathfinding } from '@/features/canvas/types/elements';
+import type {
+  ArrowHeadStyle,
+  BorderStyle,
+  EdgePathfinding,
+} from '@/features/canvas/types/elements';
 import type { Point } from '@/features/canvas/types/settings';
 
 // ─── Arrow Heads ────────────────────────────────────────────────────────────
@@ -16,7 +20,7 @@ export function drawArrowHead(
   tipY: number,
   angle: number,
   size: number,
-  color: string,
+  color: string
 ): void {
   if (style === 'none') return;
 
@@ -96,10 +100,14 @@ export function drawArrowHead(
 /** Returns a canvas dash array for the given border/line style. */
 export function getDashPattern(style: BorderStyle | string | undefined): number[] {
   switch (style) {
-    case 'dashed': return [8, 4];
-    case 'dotted': return [2, 4];
-    case 'none': return [0, 1000]; // effectively invisible
-    default: return [];
+    case 'dashed':
+      return [8, 4];
+    case 'dotted':
+      return [2, 4];
+    case 'none':
+      return [0, 1000]; // effectively invisible
+    default:
+      return [];
   }
 }
 
@@ -112,7 +120,7 @@ export function getDashPattern(style: BorderStyle | string | undefined): number[
 export function computeEdgePath(
   method: EdgePathfinding | undefined,
   start: Point,
-  end: Point,
+  end: Point
 ): Point[] {
   switch (method) {
     case 'orthogonal':
@@ -128,24 +136,14 @@ export function computeEdgePath(
 /** Orthogonal (right-angle) path with a midpoint step. */
 function orthogonalPath(start: Point, end: Point): Point[] {
   const midX = (start.x + end.x) / 2;
-  return [
-    start,
-    { x: midX, y: start.y },
-    { x: midX, y: end.y },
-    end,
-  ];
+  return [start, { x: midX, y: start.y }, { x: midX, y: end.y }, end];
 }
 
 /** Curved path — returns control points for a cubic bezier (4 points). */
 function curvedPath(start: Point, end: Point): Point[] {
   const dx = end.x - start.x;
   const cpOffset = Math.abs(dx) * 0.4 || 50;
-  return [
-    start,
-    { x: start.x + cpOffset, y: start.y },
-    { x: end.x - cpOffset, y: end.y },
-    end,
-  ];
+  return [start, { x: start.x + cpOffset, y: start.y }, { x: end.x - cpOffset, y: end.y }, end];
 }
 
 /**
@@ -156,7 +154,7 @@ export function drawEdgeLabel(
   label: string,
   points: Point[],
   offsetX: number,
-  offsetY: number,
+  offsetY: number
 ): void {
   if (!label) return;
   const mid = Math.floor(points.length / 2);

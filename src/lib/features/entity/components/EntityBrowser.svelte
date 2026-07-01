@@ -24,7 +24,11 @@
 </script>
 
 <div class="entity-browser" role="tabpanel" aria-label="Entities">
-  <PanelHeader icon="layers" title="Entities" count={groups.reduce((sum, g) => sum + g.count, 0) || undefined} />
+  <PanelHeader
+    icon="layers"
+    title="Entities"
+    count={groups.reduce((sum, g) => sum + g.count, 0) || undefined}
+  />
 
   <div class="entity-groups">
     {#if groups.length === 0}
@@ -36,7 +40,11 @@
     {/if}
     {#each groups as group}
       <div class="entity-group">
-        <button class="group-header" on:click={() => toggleType(group.type)} title="Toggle {group.type} list">
+        <button
+          class="group-header"
+          on:click={() => toggleType(group.type)}
+          title="Toggle {group.type} list"
+        >
           <Icon name={expandedTypes.has(group.type) ? 'chevron-down' : 'chevron-right'} size={14} />
           <Icon name={group.icon} size={16} />
           <span class="group-type">{group.type}</span>
@@ -49,7 +57,11 @@
               <div class="empty-hint">No {group.type.toLowerCase()}s found</div>
             {:else}
               {#each group.notes as note}
-                <button class="note-item" on:click={() => openNote(note.path)} title="Open {note.title}">
+                <button
+                  class="note-item"
+                  on:click={() => openNote(note.path)}
+                  title="Open {note.title}"
+                >
                   <Icon name="file-text" size={14} />
                   <span class="note-title">{note.title}</span>
                   {#if note.lifecycle}
@@ -81,8 +93,15 @@
     padding: var(--spacing-xl) var(--spacing-m);
     text-align: center;
   }
-  .empty-state p { margin: 0; font-size: var(--font-size-sm); color: var(--text-muted); }
-  .empty-hint { font-size: 0.75rem; color: var(--text-faint); }
+  .empty-state p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+  }
+  .empty-hint {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
 
   .entity-groups {
     display: flex;

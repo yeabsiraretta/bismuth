@@ -50,12 +50,14 @@ export function buildEditorTheme(es: EditorThemeSettings) {
     '.tok-heading': {
       textDecoration: 'none',
     },
-    ...(es.showLineNumbers ? {} : {
-      '.cm-lineNumbers .cm-gutterElement': {
-        color: 'transparent',
-        userSelect: 'none',
-        minWidth: '32px',
-      },
-    }),
+    ...(es.showLineNumbers
+      ? {}
+      : {
+          '.cm-lineNumbers .cm-gutterElement': {
+            color: 'transparent',
+            userSelect: 'none',
+            minWidth: '32px',
+          },
+        }),
   });
 }

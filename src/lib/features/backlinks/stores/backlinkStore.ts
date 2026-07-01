@@ -16,20 +16,26 @@ function loadSettings(): BacklinkCacheSettings {
   try {
     const s = localStorage.getItem(SETTINGS_KEY);
     return s ? { ...DEFAULT_CACHE_SETTINGS, ...JSON.parse(s) } : DEFAULT_CACHE_SETTINGS;
-  } catch { return DEFAULT_CACHE_SETTINGS; }
+  } catch {
+    return DEFAULT_CACHE_SETTINGS;
+  }
 }
 
 // ─── Core stores ─────────────────────────────────────────────────────────────
 
 export const cacheSettings = writable<BacklinkCacheSettings>(loadSettings());
 export const cacheStats = writable<CacheStats>({
-  totalFiles: 0, totalLinks: 0, buildTime: 0,
-  canvasFiles: 0, isComplete: false, lastBuild: 0,
+  totalFiles: 0,
+  totalLinks: 0,
+  buildTime: 0,
+  canvasFiles: 0,
+  isComplete: false,
+  lastBuild: 0,
 });
 export const cacheBuilding = writable(false);
 export const cacheVersion = writable(0);
 
-cacheSettings.subscribe(v => {
+cacheSettings.subscribe((v) => {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(v));
 });
 
@@ -53,7 +59,7 @@ export function buildCache(notes: NoteInput[]): void {
     const cache = getCache();
     cache.buildFromNotes(notes);
     cacheStats.set(cache.getStats());
-    cacheVersion.update(v => v + 1);
+    cacheVersion.update((v) => v + 1);
     log.info('Backlink cache built', { ...cache.getStats() });
   } catch (error) {
     log.error('Failed to build backlink cache', error as Error);
@@ -68,7 +74,7 @@ export function updateCacheForFile(note: NoteInput): void {
   const changed = cache.updateFile(note);
   if (changed) {
     cacheStats.set(cache.getStats());
-    cacheVersion.update(v => v + 1);
+    cacheVersion.update((v) => v + 1);
   }
 }
 
@@ -77,7 +83,7 @@ export function removeCacheForFile(path: string): void {
   const cache = getCache();
   cache.removeFile(path);
   cacheStats.set(cache.getStats());
-  cacheVersion.update(v => v + 1);
+  cacheVersion.update((v) => v + 1);
 }
 
 /** Get backlinks for a file path (fast, cached) */
@@ -102,8 +108,15 @@ export async function getCachedBacklinksSafe(pathOrTitle: string): Promise<Cache
   for (const m of meta) {
     try {
       const full = await getNote(m.path);
-      notes.push({ path: m.path, title: m.title, content: full.content, frontmatter: full.frontmatter });
-    } catch { /* skip unreadable */ }
+      notes.push({
+        path: m.path,
+        title: m.title,
+        content: full.content,
+        frontmatter: full.frontmatter,
+      });
+    } catch {
+      /* skip unreadable */
+    }
   }
   buildCache(notes);
   return getCachedBacklinks(pathOrTitle);
@@ -112,13 +125,20 @@ export async function getCachedBacklinksSafe(pathOrTitle: string): Promise<Cache
 /** Clear the cache completely */
 export function clearCache(): void {
   getCache().clear();
-  cacheStats.set({ totalFiles: 0, totalLinks: 0, buildTime: 0, canvasFiles: 0, isComplete: false, lastBuild: 0 });
-  cacheVersion.update(v => v + 1);
+  cacheStats.set({
+    totalFiles: 0,
+    totalLinks: 0,
+    buildTime: 0,
+    canvasFiles: 0,
+    isComplete: false,
+    lastBuild: 0,
+  });
+  cacheVersion.update((v) => v + 1);
 }
 
 /** Update cache settings and rebuild */
 export function updateCacheSettings(updates: Partial<BacklinkCacheSettings>): void {
-  cacheSettings.update(s => ({ ...s, ...updates }));
+  cacheSettings.update((s) => ({ ...s, ...updates }));
   cacheInstance = new BacklinkCache(get(cacheSettings));
 }
 

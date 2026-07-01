@@ -16,7 +16,9 @@
   export const courseId: string | null = null;
   /** Optional course name for display. */
   export let courseName: string | null = null;
-  export let onGraded: ((detail: { cardId: string; grade: ReviewGrade; record: ReviewRecord }) => void) | undefined = undefined;
+  export let onGraded:
+    ((detail: { cardId: string; grade: ReviewGrade; record: ReviewRecord }) => void) | undefined =
+    undefined;
   export let onFinished: ((detail: { total: number }) => void) | undefined = undefined;
 
   let queue = [...cards];
@@ -29,7 +31,9 @@
   $: circumference = 2 * Math.PI * 18;
   $: strokeOffset = circumference - (progress / 100) * circumference;
 
-  function reveal() { revealed = true; }
+  function reveal() {
+    revealed = true;
+  }
 
   function grade(g: ReviewGrade) {
     if (!current) return;
@@ -50,18 +54,31 @@
 
   function handleKeydown(e: KeyboardEvent) {
     if (!current) return;
-    if (e.key === ' ' && !revealed) { e.preventDefault(); reveal(); return; }
+    if (e.key === ' ' && !revealed) {
+      e.preventDefault();
+      reveal();
+      return;
+    }
     if (revealed && e.key >= '0' && e.key <= '5') {
       e.preventDefault();
       grade(parseInt(e.key) as ReviewGrade);
     }
   }
 
-  onMount(() => { window.addEventListener('keydown', handleKeydown); });
-  onDestroy(() => { window.removeEventListener('keydown', handleKeydown); });
+  onMount(() => {
+    window.addEventListener('keydown', handleKeydown);
+  });
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleKeydown);
+  });
 
   const GRADE_LABELS: Record<number, string> = {
-    0: 'Blackout', 1: 'Wrong', 2: 'Hard', 3: 'OK', 4: 'Good', 5: 'Easy',
+    0: 'Blackout',
+    1: 'Wrong',
+    2: 'Hard',
+    3: 'OK',
+    4: 'Good',
+    5: 'Easy',
   };
   const GRADE_KEYS = [0, 1, 2, 3, 4, 5] as const;
 </script>
@@ -76,26 +93,52 @@
   {#if !current}
     <div class="session-done">
       <svg class="done-ring" width="64" height="64" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="18" fill="none" stroke="var(--interactive-accent)" stroke-width="3" />
-        <path d="M15 22l4 4 9-9" fill="none" stroke="var(--interactive-accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle
+          cx="22"
+          cy="22"
+          r="18"
+          fill="none"
+          stroke="var(--interactive-accent)"
+          stroke-width="3"
+        />
+        <path
+          d="M15 22l4 4 9-9"
+          fill="none"
+          stroke="var(--interactive-accent)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
       <h3>Session complete</h3>
       <p>{sessionGrades.length} cards reviewed</p>
       <div class="done-stats">
-        <span class="done-stat pass">{sessionGrades.filter(g => g >= 4).length} Easy</span>
-        <span class="done-stat ok">{sessionGrades.filter(g => g === 3).length} OK</span>
-        <span class="done-stat fail">{sessionGrades.filter(g => g < 3).length} Hard</span>
+        <span class="done-stat pass">{sessionGrades.filter((g) => g >= 4).length} Easy</span>
+        <span class="done-stat ok">{sessionGrades.filter((g) => g === 3).length} OK</span>
+        <span class="done-stat fail">{sessionGrades.filter((g) => g < 3).length} Hard</span>
       </div>
     </div>
   {:else}
     <div class="progress-row">
       <svg class="progress-ring" width="40" height="40" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="18" fill="none" stroke="var(--border-color)" stroke-width="3"/>
-        <circle cx="22" cy="22" r="18" fill="none" stroke="var(--interactive-accent)" stroke-width="3"
-          stroke-dasharray={circumference} stroke-dashoffset={strokeOffset}
-          stroke-linecap="round" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 0.4s"/>
+        <circle cx="22" cy="22" r="18" fill="none" stroke="var(--border-color)" stroke-width="3" />
+        <circle
+          cx="22"
+          cy="22"
+          r="18"
+          fill="none"
+          stroke="var(--interactive-accent)"
+          stroke-width="3"
+          stroke-dasharray={circumference}
+          stroke-dashoffset={strokeOffset}
+          stroke-linecap="round"
+          transform="rotate(-90 22 22)"
+          style="transition: stroke-dashoffset 0.4s"
+        />
       </svg>
-      <span class="progress-count">{index + 1}<span class="progress-sep">/</span>{queue.length}</span>
+      <span class="progress-count"
+        >{index + 1}<span class="progress-sep">/</span>{queue.length}</span
+      >
     </div>
 
     <div class="card-display" class:flipped={revealed}>
@@ -104,7 +147,10 @@
       <div class="card-front">
         <!-- eslint-disable-next-line svelte/no-at-html-tags -- Content escaped via escapeHtml before mark/br wrapping -->
         {@html escapeHtml(current.front)
-          .replace(/\{\{c\d+::(.+?)\}\}/g, revealed ? '<mark>$1</mark>' : '<span class="cloze-blank">[...]</span>')
+          .replace(
+            /\{\{c\d+::(.+?)\}\}/g,
+            revealed ? '<mark>$1</mark>' : '<span class="cloze-blank">[...]</span>'
+          )
           .replace(/\n/g, '<br>')}
       </div>
 
@@ -145,38 +191,202 @@
 </div>
 
 <style>
-  .study-session { display: flex; flex-direction: column; height: 100%; padding: var(--spacing-m); gap: var(--spacing-m); overflow-y: auto; }
-  .course-context { display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-s); background: var(--background-modifier-hover); border-radius: var(--radius-s); }
-  .course-label { font-size: 10px; color: var(--text-faint); }
-  .course-name { font-size: var(--font-smallest); font-weight: var(--font-semibold); color: var(--text-muted); }
-  .progress-row { display: flex; align-items: center; gap: var(--spacing-s); }
-  .progress-count { font-size: var(--font-smaller); font-weight: var(--font-semibold); color: var(--text-normal); }
-  .progress-sep { color: var(--text-faint); margin: 0 1px; }
-  .card-display { flex: 1; display: flex; flex-direction: column; gap: var(--spacing-m); background: var(--background-primary); border: 1px solid var(--border-color); border-radius: var(--radius-m); padding: var(--spacing-l); transition: border-color 0.2s; }
-  .card-display.flipped { border-color: var(--interactive-accent); }
-  .card-type-badge { font-size: 10px; font-weight: var(--font-semibold); text-transform: uppercase; color: var(--text-faint); }
-  .card-front { font-size: var(--font-normal); font-weight: var(--font-medium); line-height: 1.6; color: var(--text-normal); }
-  .card-front :global(mark) { background: rgba(245, 158, 11, 0.2); color: inherit; border-radius: 2px; padding: 0 3px; border-bottom: 2px dashed rgba(245, 158, 11, 0.5); }
-  .card-front :global(.cloze-blank) { background: var(--background-modifier-border); color: transparent; border-radius: 3px; padding: 0 12px; user-select: none; }
-  .card-divider { height: 1px; background: var(--border-color); }
-  .card-back { font-size: var(--font-smaller); color: var(--text-muted); line-height: 1.6; }
-  .reveal-btn { margin-top: auto; display: flex; align-items: center; justify-content: center; gap: var(--spacing-s); padding: var(--spacing-s) var(--spacing-l); background: var(--interactive-accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-m); font-size: var(--font-smaller); font-weight: var(--font-semibold); cursor: pointer; transition: filter 0.12s; }
-  .reveal-btn:hover { filter: brightness(0.9); }
-  .shortcut-hint { font-size: 10px; opacity: 0.7; padding: 1px 5px; background: rgba(255,255,255,0.15); border-radius: 3px; }
-  .grade-buttons { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--spacing-xs); margin-top: auto; }
-  .grade-btn { display: flex; flex-direction: column; align-items: center; padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--radius-s); border: 1px solid var(--border-color); cursor: pointer; font-size: 10px; transition: all 0.12s; background: var(--background-secondary); }
-  .grade-btn.fail { border-color: #fca5a5; color: #ef4444; }
-  .grade-btn.pass { border-color: #86efac; color: #16a34a; }
-  .grade-btn:hover { filter: brightness(0.92); transform: translateY(-1px); }
-  .grade-num { font-size: var(--font-normal); font-weight: var(--font-bold); }
-  .grade-label { color: var(--text-faint); font-size: 9px; white-space: nowrap; }
-  .card-source { font-size: var(--font-smallest); color: var(--text-faint); text-align: center; }
-  .session-done { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: var(--spacing-s); text-align: center; }
-  .session-done h3 { margin: 0; font-size: var(--font-large); }
-  .session-done p { margin: 0; color: var(--text-muted); }
-  .done-stats { display: flex; gap: var(--spacing-s); margin-top: var(--spacing-xs); }
-  .done-stat { font-size: var(--font-smallest); padding: 2px 8px; border-radius: 4px; font-weight: 500; }
-  .done-stat.pass { background: rgba(22, 163, 74, 0.1); color: #16a34a; }
-  .done-stat.ok { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-  .done-stat.fail { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  .study-session {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--spacing-m);
+    gap: var(--spacing-m);
+    overflow-y: auto;
+  }
+  .course-context {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-modifier-hover);
+    border-radius: var(--radius-s);
+  }
+  .course-label {
+    font-size: 10px;
+    color: var(--text-faint);
+  }
+  .course-name {
+    font-size: var(--font-smallest);
+    font-weight: var(--font-semibold);
+    color: var(--text-muted);
+  }
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .progress-count {
+    font-size: var(--font-smaller);
+    font-weight: var(--font-semibold);
+    color: var(--text-normal);
+  }
+  .progress-sep {
+    color: var(--text-faint);
+    margin: 0 1px;
+  }
+  .card-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+    background: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-l);
+    transition: border-color 0.2s;
+  }
+  .card-display.flipped {
+    border-color: var(--interactive-accent);
+  }
+  .card-type-badge {
+    font-size: 10px;
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .card-front {
+    font-size: var(--font-normal);
+    font-weight: var(--font-medium);
+    line-height: 1.6;
+    color: var(--text-normal);
+  }
+  .card-front :global(mark) {
+    background: rgba(245, 158, 11, 0.2);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 3px;
+    border-bottom: 2px dashed rgba(245, 158, 11, 0.5);
+  }
+  .card-front :global(.cloze-blank) {
+    background: var(--background-modifier-border);
+    color: transparent;
+    border-radius: 3px;
+    padding: 0 12px;
+    user-select: none;
+  }
+  .card-divider {
+    height: 1px;
+    background: var(--border-color);
+  }
+  .card-back {
+    font-size: var(--font-smaller);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .reveal-btn {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-l);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-m);
+    font-size: var(--font-smaller);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: filter 0.12s;
+  }
+  .reveal-btn:hover {
+    filter: brightness(0.9);
+  }
+  .shortcut-hint {
+    font-size: 10px;
+    opacity: 0.7;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+  .grade-buttons {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--spacing-xs);
+    margin-top: auto;
+  }
+  .grade-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-radius: var(--radius-s);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-size: 10px;
+    transition: all 0.12s;
+    background: var(--background-secondary);
+  }
+  .grade-btn.fail {
+    border-color: #fca5a5;
+    color: #ef4444;
+  }
+  .grade-btn.pass {
+    border-color: #86efac;
+    color: #16a34a;
+  }
+  .grade-btn:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+  }
+  .grade-num {
+    font-size: var(--font-normal);
+    font-weight: var(--font-bold);
+  }
+  .grade-label {
+    color: var(--text-faint);
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .card-source {
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+    text-align: center;
+  }
+  .session-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: var(--spacing-s);
+    text-align: center;
+  }
+  .session-done h3 {
+    margin: 0;
+    font-size: var(--font-large);
+  }
+  .session-done p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .done-stats {
+    display: flex;
+    gap: var(--spacing-s);
+    margin-top: var(--spacing-xs);
+  }
+  .done-stat {
+    font-size: var(--font-smallest);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .done-stat.pass {
+    background: rgba(22, 163, 74, 0.1);
+    color: #16a34a;
+  }
+  .done-stat.ok {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+  .done-stat.fail {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
 </style>

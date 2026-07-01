@@ -54,8 +54,17 @@ describe('log sanitization', () => {
       const mod = await import('../sanitize');
       // These keys should be handled by sanitizeContext in production
       const pathKeys = [
-        'path', 'newPath', 'oldPath', 'from', 'to', 'toFolder',
-        'target', 'targetFolder', 'notePath', 'vaultPath', 'rootPath',
+        'path',
+        'newPath',
+        'oldPath',
+        'from',
+        'to',
+        'toFolder',
+        'target',
+        'targetFolder',
+        'notePath',
+        'vaultPath',
+        'rootPath',
       ];
       // In dev they pass through, but verify the function doesn't crash
       for (const key of pathKeys) {

@@ -72,27 +72,20 @@ export const profiles = writable<NavigatorProfile[]>([
 ]);
 
 // Derived stores
-export const selectedFolder = derived(
-  navigatorStore,
-  ($store) => $store.selectedFolder
-);
+export const selectedFolder = derived(navigatorStore, ($store) => $store.selectedFolder);
 
-export const selectedNote = derived(
-  navigatorStore,
-  ($store) => $store.selectedNote
-);
+export const selectedNote = derived(navigatorStore, ($store) => $store.selectedNote);
 
 export const activeProfile = derived(
   [navigatorStore, profiles],
-  ([$store, $profiles]) =>
-    $profiles.find(p => p.id === $store.activeProfile) || $profiles[0]
+  ([$store, $profiles]) => $profiles.find((p) => p.id === $store.activeProfile) || $profiles[0]
 );
 
 // ─── Actions ─────────────────────────────────────────────────────────────────
 
 /** Sets the currently selected folder in the navigator. */
 export function selectFolder(path: string | null) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     selectedFolder: path,
   }));
@@ -100,7 +93,7 @@ export function selectFolder(path: string | null) {
 
 /** Sets the currently selected note in the navigator. */
 export function selectNote(note: Note | null) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     selectedNote: note,
   }));
@@ -108,7 +101,7 @@ export function selectNote(note: Note | null) {
 
 /** Switches the active navigator panel tab. */
 export function setActiveTab(tab: 'folders' | 'tags' | 'properties') {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     activeTab: tab,
   }));
@@ -116,12 +109,12 @@ export function setActiveTab(tab: 'folders' | 'tags' | 'properties') {
 
 /** Sets the active pane (navigation or list). */
 export function setActivePane(pane: NavigatorPane) {
-  navigatorStore.update(state => ({ ...state, activePane: pane }));
+  navigatorStore.update((state) => ({ ...state, activePane: pane }));
 }
 
 /** Toggles between navigation and list panes. */
 export function togglePane() {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     activePane: state.activePane === 'navigation' ? 'list' : 'navigation',
   }));
@@ -129,12 +122,12 @@ export function togglePane() {
 
 /** Sets the sort field for the file list. */
 export function setSortField(field: NavigatorSortField) {
-  navigatorStore.update(state => ({ ...state, sortField: field }));
+  navigatorStore.update((state) => ({ ...state, sortField: field }));
 }
 
 /** Toggles sort direction. */
 export function toggleSortDirection() {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     sortDirection: state.sortDirection === 'asc' ? 'desc' : 'asc',
   }));
@@ -142,12 +135,12 @@ export function toggleSortDirection() {
 
 /** Sets the filter query. */
 export function setFilterQuery(query: string) {
-  navigatorStore.update(state => ({ ...state, filterQuery: query }));
+  navigatorStore.update((state) => ({ ...state, filterQuery: query }));
 }
 
 /** Activates a different navigator profile by ID. */
 export function switchProfile(profileId: string) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     activeProfile: profileId,
   }));
@@ -155,7 +148,7 @@ export function switchProfile(profileId: string) {
 
 /** Pins a note to the top of a folder's file list. */
 export function pinNote(folderPath: string, notePath: string) {
-  navigatorStore.update(state => {
+  navigatorStore.update((state) => {
     const pinnedInFolder = state.pinnedNotes[folderPath] || [];
     if (!pinnedInFolder.includes(notePath)) {
       return {
@@ -172,13 +165,13 @@ export function pinNote(folderPath: string, notePath: string) {
 
 /** Removes a note's pin from a folder's file list. */
 export function unpinNote(folderPath: string, notePath: string) {
-  navigatorStore.update(state => {
+  navigatorStore.update((state) => {
     const pinnedInFolder = state.pinnedNotes[folderPath] || [];
     return {
       ...state,
       pinnedNotes: {
         ...state.pinnedNotes,
-        [folderPath]: pinnedInFolder.filter(p => p !== notePath),
+        [folderPath]: pinnedInFolder.filter((p) => p !== notePath),
       },
     };
   });
@@ -186,7 +179,7 @@ export function unpinNote(folderPath: string, notePath: string) {
 
 /** Assigns a custom accent color to a folder in the navigator. */
 export function setFolderColor(path: string, color: string) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     folderColors: {
       ...state.folderColors,
@@ -197,7 +190,7 @@ export function setFolderColor(path: string, color: string) {
 
 /** Assigns a custom icon to a folder in the navigator. */
 export function setFolderIcon(path: string, icon: string) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     folderIcons: {
       ...state.folderIcons,
@@ -208,7 +201,7 @@ export function setFolderIcon(path: string, icon: string) {
 
 /** Assigns a custom accent color to a file in the navigator. */
 export function setFileColor(path: string, color: string) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     fileColors: {
       ...state.fileColors,
@@ -219,7 +212,7 @@ export function setFileColor(path: string, color: string) {
 
 /** Assigns a custom icon to a file in the navigator. */
 export function setFileIcon(path: string, icon: string) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     fileIcons: {
       ...state.fileIcons,
@@ -230,7 +223,7 @@ export function setFileIcon(path: string, icon: string) {
 
 /** Adds a quick-access shortcut to the navigator (max 9). */
 export function addShortcut(shortcut: NavigatorState['shortcuts'][0]) {
-  navigatorStore.update(state => {
+  navigatorStore.update((state) => {
     if (state.shortcuts.length >= 9) {
       return state; // Max 9 shortcuts
     }
@@ -243,7 +236,7 @@ export function addShortcut(shortcut: NavigatorState['shortcuts'][0]) {
 
 /** Removes a quick-access shortcut by its index. */
 export function removeShortcut(index: number) {
-  navigatorStore.update(state => ({
+  navigatorStore.update((state) => ({
     ...state,
     shortcuts: state.shortcuts.filter((_, i) => i !== index),
   }));
@@ -285,7 +278,9 @@ export function addProfile(profile: NavigatorProfile) {
 /** Remove a profile by ID (cannot remove 'default') */
 export function removeProfile(profileId: string) {
   if (profileId === 'default') return;
-  profiles.update((p: NavigatorProfile[]) => p.filter((pr: NavigatorProfile) => pr.id !== profileId));
+  profiles.update((p: NavigatorProfile[]) =>
+    p.filter((pr: NavigatorProfile) => pr.id !== profileId)
+  );
   navigatorStore.update((state: NavigatorState) => ({
     ...state,
     activeProfile: state.activeProfile === profileId ? 'default' : state.activeProfile,

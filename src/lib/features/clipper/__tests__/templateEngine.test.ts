@@ -28,11 +28,15 @@ describe('renderTemplate', () => {
   });
 
   it('applies blockquote filter', () => {
-    expect(renderTemplate('{{ text | blockquote }}', { text: 'line1\nline2' })).toBe('> line1\n> line2');
+    expect(renderTemplate('{{ text | blockquote }}', { text: 'line1\nline2' })).toBe(
+      '> line1\n> line2'
+    );
   });
 
   it('applies replace filter', () => {
-    expect(renderTemplate('{{ text | replace(foo,bar) }}', { text: 'foo baz foo' })).toBe('bar baz bar');
+    expect(renderTemplate('{{ text | replace(foo,bar) }}', { text: 'foo baz foo' })).toBe(
+      'bar baz bar'
+    );
   });
 
   it('applies numberLexify filter', () => {

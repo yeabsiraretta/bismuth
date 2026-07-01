@@ -22,14 +22,26 @@ vi.mock('@/utils/logger', () => ({
 
 import {
   audioEngineState,
-  isPlaying, isPaused, isStopped,
-  initEngine, play, pause, stop, setBpm, resetEngine,
+  isPlaying,
+  isPaused,
+  isStopped,
+  initEngine,
+  play,
+  pause,
+  stop,
+  setBpm,
+  resetEngine,
 } from '../stores/audioEngine';
 
 import {
-  initTone, isToneReady, resumeAudioContext,
-  startTransport, stopTransport, pauseTransport,
-  setTempo, clearSchedule,
+  initTone,
+  isToneReady,
+  resumeAudioContext,
+  startTransport,
+  stopTransport,
+  pauseTransport,
+  setTempo,
+  clearSchedule,
 } from '../services/audioContext';
 
 describe('audioEngine store', () => {

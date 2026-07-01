@@ -15,8 +15,6 @@ export async function appendChangelog(
 }
 
 /** Fetches the most recent changelog entries. */
-export async function getRecentChangelog(
-  limit?: number
-): Promise<ChangelogEntry[]> {
+export async function getRecentChangelog(limit?: number): Promise<ChangelogEntry[]> {
   return invoke<ChangelogEntry[]>('changelog_recent', { limit: limit ?? 100 });
 }

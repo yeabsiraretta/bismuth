@@ -9,17 +9,23 @@ export function loadRecent(): string[] {
   try {
     const saved = localStorage.getItem(RECENT_KEY);
     return saved ? JSON.parse(saved) : [];
-  } catch (e) { log.warn('Failed to load recent searches from localStorage', { error: String(e) }); return []; }
+  } catch (e) {
+    log.warn('Failed to load recent searches from localStorage', { error: String(e) });
+    return [];
+  }
 }
 
 export function saveRecent(searches: string[]): void {
-  try { localStorage.setItem(RECENT_KEY, JSON.stringify(searches.slice(0, MAX_RECENT))); }
-  catch (e) { log.warn('Failed to save recent searches to localStorage', { error: String(e) }); }
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(searches.slice(0, MAX_RECENT)));
+  } catch (e) {
+    log.warn('Failed to save recent searches to localStorage', { error: String(e) });
+  }
 }
 
 export function addToRecent(term: string, recentSearches: string[]): string[] {
   if (!term.trim()) return recentSearches;
-  const updated = [term, ...recentSearches.filter(s => s !== term)].slice(0, MAX_RECENT);
+  const updated = [term, ...recentSearches.filter((s) => s !== term)].slice(0, MAX_RECENT);
   saveRecent(updated);
   return updated;
 }
@@ -28,11 +34,13 @@ export function performSearch(query: string, notes: Note[], activeFilters: strin
   const q = query.toLowerCase().trim();
   if (!q) return [];
   const titleOnly = activeFilters.includes('title-only');
-  return notes.filter(note => {
-    const titleMatch = note.title.toLowerCase().includes(q);
-    if (titleOnly) return titleMatch;
-    return titleMatch || (note.content?.toLowerCase().includes(q) ?? false);
-  }).slice(0, 50);
+  return notes
+    .filter((note) => {
+      const titleMatch = note.title.toLowerCase().includes(q);
+      if (titleOnly) return titleMatch;
+      return titleMatch || (note.content?.toLowerCase().includes(q) ?? false);
+    })
+    .slice(0, 50);
 }
 
 /** Runs backend advanced search for field-prefixed queries; falls back to local for plain queries. */
@@ -48,12 +56,16 @@ export async function performAdvancedSearch(
     const fieldQuery = buildFieldQuery(q, activeFilters);
     try {
       const results = await advancedSearch(fieldQuery, 50);
-      return results.map(r => notes.find(n => n.path === r.path) ?? {
-        path: r.path,
-        title: r.title,
-        content: r.snippet ?? '',
-        frontmatter: {},
-      } as Note);
+      return results.map(
+        (r) =>
+          notes.find((n) => n.path === r.path) ??
+          ({
+            path: r.path,
+            title: r.title,
+            content: r.snippet ?? '',
+            frontmatter: {},
+          } as Note)
+      );
     } catch (e) {
       log.warn('Advanced search failed, falling back to local', { error: String(e) });
     }
@@ -83,4 +95,3 @@ export function getSnippet(content: string | undefined, q: string): string {
   if (end < content.length) snippet += '...';
   return snippet;
 }
-

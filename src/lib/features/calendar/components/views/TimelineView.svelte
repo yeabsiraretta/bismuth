@@ -2,7 +2,12 @@
   import { onDestroy } from 'svelte';
   import EventChip from '../atoms/EventChip.svelte';
   import { expandedEvents, calendarFocusDate } from '../../stores/calendarStore';
-  import { activeClocks, formatDuration, getElapsedMinutes, stopClock } from '../../services/timeClock';
+  import {
+    activeClocks,
+    formatDuration,
+    getElapsedMinutes,
+    stopClock,
+  } from '../../services/timeClock';
   import type { CalendarEvent, ClockRecord } from '../../types';
 
   export let showClocks: boolean = true;
@@ -10,10 +15,10 @@
   const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
   $: focusDateStr = toDateStr($calendarFocusDate);
-  $: dayEvents = $expandedEvents.filter(e => e.date === focusDateStr);
-  $: allDayEvents = dayEvents.filter(e => e.startMinute === null);
+  $: dayEvents = $expandedEvents.filter((e) => e.date === focusDateStr);
+  $: allDayEvents = dayEvents.filter((e) => e.startMinute === null);
   $: timedEvents = dayEvents
-    .filter(e => e.startMinute !== null)
+    .filter((e) => e.startMinute !== null)
     .sort((a, b) => (a.startMinute ?? 0) - (b.startMinute ?? 0));
   $: running = $activeClocks;
 
@@ -44,11 +49,16 @@
   function getTypeColor(event: CalendarEvent): string {
     if (event.color) return event.color;
     switch (event.type) {
-      case 'ics': return 'var(--color-info, #2563eb)';
-      case 'planner': return 'var(--interactive-accent)';
-      case 'clock': return 'var(--color-warning, #d97706)';
-      case 'task': return 'var(--color-task, #f9e2af)';
-      default: return 'var(--interactive-accent)';
+      case 'ics':
+        return 'var(--color-info, #2563eb)';
+      case 'planner':
+        return 'var(--interactive-accent)';
+      case 'clock':
+        return 'var(--color-warning, #d97706)';
+      case 'task':
+        return 'var(--color-task, #f9e2af)';
+      default:
+        return 'var(--interactive-accent)';
     }
   }
 
@@ -58,7 +68,9 @@
 
   // Auto-refresh for running clock elapsed times
   let clockTick = 0;
-  const clockInterval = setInterval(() => { clockTick++; }, 30000);
+  const clockInterval = setInterval(() => {
+    clockTick++;
+  }, 30000);
   onDestroy(() => clearInterval(clockInterval));
   $: void clockTick; // force reactivity on tick
 </script>
@@ -122,7 +134,7 @@
           height: {heightPx(event.durationMinutes ?? 60)}px;
           border-left-color: {getTypeColor(event)};
         "
-        title="{event.title}"
+        title={event.title}
       >
         <EventChip {event} compact />
       </div>

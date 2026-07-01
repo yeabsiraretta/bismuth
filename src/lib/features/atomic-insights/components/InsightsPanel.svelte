@@ -7,8 +7,13 @@
   import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
   import { activeNote } from '@/stores/vault/vault';
   import {
-    insightsResults, insightsLoading, insightsError, insightsConfig,
-    getRelatedNotes, clearInsights, updateInsightsConfig,
+    insightsResults,
+    insightsLoading,
+    insightsError,
+    insightsConfig,
+    getRelatedNotes,
+    clearInsights,
+    updateInsightsConfig,
   } from '../stores/insightsStore';
   import type { RelatedNote } from '../types';
 
@@ -28,7 +33,7 @@
   }
 
   function handleNoteClick(note: RelatedNote): void {
-    import('@/appNavigation').then(m => m.openNote(note.path)).catch(() => {});
+    import('@/appNavigation').then((m) => m.openNote(note.path)).catch(() => {});
   }
 
   function toggleAutoUpdate(): void {
@@ -37,11 +42,16 @@
 
   function reasonIcon(r: string): string {
     switch (r) {
-      case 'graph': return 'git-branch';
-      case 'time': return 'clock';
-      case 'metadata': return 'tag';
-      case 'edit-time': return 'edit';
-      default: return 'info';
+      case 'graph':
+        return 'git-branch';
+      case 'time':
+        return 'clock';
+      case 'metadata':
+        return 'tag';
+      case 'edit-time':
+        return 'edit';
+      default:
+        return 'info';
     }
   }
 </script>
@@ -123,26 +133,129 @@
 </div>
 
 <style>
-  .insights-panel { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-  .insights-title { font-size: 0.85rem; font-weight: 600; }
-  .action-btn { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 2px; border-radius: 3px; display: flex; }
-  .action-btn:hover { background: var(--color-bg-secondary); }
-  .action-btn.active { color: var(--color-accent); }
-  .action-btn:disabled { opacity: 0.3; }
-  .insights-body { flex: 1; overflow-y: auto; padding: 6px; }
-  .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; color: var(--color-text-muted); gap: 6px; padding: 2rem; min-height: 120px; }
-  .empty-state p { margin: 0; font-size: 0.83rem; }
-  .empty-state.error { color: var(--color-error, #e55); }
-  .hint { font-size: 0.75rem; }
-  .results-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-  .result-item { margin: 0; }
-  .result-btn { display: block; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 6px; padding: 6px 8px; cursor: pointer; color: var(--color-text); font-family: inherit; }
-  .result-btn:hover { background: var(--color-bg-secondary); border-color: var(--color-border); }
-  .result-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .result-label { font-size: 0.83rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-  .result-score { font-size: 0.72rem; font-weight: 600; color: var(--color-accent); font-family: var(--font-mono, monospace); flex-shrink: 0; }
-  .result-meta { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
-  .result-reasons { display: flex; gap: 2px; }
-  .reason-chip { display: inline-flex; align-items: center; padding: 1px 3px; border-radius: 3px; background: var(--color-bg-secondary); color: var(--color-text-muted); }
-  .result-neighbors { font-size: 0.7rem; color: var(--color-text-muted); }
+  .insights-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .insights-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    padding: 2px;
+    border-radius: 3px;
+    display: flex;
+  }
+  .action-btn:hover {
+    background: var(--color-bg-secondary);
+  }
+  .action-btn.active {
+    color: var(--color-accent);
+  }
+  .action-btn:disabled {
+    opacity: 0.3;
+  }
+  .insights-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+    color: var(--color-text-muted);
+    gap: 6px;
+    padding: 2rem;
+    min-height: 120px;
+  }
+  .empty-state p {
+    margin: 0;
+    font-size: 0.83rem;
+  }
+  .empty-state.error {
+    color: var(--color-error, #e55);
+  }
+  .hint {
+    font-size: 0.75rem;
+  }
+  .results-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .result-item {
+    margin: 0;
+  }
+  .result-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 6px 8px;
+    cursor: pointer;
+    color: var(--color-text);
+    font-family: inherit;
+  }
+  .result-btn:hover {
+    background: var(--color-bg-secondary);
+    border-color: var(--color-border);
+  }
+  .result-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-label {
+    font-size: 0.83rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .result-score {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    font-family: var(--font-mono, monospace);
+    flex-shrink: 0;
+  }
+  .result-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .result-reasons {
+    display: flex;
+    gap: 2px;
+  }
+  .reason-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 3px;
+    border-radius: 3px;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-muted);
+  }
+  .result-neighbors {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
 </style>

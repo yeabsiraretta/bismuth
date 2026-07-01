@@ -36,10 +36,7 @@
 
   function copyAllCSS() {
     const css = properties
-      .map(p => p.tokenRef
-        ? `  ${p.name}: var(--${p.tokenRef});`
-        : `  ${p.name}: ${p.value};`
-      )
+      .map((p) => (p.tokenRef ? `  ${p.name}: var(--${p.tokenRef});` : `  ${p.name}: ${p.value};`))
       .join('\n');
     navigator.clipboard.writeText(`{\n${css}\n}`);
   }
@@ -48,9 +45,7 @@
 <div class="property-inspector">
   <div class="inspector-header">
     <h4>Properties</h4>
-    <button class="copy-all" on:click={copyAllCSS} title="Copy all as CSS">
-      Copy CSS
-    </button>
+    <button class="copy-all" on:click={copyAllCSS} title="Copy all as CSS"> Copy CSS </button>
   </div>
 
   {#if isFeatureCard}
@@ -69,7 +64,13 @@
 
   <div class="property-list">
     {#each properties as prop (prop.name)}
-      <div class="property-row" on:click={() => copyProperty(prop)} role="button" tabindex="0" on:keydown={(e) => e.key === 'Enter' && copyProperty(prop)}>
+      <div
+        class="property-row"
+        on:click={() => copyProperty(prop)}
+        role="button"
+        tabindex="0"
+        on:keydown={(e) => e.key === 'Enter' && copyProperty(prop)}
+      >
         <span class="prop-name">{prop.name}</span>
         <span class="prop-value">
           {#if prop.tokenRef}
@@ -88,19 +89,83 @@
 </div>
 
 <style>
-  .property-inspector { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .inspector-header { display: flex; align-items: center; justify-content: space-between; }
-  .inspector-header h4 { margin: 0; font-size: var(--font-size-sm); }
-  .copy-all { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px 6px; cursor: pointer; font-size: var(--font-size-xs); }
-  .spec-path-row { display: flex; flex-direction: column; gap: 2px; padding: var(--spacing-xs) 0; border-bottom: 1px solid var(--border-color, #e4e4e7); }
-  .spec-path-label { font-size: var(--font-size-xs); color: var(--text-muted); font-weight: 500; }
-  .spec-path-input { font-size: var(--font-size-sm); padding: 4px 6px; border: 1px solid var(--border-color, #e4e4e7); border-radius: var(--radius-sm); background: var(--background-primary); color: var(--text-primary); width: 100%; box-sizing: border-box; }
-  .spec-path-input:focus { outline: 2px solid var(--interactive-accent); outline-offset: 1px; }
-  .property-list { display: flex; flex-direction: column; font-family: monospace; font-size: var(--font-size-sm); }
-  .property-row { display: flex; justify-content: space-between; padding: 2px var(--spacing-xs); border-radius: 2px; cursor: pointer; }
-  .property-row:hover { background: var(--bg-hover); }
-  .prop-name { color: var(--text-muted); }
-  .prop-value { color: var(--text-primary); }
-  .token-ref { color: var(--accent); }
-  .empty { color: var(--text-muted); font-size: var(--font-size-sm); text-align: center; padding: var(--spacing-md); }
+  .property-inspector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .inspector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .inspector-header h4 {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+  .copy-all {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    cursor: pointer;
+    font-size: var(--font-size-xs);
+  }
+  .spec-path-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border-color, #e4e4e7);
+  }
+  .spec-path-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .spec-path-input {
+    font-size: var(--font-size-sm);
+    padding: 4px 6px;
+    border: 1px solid var(--border-color, #e4e4e7);
+    border-radius: var(--radius-sm);
+    background: var(--background-primary);
+    color: var(--text-primary);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .spec-path-input:focus {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 1px;
+  }
+  .property-list {
+    display: flex;
+    flex-direction: column;
+    font-family: monospace;
+    font-size: var(--font-size-sm);
+  }
+  .property-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px var(--spacing-xs);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .property-row:hover {
+    background: var(--bg-hover);
+  }
+  .prop-name {
+    color: var(--text-muted);
+  }
+  .prop-value {
+    color: var(--text-primary);
+  }
+  .token-ref {
+    color: var(--accent);
+  }
+  .empty {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    text-align: center;
+    padding: var(--spacing-md);
+  }
 </style>

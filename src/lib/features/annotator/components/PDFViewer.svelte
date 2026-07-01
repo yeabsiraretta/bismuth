@@ -2,7 +2,11 @@
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { annotatorView, setPage, setZoom } from '../stores/annotatorStore';
   import { openPdf, renderPage, closePdf } from '../services/pdfService';
-  import { generatePdfLink, resolvePdfBacklinks, loadPdfPlusConfig } from '../services/pdfLinkService';
+  import {
+    generatePdfLink,
+    resolvePdfBacklinks,
+    loadPdfPlusConfig,
+  } from '../services/pdfLinkService';
   import type { PDFBacklinkHighlight } from '../types';
   import { HIGHLIGHT_COLORS } from '../types';
   import PDFToolbar from './PDFToolbar.svelte';
@@ -78,10 +82,22 @@
   }
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); handlePrev(); }
-    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); handleNext(); }
-    if (e.key === '+' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); handleZoomIn(); }
-    if (e.key === '-' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); handleZoomOut(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      handlePrev();
+    }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+      e.preventDefault();
+      handleNext();
+    }
+    if (e.key === '+' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleZoomIn();
+    }
+    if (e.key === '-' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleZoomOut();
+    }
     if ((e.key === 'c' || e.key === 'C') && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       copySelectionLink();
@@ -98,7 +114,9 @@
       await navigator.clipboard.writeText(link);
       copyFeedback = 'Copied!';
       dispatch('linkCopied', link);
-      setTimeout(() => { copyFeedback = ''; }, 1500);
+      setTimeout(() => {
+        copyFeedback = '';
+      }, 1500);
       log.debug('PDFViewer: copied link to selection', { page: currentPage });
     } catch {
       log.warn('PDFViewer: clipboard write failed');
@@ -108,7 +126,9 @@
   async function loadBacklinkHighlights() {
     if (!pdfConfig.highlightBacklinks) return;
     backlinkHighlights = await resolvePdfBacklinks(
-      source, currentPage, pdfConfig.filterBacklinksByPage,
+      source,
+      currentPage,
+      pdfConfig.filterBacklinksByPage
     );
   }
 
@@ -222,7 +242,8 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
     max-width: 100%;
   }
-  .loading-state, .error-state {
+  .loading-state,
+  .error-state {
     display: flex;
     flex-direction: column;
     align-items: center;

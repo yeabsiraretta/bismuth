@@ -73,7 +73,11 @@ function extractBreakpoints(content: string): LayoutPayload['breakpoints'] {
   if (widths.length >= 2) {
     breakpoints['tablet'] = { max_width: widths[1], columns: 2, sidebar: 'collapsed' };
   }
-  breakpoints['desktop'] = { min_width: (widths[widths.length - 1] || 1024) + 1, columns: 3, sidebar: 'expanded' };
+  breakpoints['desktop'] = {
+    min_width: (widths[widths.length - 1] || 1024) + 1,
+    columns: 3,
+    sidebar: 'expanded',
+  };
 
   return breakpoints;
 }

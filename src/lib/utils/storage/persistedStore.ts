@@ -25,7 +25,7 @@ export interface PersistedStoreOptions<T> {
 export function createPersistedStore<T>(
   key: string,
   defaultValue: T,
-  options?: PersistedStoreOptions<T>,
+  options?: PersistedStoreOptions<T>
 ): Writable<T> {
   const serialize = options?.serialize ?? JSON.stringify;
   const deserialize = options?.deserialize ?? JSON.parse;

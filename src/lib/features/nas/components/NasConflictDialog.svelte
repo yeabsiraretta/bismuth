@@ -28,8 +28,10 @@
 
   function formatTime(ts: number): string {
     return new Date(ts).toLocaleString([], {
-      month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 
@@ -58,8 +60,11 @@
   async function resolveAll(resolution: 'local' | 'remote') {
     const all = [...conflictList];
     for (const c of all) {
-      try { await resolveConflict(c.filePath, resolution); }
-      catch (err) { log.error('[NasConflictDialog] bulk resolve failed', err as Error); }
+      try {
+        await resolveConflict(c.filePath, resolution);
+      } catch (err) {
+        log.error('[NasConflictDialog] bulk resolve failed', err as Error);
+      }
     }
   }
 
@@ -93,8 +98,9 @@
               {conflict.filePath.split('/').pop() ?? conflict.filePath}
             </span>
             <span class="mtime-info">
-              Local: {formatTime(conflict.localMtime)} &middot;
-              Remote: {formatTime(conflict.remoteMtime)}
+              Local: {formatTime(conflict.localMtime)} &middot; Remote: {formatTime(
+                conflict.remoteMtime
+              )}
             </span>
           </div>
 
@@ -115,7 +121,11 @@
               {#each diffLines(conflict.localContent, conflict.remoteContent) as line}
                 <div
                   class="diff-line diff-line--{line.op}"
-                  aria-label="{line.op === 'add' ? 'Added' : line.op === 'remove' ? 'Removed' : 'Unchanged'}: {line.text}"
+                  aria-label="{line.op === 'add'
+                    ? 'Added'
+                    : line.op === 'remove'
+                      ? 'Removed'
+                      : 'Unchanged'}: {line.text}"
                 >
                   <span class="diff-sigil" aria-hidden="true">
                     {line.op === 'add' ? '+' : line.op === 'remove' ? '-' : ' '}
@@ -207,7 +217,11 @@
     gap: var(--spacing-s, 8px);
   }
 
-  .conflict-row { display: flex; flex-direction: column; gap: 2px; }
+  .conflict-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
   .conflict-path {
     font-size: var(--font-ui-small, 11px);
@@ -219,9 +233,16 @@
     white-space: nowrap;
   }
 
-  .mtime-info { font-size: 10px; color: var(--text-faint, #6c7086); }
+  .mtime-info {
+    font-size: 10px;
+    color: var(--text-faint, #6c7086);
+  }
 
-  .conflict-actions { display: flex; gap: var(--spacing-xs, 4px); flex-wrap: wrap; }
+  .conflict-actions {
+    display: flex;
+    gap: var(--spacing-xs, 4px);
+    flex-wrap: wrap;
+  }
 
   .diff-view {
     background: var(--background-secondary, #181825);
@@ -233,14 +254,33 @@
     padding: 4px;
   }
 
-  .diff-line { display: flex; gap: 4px; line-height: 1.5; }
-  .diff-sigil { flex-shrink: 0; width: 12px; }
-  .diff-text { color: var(--text-normal, #cdd6f4); white-space: pre-wrap; word-break: break-all; }
+  .diff-line {
+    display: flex;
+    gap: 4px;
+    line-height: 1.5;
+  }
+  .diff-sigil {
+    flex-shrink: 0;
+    width: 12px;
+  }
+  .diff-text {
+    color: var(--text-normal, #cdd6f4);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 
-  .diff-line--add { background: var(--color-diff-add, rgba(34,84,61,0.4)); }
-  .diff-line--remove { background: var(--color-diff-remove, rgba(116,42,42,0.4)); }
-  .diff-line--add .diff-sigil { color: #a6e3a1; }
-  .diff-line--remove .diff-sigil { color: #f38ba8; }
+  .diff-line--add {
+    background: var(--color-diff-add, rgba(34, 84, 61, 0.4));
+  }
+  .diff-line--remove {
+    background: var(--color-diff-remove, rgba(116, 42, 42, 0.4));
+  }
+  .diff-line--add .diff-sigil {
+    color: #a6e3a1;
+  }
+  .diff-line--remove .diff-sigil {
+    color: #f38ba8;
+  }
 
   .bulk-actions {
     display: flex;
@@ -261,7 +301,9 @@
     transition: filter 0.1s;
   }
 
-  .btn:hover { filter: brightness(1.1); }
+  .btn:hover {
+    filter: brightness(1.1);
+  }
 
   .btn--local {
     background: var(--interactive-accent, #6366f1);

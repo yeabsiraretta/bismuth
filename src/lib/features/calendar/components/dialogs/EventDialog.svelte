@@ -70,8 +70,16 @@
 <Modal isOpen={true} title="New Event" ariaLabel="Create event" onClose={() => onClose?.()}>
   <form on:submit|preventDefault={handleSubmit} class="dialog-body">
     <EventFormFields
-      {title} {itemType} {allDay} {startHour} {startMin}
-      {durationHours} {durationMins} {eventDate} {categoryId} {categories}
+      {title}
+      {itemType}
+      {allDay}
+      {startHour}
+      {startMin}
+      {durationHours}
+      {durationMins}
+      {eventDate}
+      {categoryId}
+      {categories}
       onChange={handleFieldChange}
     />
 
@@ -81,7 +89,9 @@
 
     <EventLinkManager
       {linkedNotePaths}
-      onChange={(paths) => { linkedNotePaths = paths; }}
+      onChange={(paths) => {
+        linkedNotePaths = paths;
+      }}
     />
 
     <div class="dialog-actions">
@@ -92,12 +102,49 @@
 </Modal>
 
 <style>
-  .dialog-body { padding: 12px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
-  .recurrence-section { padding: 10px 0 4px; border-top: 1px solid var(--border-color); }
-  .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-  .btn-cancel { padding: 8px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-s); background: var(--background-primary); color: var(--text-muted); cursor: pointer; font-size: 0.8rem; }
-  .btn-cancel:hover { background: var(--background-modifier-hover); }
-  .btn-submit { padding: 8px 16px; border: none; border-radius: var(--radius-s); background: var(--interactive-accent); color: var(--text-on-accent); cursor: pointer; font-size: 0.8rem; font-weight: 500; }
-  .btn-submit:hover:not(:disabled) { opacity: 0.9; }
-  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .dialog-body {
+    padding: 12px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .recurrence-section {
+    padding: 10px 0 4px;
+    border-top: 1px solid var(--border-color);
+  }
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .btn-cancel {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background: var(--background-primary);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .btn-cancel:hover {
+    background: var(--background-modifier-hover);
+  }
+  .btn-submit {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--radius-s);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .btn-submit:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>

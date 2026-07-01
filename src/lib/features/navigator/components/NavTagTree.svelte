@@ -14,7 +14,7 @@
         ? b.count - a.count || a.name.localeCompare(b.name)
         : a.name.localeCompare(b.name)
     );
-    return sorted.map(n => ({
+    return sorted.map((n) => ({
       ...n,
       children: sortTagNodes(n.children, mode),
     }));

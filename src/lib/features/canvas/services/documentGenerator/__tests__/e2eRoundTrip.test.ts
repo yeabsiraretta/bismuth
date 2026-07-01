@@ -25,12 +25,54 @@ function createDesignSystemCanvas(): CanvasDocument {
   const pages: Page[] = createDesignSystemPages();
 
   const variables: CanvasVariable[] = [
-    { id: 'v1', name: 'primary', type: 'color', collection: 'Colors', values: { Light: '#6366f1', Dark: '#818cf8' }, scopes: ['fill'] },
-    { id: 'v2', name: 'background', type: 'color', collection: 'Colors', values: { Light: '#ffffff', Dark: '#1f2937' }, scopes: ['fill'] },
-    { id: 'v3', name: 'text-primary', type: 'color', collection: 'Colors', values: { Light: '#111827', Dark: '#f9fafb' }, scopes: ['text'] },
-    { id: 'v4', name: 'spacing-xs', type: 'number', collection: 'Spacing', values: { default: 4 }, scopes: ['spacing'] },
-    { id: 'v5', name: 'spacing-s', type: 'number', collection: 'Spacing', values: { default: 8 }, scopes: ['spacing'] },
-    { id: 'v6', name: 'spacing-m', type: 'number', collection: 'Spacing', values: { default: 16 }, scopes: ['spacing'] },
+    {
+      id: 'v1',
+      name: 'primary',
+      type: 'color',
+      collection: 'Colors',
+      values: { Light: '#6366f1', Dark: '#818cf8' },
+      scopes: ['fill'],
+    },
+    {
+      id: 'v2',
+      name: 'background',
+      type: 'color',
+      collection: 'Colors',
+      values: { Light: '#ffffff', Dark: '#1f2937' },
+      scopes: ['fill'],
+    },
+    {
+      id: 'v3',
+      name: 'text-primary',
+      type: 'color',
+      collection: 'Colors',
+      values: { Light: '#111827', Dark: '#f9fafb' },
+      scopes: ['text'],
+    },
+    {
+      id: 'v4',
+      name: 'spacing-xs',
+      type: 'number',
+      collection: 'Spacing',
+      values: { default: 4 },
+      scopes: ['spacing'],
+    },
+    {
+      id: 'v5',
+      name: 'spacing-s',
+      type: 'number',
+      collection: 'Spacing',
+      values: { default: 8 },
+      scopes: ['spacing'],
+    },
+    {
+      id: 'v6',
+      name: 'spacing-m',
+      type: 'number',
+      collection: 'Spacing',
+      values: { default: 16 },
+      scopes: ['spacing'],
+    },
   ];
 
   const components: ComponentDefinition[] = [
@@ -77,7 +119,8 @@ function generateCSSFromTokenDoc(tokenPayload: TokenPayload): string {
   const lines = [':root {'];
   for (const collection of tokenPayload.collections) {
     for (const token of collection.tokens) {
-      const defaultValue = token.values['Light'] ?? token.values['default'] ?? Object.values(token.values)[0];
+      const defaultValue =
+        token.values['Light'] ?? token.values['default'] ?? Object.values(token.values)[0];
       lines.push(`  ${token.css_var}: ${defaultValue};`);
     }
   }
@@ -91,7 +134,12 @@ describe('E2E Round-Trip Validation', () => {
     const canvas = createDesignSystemCanvas();
     expect(canvas.pages).toHaveLength(6);
     expect(canvas.pages.map((p) => p.name)).toEqual([
-      'Tokens', 'Components', 'Layouts', 'Flows', 'Pages', 'Sandbox',
+      'Tokens',
+      'Components',
+      'Layouts',
+      'Flows',
+      'Pages',
+      'Sandbox',
     ]);
     expect(canvas.variables.length).toBeGreaterThan(0);
     expect(canvas.components.length).toBeGreaterThan(0);
@@ -145,7 +193,10 @@ describe('E2E Round-Trip Validation', () => {
 
     // Wrap in envelope for comparison
     const reflectedDoc = createDocumentEnvelope<TokenPayload>(
-      'token', 'tok_reflected', 'Reflected Tokens', reflectedPayload
+      'token',
+      'tok_reflected',
+      'Reflected Tokens',
+      reflectedPayload
     );
     expect(reflectedDoc.document_type).toBe('token');
     expect(reflectedDoc.payload.collections.length).toBeGreaterThan(0);
@@ -167,8 +218,14 @@ describe('E2E Round-Trip Validation', () => {
 
     // Token names should survive the round-trip; structural drift should be minimal.
     // The reflector may organize collections differently but token count should be preserved.
-    const originalTokenCount = tokenPayload.collections.reduce((sum, c) => sum + c.tokens.length, 0);
-    const reflectedTokenCount = reflectedPayload.collections.reduce((sum, c) => sum + c.tokens.length, 0);
+    const originalTokenCount = tokenPayload.collections.reduce(
+      (sum, c) => sum + c.tokens.length,
+      0
+    );
+    const reflectedTokenCount = reflectedPayload.collections.reduce(
+      (sum, c) => sum + c.tokens.length,
+      0
+    );
     expect(reflectedTokenCount).toBe(originalTokenCount);
 
     // Structural drift is expected — the reflector infers collection names from CSS var prefixes

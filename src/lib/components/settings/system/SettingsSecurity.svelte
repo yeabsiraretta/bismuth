@@ -25,7 +25,13 @@
   let slotStates: Record<string, SlotState> = {};
 
   for (const slot of SECRET_SLOTS) {
-    slotStates[slot.key] = { value: '', masked: true, status: 'idle', keychainAvailable: true, errorMsg: '' };
+    slotStates[slot.key] = {
+      value: '',
+      masked: true,
+      status: 'idle',
+      keychainAvailable: true,
+      errorMsg: '',
+    };
   }
 
   onMount(async () => {
@@ -56,7 +62,10 @@
     try {
       await setSecret(key, state.value);
       state.status = 'saved';
-      setTimeout(() => { slotStates[key].status = 'idle'; slotStates = { ...slotStates }; }, 2000);
+      setTimeout(() => {
+        slotStates[key].status = 'idle';
+        slotStates = { ...slotStates };
+      }, 2000);
     } catch (error) {
       state.status = 'error';
       state.errorMsg = String(error);
@@ -79,7 +88,9 @@
 
 <div class="settings-section">
   <h3>Security</h3>
-  <p class="section-hint">Secrets are stored in your OS keychain and never saved to disk or sent anywhere.</p>
+  <p class="section-hint">
+    Secrets are stored in your OS keychain and never saved to disk or sent anywhere.
+  </p>
 
   {#each SECRET_SLOTS as slot (slot.key)}
     {@const state = slotStates[slot.key]}
@@ -104,7 +115,10 @@
           />
           <button
             class="icon-btn"
-            on:click={() => { slotStates[slot.key].masked = !state.masked; slotStates = { ...slotStates }; }}
+            on:click={() => {
+              slotStates[slot.key].masked = !state.masked;
+              slotStates = { ...slotStates };
+            }}
             aria-label={state.masked ? 'Show secret' : 'Hide secret'}
             title={state.masked ? 'Show' : 'Hide'}
           >
@@ -141,7 +155,9 @@
     margin: 0 0 var(--spacing-m) 0;
   }
 
-  .secret-slot { margin-bottom: var(--spacing-m); }
+  .secret-slot {
+    margin-bottom: var(--spacing-m);
+  }
 
   .secret-row {
     display: flex;
@@ -161,7 +177,10 @@
     font-family: var(--font-mono);
   }
 
-  .secret-input:focus { outline: 2px solid var(--interactive-accent); outline-offset: -1px; }
+  .secret-input:focus {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: -1px;
+  }
 
   .icon-btn {
     background: none;
@@ -177,9 +196,12 @@
     justify-content: center;
   }
 
-  .icon-btn:hover { background: var(--background-modifier-hover); }
+  .icon-btn:hover {
+    background: var(--background-modifier-hover);
+  }
 
-  .save-btn, .clear-btn {
+  .save-btn,
+  .clear-btn {
     padding: var(--spacing-xs) var(--spacing-s);
     border-radius: var(--radius-s);
     font-size: var(--font-ui-small);
@@ -194,9 +216,17 @@
     border-color: var(--interactive-accent);
   }
 
-  .save-btn:disabled { opacity: 0.5; cursor: default; }
-  .clear-btn { background: none; color: var(--text-muted); }
-  .clear-btn:hover { background: var(--background-modifier-hover); }
+  .save-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .clear-btn {
+    background: none;
+    color: var(--text-muted);
+  }
+  .clear-btn:hover {
+    background: var(--background-modifier-hover);
+  }
 
   .keychain-error {
     display: flex;

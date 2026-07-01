@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { recordFeatureUse, getPreloadHints, preloadPreviouslyUsedFeatures, clearStalePreloadHints } from '@/utils/storage/featurePreload';
+import {
+  recordFeatureUse,
+  getPreloadHints,
+  preloadPreviouslyUsedFeatures,
+  clearStalePreloadHints,
+} from '@/utils/storage/featurePreload';
 
 const PRELOAD_KEY = 'bismuth-preloaded-features';
 const PRUNE_KEY = 'bismuth-preload-pruned';
@@ -74,10 +79,13 @@ describe('featurePreload', () => {
     it('filters out entries older than 30 days', () => {
       const oldDate = new Date(Date.now() - 31 * 86_400_000).toISOString();
       const recentDate = new Date().toISOString();
-      localStorage.setItem(PRELOAD_KEY, JSON.stringify([
-        { id: 'old-feature', usedAt: oldDate },
-        { id: 'recent-feature', usedAt: recentDate },
-      ]));
+      localStorage.setItem(
+        PRELOAD_KEY,
+        JSON.stringify([
+          { id: 'old-feature', usedAt: oldDate },
+          { id: 'recent-feature', usedAt: recentDate },
+        ])
+      );
       const hints = getPreloadHints();
       expect(hints).not.toContain('old-feature');
       expect(hints).toContain('recent-feature');
@@ -85,10 +93,13 @@ describe('featurePreload', () => {
 
     it('rejects entries with id longer than 50 chars', () => {
       const longId = 'a'.repeat(51);
-      localStorage.setItem(PRELOAD_KEY, JSON.stringify([
-        { id: longId, usedAt: new Date().toISOString() },
-        { id: 'valid', usedAt: new Date().toISOString() },
-      ]));
+      localStorage.setItem(
+        PRELOAD_KEY,
+        JSON.stringify([
+          { id: longId, usedAt: new Date().toISOString() },
+          { id: 'valid', usedAt: new Date().toISOString() },
+        ])
+      );
       const hints = getPreloadHints();
       expect(hints).not.toContain(longId);
       expect(hints).toContain('valid');
@@ -97,9 +108,10 @@ describe('featurePreload', () => {
 
   describe('preloadPreviouslyUsedFeatures', () => {
     it('silently skips unknown feature IDs', () => {
-      localStorage.setItem(PRELOAD_KEY, JSON.stringify([
-        { id: 'unknown-feature-xyz', usedAt: new Date().toISOString() },
-      ]));
+      localStorage.setItem(
+        PRELOAD_KEY,
+        JSON.stringify([{ id: 'unknown-feature-xyz', usedAt: new Date().toISOString() }])
+      );
       // Should not throw
       expect(() => preloadPreviouslyUsedFeatures()).not.toThrow();
     });
@@ -112,10 +124,13 @@ describe('featurePreload', () => {
   describe('clearStalePreloadHints', () => {
     it('removes entries older than 30 days', () => {
       const oldDate = new Date(Date.now() - 31 * 86_400_000).toISOString();
-      localStorage.setItem(PRELOAD_KEY, JSON.stringify([
-        { id: 'stale', usedAt: oldDate },
-        { id: 'fresh', usedAt: new Date().toISOString() },
-      ]));
+      localStorage.setItem(
+        PRELOAD_KEY,
+        JSON.stringify([
+          { id: 'stale', usedAt: oldDate },
+          { id: 'fresh', usedAt: new Date().toISOString() },
+        ])
+      );
       clearStalePreloadHints();
       const stored = JSON.parse(localStorage.getItem(PRELOAD_KEY) ?? '[]');
       expect(stored.map((e: { id: string }) => e.id)).not.toContain('stale');
@@ -126,9 +141,7 @@ describe('featurePreload', () => {
       const recentPrune = new Date().toISOString();
       localStorage.setItem(PRUNE_KEY, recentPrune);
       const oldDate = new Date(Date.now() - 31 * 86_400_000).toISOString();
-      localStorage.setItem(PRELOAD_KEY, JSON.stringify([
-        { id: 'stale', usedAt: oldDate },
-      ]));
+      localStorage.setItem(PRELOAD_KEY, JSON.stringify([{ id: 'stale', usedAt: oldDate }]));
       clearStalePreloadHints();
       // Stale entry should NOT be removed (prune skipped)
       const stored = JSON.parse(localStorage.getItem(PRELOAD_KEY) ?? '[]');

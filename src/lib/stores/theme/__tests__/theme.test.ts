@@ -4,9 +4,15 @@ import { get } from 'svelte/store';
 const mockStorage: Record<string, string> = {};
 vi.stubGlobal('localStorage', {
   getItem: vi.fn((key: string) => mockStorage[key] ?? null),
-  setItem: vi.fn((key: string, value: string) => { mockStorage[key] = value; }),
-  removeItem: vi.fn((key: string) => { delete mockStorage[key]; }),
-  clear: vi.fn(() => { Object.keys(mockStorage).forEach((k) => delete mockStorage[k]); }),
+  setItem: vi.fn((key: string, value: string) => {
+    mockStorage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete mockStorage[key];
+  }),
+  clear: vi.fn(() => {
+    Object.keys(mockStorage).forEach((k) => delete mockStorage[k]);
+  }),
   length: 0,
   key: vi.fn(() => null),
 });
@@ -14,12 +20,15 @@ vi.stubGlobal('localStorage', {
 vi.stubGlobal('crypto', { randomUUID: () => 'test-session' });
 
 // Mock matchMedia
-vi.stubGlobal('matchMedia', vi.fn().mockImplementation((query: string) => ({
-  matches: query === '(prefers-color-scheme: dark)',
-  media: query,
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-})));
+vi.stubGlobal(
+  'matchMedia',
+  vi.fn().mockImplementation((query: string) => ({
+    matches: query === '(prefers-color-scheme: dark)',
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  }))
+);
 
 /** Helper: parse the version envelope written to localStorage and return .data */
 function getPersistedTheme(): string | undefined {

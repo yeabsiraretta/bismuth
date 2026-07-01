@@ -14,17 +14,20 @@ description: Documentation file management rules
 ## File Locations
 
 ### Documentation Files → `docs/`
+
 - Design documentation: `docs/DESIGN_SYSTEM.md`, `docs/DESIGN_PRINCIPLES.md`
 - Architecture docs: `docs/ARCHITECTURE.md`
 - Refactoring summaries: `docs/REFACTORING.md`
 - Any other .md files: `docs/`
 
 ### Exceptions (Root Level Only)
+
 - `README.md` - Project overview (required)
 - `CHANGELOG.md` - Version history (if needed)
 - `LICENSE` - License file (if needed)
 
 ### Configuration Files (Root Level)
+
 - `package.json`, `tsconfig.json`, `vite.config.ts`, etc.
 - `.gitignore`, `.prettierrc`, etc.
 
@@ -47,12 +50,14 @@ docs/
 ## When to Create Documentation
 
 ✅ **DO create** when:
+
 - Critical architecture decisions
 - Design system changes
 - Major refactoring summaries (consolidated)
 - User-facing feature documentation
 
 ❌ **DON'T create** for:
+
 - Temporary notes or summaries
 - Implementation details (use code comments)
 - Obvious changes
@@ -61,6 +66,7 @@ docs/
 ## Moving Existing Files
 
 If markdown files exist in root, move them:
+
 ```bash
 mv ROOT_FILE.md docs/
 ```

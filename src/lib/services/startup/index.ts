@@ -17,10 +17,6 @@ export {
 
 export type { AppCallbacks } from '@/app/AppCallbacks';
 
-export {
-  startupHistory,
-  lastDuration,
-  recordStartupDuration,
-} from './startupMetrics';
+export { startupHistory, lastDuration, recordStartupDuration } from './startupMetrics';
 
 export type { StartupEntry } from './startupMetrics';

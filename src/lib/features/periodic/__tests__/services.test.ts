@@ -3,7 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@tauri-apps/api/core', () => ({ invoke: vi.fn() }));
 vi.mock('@/utils/logger', () => ({ log: { info: vi.fn(), debug: vi.fn(), error: vi.fn() } }));
 vi.mock('@/stores/vault/vault', () => ({
-  currentVault: { subscribe: vi.fn((cb: (v: unknown) => void) => { cb({ root_path: '/vault' }); return () => {}; }) },
+  currentVault: {
+    subscribe: vi.fn((cb: (v: unknown) => void) => {
+      cb({ root_path: '/vault' });
+      return () => {};
+    }),
+  },
 }));
 
 import { invoke } from '@tauri-apps/api/core';
@@ -33,7 +38,9 @@ describe('Periodic Notes Service', () => {
 
   it('throws on IPC error', async () => {
     mockInvoke.mockRejectedValue(new Error('backend error'));
-    await expect(openOrCreatePeriodicNote('2025-01-15', 'daily')).rejects.toThrow('Failed to open periodic note');
+    await expect(openOrCreatePeriodicNote('2025-01-15', 'daily')).rejects.toThrow(
+      'Failed to open periodic note'
+    );
   });
 
   it('fetches notes for a date range', async () => {

@@ -5,7 +5,10 @@
  */
 import type { GraphNode, GraphEdge } from '../types';
 import type {
-  NodeMetrics, TopicCluster, StructuralGap, Bigram,
+  NodeMetrics,
+  TopicCluster,
+  StructuralGap,
+  Bigram,
   GraphAnalyticsResult,
 } from '../types/analytics';
 import { CLUSTER_COLORS } from '../types/analytics';
@@ -26,10 +29,7 @@ function buildAdjacency(nodes: GraphNode[], edges: GraphEdge[]): AdjMap {
 
 // ─── Betweenness centrality (Brandes algorithm) ──────────────────────────────
 
-export function betweennessCentrality(
-  nodeIds: string[],
-  adj: AdjMap,
-): Map<string, number> {
+export function betweennessCentrality(nodeIds: string[], adj: AdjMap): Map<string, number> {
   const cb = new Map<string, number>();
   for (const id of nodeIds) cb.set(id, 0);
 
@@ -38,15 +38,23 @@ export function betweennessCentrality(
     const pred = new Map<string, string[]>();
     const sigma = new Map<string, number>();
     const dist = new Map<string, number>();
-    for (const v of nodeIds) { pred.set(v, []); sigma.set(v, 0); dist.set(v, -1); }
-    sigma.set(s, 1); dist.set(s, 0);
+    for (const v of nodeIds) {
+      pred.set(v, []);
+      sigma.set(v, 0);
+      dist.set(v, -1);
+    }
+    sigma.set(s, 1);
+    dist.set(s, 0);
 
     const queue: string[] = [s];
     while (queue.length > 0) {
       const v = queue.shift()!;
       stack.push(v);
       for (const w of adj.get(v) ?? []) {
-        if (dist.get(w)! < 0) { queue.push(w); dist.set(w, dist.get(v)! + 1); }
+        if (dist.get(w)! < 0) {
+          queue.push(w);
+          dist.set(w, dist.get(v)! + 1);
+        }
         if (dist.get(w) === dist.get(v)! + 1) {
           sigma.set(w, sigma.get(w)! + sigma.get(v)!);
           pred.get(w)!.push(v);
@@ -77,7 +85,7 @@ export function betweennessCentrality(
 export function detectCommunities(
   nodeIds: string[],
   adj: AdjMap,
-  maxClusters: number = 8,
+  maxClusters: number = 8
 ): { communities: Map<string, number>; modularity: number } {
   const m = [...adj.values()].reduce((s, neighbors) => s + neighbors.size, 0) / 2;
   if (m === 0) {
@@ -126,9 +134,12 @@ export function detectCommunities(
       for (const [c, edgesInC] of commEdges) {
         if (c === currentComm) continue;
         const sumTarget = commDegreeSum.get(c) ?? 0;
-        const gain = (edgesInC / m) - (ki * sumTarget) / (2 * m * m);
+        const gain = edgesInC / m - (ki * sumTarget) / (2 * m * m);
         const totalGain = gain + removeLoss;
-        if (totalGain > bestGain) { bestGain = totalGain; bestComm = c; }
+        if (totalGain > bestGain) {
+          bestGain = totalGain;
+          bestComm = c;
+        }
       }
 
       if (bestComm !== currentComm) {
@@ -152,21 +163,18 @@ export function detectCommunities(
   for (const [u, neighborsU] of adj) {
     for (const v of neighborsU) {
       if (community.get(u) === community.get(v)) {
-        Q += 1 - ((degree.get(u)! * degree.get(v)!) / (2 * m));
+        Q += 1 - (degree.get(u)! * degree.get(v)!) / (2 * m);
       }
     }
   }
-  Q /= (2 * m);
+  Q /= 2 * m;
 
   return { communities: community, modularity: Math.max(0, Math.min(1, Q)) };
 }
 
 // ─── Gap detection ───────────────────────────────────────────────────────────
 
-export function detectGaps(
-  clusters: TopicCluster[],
-  adj: AdjMap,
-): StructuralGap[] {
+export function detectGaps(clusters: TopicCluster[], adj: AdjMap): StructuralGap[] {
   const gaps: StructuralGap[] = [];
 
   for (let i = 0; i < clusters.length; i++) {
@@ -187,8 +195,10 @@ export function detectGaps(
       const disconnection = 1 - crossEdges / Math.max(maxCross, 1);
       if (disconnection > 0.7) {
         gaps.push({
-          clusterA: a.id, clusterB: b.id,
-          labelA: a.label, labelB: b.label,
+          clusterA: a.id,
+          clusterB: b.id,
+          labelA: a.label,
+          labelB: b.label,
           disconnection,
           bridgeConcepts: {
             fromA: a.topConcepts.slice(0, 3),
@@ -223,11 +233,11 @@ export function extractBigrams(edges: GraphEdge[], labels: Map<string, string>):
 export function analyzeGraph(
   nodes: GraphNode[],
   edges: GraphEdge[],
-  maxClusters: number = 8,
+  maxClusters: number = 8
 ): GraphAnalyticsResult {
-  const nodeIds = nodes.map(n => n.id);
+  const nodeIds = nodes.map((n) => n.id);
   const adj = buildAdjacency(nodes, edges);
-  const labels = new Map(nodes.map(n => [n.id, n.label]));
+  const labels = new Map(nodes.map((n) => [n.id, n.label]));
 
   // Centrality
   const bc = betweennessCentrality(nodeIds, adj);
@@ -237,7 +247,7 @@ export function analyzeGraph(
   const { communities, modularity } = detectCommunities(nodeIds, adj, maxClusters);
 
   // Node metrics
-  const metrics: NodeMetrics[] = nodes.map(n => {
+  const metrics: NodeMetrics[] = nodes.map((n) => {
     const degree = adj.get(n.id)?.size ?? 0;
     const betweenness = bc.get(n.id) ?? 0;
     return {
@@ -258,31 +268,36 @@ export function analyzeGraph(
     clusterMap.get(m.clusterId)!.push(m);
   }
 
-  const clusters: TopicCluster[] = [...clusterMap.entries()].map(([id, members]) => {
-    const sorted = [...members].sort((a, b) => b.relevance - a.relevance);
-    const clusterNodeIds = members.map(m => m.id);
+  const clusters: TopicCluster[] = [...clusterMap.entries()]
+    .map(([id, members]) => {
+      const sorted = [...members].sort((a, b) => b.relevance - a.relevance);
+      const clusterNodeIds = members.map((m) => m.id);
 
-    // Density
-    let internalEdges = 0;
-    const memberSet = new Set(clusterNodeIds);
-    for (const nId of clusterNodeIds) {
-      for (const nb of adj.get(nId) ?? []) {
-        if (memberSet.has(nb)) internalEdges++;
+      // Density
+      let internalEdges = 0;
+      const memberSet = new Set(clusterNodeIds);
+      for (const nId of clusterNodeIds) {
+        for (const nb of adj.get(nId) ?? []) {
+          if (memberSet.has(nb)) internalEdges++;
+        }
       }
-    }
-    internalEdges /= 2;
-    const possibleEdges = clusterNodeIds.length * (clusterNodeIds.length - 1) / 2;
+      internalEdges /= 2;
+      const possibleEdges = (clusterNodeIds.length * (clusterNodeIds.length - 1)) / 2;
 
-    return {
-      id,
-      label: sorted.slice(0, 3).map(m => m.label).join(', '),
-      color: CLUSTER_COLORS[id % CLUSTER_COLORS.length],
-      nodeIds: clusterNodeIds,
-      topConcepts: sorted.slice(0, 5).map(m => m.label),
-      density: possibleEdges > 0 ? internalEdges / possibleEdges : 0,
-      totalRelevance: members.reduce((s, m) => s + m.relevance, 0),
-    };
-  }).sort((a, b) => b.totalRelevance - a.totalRelevance);
+      return {
+        id,
+        label: sorted
+          .slice(0, 3)
+          .map((m) => m.label)
+          .join(', '),
+        color: CLUSTER_COLORS[id % CLUSTER_COLORS.length],
+        nodeIds: clusterNodeIds,
+        topConcepts: sorted.slice(0, 5).map((m) => m.label),
+        density: possibleEdges > 0 ? internalEdges / possibleEdges : 0,
+        totalRelevance: members.reduce((s, m) => s + m.relevance, 0),
+      };
+    })
+    .sort((a, b) => b.totalRelevance - a.totalRelevance);
 
   // Gaps
   const gaps = detectGaps(clusters, adj);

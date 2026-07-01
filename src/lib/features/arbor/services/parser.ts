@@ -78,7 +78,7 @@ export function serializeArborNote(tree: ArborTree, preserveFrontmatter?: string
   // Append metadata comment
   const meta: ArborMetadata = {
     version: tree.version,
-    blocks: tree.blocks.map(b => ({ id: b.id, parentId: b.parentId, order: b.order })),
+    blocks: tree.blocks.map((b) => ({ id: b.id, parentId: b.parentId, order: b.order })),
   };
   const encoded = btoa(JSON.stringify(meta));
   parts.push(`<!-- arbor:metadata:v1\n${encoded}\n-->`);
@@ -89,12 +89,12 @@ export function serializeArborNote(tree: ArborTree, preserveFrontmatter?: string
 /** Order blocks depth-first for serialization. */
 function serializeBlocksOrdered(blocks: ArborBlock[]): ArborBlock[] {
   const result: ArborBlock[] = [];
-  const roots = blocks.filter(b => b.parentId === null).sort((a, b) => a.order - b.order);
+  const roots = blocks.filter((b) => b.parentId === null).sort((a, b) => a.order - b.order);
 
   function walk(block: ArborBlock): void {
     result.push(block);
     const children = blocks
-      .filter(b => b.parentId === block.id)
+      .filter((b) => b.parentId === block.id)
       .sort((a, b) => a.order - b.order);
     children.forEach(walk);
   }
@@ -124,7 +124,9 @@ function parseMetadataVersion(content: string): number {
     const decoded = atob(match[1].trim());
     const meta: ArborMetadata = JSON.parse(decoded);
     return meta.version || 1;
-  } catch { return 1; }
+  } catch {
+    return 1;
+  }
 }
 
 /** Check if a note is arbor-managed. */

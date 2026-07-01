@@ -5,7 +5,16 @@
 import { getNote, createNote, writeNote, deleteNote } from '@/services/vault/vault';
 import { parseFrontmatter } from '@/services/frontmatter';
 import { log } from '@/utils/logger';
-import type { Project, PMTask, PMTaskType, PMStatus, PMPriority, TimeLog, Recurrence, CustomFieldDef } from '../types';
+import type {
+  Project,
+  PMTask,
+  PMTaskType,
+  PMStatus,
+  PMPriority,
+  TimeLog,
+  Recurrence,
+  CustomFieldDef,
+} from '../types';
 
 // ─── Frontmatter keys ────────────────────────────────────────────────────────
 
@@ -104,7 +113,7 @@ export function parseTask(fm: Record<string, unknown>, path: string, body: strin
     parentId: fm['parent'] ? String(fm['parent']) : null,
     subtaskIds: Array.isArray(fm['subtasks']) ? (fm['subtasks'] as string[]) : [],
     dependencies: Array.isArray(fm['dependencies']) ? (fm['dependencies'] as string[]) : [],
-    recurrence: fm['recurrence'] as Recurrence | null ?? null,
+    recurrence: (fm['recurrence'] as Recurrence | null) ?? null,
     customFields: (fm['custom-fields'] as Record<string, unknown>) ?? {},
     archived: Boolean(fm['archived']),
     createdAt: fm['created'] ? String(fm['created']) : now,
@@ -123,7 +132,9 @@ export function parseProject(fm: Record<string, unknown>, path: string, body: st
     icon: String(fm['icon'] ?? 'briefcase'),
     folder: String(fm['folder'] ?? ''),
     defaultView: (fm['default-view'] as Project['defaultView']) ?? 'table',
-    customFields: Array.isArray(fm['custom-fields']) ? (fm['custom-fields'] as CustomFieldDef[]) : [],
+    customFields: Array.isArray(fm['custom-fields'])
+      ? (fm['custom-fields'] as CustomFieldDef[])
+      : [],
     customStatuses: [],
     customPriorities: [],
     teamMembers: Array.isArray(fm['team-members']) ? (fm['team-members'] as string[]) : [],

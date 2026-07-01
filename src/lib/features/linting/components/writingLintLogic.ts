@@ -14,19 +14,27 @@ export function groupBySeverity(issues: LintIssue[]): Record<string, LintIssue[]
 /** Returns a human label for severity. */
 export function severityLabel(severity: string): string {
   switch (severity) {
-    case 'error': return 'Errors';
-    case 'warning': return 'Warnings';
-    case 'info': return 'Suggestions';
-    default: return severity;
+    case 'error':
+      return 'Errors';
+    case 'warning':
+      return 'Warnings';
+    case 'info':
+      return 'Suggestions';
+    default:
+      return severity;
   }
 }
 
 /** Returns the icon for severity. */
 export function severityIcon(severity: string): string {
   switch (severity) {
-    case 'error': return 'x-circle';
-    case 'warning': return 'alert-triangle';
-    case 'info': return 'info';
-    default: return 'circle';
+    case 'error':
+      return 'x-circle';
+    case 'warning':
+      return 'alert-triangle';
+    case 'info':
+      return 'info';
+    default:
+      return 'circle';
   }
 }

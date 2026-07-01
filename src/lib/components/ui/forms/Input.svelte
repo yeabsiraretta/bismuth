@@ -5,7 +5,7 @@
   export let disabled: boolean = false;
   export let error: string = '';
   export let size: 'sm' | 'md' | 'lg' = 'md';
-  
+
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
     value = target.value;

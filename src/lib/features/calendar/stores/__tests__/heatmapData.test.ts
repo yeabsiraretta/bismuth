@@ -55,9 +55,7 @@ describe('getIntensityRange', () => {
   });
 
   it('prevents max <= min', () => {
-    const entries: HeatmapEntry[] = [
-      { date: '2024-01-01', intensity: 5 },
-    ];
+    const entries: HeatmapEntry[] = [{ date: '2024-01-01', intensity: 5 }];
     expect(getIntensityRange(entries, 5, 5)).toEqual({ min: 5, max: 6 });
   });
 });
@@ -72,14 +70,14 @@ describe('buildYearHeatmapGrid', () => {
 
   it('covers all 366 days of a leap year', () => {
     const grid = buildYearHeatmapGrid(2024);
-    const allDates = grid.flat().filter(d => d.startsWith('2024-'));
+    const allDates = grid.flat().filter((d) => d.startsWith('2024-'));
     const uniqueDates = new Set(allDates);
     expect(uniqueDates.size).toBe(366);
   });
 
   it('covers all 365 days of a non-leap year', () => {
     const grid = buildYearHeatmapGrid(2023);
-    const allDates = grid.flat().filter(d => d.startsWith('2023-'));
+    const allDates = grid.flat().filter((d) => d.startsWith('2023-'));
     const uniqueDates = new Set(allDates);
     expect(uniqueDates.size).toBe(365);
   });
@@ -107,7 +105,7 @@ describe('COLOR_SCHEMES', () => {
 
   it('has all expected schemes', () => {
     expect(Object.keys(COLOR_SCHEMES)).toEqual(
-      expect.arrayContaining(['green', 'blue', 'red', 'orange', 'purple']),
+      expect.arrayContaining(['green', 'blue', 'red', 'orange', 'purple'])
     );
   });
 });

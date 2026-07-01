@@ -14,7 +14,9 @@ function loadConfig(): EnhancedCopyConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_ENHANCED_COPY_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_ENHANCED_COPY_CONFIG };
 }
 
@@ -29,11 +31,11 @@ function saveConfig(cfg: EnhancedCopyConfig): void {
 const configInternal = writable<EnhancedCopyConfig>(loadConfig());
 
 /** Reactive enhanced-copy configuration. */
-export const enhancedCopyConfig = derived(configInternal, $c => $c);
+export const enhancedCopyConfig = derived(configInternal, ($c) => $c);
 
 /** Update configuration and persist. */
 export function updateEnhancedCopyConfig(patch: Partial<EnhancedCopyConfig>): void {
-  configInternal.update(c => {
+  configInternal.update((c) => {
     const next = { ...c, ...patch };
     saveConfig(next);
     return next;
@@ -60,7 +62,12 @@ function getSelectedTextFromDom(): string {
  */
 function getSelectedTextFromEditor(view: unknown): string {
   try {
-    const v = view as { state: { selection: { main: { from: number; to: number } }; sliceDoc: (from: number, to: number) => string } };
+    const v = view as {
+      state: {
+        selection: { main: { from: number; to: number } };
+        sliceDoc: (from: number, to: number) => string;
+      };
+    };
     const { from, to } = v.state.selection.main;
     if (from === to) return '';
     return v.state.sliceDoc(from, to);
@@ -84,7 +91,9 @@ function findEditorView(): unknown | null {
  */
 export async function enhancedCopy(sourceView?: 'reading' | 'editing'): Promise<boolean> {
   let config = DEFAULT_ENHANCED_COPY_CONFIG;
-  configInternal.subscribe(c => { config = c; })();
+  configInternal.subscribe((c) => {
+    config = c;
+  })();
 
   // Determine which text to grab based on the source
   let selectedText = '';

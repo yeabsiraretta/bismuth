@@ -14,56 +14,56 @@ When reviewing a NestJS project, map generic architecture boundaries to NestJS p
 
 ### Entry Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Controllers (`@Controller()`) |
-| Entry point for GraphQL | Resolvers (`@Resolver()`) |
-| Entry point for WebSockets | Gateways (`@WebSocketGateway()`) |
-| Entry point for Microservices | Message Handlers (`@MessagePattern()`, `@EventPattern()`) |
+| Generic Concept                 | NestJS Equivalent                                         |
+| ------------------------------- | --------------------------------------------------------- |
+| Entry point for HTTP requests   | Controllers (`@Controller()`)                             |
+| Entry point for GraphQL         | Resolvers (`@Resolver()`)                                 |
+| Entry point for WebSockets      | Gateways (`@WebSocketGateway()`)                          |
+| Entry point for Microservices   | Message Handlers (`@MessagePattern()`, `@EventPattern()`) |
 | Request/Response transformation | Interceptors (`@Injectable() implements NestInterceptor`) |
-| Global/Route request filtering | Middlewares (`implements NestMiddleware`) |
-| Authentication / Authorization | Guards (`@Injectable() implements CanActivate`) |
+| Global/Route request filtering  | Middlewares (`implements NestMiddleware`)                 |
+| Authentication / Authorization  | Guards (`@Injectable() implements CanActivate`)           |
 
 ### Validation Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
+| Generic Concept                     | NestJS Equivalent                                |
+| ----------------------------------- | ------------------------------------------------ |
 | Input validation and transformation | Pipes (`@Injectable() implements PipeTransform`) |
-| Standard Validation | `ValidationPipe` (using `class-validator`) |
-| Schema-based validation | Joi or Zod Pipes |
+| Standard Validation                 | `ValidationPipe` (using `class-validator`)       |
+| Schema-based validation             | Joi or Zod Pipes                                 |
 
 ### Contract Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
-| Stable request shapes | DTOs (Data Transfer Objects - `class` based) |
-| Stable response shapes | DTOs or GraphQL Object Types |
-| Shared interfaces | TypeScript Interfaces or Abstract Classes |
-| Microservice message shapes | DTOs or Protobuf definitions |
+| Generic Concept             | NestJS Equivalent                            |
+| --------------------------- | -------------------------------------------- |
+| Stable request shapes       | DTOs (Data Transfer Objects - `class` based) |
+| Stable response shapes      | DTOs or GraphQL Object Types                 |
+| Shared interfaces           | TypeScript Interfaces or Abstract Classes    |
+| Microservice message shapes | DTOs or Protobuf definitions                 |
 
 ### Application Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
-| Use case coordination | Services / Providers (`@Injectable()`) |
+| Generic Concept              | NestJS Equivalent                                 |
+| ---------------------------- | ------------------------------------------------- |
+| Use case coordination        | Services / Providers (`@Injectable()`)            |
 | Business logic orchestration | CQRS Command/Query Handlers (`@CommandHandler()`) |
-| Event coordination | Event Emitter (`@OnEvent()`) |
+| Event coordination           | Event Emitter (`@OnEvent()`)                      |
 
 ### Domain Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
+| Generic Concept              | NestJS Equivalent                        |
+| ---------------------------- | ---------------------------------------- |
 | Business rules and decisions | Pure Domain Classes (agnostic of NestJS) |
-| Domain models | Entities (TypeORM, Prisma, or Sequelize) |
-| Access control logic | Domain Services or Guard logic |
+| Domain models                | Entities (TypeORM, Prisma, or Sequelize) |
+| Access control logic         | Domain Services or Guard logic           |
 
 ### Data Boundary
 
-| Generic Concept | NestJS Equivalent |
-| --- | --- |
-| Persistence abstraction | Repositories (Standard or Custom `@EntityRepository()`) |
-| Query building | Query Builders or Prisma Clients |
-| Persistence orchestration | Modules wrapping Database Clients |
+| Generic Concept           | NestJS Equivalent                                       |
+| ------------------------- | ------------------------------------------------------- |
+| Persistence abstraction   | Repositories (Standard or Custom `@EntityRepository()`) |
+| Query building            | Query Builders or Prisma Clients                        |
+| Persistence orchestration | Modules wrapping Database Clients                       |
 
 ---
 
@@ -72,6 +72,7 @@ When reviewing a NestJS project, map generic architecture boundaries to NestJS p
 ### Module Encapsulation (The "Exports" Rule)
 
 Detect when:
+
 - A service from `Module A` is injected into `Module B` without being listed in `Module A`'s `exports` array.
 - Circular dependencies are handled via `forwardRef()` without a documented architectural reason (this often indicates poor boundary design).
 - Global modules (`@Global()`) are used excessively to bypass explicit importing.
@@ -79,11 +80,13 @@ Detect when:
 ### Fat Controllers
 
 Detect when a controller:
+
 - Directly performs database operations (e.g., using `this.repo.save()`).
 - Coordinates complex business logic across multiple services.
 - Manually handles HTTP status codes and error messages based on business logic (this should be in Interceptors or Exceptions).
 
 **Acceptable in controllers:**
+
 - Using `@Body()`, `@Query()`, `@Param()` to extract data.
 - Calling a single Service/Handler method.
 - Using `@UseGuards()`, `@UseInterceptors()`, or `@UsePipes()`.
@@ -91,6 +94,7 @@ Detect when a controller:
 ### Dependency Injection Discipline
 
 Detect when:
+
 - A service uses `new ServiceName()` to instantiate another service instead of using constructor injection.
 - Providers are "leaked" via global variables or static methods.
 - Services are injected with a broader scope than necessary (e.g., Request scope when Singleton is sufficient).
@@ -98,6 +102,7 @@ Detect when:
 ### DTO and Validation Discipline [Focus: api]
 
 Detect when:
+
 - `@Body()` is typed as `any`, `Record<string, any>`, or a raw interface (Interfaces are removed at runtime, making `ValidationPipe` ineffective).
 - DTO classes lack `class-validator` decorators (e.g., `@IsString()`, `@IsEmail()`).
 - The API returns raw Database Entities instead of specialized Response DTOs.
@@ -105,6 +110,7 @@ Detect when:
 ### Exception Handling Boundary
 
 Detect when:
+
 - Business logic throws raw `Error` objects instead of specialized `HttpException` or `RpcException` classes.
 - Controllers use `try/catch` for flow control instead of using global **Exception Filters**.
 

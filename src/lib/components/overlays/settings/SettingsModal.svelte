@@ -21,7 +21,13 @@
   import { currentVault } from '@/stores/vault/vault';
   import { onDestroy } from 'svelte';
   import { createFocusTrap, type FocusTrapInstance } from '@/utils/accessibility/focusTrap';
-  import { loadFields, saveFields, resetFields, HOTKEYS, type SettingsFields } from './settingsState';
+  import {
+    loadFields,
+    saveFields,
+    resetFields,
+    HOTKEYS,
+    type SettingsFields,
+  } from './settingsState';
   import { openVaultFolder } from './settingsActions';
   import { openConfirm } from '@/stores/confirm';
 
@@ -33,8 +39,12 @@
   let fields: SettingsFields = loadFields();
   let searchQuery = '';
 
-  $: if (isOpen && initialTab) { activeTab = initialTab; }
-  $: if (isOpen) { fields = loadFields(); }
+  $: if (isOpen && initialTab) {
+    activeTab = initialTab;
+  }
+  $: if (isOpen) {
+    fields = loadFields();
+  }
   $: isSearching = searchQuery.trim().length > 0;
 
   function handleSearchNavigate(tab: SettingsTab) {
@@ -45,14 +55,19 @@
   $: vaultPath = $currentVault?.root_path || '';
   $: vaultName = $currentVault?.name || '';
 
-  function saveSettings() { saveFields(fields); onClose(); }
+  function saveSettings() {
+    saveFields(fields);
+    onClose();
+  }
   function handleReset() {
     openConfirm({
       title: 'Reset All Settings',
       message: 'Reset all settings to defaults? This cannot be undone.',
       confirmLabel: 'Reset',
       variant: 'danger',
-      onConfirm: () => { fields = resetFields(); },
+      onConfirm: () => {
+        fields = resetFields();
+      },
     });
   }
 
@@ -63,7 +78,10 @@
     trap = createFocusTrap(modalEl, { onEscape: onClose, returnFocus: true });
     trap.activate();
   }
-  $: if (!isOpen && trap) { trap.deactivate(); trap = null; }
+  $: if (!isOpen && trap) {
+    trap.deactivate();
+    trap = null;
+  }
   onDestroy(() => trap?.deactivate());
 
   function handleKeydown(e: KeyboardEvent) {

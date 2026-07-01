@@ -4,7 +4,13 @@
  */
 
 import type { GraphEdge, GraphSettings } from '../../types';
-import { type SimNode, DEFAULT_NODE_COLORS, getNodeRadius, getNodeColor, hitTestNode } from '../../utils/simulation';
+import {
+  type SimNode,
+  DEFAULT_NODE_COLORS,
+  getNodeRadius,
+  getNodeColor,
+  hitTestNode,
+} from '../../utils/simulation';
 
 export interface GraphRenderState {
   offsetX: number;
@@ -20,7 +26,18 @@ export interface GraphRenderState {
 }
 
 export function createRenderState(): GraphRenderState {
-  return { offsetX: 0, offsetY: 0, scale: 1, hoveredNode: null, selectedNode: null, isDragging: false, dragNode: null, isPanning: false, lastPanX: 0, lastPanY: 0 };
+  return {
+    offsetX: 0,
+    offsetY: 0,
+    scale: 1,
+    hoveredNode: null,
+    selectedNode: null,
+    isDragging: false,
+    dragNode: null,
+    isPanning: false,
+    lastPanX: 0,
+    lastPanY: 0,
+  };
 }
 
 export interface GraphColors {
@@ -51,7 +68,12 @@ export function renderGraph(
   height: number,
   colors?: GraphColors
 ) {
-  const c = colors ?? { bg: '#1a1a2e', edge: '#5a5a7a', nodeLabel: 'rgba(200, 200, 220, 0.8)', badge: 'rgba(200, 200, 220, 0.5)' };
+  const c = colors ?? {
+    bg: '#1a1a2e',
+    edge: '#5a5a7a',
+    nodeLabel: 'rgba(200, 200, 220, 0.8)',
+    badge: 'rgba(200, 200, 220, 0.5)',
+  };
   ctx.fillStyle = c.bg;
   ctx.fillRect(0, 0, width, height);
   ctx.save();
@@ -59,7 +81,7 @@ export function renderGraph(
   ctx.scale(state.scale, state.scale);
 
   // Draw edges — O(1) lookup via map
-  const nodeMap = new Map<string, typeof nodes[0]>();
+  const nodeMap = new Map<string, (typeof nodes)[0]>();
   for (const n of nodes) nodeMap.set(n.id, n);
 
   ctx.globalAlpha = 0.4;
@@ -111,7 +133,8 @@ export function renderGraph(
     ctx.fillStyle = isSelected ? '#4a9eff' : isHovered ? '#6bb6ff' : nodeColor;
     ctx.fill();
 
-    const showLabel = settings.showLabels && (isHovered || isSelected || state.scale > settings.textFadeThreshold);
+    const showLabel =
+      settings.showLabels && (isHovered || isSelected || state.scale > settings.textFadeThreshold);
     if (showLabel) {
       ctx.fillStyle = isHovered || isSelected ? '#ffffff' : c.nodeLabel;
       ctx.font = `${isHovered || isSelected ? '12px' : '11px'} system-ui, -apple-system, sans-serif`;
@@ -138,14 +161,24 @@ export function screenToGraph(e: MouseEvent, canvas: HTMLCanvasElement, state: G
   };
 }
 
-export function handleGraphMouseDown(e: MouseEvent, canvas: HTMLCanvasElement, nodes: SimNode[], state: GraphRenderState): GraphRenderState {
+export function handleGraphMouseDown(
+  e: MouseEvent,
+  canvas: HTMLCanvasElement,
+  nodes: SimNode[],
+  state: GraphRenderState
+): GraphRenderState {
   const { x, y } = screenToGraph(e, canvas, state);
   const node = hitTestNode(nodes, x, y);
   if (node) return { ...state, dragNode: node, isDragging: true };
   return { ...state, isPanning: true, lastPanX: e.clientX, lastPanY: e.clientY };
 }
 
-export function handleGraphMouseMove(e: MouseEvent, canvas: HTMLCanvasElement, nodes: SimNode[], state: GraphRenderState): GraphRenderState {
+export function handleGraphMouseMove(
+  e: MouseEvent,
+  canvas: HTMLCanvasElement,
+  nodes: SimNode[],
+  state: GraphRenderState
+): GraphRenderState {
   const { x, y } = screenToGraph(e, canvas, state);
   if (state.isDragging && state.dragNode) {
     state.dragNode.x = x;
@@ -157,7 +190,13 @@ export function handleGraphMouseMove(e: MouseEvent, canvas: HTMLCanvasElement, n
   if (state.isPanning) {
     const dx = e.clientX - state.lastPanX;
     const dy = e.clientY - state.lastPanY;
-    return { ...state, offsetX: state.offsetX + dx, offsetY: state.offsetY + dy, lastPanX: e.clientX, lastPanY: e.clientY };
+    return {
+      ...state,
+      offsetX: state.offsetX + dx,
+      offsetY: state.offsetY + dy,
+      lastPanX: e.clientX,
+      lastPanY: e.clientY,
+    };
   }
   const node = hitTestNode(nodes, x, y);
   return { ...state, hoveredNode: node ? node.id : null };
@@ -185,13 +224,34 @@ export function handleGraphKeyDown(e: KeyboardEvent, state: GraphRenderState): G
   let { offsetX, offsetY, scale } = state;
 
   switch (e.key) {
-    case 'ArrowUp': e.preventDefault(); offsetY += speed; break;
-    case 'ArrowDown': e.preventDefault(); offsetY -= speed; break;
-    case 'ArrowLeft': e.preventDefault(); offsetX += speed; break;
-    case 'ArrowRight': e.preventDefault(); offsetX -= speed; break;
-    case '+': case '=': e.preventDefault(); scale = Math.min(5, scale * 1.1); break;
-    case '-': case '_': e.preventDefault(); scale = Math.max(0.1, scale * 0.9); break;
-    default: return state;
+    case 'ArrowUp':
+      e.preventDefault();
+      offsetY += speed;
+      break;
+    case 'ArrowDown':
+      e.preventDefault();
+      offsetY -= speed;
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      offsetX += speed;
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      offsetX -= speed;
+      break;
+    case '+':
+    case '=':
+      e.preventDefault();
+      scale = Math.min(5, scale * 1.1);
+      break;
+    case '-':
+    case '_':
+      e.preventDefault();
+      scale = Math.max(0.1, scale * 0.9);
+      break;
+    default:
+      return state;
   }
   return { ...state, offsetX, offsetY, scale };
 }

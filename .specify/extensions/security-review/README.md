@@ -35,6 +35,7 @@ You discover these issues in code review — or worse, in production. By then, f
 This extension acts as a cooperative citizen in the Spec Kit ecosystem by sharing context through explicit handoff artifacts in the `specs/<feature>/` directory.
 
 **The Governed Delivery Lifecycle:**
+
 1. **`/specify`** -> Write initial feature spec.
 2. **`/speckit.architecture-guard.governed-plan`** -> Orchestrates memory synthesis, technical planning, and security/architecture validation.
 3. **`/speckit.architecture-guard.governed-tasks`** -> Orchestrates task generation with memory, security, and architecture refactor awareness.
@@ -71,12 +72,12 @@ specify extension add --dev /path/to/spec-kit-security-review
 
 Security Review is a **governance and audit layer** that runs at every phase of Spec Kit delivery to catch vulnerabilities before they reach production.
 
-| Milestone | Recommended Command | Phase Integration | Purpose |
-| --- | --- | --- | --- |
-| **Milestone: Design** | `security-review.plan` | After `/plan` | Review technical design for trust boundaries and insecure patterns. |
-| **Milestone: Strategy** | `security-review.tasks` | After `/tasks` | Ensure security requirements are sequenced correctly in the task list. |
-| **Milestone: Verification** | `security-review.branch` | After `/implement` | Focused security review of the current changes or branch. |
-| **Milestone: Remediation** | `security-review.apply` | After findings | Inject approved security fixes into your Plan and Task artifacts. |
+| Milestone                   | Recommended Command      | Phase Integration  | Purpose                                                                |
+| --------------------------- | ------------------------ | ------------------ | ---------------------------------------------------------------------- |
+| **Milestone: Design**       | `security-review.plan`   | After `/plan`      | Review technical design for trust boundaries and insecure patterns.    |
+| **Milestone: Strategy**     | `security-review.tasks`  | After `/tasks`     | Ensure security requirements are sequenced correctly in the task list. |
+| **Milestone: Verification** | `security-review.branch` | After `/implement` | Focused security review of the current changes or branch.              |
+| **Milestone: Remediation**  | `security-review.apply`  | After findings     | Inject approved security fixes into your Plan and Task artifacts.      |
 
 ---
 
@@ -85,13 +86,16 @@ Security Review is a **governance and audit layer** that runs at every phase of 
 Security Review generates structured reports with actionable findings. To resolve them:
 
 ### 1. Evaluate the Finding
+
 Review the **Exploit Scenario** and **Remediation** provided in the report. Decide if the finding is a valid risk that needs fixing or an accepted project design.
 
 ### 2. Plan the Follow-up
+
 Run `/speckit.security-review.followup`.
 The AI will guide you through each finding. You can choose to **Fix Now** (add to current tasks) or **Track as Tech Debt** (save for later).
 
 ### 3. Apply the Fixes
+
 Run `/speckit.security-review.apply`.
 This will **automatically inject** the remediation tasks into your `plan.md` and `tasks.md`, making security part of your standard delivery flow.
 
@@ -101,10 +105,10 @@ This will **automatically inject** the remediation tasks into your `plan.md` and
 
 These commands are ideal for pre-commit hooks or automated PR checks to ensure incremental changes remain secure.
 
-| Context | Recommended Command | Purpose |
-| --- | --- | --- |
-| **Pre-Commit** | `security-review.staged` | Review only files staged with `git add`. |
-| **Pre-Merge** | `security-review.branch` | Review changes introduced by your branch (auto-detects current). |
+| Context        | Recommended Command      | Purpose                                                          |
+| -------------- | ------------------------ | ---------------------------------------------------------------- |
+| **Pre-Commit** | `security-review.staged` | Review only files staged with `git add`.                         |
+| **Pre-Merge**  | `security-review.branch` | Review changes introduced by your branch (auto-detects current). |
 
 ---
 
@@ -127,39 +131,39 @@ Every finding includes severity, location, OWASP category, exploit scenario, rem
 
 ### Compared to Spec Kit Alone
 
-| Spec Kit Only | Spec Kit + Security Review |
-| --- | --- |
-| Security issues found during code review or production | Caught during planning, before code is written |
-| No structured way to track security debt | Every finding becomes a `TASK-SEC-NNN` with severity and acceptance criteria |
-| AI generates insecure patterns without feedback | AI output is reviewed against OWASP 2025 and secure coding practices |
-| Security is a vague checkbox | Security coverage is enumerated: OWASP, supply chain, secrets, DevSecOps |
+| Spec Kit Only                                          | Spec Kit + Security Review                                                   |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Security issues found during code review or production | Caught during planning, before code is written                               |
+| No structured way to track security debt               | Every finding becomes a `TASK-SEC-NNN` with severity and acceptance criteria |
+| AI generates insecure patterns without feedback        | AI output is reviewed against OWASP 2025 and secure coding practices         |
+| Security is a vague checkbox                           | Security coverage is enumerated: OWASP, supply chain, secrets, DevSecOps     |
 
 ### Compared to Traditional Security Tools
 
-| Traditional Tools | Security Review |
-| --- | --- |
-| Require language-specific scanners per framework | Framework-agnostic, works across any stack |
-| Run against code only | Reviews plans, tasks, staged diffs, branch diffs, AND code |
-| Produce generic reports | Produces Spec Kit task IDs ready for your backlog |
-| Separate workflow from development | Integrated into the Spec Kit delivery lifecycle |
-| Expensive to set up and maintain | Zero runtime dependencies, prompt-based |
+| Traditional Tools                                | Security Review                                            |
+| ------------------------------------------------ | ---------------------------------------------------------- |
+| Require language-specific scanners per framework | Framework-agnostic, works across any stack                 |
+| Run against code only                            | Reviews plans, tasks, staged diffs, branch diffs, AND code |
+| Produce generic reports                          | Produces Spec Kit task IDs ready for your backlog          |
+| Separate workflow from development               | Integrated into the Spec Kit delivery lifecycle            |
+| Expensive to set up and maintain                 | Zero runtime dependencies, prompt-based                    |
 
 ## Security Coverage
 
 ### OWASP Top 10 (2025)
 
-| Code | Category |
-| --- | --- |
-| A01 | Broken Access Control (includes SSRF) |
-| A02 | Security Misconfiguration |
-| A03 | Software Supply Chain Failures |
-| A04 | Cryptographic Failures |
-| A05 | Injection |
-| A06 | Insecure Design |
-| A07 | Authentication Failures |
-| A08 | Software or Data Integrity Failures |
-| A09 | Security Logging & Alerting Failures |
-| A10 | Mishandling of Exceptional Conditions |
+| Code | Category                              |
+| ---- | ------------------------------------- |
+| A01  | Broken Access Control (includes SSRF) |
+| A02  | Security Misconfiguration             |
+| A03  | Software Supply Chain Failures        |
+| A04  | Cryptographic Failures                |
+| A05  | Injection                             |
+| A06  | Insecure Design                       |
+| A07  | Authentication Failures               |
+| A08  | Software or Data Integrity Failures   |
+| A09  | Security Logging & Alerting Failures  |
+| A10  | Mishandling of Exceptional Conditions |
 
 ### Additional Coverage
 
@@ -206,11 +210,13 @@ Every finding includes severity, location, OWASP category, exploit scenario, rem
 1. See [Installation](#installation) section for all methods.
 
 2. Run a security review:
+
    ```text
    /speckit.security-review.branch
    ```
 
 3. Turn findings into tasks:
+
    ```text
    /speckit.security-review.followup
    ```
@@ -244,11 +250,11 @@ Use:
 
 for:
 
-* release reviews
-* milestone reviews
-* major architecture changes
-* systemic security analysis
-* broader trust-boundary validation
+- release reviews
+- milestone reviews
+- major architecture changes
+- systemic security analysis
+- broader trust-boundary validation
 
 ## Avoid Overusing Full Audits
 
@@ -299,27 +305,28 @@ release candidate
 
 Use `audit` for:
 
-* release reviews
-* milestone reviews
-* major architecture changes
-* systemic security analysis
-* broader trust-boundary validation
+- release reviews
+- milestone reviews
+- major architecture changes
+- systemic security analysis
+- broader trust-boundary validation
 
 ## Governance Artifacts
 
 Security Review respects the following project governance artifacts when they exist:
 
-| Artifact | Purpose |
-| --- | --- |
-| `security_constitution.md` | **The Source of Truth.** Repository-wide security rules, standards, and requirements that every feature must follow. |
-| `specs/<feature>/security-constraints.md` | Feature-specific security rules generated during planning or specification. |
-| `docs/memory/` | Durable repository memory containing historical security decisions. |
+| Artifact                                  | Purpose                                                                                                              |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `security_constitution.md`                | **The Source of Truth.** Repository-wide security rules, standards, and requirements that every feature must follow. |
+| `specs/<feature>/security-constraints.md` | Feature-specific security rules generated during planning or specification.                                          |
+| `docs/memory/`                            | Durable repository memory containing historical security decisions.                                                  |
 
 ## Optimizer-Aware Memory Retrieval
 
 This extension integrates with [spec-kit-memory-hub](https://github.com/DyanGalih/spec-kit-memory-hub)'s local SQLite optimizer. When enabled, the extension uses the `speckit-memory` CLI to perform targeted searches across your project's durable memory rather than reading full directories.
 
 To enable this:
+
 1. Ensure `spec-kit-memory-hub` is installed.
 2. Set `optimizer.enabled: true` in your `.specify/extensions/memory-md/config.yml`.
 3. The security review agent will automatically switch to the **Optimizer-Aware Flow** (Refresh -> Search -> Synthesize -> Read).
@@ -330,16 +337,16 @@ To enable this:
 
 ## Quick Reference
 
-| Command | Phase | When To Use | Output |
-| --- | --- | --- | --- |
-| `audit` | Governance | Release reviews, milestone reviews, broader system security analysis | Full-codebase vulnerabilities with OWASP categories |
-| `branch` | Implementation Validation | After implementation, normal feature development (pre-merge) | Changes-only security review, focused findings |
-| `staged` | Pre-Commit | Pre-commit hooks, local validation before git add | Only staged files security review |
-| `plan` | Planning | After `/speckit.plan` | Security gaps in technical design |
-| `tasks` | Task Generation | After `/speckit.tasks` | Task sequencing, missing security requirements |
-| `followup` | Remediation Planning | After findings are reviewed | Convert findings to tasks or technical debt |
-| `apply` | Integration | After followup decisions | Inject security tasks into plan.md and tasks.md |
-| `export` | Reporting | For whitebox testing/compliance | Formal Executive and Technical Pentest Report |
+| Command    | Phase                     | When To Use                                                          | Output                                              |
+| ---------- | ------------------------- | -------------------------------------------------------------------- | --------------------------------------------------- |
+| `audit`    | Governance                | Release reviews, milestone reviews, broader system security analysis | Full-codebase vulnerabilities with OWASP categories |
+| `branch`   | Implementation Validation | After implementation, normal feature development (pre-merge)         | Changes-only security review, focused findings      |
+| `staged`   | Pre-Commit                | Pre-commit hooks, local validation before git add                    | Only staged files security review                   |
+| `plan`     | Planning                  | After `/speckit.plan`                                                | Security gaps in technical design                   |
+| `tasks`    | Task Generation           | After `/speckit.tasks`                                               | Task sequencing, missing security requirements      |
+| `followup` | Remediation Planning      | After findings are reviewed                                          | Convert findings to tasks or technical debt         |
+| `apply`    | Integration               | After followup decisions                                             | Inject security tasks into plan.md and tasks.md     |
+| `export`   | Reporting                 | For whitebox testing/compliance                                      | Formal Executive and Technical Pentest Report       |
 
 ---
 
@@ -437,6 +444,7 @@ Synthesizes multiple review artifacts into a single, professional **Whitebox Sec
 ```
 
 Use this when you need to provide a formal report to stakeholders or clients. It produces:
+
 - **Executive Summary**: High-level risk and business impact.
 - **Technical Findings**: Detailed exploit walk-throughs and code-level remediation.
 - **Strategic Roadmap**: Long-term security hardening advice based on project memory.
@@ -459,10 +467,10 @@ Use this when you need to provide a formal report to stakeholders or clients. It
 
 ## With Companion Extensions
 
-| Extension | Relationship |
-| --- | --- |
-| **Memory Hub** | Security Review reads `docs/memory/`, `specs/<feature>/memory-synthesis.md`, and `.github/copilot-instructions.md` as design context. Optional but recommended. |
-| **Architecture Guard** | Routes architecture-only findings to Architecture Guard. Security Review keeps security findings. No duplication. |
+| Extension              | Relationship                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Memory Hub**         | Security Review reads `docs/memory/`, `specs/<feature>/memory-synthesis.md`, and `.github/copilot-instructions.md` as design context. Optional but recommended. |
+| **Architecture Guard** | Routes architecture-only findings to Architecture Guard. Security Review keeps security findings. No duplication.                                               |
 
 ## Using Security Review with Architecture Guard
 
@@ -493,6 +501,7 @@ for broader governance or release-level workflows.
 ### When You Need to Configure
 
 Configuration is **optional**. You only need it if:
+
 - Your project has custom security requirements
 - You want to exclude certain patterns or directories
 - You need to customize severity thresholds
@@ -566,6 +575,7 @@ See [docs/field-registry.md](docs/field-registry.md) for the full field schema a
 
 **Overall Security Posture:** MODERATE RISK
 **Total Findings:** 23
+
 - Critical: 2
 - High: 5
 - Medium: 8

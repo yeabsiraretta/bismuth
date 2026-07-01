@@ -45,7 +45,9 @@ let HyperFormulaClass: HyperFormulaStatic | null = null;
 async function getEngine(): Promise<HyperFormulaEngine> {
   if (!hf) {
     log.debug('formulaEngine: loading HyperFormula (first use)');
-    const mod = await import(/* @vite-ignore */ 'hyperformula') as { HyperFormula: HyperFormulaStatic };
+    const mod = (await import(/* @vite-ignore */ 'hyperformula')) as {
+      HyperFormula: HyperFormulaStatic;
+    };
     HyperFormulaClass = mod.HyperFormula;
     hf = HyperFormulaClass.buildEmpty({ licenseKey: 'gpl-v3' });
     log.info('formulaEngine: HyperFormula initialised', {
@@ -116,11 +118,7 @@ export async function setCell(
  * If HyperFormula returns an error object the formatted error string is
  * returned instead.
  */
-export async function evalFormula(
-  sheetName: string,
-  row: number,
-  col: number
-): Promise<CellValue> {
+export async function evalFormula(sheetName: string, row: number, col: number): Promise<CellValue> {
   const engine = await getEngine();
   const names: string[] = engine.getSheetNames();
   const sheetId = names.indexOf(sheetName);

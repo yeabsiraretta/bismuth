@@ -31,7 +31,9 @@ import { writable } from 'svelte/store';
 import * as settingsMock from '@/features/settings';
 
 // Typed accessor for the mocked settings store
-const _settingsStore = settingsMock.settings as unknown as ReturnType<typeof writable<Record<string, unknown>>>;
+const _settingsStore = settingsMock.settings as unknown as ReturnType<
+  typeof writable<Record<string, unknown>>
+>;
 
 // ─── Import after mocks ───────────────────────────────────────────────────────
 

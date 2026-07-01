@@ -26,8 +26,11 @@
   }
 
   async function handleSyncNow() {
-    try { await syncNow(); }
-    catch (err) { log.error('[NasPanel] syncNow failed', err as Error); }
+    try {
+      await syncNow();
+    } catch (err) {
+      log.error('[NasPanel] syncNow failed', err as Error);
+    }
   }
 </script>
 
@@ -39,14 +42,18 @@
       class:active={activeTab === 'config'}
       role="tab"
       aria-selected={activeTab === 'config'}
-      on:click={() => { activeTab = 'config'; }}
-    >Config</button>
+      on:click={() => {
+        activeTab = 'config';
+      }}>Config</button
+    >
     <button
       class="tab-btn"
       class:active={activeTab === 'sync'}
       role="tab"
       aria-selected={activeTab === 'sync'}
-      on:click={() => { activeTab = 'sync'; }}
+      on:click={() => {
+        activeTab = 'sync';
+      }}
     >
       Sync
       {#if conflictCount > 0}
@@ -62,18 +69,16 @@
     <div class="sync-tab">
       <NasSyncStatus onOpenConflicts={openConflicts} />
 
-      <button
-        class="btn btn--primary"
-        on:click={handleSyncNow}
-        aria-label="Sync Now"
-      >
+      <button class="btn btn--primary" on:click={handleSyncNow} aria-label="Sync Now">
         Sync Now
       </button>
 
       {#if conflictCount > 0}
         <button
           class="btn btn--secondary"
-          on:click={() => { showConflictDialog = true; }}
+          on:click={() => {
+            showConflictDialog = true;
+          }}
         >
           Resolve {conflictCount} conflict{conflictCount !== 1 ? 's' : ''}
         </button>
@@ -83,7 +88,11 @@
 </div>
 
 {#if showConflictDialog && conflictCount > 0}
-  <NasConflictDialog onClose={() => { showConflictDialog = false; }} />
+  <NasConflictDialog
+    onClose={() => {
+      showConflictDialog = false;
+    }}
+  />
 {/if}
 
 <style>
@@ -113,10 +122,14 @@
     font-size: var(--font-ui-small, 11px);
     font-weight: 500;
     padding: 8px 14px;
-    transition: color 0.1s, border-color 0.1s;
+    transition:
+      color 0.1s,
+      border-color 0.1s;
   }
 
-  .tab-btn:hover { color: var(--text-normal, #cdd6f4); }
+  .tab-btn:hover {
+    color: var(--text-normal, #cdd6f4);
+  }
 
   .tab-btn.active {
     border-bottom-color: var(--interactive-accent, #6366f1);
@@ -155,7 +168,9 @@
     transition: filter 0.1s;
   }
 
-  .btn:hover { filter: brightness(1.1); }
+  .btn:hover {
+    filter: brightness(1.1);
+  }
 
   .btn--primary {
     background: var(--interactive-accent, #6366f1);

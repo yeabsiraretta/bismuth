@@ -1,10 +1,19 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  createEmptyStoryCircle, isStoryCircleComplete, getStoryCircleProgress,
-  createEmptyKishotenketsu, createEmptyConflict,
-  createTask, toggleTask, deleteTask, getTasksForElement,
-  getOpenTasksForCampaign, assignTaskToElement,
-  createCustomAttribute, deleteCustomAttribute, getCustomAttributesForType,
+  createEmptyStoryCircle,
+  isStoryCircleComplete,
+  getStoryCircleProgress,
+  createEmptyKishotenketsu,
+  createEmptyConflict,
+  createTask,
+  toggleTask,
+  deleteTask,
+  getTasksForElement,
+  getOpenTasksForCampaign,
+  assignTaskToElement,
+  createCustomAttribute,
+  deleteCustomAttribute,
+  getCustomAttributesForType,
   getAllCustomAttributes,
 } from '../services/narrativeService';
 

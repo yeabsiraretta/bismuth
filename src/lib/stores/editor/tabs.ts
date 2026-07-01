@@ -42,7 +42,9 @@ function loadOrientation(): TabOrientation {
   try {
     const saved = localStorage.getItem('bismuth:tab-orientation');
     if (saved === 'vertical' || saved === 'horizontal') return saved;
-  } catch (e) { log.warn('Failed to load tab orientation from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load tab orientation from localStorage', { error: String(e) });
+  }
   return 'horizontal';
 }
 
@@ -53,7 +55,11 @@ export const _groupsInternal = writable<TabGroup[]>([]);
 export const _closedHistory = writable<ClosedTabEntry[]>([]);
 
 orientation.subscribe((o) => {
-  try { localStorage.setItem('bismuth:tab-orientation', o); } catch (e) { log.warn('Failed to persist tab orientation', { error: String(e) }); }
+  try {
+    localStorage.setItem('bismuth:tab-orientation', o);
+  } catch (e) {
+    log.warn('Failed to persist tab orientation', { error: String(e) });
+  }
 });
 
 /** All currently open editor tabs. */
@@ -82,11 +88,20 @@ export async function openNoteTab(note: Note) {
 
   const tabs = get(_tabsInternal);
   const existing = tabs.find((t) => t.path === note.path);
-  if (existing) { _activeTabId.set(existing.id); setActiveNote(note); return; }
+  if (existing) {
+    _activeTabId.set(existing.id);
+    setActiveNote(note);
+    return;
+  }
 
   const tab: EditorTab = {
-    id: generatePrefixedId('tab'), path: note.path, title: note.title,
-    dirty: false, ephemeral: false, groupId: null, zoomLevel: 100,
+    id: generatePrefixedId('tab'),
+    path: note.path,
+    title: note.title,
+    dirty: false,
+    ephemeral: false,
+    groupId: null,
+    zoomLevel: 100,
   };
 
   _tabsInternal.update(($tabs) => [...$tabs, tab]);
@@ -117,10 +132,12 @@ export function closeTab(tabId: string) {
 
   const closed = tabs[idx];
   if (!closed.ephemeral) {
-    _closedHistory.update(h => [
-      { path: closed.path, title: closed.title, groupId: closed.groupId, closedAt: Date.now() },
-      ...h,
-    ].slice(0, 20));
+    _closedHistory.update((h) =>
+      [
+        { path: closed.path, title: closed.title, groupId: closed.groupId, closedAt: Date.now() },
+        ...h,
+      ].slice(0, 20)
+    );
   }
 
   const wasActive = get(_activeTabId) === tabId;
@@ -128,8 +145,10 @@ export function closeTab(tabId: string) {
   _tabsInternal.set(newTabs);
 
   if (wasActive) {
-    if (newTabs.length === 0) { _activeTabId.set(null); setActiveNote(null); }
-    else switchTab(newTabs[Math.min(idx, newTabs.length - 1)].id);
+    if (newTabs.length === 0) {
+      _activeTabId.set(null);
+      setActiveNote(null);
+    } else switchTab(newTabs[Math.min(idx, newTabs.length - 1)].id);
   }
   log.debug('Closed tab', { tabId, remaining: newTabs.length });
 }
@@ -143,7 +162,9 @@ export function closeOtherTabs(tabId: string) {
 
 /** Close all tabs. */
 export function closeAllTabs() {
-  _tabsInternal.set([]); _activeTabId.set(null); setActiveNote(null);
+  _tabsInternal.set([]);
+  _activeTabId.set(null);
+  setActiveNote(null);
 }
 
 /** Switch to the next tab (wraps around). */
@@ -169,21 +190,23 @@ export function closeActiveTab(): void {
 }
 
 /** Reorder tabs (for drag-and-drop). */
-export function reorderEditorTabs(newOrder: EditorTab[]) { _tabsInternal.set(newOrder); }
+export function reorderEditorTabs(newOrder: EditorTab[]) {
+  _tabsInternal.set(newOrder);
+}
 
 /** Mark a tab as dirty (unsaved changes). */
 export function markTabDirty(tabId: string, dirty: boolean) {
-  _tabsInternal.update($t => $t.map((t) => (t.id === tabId ? { ...t, dirty } : t)));
+  _tabsInternal.update(($t) => $t.map((t) => (t.id === tabId ? { ...t, dirty } : t)));
 }
 
 /** Move a tab into a group. */
 export function moveTabToGroup(tabId: string, groupId: string | null): void {
-  _tabsInternal.update($t => $t.map(t => t.id === tabId ? { ...t, groupId } : t));
+  _tabsInternal.update(($t) => $t.map((t) => (t.id === tabId ? { ...t, groupId } : t)));
 }
 
 activeNote.subscribe(($note) => {
   if (!$note) return;
-  _tabsInternal.update($t => $t.map((t) =>
-    t.path === $note.path ? { ...t, title: $note.title } : t
-  ));
+  _tabsInternal.update(($t) =>
+    $t.map((t) => (t.path === $note.path ? { ...t, title: $note.title } : t))
+  );
 });

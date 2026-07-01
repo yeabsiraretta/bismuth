@@ -15,8 +15,10 @@ export class FlashcardWidget extends WidgetType {
     private front: string,
     private back: string,
     private variant: FlashcardVariant,
-    private lineFrom: number,
-  ) { super(); }
+    private lineFrom: number
+  ) {
+    super();
+  }
 
   toDOM(view: EditorView): HTMLElement {
     const card = document.createElement('div');
@@ -69,20 +71,22 @@ export class FlashcardWidget extends WidgetType {
   }
 
   eq(other: FlashcardWidget): boolean {
-    return this.front === other.front
-      && this.back === other.back
-      && this.variant === other.variant;
+    return this.front === other.front && this.back === other.back && this.variant === other.variant;
   }
 
-  ignoreEvent(): boolean { return false; }
+  ignoreEvent(): boolean {
+    return false;
+  }
 }
 
 export class ClozeWidget extends WidgetType {
   constructor(
     private text: string,
     private clozes: Array<{ original: string; answer: string }>,
-    private lineFrom: number,
-  ) { super(); }
+    private lineFrom: number
+  ) {
+    super();
+  }
 
   toDOM(view: EditorView): HTMLElement {
     const card = document.createElement('div');
@@ -104,7 +108,10 @@ export class ClozeWidget extends WidgetType {
     let processed = this.text;
     // Replace ==text== and {text} with highlighted spans
     processed = processed.replace(/==(.+?)==/g, '<mark class="cm-fc-cloze-mark">$1</mark>');
-    processed = processed.replace(/(?<!\{)\{(?!\{)([^{}]+)\}(?!\})/g, '<mark class="cm-fc-cloze-mark">$1</mark>');
+    processed = processed.replace(
+      /(?<!\{)\{(?!\{)([^{}]+)\}(?!\})/g,
+      '<mark class="cm-fc-cloze-mark">$1</mark>'
+    );
     content.innerHTML = processed;
     card.appendChild(content);
 
@@ -120,5 +127,7 @@ export class ClozeWidget extends WidgetType {
     return this.text === other.text;
   }
 
-  ignoreEvent(): boolean { return false; }
+  ignoreEvent(): boolean {
+    return false;
+  }
 }

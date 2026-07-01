@@ -56,53 +56,53 @@ export function closeMedia(): void {
 // ─── Playback controls ───────────────────────────────────────────────────────
 
 export function togglePlay(): void {
-  playbackState.update(s => ({ ...s, playing: !s.playing }));
+  playbackState.update((s) => ({ ...s, playing: !s.playing }));
 }
 
 export function pause(): void {
-  playbackState.update(s => ({ ...s, playing: false }));
+  playbackState.update((s) => ({ ...s, playing: false }));
 }
 
 export function play(): void {
-  playbackState.update(s => ({ ...s, playing: true }));
+  playbackState.update((s) => ({ ...s, playing: true }));
 }
 
 export function seekTo(seconds: number): void {
-  playbackState.update(s => ({
+  playbackState.update((s) => ({
     ...s,
     currentTime: Math.max(0, Math.min(seconds, s.duration)),
   }));
 }
 
 export function setSpeed(speed: number): void {
-  playbackState.update(s => ({ ...s, speed }));
+  playbackState.update((s) => ({ ...s, speed }));
   log.debug('playerStore: speed changed', { speed });
 }
 
 export function setVolume(volume: number): void {
-  playbackState.update(s => ({ ...s, volume: Math.max(0, Math.min(1, volume)) }));
+  playbackState.update((s) => ({ ...s, volume: Math.max(0, Math.min(1, volume)) }));
 }
 
 export function toggleMute(): void {
-  playbackState.update(s => ({ ...s, muted: !s.muted }));
+  playbackState.update((s) => ({ ...s, muted: !s.muted }));
 }
 
 export function togglePin(): void {
-  playbackState.update(s => ({ ...s, pinned: !s.pinned }));
+  playbackState.update((s) => ({ ...s, pinned: !s.pinned }));
   const pinned = get(playbackState).pinned;
   log.info('playerStore: pin toggled', { pinned });
 }
 
 export function updateTime(currentTime: number): void {
-  playbackState.update(s => ({ ...s, currentTime }));
+  playbackState.update((s) => ({ ...s, currentTime }));
 }
 
 export function updateDuration(duration: number): void {
-  playbackState.update(s => ({ ...s, duration }));
+  playbackState.update((s) => ({ ...s, duration }));
 }
 
 export function setBuffering(buffering: boolean): void {
-  playbackState.update(s => ({ ...s, buffering }));
+  playbackState.update((s) => ({ ...s, buffering }));
 }
 
 // ─── Transcript ──────────────────────────────────────────────────────────────
@@ -110,7 +110,10 @@ export function setBuffering(buffering: boolean): void {
 export function loadTranscript(content: string, sourcePath: string): void {
   const transcript = parseTranscript(content, sourcePath);
   activeTranscript.set(transcript);
-  log.info('playerStore: transcript loaded', { cues: transcript.cues.length, format: transcript.format });
+  log.info('playerStore: transcript loaded', {
+    cues: transcript.cues.length,
+    format: transcript.format,
+  });
 }
 
 export function clearTranscript(): void {
@@ -120,7 +123,7 @@ export function clearTranscript(): void {
 // ─── Screenshots ─────────────────────────────────────────────────────────────
 
 export function addScreenshot(capture: ScreenshotCapture): void {
-  screenshots.update(list => [...list, capture]);
+  screenshots.update((list) => [...list, capture]);
   log.debug('playerStore: screenshot added', { time: capture.captureTime });
 }
 

@@ -6,11 +6,19 @@ vi.mock('@/utils/logger', () => ({
 }));
 
 import {
-  attachmentConfig, attachmentOverrides, originalNames,
-  updateAttachmentConfig, resetAttachmentConfig,
-  setOverride, removeOverride, resetOverridesForPath,
-  clearOverrides, clearOriginalNames,
-  recordOriginalName, getOriginalName, pruneOriginalNames,
+  attachmentConfig,
+  attachmentOverrides,
+  originalNames,
+  updateAttachmentConfig,
+  resetAttachmentConfig,
+  setOverride,
+  removeOverride,
+  resetOverridesForPath,
+  clearOverrides,
+  clearOriginalNames,
+  recordOriginalName,
+  getOriginalName,
+  pruneOriginalNames,
 } from '../stores/attachmentStore';
 import type { AttachmentOverride } from '../types';
 
@@ -45,8 +53,12 @@ describe('attachmentStore', () => {
 
   describe('overrides', () => {
     const mkOverride = (id: string, path: string): AttachmentOverride => ({
-      id, targetPath: path, targetType: 'file',
-      attachmentPath: 'p', attachmentFormat: 'f', dateFormat: '',
+      id,
+      targetPath: path,
+      targetType: 'file',
+      attachmentPath: 'p',
+      attachmentFormat: 'f',
+      dateFormat: '',
     });
 
     it('setOverride adds a new override', () => {

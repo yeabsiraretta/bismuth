@@ -1,6 +1,12 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { SPACING_TOKENS, getTokenValue, isOverridden, setToken, resetToken } from './styleSettingsLogic';
+  import {
+    SPACING_TOKENS,
+    getTokenValue,
+    isOverridden,
+    setToken,
+    resetToken,
+  } from './styleSettingsLogic';
   import { styleOverrides } from '@/stores/style/style';
 
   let values: Record<string, string> = {};
@@ -33,9 +39,23 @@
           placeholder={token.defaultValue || ''}
           on:change={(e) => handleChange(token.key, e)}
         />
-        <div class="preview-box" style="width: {values[token.key] || token.defaultValue || '8px'}; height: {values[token.key] || token.defaultValue || '8px'};"></div>
+        <div
+          class="preview-box"
+          style="width: {values[token.key] || token.defaultValue || '8px'}; height: {values[
+            token.key
+          ] ||
+            token.defaultValue ||
+            '8px'};"
+        ></div>
         {#if isOverridden(token.key)}
-          <button class="reset-btn" on:click={() => { resetToken(token.key); values[token.key] = getTokenValue(token.key); }} title="Reset">
+          <button
+            class="reset-btn"
+            on:click={() => {
+              resetToken(token.key);
+              values[token.key] = getTokenValue(token.key);
+            }}
+            title="Reset"
+          >
             <Icon name="x" size={12} />
           </button>
         {/if}

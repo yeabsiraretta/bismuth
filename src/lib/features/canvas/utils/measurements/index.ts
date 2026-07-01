@@ -51,4 +51,9 @@ export interface RulerTick {
 }
 
 export { measureBetween, measureToParent } from './distance';
-export { computeAlignmentGuides, generateRulerTicks, snapToGuide, snapToTokenSpacing } from './alignment';
+export {
+  computeAlignmentGuides,
+  generateRulerTicks,
+  snapToGuide,
+  snapToTokenSpacing,
+} from './alignment';

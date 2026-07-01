@@ -5,9 +5,11 @@ This directory contains rules that Windsurf/Cascade automatically loads for AI-a
 ## Files
 
 ### bismuth-rules.md
+
 **Primary rules file** - Comprehensive integration of all Claude tooling and project standards.
 
 **Contains**:
+
 - Quick reference to all `.claude/` resources
 - Constitution constraints (300-line limit, 90% coverage, UX evaluation)
 - Global coding principles (clarity, DRY, fail fast, etc.)
@@ -24,6 +26,7 @@ This directory contains rules that Windsurf/Cascade automatically loads for AI-a
 **When loaded**: Automatically by Windsurf on project open
 
 ### specify-rules.md
+
 **Spec Kit integration** - References current plan for project context.
 
 ## How It Works
@@ -31,6 +34,7 @@ This directory contains rules that Windsurf/Cascade automatically loads for AI-a
 Windsurf automatically loads all `.md` files in `.windsurf/rules/` as context for AI assistance.
 
 This means:
+
 1. All Claude tooling from `.claude/` is available in Windsurf
 2. Constitution constraints are enforced
 3. Skills can be invoked by user request
@@ -42,7 +46,7 @@ This means:
 Skills auto-activate based on user request:
 
 - **ux-review**: Review UI components against 168 UX principles
-- **code-review**: Deep code review with evidence-first analysis  
+- **code-review**: Deep code review with evidence-first analysis
 - **component-gen**: Generate components with UX principles baked in
 
 ## Key Resources

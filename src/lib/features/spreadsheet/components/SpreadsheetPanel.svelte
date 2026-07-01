@@ -99,9 +99,7 @@
       </svg>
       <p class="empty-title">No spreadsheet open</p>
       <p class="empty-subtitle">Create a new spreadsheet to get started.</p>
-      <button class="new-btn" on:click={handleCreateNew}>
-        New Spreadsheet
-      </button>
+      <button class="new-btn" on:click={handleCreateNew}> New Spreadsheet </button>
     </div>
   {/if}
 </div>

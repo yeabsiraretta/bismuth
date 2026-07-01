@@ -9,40 +9,40 @@
 
 ### Application Icons
 
-| Asset | Size/Format | Status | Location | Priority | Notes |
-|-------|-------------|--------|----------|----------|-------|
-| App Icon (PNG) | 32x32px | 🟡 Placeholder | `src-tauri/icons/32x32.png` | P0 | Minimal 1x1 PNG currently |
-| App Icon (PNG) | 128x128px | ❌ Missing | `src-tauri/icons/128x128.png` | P0 | Required for macOS |
-| App Icon (PNG) | 128x128@2x | ❌ Missing | `src-tauri/icons/128x128@2x.png` | P0 | Retina display |
-| App Icon (PNG) | 256x256px | ❌ Missing | `src-tauri/icons/256x256.png` | P1 | macOS dock |
-| App Icon (PNG) | 512x512px | ❌ Missing | `src-tauri/icons/512x512.png` | P1 | macOS dock retina |
-| App Icon (ICNS) | Multi-size | ❌ Missing | `src-tauri/icons/icon.icns` | P0 | macOS bundle |
-| App Icon (ICO) | Multi-size | ❌ Missing | `src-tauri/icons/icon.ico` | P0 | Windows bundle |
-| App Icon (PNG) | 1024x1024px | ❌ Missing | `src-tauri/icons/icon.png` | P1 | Source/master icon |
+| Asset           | Size/Format | Status         | Location                         | Priority | Notes                     |
+| --------------- | ----------- | -------------- | -------------------------------- | -------- | ------------------------- |
+| App Icon (PNG)  | 32x32px     | 🟡 Placeholder | `src-tauri/icons/32x32.png`      | P0       | Minimal 1x1 PNG currently |
+| App Icon (PNG)  | 128x128px   | ❌ Missing     | `src-tauri/icons/128x128.png`    | P0       | Required for macOS        |
+| App Icon (PNG)  | 128x128@2x  | ❌ Missing     | `src-tauri/icons/128x128@2x.png` | P0       | Retina display            |
+| App Icon (PNG)  | 256x256px   | ❌ Missing     | `src-tauri/icons/256x256.png`    | P1       | macOS dock                |
+| App Icon (PNG)  | 512x512px   | ❌ Missing     | `src-tauri/icons/512x512.png`    | P1       | macOS dock retina         |
+| App Icon (ICNS) | Multi-size  | ❌ Missing     | `src-tauri/icons/icon.icns`      | P0       | macOS bundle              |
+| App Icon (ICO)  | Multi-size  | ❌ Missing     | `src-tauri/icons/icon.ico`       | P0       | Windows bundle            |
+| App Icon (PNG)  | 1024x1024px | ❌ Missing     | `src-tauri/icons/icon.png`       | P1       | Source/master icon        |
 
 **Current Placeholder**: 1x1 transparent PNG created via Python script  
 **Action Required**: Design proper Bismuth brand icon (see Design Specs below)
 
 ### UI Icons & Graphics
 
-| Asset | Type | Status | Location | Priority | Notes |
-|-------|------|--------|----------|----------|-------|
-| Splash Screen | PNG/SVG | ❌ Missing | `src/assets/splash.png` | P2 | Optional for MVP |
-| Empty State Graphic | SVG | ❌ Missing | `src/assets/empty-vault.svg` | P2 | No vault open |
-| Loading Spinner | SVG/Lottie | ❌ Missing | `src/assets/loading.svg` | P2 | Can use CSS spinner |
-| Error Illustration | SVG | ❌ Missing | `src/assets/error.svg` | P3 | Generic error state |
-| Welcome Banner | PNG/SVG | ❌ Missing | `src/assets/welcome.png` | P3 | First-run experience |
+| Asset               | Type       | Status     | Location                     | Priority | Notes                |
+| ------------------- | ---------- | ---------- | ---------------------------- | -------- | -------------------- |
+| Splash Screen       | PNG/SVG    | ❌ Missing | `src/assets/splash.png`      | P2       | Optional for MVP     |
+| Empty State Graphic | SVG        | ❌ Missing | `src/assets/empty-vault.svg` | P2       | No vault open        |
+| Loading Spinner     | SVG/Lottie | ❌ Missing | `src/assets/loading.svg`     | P2       | Can use CSS spinner  |
+| Error Illustration  | SVG        | ❌ Missing | `src/assets/error.svg`       | P3       | Generic error state  |
+| Welcome Banner      | PNG/SVG    | ❌ Missing | `src/assets/welcome.png`     | P3       | First-run experience |
 
 **Action Required**: Create SVG illustrations for empty states
 
 ### Demo Vault Assets
 
-| Asset | Type | Status | Location | Priority | Notes |
-|-------|------|--------|----------|----------|-------|
-| Sample Notes | Markdown | ❌ Missing | `demo-vault/` | P1 | For T008 |
-| Sample Images | PNG/JPG | ❌ Missing | `demo-vault/attachments/` | P2 | Embedded in notes |
-| Sample PDFs | PDF | ❌ Missing | `demo-vault/pdfs/` | P2 | PDF annotation demo |
-| Sample Graph Data | JSON | ❌ Missing | `demo-vault/.bismuth/graph.json` | P2 | Pre-built graph |
+| Asset             | Type     | Status     | Location                         | Priority | Notes               |
+| ----------------- | -------- | ---------- | -------------------------------- | -------- | ------------------- |
+| Sample Notes      | Markdown | ❌ Missing | `demo-vault/`                    | P1       | For T008            |
+| Sample Images     | PNG/JPG  | ❌ Missing | `demo-vault/attachments/`        | P2       | Embedded in notes   |
+| Sample PDFs       | PDF      | ❌ Missing | `demo-vault/pdfs/`               | P2       | PDF annotation demo |
+| Sample Graph Data | JSON     | ❌ Missing | `demo-vault/.bismuth/graph.json` | P2       | Pre-built graph     |
 
 **Action Required**: Create demo vault structure (T008)
 
@@ -52,36 +52,36 @@
 
 ### Linting & Formatting
 
-| File | Status | Location | Priority | Notes |
-|------|--------|----------|----------|-------|
-| `.eslintrc.cjs` | ✅ Created | Root | P0 | Configured for TS + Svelte |
-| `.prettierrc` | ✅ Created | Root | P0 | Configured with Svelte plugin |
-| `.eslintignore` | ❌ Missing | Root | P1 | Should ignore dist/, node_modules/ |
-| `.prettierignore` | ❌ Missing | Root | P1 | Should ignore dist/, pnpm-lock.yaml |
-| `rustfmt.toml` | ❌ Missing | `src-tauri/` | P0 | For T005 |
-| `.cargo/config.toml` | ❌ Missing | `src-tauri/.cargo/` | P1 | Rust compiler flags |
+| File                 | Status     | Location            | Priority | Notes                               |
+| -------------------- | ---------- | ------------------- | -------- | ----------------------------------- |
+| `.eslintrc.cjs`      | ✅ Created | Root                | P0       | Configured for TS + Svelte          |
+| `.prettierrc`        | ✅ Created | Root                | P0       | Configured with Svelte plugin       |
+| `.eslintignore`      | ❌ Missing | Root                | P1       | Should ignore dist/, node_modules/  |
+| `.prettierignore`    | ❌ Missing | Root                | P1       | Should ignore dist/, pnpm-lock.yaml |
+| `rustfmt.toml`       | ❌ Missing | `src-tauri/`        | P0       | For T005                            |
+| `.cargo/config.toml` | ❌ Missing | `src-tauri/.cargo/` | P1       | Rust compiler flags                 |
 
 **Action Required**: Create missing ignore files and Rust formatting config (T004-T005)
 
 ### Testing Configuration
 
-| File | Status | Location | Priority | Notes |
-|------|--------|----------|----------|-------|
-| `vitest.config.ts` | ❌ Missing | Root | P0 | For T006 |
-| `playwright.config.ts` | ❌ Missing | Root | P0 | For T007 |
-| `tests/unit/example.test.ts` | ❌ Missing | `tests/unit/` | P0 | Sample unit test |
-| `tests/e2e/smoke.spec.ts` | ❌ Missing | `tests/e2e/` | P0 | Sample E2E test |
+| File                         | Status     | Location      | Priority | Notes            |
+| ---------------------------- | ---------- | ------------- | -------- | ---------------- |
+| `vitest.config.ts`           | ❌ Missing | Root          | P0       | For T006         |
+| `playwright.config.ts`       | ❌ Missing | Root          | P0       | For T007         |
+| `tests/unit/example.test.ts` | ❌ Missing | `tests/unit/` | P0       | Sample unit test |
+| `tests/e2e/smoke.spec.ts`    | ❌ Missing | `tests/e2e/`  | P0       | Sample E2E test  |
 
 **Action Required**: Create test configurations and sample tests (T006-T007)
 
 ### Build & CI/CD
 
-| File | Status | Location | Priority | Notes |
-|------|--------|----------|----------|-------|
-| `.github/workflows/ci.yml` | ✅ Created | `.github/workflows/` | P0 | Already exists |
-| `.github/workflows/release.yml` | ✅ Created | `.github/workflows/` | P1 | Already exists |
-| `.dockerignore` | ❌ Missing | Root | P3 | If Docker needed |
-| `.npmignore` | ❌ Missing | Root | P3 | If publishing to npm |
+| File                            | Status     | Location             | Priority | Notes                |
+| ------------------------------- | ---------- | -------------------- | -------- | -------------------- |
+| `.github/workflows/ci.yml`      | ✅ Created | `.github/workflows/` | P0       | Already exists       |
+| `.github/workflows/release.yml` | ✅ Created | `.github/workflows/` | P1       | Already exists       |
+| `.dockerignore`                 | ❌ Missing | Root                 | P3       | If Docker needed     |
+| `.npmignore`                    | ❌ Missing | Root                 | P3       | If publishing to npm |
 
 **Action Required**: None for MVP
 
@@ -91,35 +91,35 @@
 
 ### User Documentation
 
-| Document | Status | Location | Priority | Notes |
-|----------|--------|----------|----------|-------|
-| README.md | ❌ Missing | Root | P0 | Project overview |
-| QUICKSTART.md | ❌ Missing | `docs/` | P1 | Getting started guide |
-| USER_GUIDE.md | ❌ Missing | `docs/` | P2 | Feature documentation |
-| KEYBOARD_SHORTCUTS.md | ❌ Missing | `docs/` | P2 | Hotkey reference |
-| FAQ.md | ❌ Missing | `docs/` | P3 | Common questions |
+| Document              | Status     | Location | Priority | Notes                 |
+| --------------------- | ---------- | -------- | -------- | --------------------- |
+| README.md             | ❌ Missing | Root     | P0       | Project overview      |
+| QUICKSTART.md         | ❌ Missing | `docs/`  | P1       | Getting started guide |
+| USER_GUIDE.md         | ❌ Missing | `docs/`  | P2       | Feature documentation |
+| KEYBOARD_SHORTCUTS.md | ❌ Missing | `docs/`  | P2       | Hotkey reference      |
+| FAQ.md                | ❌ Missing | `docs/`  | P3       | Common questions      |
 
 **Action Required**: Create README.md at minimum for MVP
 
 ### Developer Documentation
 
-| Document | Status | Location | Priority | Notes |
-|----------|--------|----------|----------|-------|
-| CONTRIBUTING.md | ✅ Created | Root | P1 | Already exists |
-| ARCHITECTURE.md | ❌ Missing | `docs/` | P2 | System design doc |
-| API.md | ❌ Missing | `docs/` | P2 | Tauri commands reference |
-| TESTING.md | ❌ Missing | `docs/` | P2 | Testing guidelines |
-| CHANGELOG.md | ✅ Created | Root | P0 | Already exists |
+| Document        | Status     | Location | Priority | Notes                    |
+| --------------- | ---------- | -------- | -------- | ------------------------ |
+| CONTRIBUTING.md | ✅ Created | Root     | P1       | Already exists           |
+| ARCHITECTURE.md | ❌ Missing | `docs/`  | P2       | System design doc        |
+| API.md          | ❌ Missing | `docs/`  | P2       | Tauri commands reference |
+| TESTING.md      | ❌ Missing | `docs/`  | P2       | Testing guidelines       |
+| CHANGELOG.md    | ✅ Created | Root     | P0       | Already exists           |
 
 **Action Required**: Create ARCHITECTURE.md and API.md
 
 ### Code Documentation
 
-| Asset | Status | Location | Priority | Notes |
-|-------|--------|----------|----------|-------|
-| JSDoc comments | ❌ Missing | `src/**/*.ts` | P2 | Inline documentation |
-| Rust doc comments | ❌ Missing | `src-tauri/src/**/*.rs` | P2 | `///` style comments |
-| Component docs | ❌ Missing | `src/**/*.svelte` | P2 | Svelte component docs |
+| Asset             | Status     | Location                | Priority | Notes                 |
+| ----------------- | ---------- | ----------------------- | -------- | --------------------- |
+| JSDoc comments    | ❌ Missing | `src/**/*.ts`           | P2       | Inline documentation  |
+| Rust doc comments | ❌ Missing | `src-tauri/src/**/*.rs` | P2       | `///` style comments  |
+| Component docs    | ❌ Missing | `src/**/*.svelte`       | P2       | Svelte component docs |
 
 **Action Required**: Add during implementation
 
@@ -132,6 +132,7 @@
 **Status**: ❌ Not Defined
 
 **Required Assets**:
+
 - [ ] Logo design (SVG master)
 - [ ] Color palette (primary, secondary, accent colors)
 - [ ] Typography system (font families, sizes, weights)
@@ -139,6 +140,7 @@
 - [ ] Brand guidelines document
 
 **Bismuth Icon Concept Ideas**:
+
 1. **Chemical Element**: Bi (Bismuth) periodic table symbol
 2. **Crystal Structure**: Bismuth's distinctive stepped crystal pattern
 3. **Knowledge Graph**: Interconnected nodes representing PKM
@@ -146,6 +148,7 @@
 5. **Johnny.Decimal**: Folder hierarchy with decimal notation
 
 **Recommended Approach**:
+
 - Use simple, recognizable geometric shapes
 - Ensure scalability from 16x16 to 1024x1024
 - Work well in monochrome (for menu bar icons)
@@ -183,6 +186,7 @@
 **Priority**: P1 (Required for T008)
 
 **Proposed Structure**:
+
 ```
 demo-vault/
 ├── .bismuth/
@@ -215,6 +219,7 @@ demo-vault/
 ```
 
 **Sample Note Content Needed**:
+
 - [ ] Welcome note with wikilinks demo
 - [ ] Zettelkasten methodology explanation
 - [ ] Johnny.Decimal system guide
@@ -230,23 +235,23 @@ demo-vault/
 
 ### Currently Using Placeholders
 
-| Asset | Placeholder Type | Replacement Needed | Priority |
-|-------|-----------------|-------------------|----------|
-| App Icon | 1x1 transparent PNG | Professional icon design | P0 |
-| Color Scheme | Obsidian CSS variables | Bismuth brand colors | P1 |
-| Loading States | CSS spinners | Custom animations | P2 |
-| Empty States | Text only | SVG illustrations | P2 |
-| Demo Content | None | Full demo vault | P1 |
+| Asset          | Placeholder Type       | Replacement Needed       | Priority |
+| -------------- | ---------------------- | ------------------------ | -------- |
+| App Icon       | 1x1 transparent PNG    | Professional icon design | P0       |
+| Color Scheme   | Obsidian CSS variables | Bismuth brand colors     | P1       |
+| Loading States | CSS spinners           | Custom animations        | P2       |
+| Empty States   | Text only              | SVG illustrations        | P2       |
+| Demo Content   | None                   | Full demo vault          | P1       |
 
 ### No Placeholder (Blocking)
 
-| Asset | Blocks | Priority | Action |
-|-------|--------|----------|--------|
-| rustfmt.toml | T005 | P0 | Create immediately |
-| vitest.config.ts | T006 | P0 | Create immediately |
-| playwright.config.ts | T007 | P0 | Create immediately |
-| Demo vault | T008 | P1 | Create for Phase 1 |
-| README.md | Documentation | P0 | Create before first release |
+| Asset                | Blocks        | Priority | Action                      |
+| -------------------- | ------------- | -------- | --------------------------- |
+| rustfmt.toml         | T005          | P0       | Create immediately          |
+| vitest.config.ts     | T006          | P0       | Create immediately          |
+| playwright.config.ts | T007          | P0       | Create immediately          |
+| Demo vault           | T008          | P1       | Create for Phase 1          |
+| README.md            | Documentation | P0       | Create before first release |
 
 ---
 
@@ -331,13 +336,13 @@ demo-vault/
 
 **Overall Asset Completion**: 8/87 (9%)
 
-| Category | Complete | Total | Percentage |
-|----------|----------|-------|------------|
-| Visual Assets | 1 | 17 | 6% |
-| Config Files | 5 | 14 | 36% |
-| Documentation | 2 | 15 | 13% |
-| Design Specs | 0 | 5 | 0% |
-| Sample Content | 0 | 36 | 0% |
+| Category       | Complete | Total | Percentage |
+| -------------- | -------- | ----- | ---------- |
+| Visual Assets  | 1        | 17    | 6%         |
+| Config Files   | 5        | 14    | 36%        |
+| Documentation  | 2        | 15    | 13%        |
+| Design Specs   | 0        | 5     | 0%         |
+| Sample Content | 0        | 36    | 0%         |
 
 **Last Updated**: 2026-05-25 23:00 UTC-04:00
 

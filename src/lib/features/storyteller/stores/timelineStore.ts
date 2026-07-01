@@ -3,7 +3,14 @@
  */
 
 import { writable, derived } from 'svelte/store';
-import type { TimelineEvent, TimelineEra, TimelineFork, TimelineFilter, TimelineConflict, TimelineMode } from '../types/timeline';
+import type {
+  TimelineEvent,
+  TimelineEra,
+  TimelineFork,
+  TimelineFilter,
+  TimelineConflict,
+  TimelineMode,
+} from '../types/timeline';
 import { DEFAULT_TIMELINE_FILTER } from '../types/timeline';
 import * as svc from '../services/timelineService';
 
@@ -14,16 +21,14 @@ export const timelineFilter = writable<TimelineFilter>({ ...DEFAULT_TIMELINE_FIL
 export const timelineMode = writable<TimelineMode>('standard');
 
 export const filteredEvents = derived([timelineEvents, timelineFilter], ([$events, $filter]) =>
-  svc.filterTimelineEvents($events, $filter),
+  svc.filterTimelineEvents($events, $filter)
 );
 
 export const groupedEvents = derived([filteredEvents, timelineFilter], ([$events, $filter]) =>
-  svc.groupEvents($events, $filter.groupBy),
+  svc.groupEvents($events, $filter.groupBy)
 );
 
-export const timelineConflicts = derived(timelineEvents, ($events) =>
-  svc.detectConflicts($events),
-);
+export const timelineConflicts = derived(timelineEvents, ($events) => svc.detectConflicts($events));
 
 export const allTracks = derived(timelineEvents, ($events) => {
   const tracks = new Set<string>();
@@ -33,9 +38,14 @@ export const allTracks = derived(timelineEvents, ($events) => {
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
-export function addTimelineEvent(entityId: string, label: string, date: string, overrides?: Partial<TimelineEvent>): TimelineEvent {
+export function addTimelineEvent(
+  entityId: string,
+  label: string,
+  date: string,
+  overrides?: Partial<TimelineEvent>
+): TimelineEvent {
   const event = svc.createTimelineEvent(entityId, label, date, overrides);
-  timelineEvents.update(list => {
+  timelineEvents.update((list) => {
     const next = [...list, event];
     svc.persistTimelineEvents(next);
     return next;
@@ -44,24 +54,29 @@ export function addTimelineEvent(entityId: string, label: string, date: string, 
 }
 
 export function editTimelineEvent(updated: TimelineEvent): void {
-  timelineEvents.update(list => {
-    const next = list.map(e => e.id === updated.id ? updated : e);
+  timelineEvents.update((list) => {
+    const next = list.map((e) => (e.id === updated.id ? updated : e));
     svc.persistTimelineEvents(next);
     return next;
   });
 }
 
 export function removeTimelineEvent(eventId: string): void {
-  timelineEvents.update(list => {
-    const next = list.filter(e => e.id !== eventId);
+  timelineEvents.update((list) => {
+    const next = list.filter((e) => e.id !== eventId);
     svc.persistTimelineEvents(next);
     return next;
   });
 }
 
-export function addEra(name: string, startDate: string, endDate: string, color: string): TimelineEra {
+export function addEra(
+  name: string,
+  startDate: string,
+  endDate: string,
+  color: string
+): TimelineEra {
   const era: TimelineEra = { id: crypto.randomUUID(), name, startDate, endDate, color };
-  timelineEras.update(list => {
+  timelineEras.update((list) => {
     const next = [...list, era];
     svc.persistEras(next);
     return next;
@@ -70,16 +85,26 @@ export function addEra(name: string, startDate: string, endDate: string, color: 
 }
 
 export function removeEra(eraId: string): void {
-  timelineEras.update(list => {
-    const next = list.filter(e => e.id !== eraId);
+  timelineEras.update((list) => {
+    const next = list.filter((e) => e.id !== eraId);
     svc.persistEras(next);
     return next;
   });
 }
 
-export function addFork(name: string, description = '', parentForkId: string | null = null): TimelineFork {
-  const fork: TimelineFork = { id: crypto.randomUUID(), name, parentForkId, eventIds: [], description };
-  timelineForks.update(list => {
+export function addFork(
+  name: string,
+  description = '',
+  parentForkId: string | null = null
+): TimelineFork {
+  const fork: TimelineFork = {
+    id: crypto.randomUUID(),
+    name,
+    parentForkId,
+    eventIds: [],
+    description,
+  };
+  timelineForks.update((list) => {
     const next = [...list, fork];
     svc.persistForks(next);
     return next;
@@ -88,7 +113,7 @@ export function addFork(name: string, description = '', parentForkId: string | n
 }
 
 export function updateFilter(partial: Partial<TimelineFilter>): void {
-  timelineFilter.update(f => ({ ...f, ...partial }));
+  timelineFilter.update((f) => ({ ...f, ...partial }));
 }
 
 export function resetFilter(): void {

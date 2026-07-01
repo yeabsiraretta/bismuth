@@ -58,12 +58,12 @@ export function scoreAndRank(
   targetContext: NoteContext,
   candidateContexts: Map<string, NoteContext>,
   weights: InsightWeights,
-  labels: Map<string, string>,
+  labels: Map<string, string>
 ): RelatedNote[] {
   if (candidates.length === 0) return [];
 
   // Normalize AA scores to [0, 1]
-  const maxAa = Math.max(...candidates.map(c => c.aaScore), 0.001);
+  const maxAa = Math.max(...candidates.map((c) => c.aaScore), 0.001);
 
   const results: RelatedNote[] = [];
 
@@ -103,7 +103,10 @@ export function scoreAndRank(
 
     results.push({
       path: candidate.nodeId,
-      label: labels.get(candidate.nodeId) ?? candidate.nodeId.split('/').pop()?.replace(/\.md$/i, '') ?? candidate.nodeId,
+      label:
+        labels.get(candidate.nodeId) ??
+        candidate.nodeId.split('/').pop()?.replace(/\.md$/i, '') ??
+        candidate.nodeId,
       score: Math.round(total * 100) / 100,
       reasons,
       commonNeighbors: candidate.commonNeighbors,

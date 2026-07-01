@@ -104,10 +104,7 @@ export function measureBetween(a: CanvasElement, b: CanvasElement): Measurement[
  * Computes measurements from an element to its parent frame edges.
  * Shows padding/margin distances.
  */
-export function measureToParent(
-  element: CanvasElement,
-  parent: CanvasElement
-): Measurement[] {
+export function measureToParent(element: CanvasElement, parent: CanvasElement): Measurement[] {
   const measurements: Measurement[] = [];
 
   const elRight = element.x + element.width;

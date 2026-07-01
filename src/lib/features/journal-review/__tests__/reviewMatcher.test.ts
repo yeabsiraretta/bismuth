@@ -1,8 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import {
-  subtractSpan, getTargetDates, datesMatchWithMargin, sameMonthDay,
-  formatTimeSpanLabel, humanizeTimeAgo, timeAgoFromDate,
-  matchNotesToTimeSpans, shouldExcludeFile, pickRandomNote,
+  subtractSpan,
+  getTargetDates,
+  datesMatchWithMargin,
+  sameMonthDay,
+  formatTimeSpanLabel,
+  humanizeTimeAgo,
+  timeAgoFromDate,
+  matchNotesToTimeSpans,
+  shouldExcludeFile,
+  pickRandomNote,
   buildReviewEntry,
 } from '../services/reviewMatcher';
 import { DEFAULT_REVIEW_CONFIG } from '../types/review';
@@ -81,18 +88,30 @@ describe('datesMatchWithMargin', () => {
 
 describe('formatTimeSpanLabel', () => {
   it('formats with humanize', () => {
-    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 1, true)).toBe('A year ago');
-    expect(formatTimeSpanLabel({ number: 1, unit: 'month', recurring: false }, 1, true)).toBe('A month ago');
-    expect(formatTimeSpanLabel({ number: 6, unit: 'month', recurring: false }, 1, true)).toBe('6 months ago');
+    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 1, true)).toBe(
+      'A year ago'
+    );
+    expect(formatTimeSpanLabel({ number: 1, unit: 'month', recurring: false }, 1, true)).toBe(
+      'A month ago'
+    );
+    expect(formatTimeSpanLabel({ number: 6, unit: 'month', recurring: false }, 1, true)).toBe(
+      '6 months ago'
+    );
   });
 
   it('formats without humanize', () => {
-    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 1, false)).toBe('1 year ago');
-    expect(formatTimeSpanLabel({ number: 2, unit: 'month', recurring: false }, 1, false)).toBe('2 months ago');
+    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 1, false)).toBe(
+      '1 year ago'
+    );
+    expect(formatTimeSpanLabel({ number: 2, unit: 'month', recurring: false }, 1, false)).toBe(
+      '2 months ago'
+    );
   });
 
   it('applies multiplier', () => {
-    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 3, true)).toBe('3 years ago');
+    expect(formatTimeSpanLabel({ number: 1, unit: 'year', recurring: true }, 3, true)).toBe(
+      '3 years ago'
+    );
   });
 });
 
@@ -149,7 +168,10 @@ describe('shouldExcludeFile', () => {
 
 describe('matchNotesToTimeSpans', () => {
   const notes: VaultNote[] = [
-    { path: 'daily/2023-06-15.md', content: '---\ncreated: 2023-06-15\ntags: journal\n---\n# June 15' },
+    {
+      path: 'daily/2023-06-15.md',
+      content: '---\ncreated: 2023-06-15\ntags: journal\n---\n# June 15',
+    },
     { path: 'daily/2024-01-15.md', content: '---\ncreated: 2024-01-15\n---\n# Jan 15' },
     { path: 'notes/random.md', content: '---\ncreated: 2024-06-14\n---\nSome note' },
   ];
@@ -193,7 +215,8 @@ describe('buildReviewEntry', () => {
   it('builds a review entry from a vault note', () => {
     const note: VaultNote = {
       path: 'notes/test.md',
-      content: '---\ncreated: 2023-01-15\ntags: [work, project]\ntitle: "My Note"\n---\n# Hello\nSome content here',
+      content:
+        '---\ncreated: 2023-01-15\ntags: [work, project]\ntitle: "My Note"\n---\n# Hello\nSome content here',
     };
     const entry = buildReviewEntry(note, '2023-01-15', DEFAULT_REVIEW_CONFIG);
     expect(entry.path).toBe('notes/test.md');
@@ -221,9 +244,7 @@ describe('pickRandomNote', () => {
   });
 
   it('skips notes without created date', () => {
-    const notes: VaultNote[] = [
-      { path: 'no-date.md', content: '# No date' },
-    ];
+    const notes: VaultNote[] = [{ path: 'no-date.md', content: '# No date' }];
     expect(pickRandomNote(notes, DEFAULT_REVIEW_CONFIG)).toBeNull();
   });
 });

@@ -23,6 +23,7 @@
 **Commit**: `b4f17e2` - feat(setup): initialize Tauri + Svelte + TypeScript project structure
 
 **Deliverables**:
+
 - ✅ Created `src-tauri/` directory with Rust backend
   - `Cargo.toml` - Tauri v1.5 dependencies
   - `tauri.conf.json` - Application configuration
@@ -44,10 +45,12 @@
 - ✅ Dependencies installed via `pnpm install` (585 packages)
 
 **Verification**:
+
 - ✅ `pnpm install` - Success (all dependencies installed)
 - ⏳ `cargo check` - **BLOCKED**: Rust toolchain not installed
 
 **Next Steps**:
+
 1. Install Rust toolchain: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
 2. Run `cargo check` to verify Rust compilation
 3. Run `pnpm tauri dev` to verify end-to-end toolchain
@@ -58,16 +61,16 @@
 
 ### Phase 1: Project Setup (T002-T009)
 
-| Task | Description | Status | Blocker |
-|------|-------------|--------|---------|
-| T002 | Install frontend dependencies | Pending | None |
-| T003 | Install Rust dependencies | Pending | Rust toolchain |
-| T004 | Configure linting | Pending | None |
-| T005 | Configure Rust formatting | Pending | Rust toolchain |
-| T006 | Configure unit testing | Pending | None |
-| T007 | Configure E2E testing | Pending | None |
-| T008 | Create sample vault structure | Pending | None |
-| T009 | Verify toolchain end-to-end | Pending | Rust toolchain |
+| Task | Description                   | Status  | Blocker        |
+| ---- | ----------------------------- | ------- | -------------- |
+| T002 | Install frontend dependencies | Pending | None           |
+| T003 | Install Rust dependencies     | Pending | Rust toolchain |
+| T004 | Configure linting             | Pending | None           |
+| T005 | Configure Rust formatting     | Pending | Rust toolchain |
+| T006 | Configure unit testing        | Pending | None           |
+| T007 | Configure E2E testing         | Pending | None           |
+| T008 | Create sample vault structure | Pending | None           |
+| T009 | Verify toolchain end-to-end   | Pending | Rust toolchain |
 
 ### Phase 2: Foundational Infrastructure (T010-T033)
 
@@ -89,6 +92,7 @@
 **Affects**: T001 verification, T003, T005, T009, all Rust development
 
 **Resolution**:
+
 ```bash
 # Install Rust via rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -108,6 +112,7 @@ cd src-tauri && cargo check
 ### Deep Dive Findings (from ANALYSIS.md)
 
 **Critical Issues Identified**:
+
 1. ✅ **RESOLVED**: Scope ambiguity between spec.md and plan.md
    - Decision: Following plan.md demo scope (2-week MVP)
    - Full spec features deferred to post-MVP roadmap
@@ -121,6 +126,7 @@ cd src-tauri && cargo check
    - Data format: YAML frontmatter (confirmed in plan.md)
 
 **Performance Targets** (Demo Scale):
+
 - Vault scan: <3s for 500 files ✅
 - Note open: <200ms ✅
 - Graph render: <3s for 10k nodes ⚠️ (ambitious for demo)
@@ -131,17 +137,20 @@ cd src-tauri && cargo check
 ## Tech Stack Verification
 
 ### Frontend
+
 - ✅ Svelte 4.2.20 (installed)
 - ✅ TypeScript 5.9.3 (installed)
 - ✅ Vite 5.4.21 (installed)
 - ✅ @tauri-apps/api 1.6.0 (installed)
 
 ### Backend
+
 - ⏳ Rust (not installed - **BLOCKER**)
 - ✅ Tauri 1.5 (dependencies configured in Cargo.toml)
 - ⏳ serde, serde_json (pending cargo check)
 
 ### Build & Dev Tools
+
 - ✅ pnpm 10.13.1 (installed)
 - ✅ ESLint 8.57.1 (installed)
 - ✅ Prettier 3.8.3 (installed)
@@ -193,19 +202,23 @@ bismuth/
 ## Next Actions
 
 ### Immediate (Required for T001 Completion)
+
 1. **Install Rust toolchain**
+
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    source $HOME/.cargo/env
    ```
 
 2. **Verify Rust installation**
+
    ```bash
    rustc --version
    cargo --version
    ```
 
 3. **Run cargo check**
+
    ```bash
    cd src-tauri && cargo check
    ```
@@ -216,6 +229,7 @@ bismuth/
    ```
 
 ### Phase 1 Continuation (T002-T009)
+
 1. T002: Install CodeMirror 6, Konva, force-graph, etc.
 2. T003: Add Tantivy, notify, git2 to Cargo.toml
 3. T004: Verify ESLint configuration

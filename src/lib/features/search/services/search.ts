@@ -1,10 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import type { SearchResult, SearchFilters, FileSearchMatch } from '@/types/data/search';
 
-export async function searchVault(
-  query: string,
-  filters?: SearchFilters
-): Promise<SearchResult[]> {
+export async function searchVault(query: string, filters?: SearchFilters): Promise<SearchResult[]> {
   try {
     return await invoke<SearchResult[]>('search_vault', { query, filters });
   } catch (error) {
@@ -48,4 +45,3 @@ export async function advancedSearch(
 export function hasFieldPrefix(query: string): boolean {
   return /^(title|tags?|folder|path|heading):/.test(query.trim());
 }
-

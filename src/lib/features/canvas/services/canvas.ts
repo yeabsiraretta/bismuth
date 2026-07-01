@@ -43,10 +43,10 @@ export async function loadCanvas(id: string): Promise<CanvasDocument> {
   log.debug('Canvas service: loading canvas', { id });
   try {
     const canvas = await invoke<CanvasDocument>('load_canvas', { id });
-    log.info('Canvas service: canvas loaded successfully', { 
-      id: canvas.id, 
+    log.info('Canvas service: canvas loaded successfully', {
+      id: canvas.id,
       name: canvas.name,
-      elementCount: canvas.elements.length 
+      elementCount: canvas.elements.length,
     });
     return canvas;
   } catch (error) {
@@ -97,7 +97,10 @@ export async function linkCanvasToNote(canvasId: string, notePath: string | null
     await invoke('link_canvas_to_note', { canvasId, notePath });
     log.info('Canvas service: canvas linked to note', { canvasId, notePath });
   } catch (error) {
-    log.error('Canvas service: failed to link canvas to note', error as Error, { canvasId, notePath });
+    log.error('Canvas service: failed to link canvas to note', error as Error, {
+      canvasId,
+      notePath,
+    });
     throw new Error(`Failed to link canvas to note: ${error}`);
   }
 }

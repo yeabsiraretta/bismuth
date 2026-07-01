@@ -7,7 +7,12 @@
  */
 
 import type { GraphEdge, SmartGraphSettings } from '../../types';
-import { type SimNode, DEFAULT_NODE_COLORS, getNodeRadius, getNodeColor } from '../../utils/simulation';
+import {
+  type SimNode,
+  DEFAULT_NODE_COLORS,
+  getNodeRadius,
+  getNodeColor,
+} from '../../utils/simulation';
 import { getRelevanceThickness, truncateLabel } from '../../services/smartConnections';
 import type { GraphRenderState, GraphColors } from '../view/graphViewRendering';
 
@@ -20,10 +25,11 @@ export function renderSmartGraph(
   state: GraphRenderState,
   width: number,
   height: number,
-  colors?: GraphColors,
+  colors?: GraphColors
 ) {
   const c = colors ?? {
-    bg: '#1a1a2e', edge: '#5a5a7a',
+    bg: '#1a1a2e',
+    edge: '#5a5a7a',
     nodeLabel: 'rgba(200, 200, 220, 0.8)',
     badge: 'rgba(200, 200, 220, 0.5)',
   };
@@ -44,7 +50,11 @@ export function renderSmartGraph(
     if (!src || !tgt) continue;
 
     const relevance = edge.relevance ?? 0.5;
-    const thickness = getRelevanceThickness(relevance, smartSettings.minLinkThickness, smartSettings.maxLinkThickness);
+    const thickness = getRelevanceThickness(
+      relevance,
+      smartSettings.minLinkThickness,
+      smartSettings.maxLinkThickness
+    );
     const alpha = 0.3 + relevance * 0.5;
 
     ctx.beginPath();
@@ -57,7 +67,10 @@ export function renderSmartGraph(
     ctx.globalAlpha = 1;
 
     // Link label (relevance score) — show when a connected node is hovered
-    if (smartSettings.showLinkLabels && (state.hoveredNode === edge.from || state.hoveredNode === edge.to)) {
+    if (
+      smartSettings.showLinkLabels &&
+      (state.hoveredNode === edge.from || state.hoveredNode === edge.to)
+    ) {
       const mx = (src.x + tgt.x) / 2;
       const my = (src.y + tgt.y) / 2;
       const pct = `${Math.round(relevance * 100)}%`;
@@ -79,7 +92,23 @@ export function renderSmartGraph(
     const isCenter = node.id === centerNodeId;
     const isHovered = state.hoveredNode === node.id;
     const isSelected = state.selectedNode === node.id;
-    const baseRadius = getNodeRadius(node, { nodeSize: 1, linkThickness: 0.5, centerForce: 0, repelForce: 0, linkForce: 0, linkDistance: 0, animate: false, damping: 0, collisionRadius: 0, showTags: false, showAttachments: false, showOrphans: false, showArrows: false, showLabels: true, textFadeThreshold: 0.3 });
+    const baseRadius = getNodeRadius(node, {
+      nodeSize: 1,
+      linkThickness: 0.5,
+      centerForce: 0,
+      repelForce: 0,
+      linkForce: 0,
+      linkDistance: 0,
+      animate: false,
+      damping: 0,
+      collisionRadius: 0,
+      showTags: false,
+      showAttachments: false,
+      showOrphans: false,
+      showArrows: false,
+      showLabels: true,
+      textFadeThreshold: 0.3,
+    });
     const scale = isCenter ? smartSettings.centerNodeScale : 1;
     const radius = baseRadius * scale * (isHovered || isSelected ? 1.3 : 1);
     const nodeColor = getNodeColor(node, DEFAULT_NODE_COLORS);
@@ -103,15 +132,22 @@ export function renderSmartGraph(
     // Node circle
     ctx.beginPath();
     ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = isCenter ? '#4a9eff' : isSelected ? '#4a9eff' : isHovered ? '#6bb6ff' : nodeColor;
+    ctx.fillStyle = isCenter
+      ? '#4a9eff'
+      : isSelected
+        ? '#4a9eff'
+        : isHovered
+          ? '#6bb6ff'
+          : nodeColor;
     ctx.fill();
 
     // Node label
     const showLabel = isHovered || isSelected || isCenter || state.scale > 0.3;
     if (showLabel) {
-      const labelText = isHovered || isSelected || isCenter
-        ? node.label
-        : truncateLabel(node.label, smartSettings.maxLabelChars);
+      const labelText =
+        isHovered || isSelected || isCenter
+          ? node.label
+          : truncateLabel(node.label, smartSettings.maxLabelChars);
       const fontSize = isCenter
         ? smartSettings.nodeLabelSize + 2
         : isHovered || isSelected
@@ -141,7 +177,7 @@ export function renderPreviewTooltip(
   x: number,
   y: number,
   width: number,
-  maxWidth: number = 280,
+  maxWidth: number = 280
 ) {
   if (!text) return;
   ctx.save();
@@ -151,7 +187,10 @@ export function renderPreviewTooltip(
   const lineH = 15;
   const padX = 8;
   const padY = 6;
-  const boxW = Math.min(maxWidth, Math.max(...lines.map((l) => ctx.measureText(l).width)) + padX * 2);
+  const boxW = Math.min(
+    maxWidth,
+    Math.max(...lines.map((l) => ctx.measureText(l).width)) + padX * 2
+  );
   const boxH = lines.length * lineH + padY * 2;
 
   let drawX = x + 14;
@@ -186,13 +225,23 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
     } else {
       current = test;
     }
-    if (lines.length >= 8) { current += '\u2026'; break; }
+    if (lines.length >= 8) {
+      current += '\u2026';
+      break;
+    }
   }
   if (current) lines.push(current);
   return lines;
 }
 
-function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
   ctx.beginPath();
   ctx.moveTo(x + r, y);
   ctx.lineTo(x + w - r, y);

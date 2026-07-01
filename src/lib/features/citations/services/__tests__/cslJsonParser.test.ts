@@ -6,7 +6,10 @@ const SAMPLE_JSON = JSON.stringify([
     id: 'smith2020',
     type: 'article-journal',
     title: 'A Great Paper',
-    author: [{ family: 'Smith', given: 'John' }, { family: 'Doe', given: 'Jane' }],
+    author: [
+      { family: 'Smith', given: 'John' },
+      { family: 'Doe', given: 'Jane' },
+    ],
     issued: { 'date-parts': [[2020, 3]] },
     'container-title': 'Journal of Tests',
     volume: '42',
@@ -56,7 +59,10 @@ describe('parseCslJson', () => {
   });
 
   it('skips entries without id', () => {
-    const json = JSON.stringify([{ type: 'book', title: 'No ID' }, { id: 'valid', type: 'book' }]);
+    const json = JSON.stringify([
+      { type: 'book', title: 'No ID' },
+      { id: 'valid', type: 'book' },
+    ]);
     const entries = parseCslJson(json);
     expect(entries).toHaveLength(1);
     expect(entries[0].id).toBe('valid');

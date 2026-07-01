@@ -29,8 +29,10 @@ import type { Flashcard, FlashcardType, NoteFlashcards } from '../types/flashcar
 
 const INLINE_BASIC_RE = /^(.+?)\s*::\s*(.+)$/;
 const INLINE_REVERSED_RE = /^(.+?)\s*:::\s*(.+)$/;
-const _CLOZE_HIGHLIGHT_RE = /==(.+?)==/g; void _CLOZE_HIGHLIGHT_RE;
-const _CLOZE_CURLY_RE = /\{([^}]+)\}/g; void _CLOZE_CURLY_RE;
+const _CLOZE_HIGHLIGHT_RE = /==(.+?)==/g;
+void _CLOZE_HIGHLIGHT_RE;
+const _CLOZE_CURLY_RE = /\{([^}]+)\}/g;
+void _CLOZE_CURLY_RE;
 const CARD_TAG_RE = /#card(?:[-/]reverse(?:d)?|[-/]spaced)?/i;
 const MULTILINE_SEP_RE = /^\?$/;
 const MULTILINE_REV_SEP_RE = /^\?\?$/;
@@ -78,11 +80,17 @@ function extractFrontmatterTags(content: string): string[] {
   if (!match) return [];
   const tagsMatch = match[1].match(/^tags:\s*\[([^\]]*)\]/m);
   if (tagsMatch) {
-    return tagsMatch[1].split(',').map(t => t.trim().replace(/['"]/g, '')).filter(Boolean);
+    return tagsMatch[1]
+      .split(',')
+      .map((t) => t.trim().replace(/['"]/g, ''))
+      .filter(Boolean);
   }
   const yamlListMatch = match[1].match(/^tags:\s*\n((?:\s+-\s+.+\n?)+)/m);
   if (yamlListMatch) {
-    return yamlListMatch[1].split('\n').map(l => l.replace(/^\s*-\s*/, '').trim()).filter(Boolean);
+    return yamlListMatch[1]
+      .split('\n')
+      .map((l) => l.replace(/^\s*-\s*/, '').trim())
+      .filter(Boolean);
   }
   return [];
 }
@@ -96,14 +104,20 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
   let deck = deckFromPath(notePath);
   for (const tag of baseTags) {
     const tagDeck = deckFromTag('#' + tag);
-    if (tagDeck) { deck = tagDeck; break; }
+    if (tagDeck) {
+      deck = tagDeck;
+      break;
+    }
   }
   // Also scan body for inline #flashcards tag
   for (const line of lines) {
     const tagMatch = line.match(FLASHCARDS_TAG_RE);
     if (tagMatch) {
       const tagDeck = deckFromTag(tagMatch[0]);
-      if (tagDeck) { deck = tagDeck; break; }
+      if (tagDeck) {
+        deck = tagDeck;
+        break;
+      }
     }
   }
 
@@ -182,7 +196,10 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
       if (trimmed === '' || HEADING_RE.test(line)) {
         // End of answer block
         const front = multilineFrontLines.join('\n').trim();
-        const back = lines.slice(multilineStartLine + multilineFrontLines.length + 1, i).join('\n').trim();
+        const back = lines
+          .slice(multilineStartLine + multilineFrontLines.length + 1, i)
+          .join('\n')
+          .trim();
         if (front && back) {
           cards.push({
             id: stableId(notePath, multilineStartLine, front),
@@ -246,7 +263,8 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
       const isReversed = /reverse/i.test(line);
       if (!inCardBlock) {
         // Start block: lines above this are the front
-        blockFrontLines = lines.slice(Math.max(0, i - 20), i)
+        blockFrontLines = lines
+          .slice(Math.max(0, i - 20), i)
           .reverse()
           .reduce<string[]>((acc, l) => {
             if (l.trim() === '' && acc.length > 0) return acc; // stop at blank line
@@ -256,7 +274,9 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
           }, []);
         blockStartLine = i - blockFrontLines.length;
         blockType = isReversed ? 'basic-reversed' : 'basic';
-        blockTags = (line.match(/#[\w-/]+/g) || []).filter(t => !CARD_TAG_RE.test(t)).map(t => t.slice(1));
+        blockTags = (line.match(/#[\w-/]+/g) || [])
+          .filter((t) => !CARD_TAG_RE.test(t))
+          .map((t) => t.slice(1));
         inCardBlock = true;
         blockFrontLines = []; // will collect from next lines for back
       } else {
@@ -274,7 +294,8 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
     }
 
     // --- Cloze via ==highlights==, {curly}, or **bold** deletions
-    const hasCloze = /==.+?==/g.test(line) || /(?<!\{)\{(?!\{)[^{}]+\}/g.test(line) || BOLD_CLOZE_RE.test(line);
+    const hasCloze =
+      /==.+?==/g.test(line) || /(?<!\{)\{(?!\{)[^{}]+\}/g.test(line) || BOLD_CLOZE_RE.test(line);
     // Reset lastIndex after .test()
     BOLD_CLOZE_RE.lastIndex = 0;
     if (hasCloze) {
@@ -282,7 +303,10 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
       // Replace ==highlights== first
       let front = line.replace(/==(.+?)==/g, (_, t) => `{{c${clozeIndex++}::${t}}}`);
       // Replace {curly} that are NOT already {{double-braced}}
-      front = front.replace(/(?<!\{)\{(?!\{)([^{}]+)\}(?!\})/g, (_, t) => `{{c${clozeIndex++}::${t}}}`);
+      front = front.replace(
+        /(?<!\{)\{(?!\{)([^{}]+)\}(?!\})/g,
+        (_, t) => `{{c${clozeIndex++}::${t}}}`
+      );
       // Replace **bold** (not followed by :) that are NOT already wrapped
       front = front.replace(/\*\*([^*:]+)\*\*(?!:)/g, (full, t) => {
         if (full.includes('{{c')) return full; // already converted
@@ -313,7 +337,10 @@ export function parseFlashcards(notePath: string, content: string): NoteFlashcar
   if (multilineType !== null) {
     const front = multilineFrontLines.join('\n').trim();
     const sepLine = multilineStartLine + multilineFrontLines.length;
-    const back = lines.slice(sepLine + 1).join('\n').trim();
+    const back = lines
+      .slice(sepLine + 1)
+      .join('\n')
+      .trim();
     if (front && back) {
       cards.push({
         id: stableId(notePath, multilineStartLine, front),

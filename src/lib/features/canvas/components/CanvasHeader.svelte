@@ -10,7 +10,10 @@
     hoverTimer = setTimeout(() => showToast(label, 'info', 1500), 400);
   }
   function cancelHover() {
-    if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
   }
 
   interface Props {
@@ -218,7 +221,6 @@
 </div>
 
 <style>
-
   .canvas-header {
     display: flex;
     align-items: center;

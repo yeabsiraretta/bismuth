@@ -5,10 +5,7 @@
 
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
-import {
-  FEATURE_REGISTRY,
-  isCoreFeature,
-} from '@/stores/settings/featureRegistry';
+import { FEATURE_REGISTRY, isCoreFeature } from '@/stores/settings/featureRegistry';
 import { featureFlags } from '@/stores/settings/features';
 import type {
   LazyLoaderConfig,
@@ -68,15 +65,9 @@ export const totalLoadTimeMs = derived(loadTimings, ($t) => totalLoadTime($t));
 
 export const top5Slowest = derived(loadTimings, ($t) => slowestFeatures($t, 5));
 
-export const loadedCount = derived(
-  loadTimings,
-  ($t) => $t.filter((t) => t.success).length,
-);
+export const loadedCount = derived(loadTimings, ($t) => $t.filter((t) => t.success).length);
 
-export const failedCount = derived(
-  loadTimings,
-  ($t) => $t.filter((t) => !t.success).length,
-);
+export const failedCount = derived(loadTimings, ($t) => $t.filter((t) => !t.success).length);
 
 export const priorityCounts = derived(lazyConfig, ($c) => {
   const entries = buildQueueEntries($c);
@@ -264,17 +255,23 @@ export function getFeaturePriority(featureId: string): LoadPriority {
 
 /** Load a single feature module on demand (triggered by toggle). */
 export async function loadFeatureOnDemand(featureId: string): Promise<boolean> {
-  const loader = LOADERS[FEATURE_REGISTRY.find(f => f.id === featureId)?.preloadKey ?? ''];
+  const loader = LOADERS[FEATURE_REGISTRY.find((f) => f.id === featureId)?.preloadKey ?? ''];
   if (!loader) return true;
   const { markLoading, markLoaded, markError } = await import('@/stores/status/featureLoadStatus');
   markLoading(featureId);
-  try { await loader(); markLoaded(featureId); return true; }
-  catch (e) { markError(featureId, String(e)); return false; }
+  try {
+    await loader();
+    markLoaded(featureId);
+    return true;
+  } catch (e) {
+    markError(featureId, String(e));
+    return false;
+  }
 }
 
 /** Unload a feature by marking it unloaded. */
 export function unloadFeature(featureId: string): void {
-  import('@/stores/status/featureLoadStatus').then(m => m.markUnloaded(featureId));
+  import('@/stores/status/featureLoadStatus').then((m) => m.markUnloaded(featureId));
 }
 
 /** Clear all load timing data for the current session. */

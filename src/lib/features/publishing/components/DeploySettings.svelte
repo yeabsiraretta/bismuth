@@ -55,11 +55,20 @@
     <div class="field-group">
       <label class="field">
         <span class="field-label">Deploy Token</span>
-        <input class="field-input" type="password" bind:value={config.deployToken} placeholder="vercel_..." />
+        <input
+          class="field-input"
+          type="password"
+          bind:value={config.deployToken}
+          placeholder="vercel_..."
+        />
       </label>
       <label class="field">
         <span class="field-label">Project Name</span>
-        <input class="field-input" bind:value={config.projectName} placeholder="my-digital-garden" />
+        <input
+          class="field-input"
+          bind:value={config.projectName}
+          placeholder="my-digital-garden"
+        />
       </label>
     </div>
   {/if}
@@ -68,7 +77,12 @@
     <div class="field-group">
       <label class="field">
         <span class="field-label">Auth Token</span>
-        <input class="field-input" type="password" bind:value={config.deployToken} placeholder="netlify_..." />
+        <input
+          class="field-input"
+          type="password"
+          bind:value={config.deployToken}
+          placeholder="netlify_..."
+        />
       </label>
       <label class="field">
         <span class="field-label">Site ID</span>
@@ -84,16 +98,79 @@
 </div>
 
 <style>
-  .deploy-settings { padding: var(--spacing-s); }
-  .section-title { font-size: var(--font-ui-small); font-weight: 600; margin-bottom: var(--spacing-s); color: var(--text-normal); }
-  .target-options { display: flex; flex-direction: column; gap: var(--spacing-xs); margin-bottom: var(--spacing-m); }
-  .target-option { display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--radius-s); cursor: pointer; font-size: var(--font-ui-small); color: var(--text-muted); border: 1px solid var(--border); }
-  .target-option.active { border-color: var(--interactive-accent); color: var(--text-normal); background: var(--background-modifier-hover); }
-  .target-option input[type="radio"] { display: none; }
-  .field-group { display: flex; flex-direction: column; gap: var(--spacing-xs); margin-bottom: var(--spacing-m); }
-  .field { display: flex; flex-direction: column; gap: 2px; }
-  .field-label { font-size: var(--font-smallest); color: var(--text-muted); }
-  .field-input { padding: var(--spacing-xs); border: 1px solid var(--border); border-radius: var(--radius-s); background: var(--background-primary); color: var(--text-normal); font-size: var(--font-ui-small); }
-  .btn-save { display: flex; align-items: center; gap: var(--spacing-xs); width: 100%; padding: var(--spacing-xs) var(--spacing-s); background: var(--interactive-accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-s); font-size: var(--font-ui-small); cursor: pointer; justify-content: center; margin-top: var(--spacing-s); }
-  .btn-save:hover { opacity: 0.9; }
+  .deploy-settings {
+    padding: var(--spacing-s);
+  }
+  .section-title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    margin-bottom: var(--spacing-s);
+    color: var(--text-normal);
+  }
+  .target-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-m);
+  }
+  .target-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .target-option.active {
+    border-color: var(--interactive-accent);
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+  }
+  .target-option input[type='radio'] {
+    display: none;
+  }
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-m);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .field-label {
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+  }
+  .field-input {
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-s);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+  }
+  .btn-save {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-small);
+    cursor: pointer;
+    justify-content: center;
+    margin-top: var(--spacing-s);
+  }
+  .btn-save:hover {
+    opacity: 0.9;
+  }
 </style>

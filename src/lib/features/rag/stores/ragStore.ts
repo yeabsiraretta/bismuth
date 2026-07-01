@@ -17,7 +17,9 @@ function loadConfig(): RagConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_RAG_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_RAG_CONFIG };
 }
 
@@ -40,15 +42,15 @@ const messagesInternal = writable<RagMessage[]>([]);
 const loadingInternal = writable(false);
 const lastCitationsInternal = writable<RagCitation[]>([]);
 
-export const ragConfig = derived(configInternal, $c => $c);
-export const ragMessages = derived(messagesInternal, $m => $m);
-export const ragLoading = derived(loadingInternal, $l => $l);
-export const ragCitations = derived(lastCitationsInternal, $c => $c);
+export const ragConfig = derived(configInternal, ($c) => $c);
+export const ragMessages = derived(messagesInternal, ($m) => $m);
+export const ragLoading = derived(loadingInternal, ($l) => $l);
+export const ragCitations = derived(lastCitationsInternal, ($c) => $c);
 
 // ─── Config ─────────────────────────────────────────────────────────────────
 
 export function updateRagConfig(patch: Partial<RagConfig>): void {
-  configInternal.update(c => {
+  configInternal.update((c) => {
     const next = { ...c, ...patch };
     saveConfig(next);
     return next;
@@ -73,7 +75,7 @@ function addMessage(msg: Omit<RagMessage, 'id' | 'createdAt'>): RagMessage {
     id: generateId(),
     createdAt: new Date().toISOString(),
   };
-  messagesInternal.update(msgs => {
+  messagesInternal.update((msgs) => {
     const next = [...msgs, full];
     return next.length > MAX_MESSAGES ? next.slice(-MAX_MESSAGES) : next;
   });
@@ -81,7 +83,7 @@ function addMessage(msg: Omit<RagMessage, 'id' | 'createdAt'>): RagMessage {
 }
 
 function updateLastAssistant(content: string, citations?: RagCitation[]): void {
-  messagesInternal.update(msgs => {
+  messagesInternal.update((msgs) => {
     const updated = [...msgs];
     for (let i = updated.length - 1; i >= 0; i--) {
       if (updated[i].role === 'assistant') {
@@ -112,14 +114,14 @@ export async function askRag(query: string): Promise<void> {
 
     updateLastAssistant(
       `Found ${context.citations.length} source(s). Generating answer...`,
-      context.citations,
+      context.citations
     );
 
     // 2. Build messages
     const history = get(messagesInternal)
-      .filter(m => m.role !== 'system')
+      .filter((m) => m.role !== 'system')
       .slice(0, -1)
-      .map(m => ({
+      .map((m) => ({
         id: m.id,
         role: m.role as 'user' | 'assistant',
         content: m.content,

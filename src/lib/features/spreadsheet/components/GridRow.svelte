@@ -19,7 +19,8 @@
   export let isActiveCell: (r: number, c: number) => boolean;
   export let virtualOffset = -1; // -1 means non-virtual (use normal flow)
   export let onCellClick: ((detail: { row: number; col: number }) => void) | undefined = undefined;
-  export let onCellDblClick: ((detail: { row: number; col: number }) => void) | undefined = undefined;
+  export let onCellDblClick: ((detail: { row: number; col: number }) => void) | undefined =
+    undefined;
   export let onEditInput: ((detail: { value: string }) => void) | undefined = undefined;
   export let onEditBlur: (() => void) | undefined = undefined;
   export let onEditKeydown: ((detail: { event: KeyboardEvent }) => void) | undefined = undefined;
@@ -58,7 +59,9 @@
       style="width: {colWidths(c)}px; min-width: {colWidths(c)}px; height: {rowHeightPx}px;"
       tabindex="0"
       on:click={() => onCellClick?.({ row: rowIndex, col: c })}
-      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click(); }}
+      on:keydown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') e.currentTarget.click();
+      }}
       on:dblclick={() => onCellDblClick?.({ row: rowIndex, col: c })}
     >
       {#if editingRow === rowIndex && editingCol === c}

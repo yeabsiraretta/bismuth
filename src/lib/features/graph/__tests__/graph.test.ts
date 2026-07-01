@@ -97,15 +97,23 @@ describe('graph service', () => {
     it('calls invoke with query and default topK', async () => {
       vi.mocked(invoke).mockResolvedValue([]);
       await lookupByText('typescript patterns');
-      expect(invoke).toHaveBeenCalledWith('lookup_by_text', { query: 'typescript patterns', topK: 10 });
+      expect(invoke).toHaveBeenCalledWith('lookup_by_text', {
+        query: 'typescript patterns',
+        topK: 10,
+      });
     });
   });
 
   describe('computeGraphLayout', () => {
     it('calls invoke with settings', async () => {
       const settings = {
-        center_force: 0.1, repel_force: 500, link_force: 1,
-        link_distance: 50, width: 800, height: 600, iterations: 100,
+        center_force: 0.1,
+        repel_force: 500,
+        link_force: 1,
+        link_distance: 50,
+        width: 800,
+        height: 600,
+        iterations: 100,
       };
       vi.mocked(invoke).mockResolvedValue([]);
       await computeGraphLayout(settings);
@@ -124,7 +132,9 @@ describe('graph service', () => {
     });
 
     it('returns suggestions array', async () => {
-      const suggestions = [{ title: 'Test', path: '/p', matched_text: 'test', offset: 0, length: 4 }];
+      const suggestions = [
+        { title: 'Test', path: '/p', matched_text: 'test', offset: 0, length: 4 },
+      ];
       vi.mocked(invoke).mockResolvedValue(suggestions);
       const result = await getConceptSuggestions('/n', 'test');
       expect(result).toEqual(suggestions);

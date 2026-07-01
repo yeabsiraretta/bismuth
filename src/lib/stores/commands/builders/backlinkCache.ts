@@ -13,9 +13,11 @@ export function buildBacklinkCacheCommands(): Command[] {
         const { notes } = await import('@/stores/vault/vault');
         const { buildCache } = await import('@/features/backlinks');
         const allNotes = get(notes);
-        const inputs = allNotes.map(n => ({
-          path: n.path, title: n.title,
-          content: n.content || '', frontmatter: n.frontmatter,
+        const inputs = allNotes.map((n) => ({
+          path: n.path,
+          title: n.title,
+          content: n.content || '',
+          frontmatter: n.frontmatter,
         }));
         buildCache(inputs);
         showToast(`Backlink cache built for ${inputs.length} files`, 'info');
@@ -43,8 +45,8 @@ export function buildBacklinkCacheCommands(): Command[] {
         const stats = get(cacheStats);
         showToast(
           `Cache: ${stats.totalFiles} files, ${stats.totalLinks} links, ` +
-          `${stats.canvasFiles} canvas, built in ${stats.buildTime}ms`,
-          'info',
+            `${stats.canvasFiles} canvas, built in ${stats.buildTime}ms`,
+          'info'
         );
       },
     },
@@ -57,7 +59,10 @@ export function buildBacklinkCacheCommands(): Command[] {
         const { get } = await import('svelte/store');
         const { activeNote } = await import('@/stores/vault/vault');
         const note = get(activeNote);
-        if (!note?.path) { showToast('No active note', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No active note', 'warning');
+          return;
+        }
         const { getCachedBacklinksSafe } = await import('@/features/backlinks');
         const backlinks = await getCachedBacklinksSafe(note.path);
         showToast(`Safe lookup: ${backlinks.length} backlinks for "${note.title}"`, 'info');

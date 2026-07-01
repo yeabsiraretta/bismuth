@@ -11,7 +11,10 @@ const mockTransportStart = vi.fn();
 const mockTransportStop = vi.fn();
 const mockTransportPause = vi.fn();
 const mockBpmValue = { value: 120 };
-const mockPolySynth = vi.fn().mockImplementation(() => ({ toDestination: vi.fn().mockReturnThis(), triggerAttackRelease: vi.fn() }));
+const mockPolySynth = vi.fn().mockImplementation(() => ({
+  toDestination: vi.fn().mockReturnThis(),
+  triggerAttackRelease: vi.fn(),
+}));
 
 const mockTransport = {
   schedule: mockTransportSchedule,
@@ -43,17 +46,24 @@ const mockAudioContext = {
   sampleRate: 44100,
   resume: vi.fn().mockResolvedValue(undefined),
   destination: {},
-  createGain: vi.fn().mockReturnValue({ gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() }),
-  createStereoPanner: vi.fn().mockReturnValue({ pan: { value: 0 }, connect: vi.fn(), disconnect: vi.fn() }),
+  createGain: vi
+    .fn()
+    .mockReturnValue({ gain: { value: 1 }, connect: vi.fn(), disconnect: vi.fn() }),
+  createStereoPanner: vi
+    .fn()
+    .mockReturnValue({ pan: { value: 0 }, connect: vi.fn(), disconnect: vi.fn() }),
 };
-vi.stubGlobal('AudioContext', class MockAudioContext {
-  state = mockAudioContext.state;
-  sampleRate = mockAudioContext.sampleRate;
-  resume = mockAudioContext.resume;
-  destination = mockAudioContext.destination;
-  createGain = mockAudioContext.createGain;
-  createStereoPanner = mockAudioContext.createStereoPanner;
-});
+vi.stubGlobal(
+  'AudioContext',
+  class MockAudioContext {
+    state = mockAudioContext.state;
+    sampleRate = mockAudioContext.sampleRate;
+    resume = mockAudioContext.resume;
+    destination = mockAudioContext.destination;
+    createGain = mockAudioContext.createGain;
+    createStereoPanner = mockAudioContext.createStereoPanner;
+  }
+);
 
 import {
   scheduleClip,
@@ -103,14 +113,20 @@ describe('audioContext synthesis functions', () => {
 
     it('applies startBeat offset to note timing', async () => {
       await initTone();
-      scheduleClip({ midiNotes: [{ pitch: 60, startTick: 0, durationTicks: 96, velocity: 100 }] }, 4);
+      scheduleClip(
+        { midiNotes: [{ pitch: 60, startTick: 0, durationTicks: 96, velocity: 100 }] },
+        4
+      );
       expect(mockTransportSchedule).toHaveBeenCalledWith(expect.any(Function), '4m');
     });
 
     it('logs warning if tone not initialized', async () => {
       const { log } = await import('@/utils/logger');
       // Call before initTone in a fresh module would warn — we test guard logic
-      scheduleClip({ midiNotes: [{ pitch: 60, startTick: 0, durationTicks: 96, velocity: 100 }] }, 0);
+      scheduleClip(
+        { midiNotes: [{ pitch: 60, startTick: 0, durationTicks: 96, velocity: 100 }] },
+        0
+      );
       // After initTone was called above, subsequent calls should work
       expect(log.warn).toBeDefined();
     });

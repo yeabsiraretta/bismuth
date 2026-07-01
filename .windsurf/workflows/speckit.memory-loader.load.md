@@ -2,9 +2,9 @@
 description: Read all project memory files and output their contents for LLM context
 ---
 
-
 <!-- Extension: memory-loader -->
 <!-- Config: .specify/extensions/memory-loader/ -->
+
 # Load Project Memory
 
 Read ALL `.md` files in `.specify/memory/` and output their contents. This gives you project governance context (constitution, glossary, conventions, resource standards) for the command that follows.
@@ -19,7 +19,7 @@ Read ALL `.md` files in `.specify/memory/` and output their contents. This gives
 
    ```
    ## Memory: {filename}
-   
+
    {file contents}
    ```
 

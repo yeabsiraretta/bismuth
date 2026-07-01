@@ -4,9 +4,7 @@
  */
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
-import type {
-  GraphAnalyticsResult, AnalyticsSettings,
-} from '../types/analytics';
+import type { GraphAnalyticsResult, AnalyticsSettings } from '../types/analytics';
 import { DEFAULT_ANALYTICS_SETTINGS } from '../types/analytics';
 import type { GraphNode, GraphEdge } from '../types';
 import { analyzeGraph } from '../services/graphAnalytics';
@@ -19,7 +17,9 @@ function loadSettings(): AnalyticsSettings {
   try {
     const s = localStorage.getItem(SETTINGS_KEY);
     return s ? { ...DEFAULT_ANALYTICS_SETTINGS, ...JSON.parse(s) } : DEFAULT_ANALYTICS_SETTINGS;
-  } catch { return DEFAULT_ANALYTICS_SETTINGS; }
+  } catch {
+    return DEFAULT_ANALYTICS_SETTINGS;
+  }
 }
 
 // ─── Core stores ─────────────────────────────────────────────────────────────
@@ -33,26 +33,24 @@ export const analyticsTab = writable<'topics' | 'gaps' | 'metrics'>('topics');
 export const highlightedNodes = writable<Set<string>>(new Set());
 
 // Persist settings
-analyticsSettings.subscribe(v => {
+analyticsSettings.subscribe((v) => {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(v));
 });
 
 // ─── Derived ─────────────────────────────────────────────────────────────────
 
-export const clusters = derived(analyticsResult, $r => $r?.clusters ?? []);
-export const gaps = derived(analyticsResult, $r => $r?.gaps ?? []);
-export const topMetrics = derived(analyticsResult, $r => ($r?.metrics ?? []).slice(0, 20));
-export const modularity = derived(analyticsResult, $r => $r?.modularity ?? 0);
-export const bigrams = derived(analyticsResult, $r => ($r?.bigrams ?? []).slice(0, 20));
+export const clusters = derived(analyticsResult, ($r) => $r?.clusters ?? []);
+export const gaps = derived(analyticsResult, ($r) => $r?.gaps ?? []);
+export const topMetrics = derived(analyticsResult, ($r) => ($r?.metrics ?? []).slice(0, 20));
+export const modularity = derived(analyticsResult, ($r) => $r?.modularity ?? 0);
+export const bigrams = derived(analyticsResult, ($r) => ($r?.bigrams ?? []).slice(0, 20));
 
-export const selectedCluster = derived(
-  [clusters, selectedClusterId],
-  ([$clusters, $id]) => $id !== null ? $clusters.find(c => c.id === $id) ?? null : null,
+export const selectedCluster = derived([clusters, selectedClusterId], ([$clusters, $id]) =>
+  $id !== null ? ($clusters.find((c) => c.id === $id) ?? null) : null
 );
 
-export const selectedGap = derived(
-  [gaps, selectedGapIdx],
-  ([$gaps, $idx]) => $idx !== null ? $gaps[$idx] ?? null : null,
+export const selectedGap = derived([gaps, selectedGapIdx], ([$gaps, $idx]) =>
+  $idx !== null ? ($gaps[$idx] ?? null) : null
 );
 
 export const clusterNodeMap = derived(clusters, ($clusters) => {
@@ -91,7 +89,7 @@ export function selectCluster(id: number | null): void {
   selectedClusterId.set(id);
   if (id !== null) {
     const result = get(analyticsResult);
-    const cluster = result?.clusters.find(c => c.id === id);
+    const cluster = result?.clusters.find((c) => c.id === id);
     if (cluster) highlightedNodes.set(new Set(cluster.nodeIds));
     else highlightedNodes.set(new Set());
   } else {
@@ -105,8 +103,8 @@ export function selectGap(idx: number | null): void {
     const result = get(analyticsResult);
     const gap = result?.gaps[idx];
     if (gap) {
-      const clusterA = result?.clusters.find(c => c.id === gap.clusterA);
-      const clusterB = result?.clusters.find(c => c.id === gap.clusterB);
+      const clusterA = result?.clusters.find((c) => c.id === gap.clusterA);
+      const clusterB = result?.clusters.find((c) => c.id === gap.clusterB);
       const nodes = new Set([...(clusterA?.nodeIds ?? []), ...(clusterB?.nodeIds ?? [])]);
       highlightedNodes.set(nodes);
     }
@@ -120,7 +118,7 @@ export function setAnalyticsTab(tab: 'topics' | 'gaps' | 'metrics'): void {
 }
 
 export function updateAnalyticsSettings(updates: Partial<AnalyticsSettings>): void {
-  analyticsSettings.update(s => ({ ...s, ...updates }));
+  analyticsSettings.update((s) => ({ ...s, ...updates }));
 }
 
 export function clearAnalytics(): void {

@@ -10,6 +10,7 @@
 ### 🎨 User Interface
 
 **Sidebar** (`src/lib/components/Sidebar.svelte`):
+
 - File list with icons
 - Active file highlighting
 - Create new note button (+)
@@ -17,6 +18,7 @@
 - Smooth hover effects
 
 **Editor** (`src/lib/components/Editor.svelte`):
+
 - Full-screen markdown editor
 - Character counter
 - Tab key support (inserts 2 spaces)
@@ -25,6 +27,7 @@
 - Placeholder with Markdown examples
 
 **Welcome Screen** (`src/lib/components/Welcome.svelte`):
+
 - Feature showcase (Johnny.Decimal, Zettelkasten, Smart Search)
 - Call-to-action button
 - Keyboard shortcut hints
@@ -33,6 +36,7 @@
 ### ⚡ Functionality
 
 **Note Management**:
+
 - ✅ Create new notes
 - ✅ Switch between notes
 - ✅ Edit note content
@@ -40,10 +44,12 @@
 - ✅ In-memory storage
 
 **Keyboard Shortcuts**:
+
 - `Cmd+N` (Mac) / `Ctrl+N` (Windows/Linux) - Create new note
 - `Tab` - Insert 2 spaces in editor
 
 **State Management**:
+
 - Current note tracking
 - Note list management
 - Content synchronization
@@ -52,18 +58,21 @@
 ### 🎯 User Experience
 
 **Dark Theme**:
+
 - Background: `#1a1a1a`
 - Sidebar: `#1e1e1e`
 - Accent: `#646cff`
 - Text: `#e0e0e0`
 
 **Layout**:
+
 - Fixed sidebar (250px)
 - Flexible editor area
 - No scrolling issues
 - Responsive design
 
 **Interactions**:
+
 - Smooth transitions (0.2s)
 - Hover states
 - Active states
@@ -80,6 +89,7 @@ pnpm tauri dev
 ```
 
 This will:
+
 1. Start Vite dev server (http://localhost:5173)
 2. Compile Rust backend
 3. Launch Tauri window
@@ -188,6 +198,7 @@ User Action → Event Dispatch → App State Update → Component Re-render
 ```
 
 **Example**: Create Note
+
 1. User clicks + button
 2. Sidebar dispatches 'create' event
 3. App.svelte handles event
@@ -199,9 +210,9 @@ User Action → Event Dispatch → App State Update → Component Re-render
 
 ```typescript
 interface Note {
-  name: string;      // "Welcome.md"
-  path: string;      // "welcome" (unique ID)
-  content: string;   // Markdown content
+  name: string; // "Welcome.md"
+  path: string; // "welcome" (unique ID)
+  content: string; // Markdown content
 }
 ```
 
@@ -217,17 +228,20 @@ interface Note {
 ## Performance
 
 ### Build Times
+
 - **Frontend build**: 202ms (production)
 - **Rust compile**: 2.17s (dev mode)
 - **Hot reload**: <100ms (Vite)
 
 ### Bundle Sizes
+
 - **HTML**: 0.45 kB (gzipped: 0.29 kB)
 - **CSS**: 3.86 kB (gzipped: 1.06 kB)
 - **JS**: 12.96 kB (gzipped: 5.43 kB)
 - **Total**: ~17 kB (gzipped: ~7 kB)
 
 ### Runtime Performance
+
 - **Startup**: <1s
 - **Note switching**: Instant
 - **Typing latency**: <16ms (60 FPS)
@@ -238,17 +252,20 @@ interface Note {
 ## Code Quality
 
 ### Linting
+
 - ✅ 0 ESLint errors
 - ✅ 0 Prettier errors
 - ✅ All unused CSS removed
 
 ### Type Safety
+
 - ✅ Full TypeScript
 - ✅ Interface for Note
 - ✅ Event typing
 - ✅ No `any` types
 
 ### Testing
+
 - ✅ Unit tests pass (20/20)
 - ⏳ E2E tests (framework ready)
 - ⏳ Component tests (to be added)
@@ -260,12 +277,14 @@ interface Note {
 ### Phase 2A: File System Integration (Priority)
 
 **T010-T014**: Connect to real filesystem
+
 - Tauri commands for file operations
 - Read/write markdown files
 - Vault directory selection
 - File watching for changes
 
 **Implementation**:
+
 ```rust
 // src-tauri/src/main.rs
 #[tauri::command]
@@ -284,6 +303,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 ### Phase 2B: Markdown Features
 
 **T015-T017**: Enhance editor
+
 - Markdown preview (split view)
 - Syntax highlighting (CodeMirror 6)
 - Wikilink detection and linking
@@ -292,6 +312,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 ### Phase 2C: Search & Navigation
 
 **T018-T021**: Improve discoverability
+
 - Full-text search (Tantivy)
 - Quick switcher (Cmd+P)
 - Recent files
@@ -300,6 +321,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 ### Phase 2D: Graph View
 
 **T022-T025**: Visualize connections
+
 - Interactive graph (Konva)
 - Node clustering
 - Zoom/pan controls
@@ -330,6 +352,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 ## Success Metrics
 
 ### Achieved ✅
+
 - ✅ App launches without errors
 - ✅ UI is responsive and smooth
 - ✅ Basic note-taking works
@@ -338,6 +361,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 - ✅ Bundle size <20 kB
 
 ### Targets for Next Phase
+
 - 🎯 Save/load from filesystem
 - 🎯 Markdown preview working
 - 🎯 Search <100ms response time
@@ -349,18 +373,21 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 ## Lessons Learned
 
 ### What Went Well
+
 1. **Svelte reactivity**: State management is simple and intuitive
 2. **Component architecture**: Clean separation of concerns
 3. **Dark theme**: Looks professional out of the box
 4. **Build speed**: Vite is incredibly fast
 
 ### What Could Be Improved
+
 1. **Persistence**: Need filesystem integration ASAP
 2. **Markdown rendering**: Plain text editor is limiting
 3. **Error handling**: Need better error states
 4. **Loading states**: Add spinners for async operations
 
 ### Technical Decisions
+
 1. **In-memory storage**: Good for prototype, but not production
 2. **Simple state**: Works for now, may need Svelte stores later
 3. **No routing**: Single-view app is fine for MVP
@@ -373,6 +400,7 @@ fn write_file(path: String, content: String) -> Result<(), String> {
 **Bismuth now has a functional UI!** 🎉
 
 Users can:
+
 - Create and edit notes
 - Switch between notes
 - Use keyboard shortcuts

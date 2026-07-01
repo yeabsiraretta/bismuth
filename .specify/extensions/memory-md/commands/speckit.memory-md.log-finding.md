@@ -1,5 +1,5 @@
 ---
-description: "Turn a high-signal audit finding into a tracker-ready follow-up for GitHub, GitLab, Jira, or another issue system."
+description: 'Turn a high-signal audit finding into a tracker-ready follow-up for GitHub, GitLab, Jira, or another issue system.'
 ---
 
 # Log Finding

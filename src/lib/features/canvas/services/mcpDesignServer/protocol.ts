@@ -7,10 +7,15 @@
 
 import type { CanvasDocument } from '@/features/canvas/types';
 import type { MCPResponse, DesignSummary } from '@/features/canvas/services/mcpDesignServer';
-import { generateDesignSummary, extractCanvasTree } from '@/features/canvas/services/mcpDesignServer/endpoints';
+import {
+  generateDesignSummary,
+  extractCanvasTree,
+} from '@/features/canvas/services/mcpDesignServer/endpoints';
 
 /** Parses a bismuth:// canvas URL into document and frame IDs. */
-export function parseBismuthUrl(url: string): { documentId: string; frameId?: string; params?: Record<string, string> } | null {
+export function parseBismuthUrl(
+  url: string
+): { documentId: string; frameId?: string; params?: Record<string, string> } | null {
   const match = url.match(/^bismuth:\/\/canvas\/([^/?]+)(?:\/([^?]+))?(?:\?(.+))?$/);
   if (!match) return null;
 
@@ -26,11 +31,17 @@ export function parseBismuthUrl(url: string): { documentId: string; frameId?: st
 }
 
 /** Constructs a bismuth:// canvas URL. */
-export function buildBismuthUrl(documentId: string, frameId?: string, params?: Record<string, string>): string {
+export function buildBismuthUrl(
+  documentId: string,
+  frameId?: string,
+  params?: Record<string, string>
+): string {
   let url = `bismuth://canvas/${documentId}`;
   if (frameId) url += `/${frameId}`;
   if (params && Object.keys(params).length > 0) {
-    const qs = Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    const qs = Object.entries(params)
+      .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
+      .join('&');
     url += `?${qs}`;
   }
   return url;
@@ -57,7 +68,18 @@ export function handleMCPToolCall(
       const doc = getDocument(parsed.documentId);
       if (!doc) return { code: -32000, message: 'Document not found' };
       const tree = extractCanvasTree(doc);
-      return { content: [{ type: 'text', text: JSON.stringify({ document: { id: doc.id, name: doc.name, pages: doc.pages }, nodeTree: tree }, null, 2) }] };
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              { document: { id: doc.id, name: doc.name, pages: doc.pages }, nodeTree: tree },
+              null,
+              2
+            ),
+          },
+        ],
+      };
     }
     default:
       return { code: -32601, message: `Unknown tool: ${toolName}` };

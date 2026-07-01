@@ -19,11 +19,21 @@
   function formatDisplayDate(date: string, type: PeriodType): string {
     const d = new Date(date);
     switch (type) {
-      case 'daily': return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-      case 'weekly': return `Week of ${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
-      case 'monthly': return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
-      case 'quarterly': return `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
-      case 'yearly': return d.getFullYear().toString();
+      case 'daily':
+        return d.toLocaleDateString(undefined, {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        });
+      case 'weekly':
+        return `Week of ${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+      case 'monthly':
+        return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+      case 'quarterly':
+        return `Q${Math.floor(d.getMonth() / 3) + 1} ${d.getFullYear()}`;
+      case 'yearly':
+        return d.getFullYear().toString();
     }
   }
 
@@ -88,43 +98,107 @@
 </div>
 
 <style>
-  .periodic-panel { display: flex; flex-direction: column; height: 100%; }
-  .panel-body { padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .periodic-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .panel-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .period-switcher {
-    display: flex; gap: 2px; background: var(--panel-bg-alt, #181825);
-    border-radius: 6px; padding: 2px;
+    display: flex;
+    gap: 2px;
+    background: var(--panel-bg-alt, #181825);
+    border-radius: 6px;
+    padding: 2px;
   }
   .period-btn {
-    flex: 1; padding: 6px 4px; border: none; border-radius: 4px;
-    background: none; color: var(--text-muted); cursor: pointer;
-    font-size: 11px; font-weight: 500; text-transform: capitalize;
+    flex: 1;
+    padding: 6px 4px;
+    border: none;
+    border-radius: 4px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: capitalize;
   }
-  .period-btn:hover { color: var(--text-primary); }
+  .period-btn:hover {
+    color: var(--text-primary);
+  }
   .period-btn.active {
-    background: var(--accent-color, #6366f1); color: white;
+    background: var(--accent-color, #6366f1);
+    color: white;
   }
   .date-navigator {
-    display: flex; align-items: center; gap: 8px; justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
   }
   .nav-btn {
-    background: none; border: none; padding: 4px; border-radius: 4px;
-    cursor: pointer; color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
   }
-  .nav-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
-  .date-display { font-size: 13px; font-weight: 500; flex: 1; text-align: center; }
+  .nav-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+  }
+  .date-display {
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    text-align: center;
+  }
   .open-note-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 10px 16px; border: none; border-radius: 6px;
-    background: var(--accent-color, #6366f1); color: white;
-    cursor: pointer; font-size: 12px; font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent-color, #6366f1);
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
   }
-  .open-note-btn:hover { opacity: 0.9; }
-  .open-note-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .quick-actions { display: flex; gap: 8px; }
+  .open-note-btn:hover {
+    opacity: 0.9;
+  }
+  .open-note-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .quick-actions {
+    display: flex;
+    gap: 8px;
+  }
   .quick-btn {
-    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;
-    background: none; color: var(--text-primary); cursor: pointer; font-size: 11px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 11px;
   }
-  .quick-btn:hover { background: var(--hover-bg); }
+  .quick-btn:hover {
+    background: var(--hover-bg);
+  }
 </style>

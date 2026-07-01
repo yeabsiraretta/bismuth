@@ -3,9 +3,9 @@ description: Apply approved architecture refactors by updating plan and task art
   directly.
 ---
 
-
 <!-- Extension: architecture-guard -->
 <!-- Config: .specify/extensions/architecture-guard/ -->
+
 # Architecture Apply Command
 
 You are applying approved architecture refactors for `architecture-guard`.

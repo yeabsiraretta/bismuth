@@ -55,15 +55,7 @@ export interface InputFieldOptions {
 // ─── View field types ────────────────────────────────────────────────────────
 
 export type ViewFieldType =
-  | 'text'
-  | 'number'
-  | 'date'
-  | 'list'
-  | 'link'
-  | 'progress'
-  | 'rating'
-  | 'tags'
-  | 'boolean';
+  'text' | 'number' | 'date' | 'list' | 'link' | 'progress' | 'rating' | 'tags' | 'boolean';
 
 /** Parsed VIEW[type:property] declaration. */
 export interface ViewFieldDeclaration {
@@ -86,13 +78,7 @@ export interface ViewFieldOptions {
 
 // ─── Button types ────────────────────────────────────────────────────────────
 
-export type ButtonAction =
-  | 'open'
-  | 'command'
-  | 'template'
-  | 'navigate'
-  | 'update'
-  | 'js';
+export type ButtonAction = 'open' | 'command' | 'template' | 'navigate' | 'update' | 'js';
 
 /** Parsed BUTTON[label:action(args)] declaration. */
 export interface ButtonDeclaration {
@@ -114,10 +100,7 @@ export interface ButtonOptions {
 
 // ─── Union type ──────────────────────────────────────────────────────────────
 
-export type MetaBindDeclaration =
-  | InputFieldDeclaration
-  | ViewFieldDeclaration
-  | ButtonDeclaration;
+export type MetaBindDeclaration = InputFieldDeclaration | ViewFieldDeclaration | ButtonDeclaration;
 
 // ─── Parsed inline code block match ──────────────────────────────────────────
 

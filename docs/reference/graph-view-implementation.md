@@ -7,9 +7,11 @@ Fully responsive, interactive graph visualization component for Bismuth PKM Edit
 ## Components Created
 
 ### 1. GraphView.svelte
+
 **Location**: `src/lib/components/graph/GraphView.svelte`
 
 **Features**:
+
 - ✅ Canvas-based force-directed graph visualization
 - ✅ Interactive node dragging with physics simulation
 - ✅ Pan and zoom controls (mouse + keyboard)
@@ -25,32 +27,38 @@ Fully responsive, interactive graph visualization component for Bismuth PKM Edit
 - ✅ Keyboard navigation (arrow keys, +/- zoom, Shift for speed)
 
 ### 2. GraphSettings.svelte
+
 **Location**: `src/lib/components/graph/GraphSettings.svelte`
 
 **Settings Categories**:
 
 **Filters**:
+
 - Tags visibility toggle
 - Attachments visibility toggle
 - Orphans visibility toggle
 
 **Display**:
+
 - Arrows (show link direction)
 - Text fade threshold (0-1)
 - Node size (0.5-2x)
 - Link thickness (0.5-3x)
 
 **Forces**:
+
 - Center force (0-1) - pulls nodes toward center
 - Repel force (50-200) - nodes push each other away
 - Link force (0-1) - connected nodes attract
 - Link distance (50-200) - target distance between linked nodes
 
 **Actions**:
+
 - Restore defaults button
 - Collapsible settings panel
 
 ### 3. Type Definitions
+
 **Location**: `src/lib/types/graph.ts`
 
 ```typescript
@@ -90,11 +98,13 @@ export interface GraphSettings {
 ## Features Implemented
 
 ### Core Visualization
+
 - **Force-Directed Layout**: Nodes repel each other while links pull connected nodes together
 - **Smooth Animation**: Optional physics simulation with damping for natural movement
 - **Responsive Design**: Canvas auto-resizes with window, maintains performance
 
 ### Interaction
+
 - **Mouse Controls**:
   - Click and drag nodes to reposition
   - Scroll wheel to zoom in/out
@@ -108,18 +118,21 @@ export interface GraphSettings {
   - `-`/`_`: Zoom out
 
 ### Filtering & Search
+
 - **Search Bar**: Filter nodes by label (case-insensitive)
 - **Orphan Filter**: Hide nodes with no connections
 - **Local Graph Mode**: Show only nodes within N hops of center node
 - **Depth Control**: Adjustable depth slider (1-5 hops)
 
 ### Visual Customization
+
 - **Color Groups**: Assign colors to nodes matching search patterns
 - **Node Sizing**: Larger nodes for more connections (configurable)
 - **Link Styling**: Arrows show direction, configurable thickness
 - **Text Fade**: Labels fade based on zoom level
 
 ### Backend Integration
+
 - **Rust Commands**: Connects to `get_graph_data()` IPC command
 - **Real-time Updates**: Refresh button to reload graph data
 - **Event System**: Emits `open-note` events for parent components
@@ -127,6 +140,7 @@ export interface GraphSettings {
 ## Usage
 
 ### Basic Usage
+
 ```svelte
 <script>
   import GraphView from '$lib/components/graph/GraphView.svelte';
@@ -136,12 +150,9 @@ export interface GraphSettings {
 ```
 
 ### Local Graph Mode
+
 ```svelte
-<GraphView 
-  isLocal={true} 
-  centerNode="note-id-123" 
-  depth={2} 
-/>
+<GraphView isLocal={true} centerNode="note-id-123" depth={2} />
 ```
 
 ## Performance
@@ -153,12 +164,12 @@ export interface GraphSettings {
 
 ## Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| Arrow Keys | Pan view |
+| Key            | Action          |
+| -------------- | --------------- |
+| Arrow Keys     | Pan view        |
 | Shift + Arrows | Pan faster (4x) |
-| `+` or `=` | Zoom in |
-| `-` or `_` | Zoom out |
+| `+` or `=`     | Zoom in         |
+| `-` or `_`     | Zoom out        |
 
 ## Next Enhancements (Optional)
 
@@ -173,16 +184,19 @@ export interface GraphSettings {
 ## Integration with Bismuth Features
 
 ### Johnny.Decimal
+
 - Color nodes by JD area (10-19, 20-29, etc.)
 - Size nodes by number of items in category
 - Filter by JD category
 
 ### Zettelkasten
+
 - Show structure notes as hub nodes (larger)
 - Highlight atomic notes vs. MOCs
 - Backlink visualization
 
 ### Lightweight Ontologies
+
 - Color by concept type
 - Show subsumption relationships
 - Visualize concept hierarchy
@@ -215,6 +229,7 @@ export interface GraphSettings {
 ## Status
 
 ✅ **COMPLETE** - All next steps implemented:
+
 1. ✅ Wire settings into GraphView
 2. ✅ Add keyboard controls (arrows, +/-, Shift modifier)
 3. ✅ Local graph mode with depth control

@@ -12,10 +12,7 @@ export type {
   BatchAction,
   LoadQueueEntry,
 } from './types/lazyloader';
-export {
-  PRIORITY_ORDER,
-  DEFAULT_LAZY_LOADER_CONFIG,
-} from './types/lazyloader';
+export { PRIORITY_ORDER, DEFAULT_LAZY_LOADER_CONFIG } from './types/lazyloader';
 
 // Services
 export {

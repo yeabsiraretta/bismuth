@@ -81,6 +81,7 @@ All governance reports MUST follow this standard template:
 # Architecture Governance Report
 
 ## Input Summary
+
 - **Artifacts Scanned**: [list]
 - **Extensions Used**: [`flash-mem`: yes/no, Security Review: yes/no]
 - **Mode**: [architecture/performance]
@@ -89,18 +90,23 @@ All governance reports MUST follow this standard template:
 ## Findings
 
 ### Violations
+
 [Table format with: ID | Category | Severity | Location | Summary | Evidence]
 
 ### Refactor Tasks (if any)
+
 [Task list or "None"]
 
 ### Constitution Update Proposals (if any)
+
 [Proposals or "None"]
 
 ## Context Applied
+
 - **`flash-mem`**: [Used context or "Not available"]
 - **Security Review**: [Findings routed or "Not available"]
 
 ## Recommended Next Step
+
 [Single clear action]
 ```

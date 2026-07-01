@@ -69,7 +69,7 @@ export async function loadArticles(offset = 0, limit = 50): Promise<void> {
     if (offset === 0) {
       rssArticles.set(articles);
     } else {
-      rssArticles.update(existing => [...existing, ...articles]);
+      rssArticles.update((existing) => [...existing, ...articles]);
     }
   } catch {
     if (offset === 0) rssArticles.set([]);
@@ -98,7 +98,7 @@ export async function subscribeFeed(url: string, folder?: string): Promise<void>
   rssLoading.set(true);
   try {
     const feed = await addFeed(url, folder);
-    rssFeeds.update(feeds => [...feeds, feed]);
+    rssFeeds.update((feeds) => [...feeds, feed]);
     log.info('RSS feed added', { title: feed.title, url });
   } finally {
     rssLoading.set(false);
@@ -109,7 +109,7 @@ export async function subscribeFeed(url: string, folder?: string): Promise<void>
 export async function unsubscribeFeed(feedId: string): Promise<void> {
   try {
     await removeFeed(feedId);
-    rssFeeds.update(feeds => feeds.filter(f => f.id !== feedId));
+    rssFeeds.update((feeds) => feeds.filter((f) => f.id !== feedId));
     if (get(selectedFeedId) === feedId) {
       selectedFeedId.set(null);
     }
@@ -129,11 +129,13 @@ export async function openArticle(article: RssArticle): Promise<void> {
   activeArticle.set(article);
   if (!article.read) {
     await markArticleRead(article.id, true);
-    rssArticles.update(articles =>
-      articles.map(a => a.id === article.id ? { ...a, read: true } : a)
+    rssArticles.update((articles) =>
+      articles.map((a) => (a.id === article.id ? { ...a, read: true } : a))
     );
-    rssFeeds.update(feeds =>
-      feeds.map(f => f.id === article.feedId ? { ...f, unreadCount: Math.max(0, f.unreadCount - 1) } : f)
+    rssFeeds.update((feeds) =>
+      feeds.map((f) =>
+        f.id === article.feedId ? { ...f, unreadCount: Math.max(0, f.unreadCount - 1) } : f
+      )
     );
   }
 }
@@ -141,12 +143,12 @@ export async function openArticle(article: RssArticle): Promise<void> {
 /** Toggle star on an article */
 export async function starArticle(articleId: string): Promise<void> {
   const articles = get(rssArticles);
-  const article = articles.find(a => a.id === articleId);
+  const article = articles.find((a) => a.id === articleId);
   if (!article) return;
 
   const newStarred = !article.starred;
   await toggleArticleStar(articleId, newStarred);
-  rssArticles.update(all =>
-    all.map(a => a.id === articleId ? { ...a, starred: newStarred } : a)
+  rssArticles.update((all) =>
+    all.map((a) => (a.id === articleId ? { ...a, starred: newStarred } : a))
   );
 }

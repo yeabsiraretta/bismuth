@@ -27,20 +27,20 @@ export function searchFiles(
   allNotes: Note[],
   query: string,
   activeFilter: FileTypeFilter | null,
-  maxResults = 20,
+  maxResults = 20
 ): HomeSearchResult[] {
   const lower = query.toLowerCase();
 
   let pool = allNotes;
   if (activeFilter) {
-    pool = pool.filter(n => {
+    pool = pool.filter((n) => {
       const ext = getExtension(n.path);
       return activeFilter.extensions.includes(ext);
     });
   }
 
   if (!lower) {
-    return pool.slice(0, maxResults).map(n => ({
+    return pool.slice(0, maxResults).map((n) => ({
       path: n.path,
       title: n.title,
       extension: getExtension(n.path),
@@ -49,7 +49,7 @@ export function searchFiles(
   }
 
   const scored = pool
-    .map(n => {
+    .map((n) => {
       const titleLower = n.title.toLowerCase();
       const pathLower = n.path.toLowerCase();
       let score = 0;
@@ -79,15 +79,33 @@ function getExtension(path: string): string {
 /** Get the icon name for a file extension. */
 export function getFileIcon(ext: string): string {
   switch (ext) {
-    case 'md': return 'file-text';
-    case 'canvas': return 'layout';
-    case 'pdf': return 'file';
-    case 'png': case 'jpg': case 'jpeg': case 'gif': case 'svg': case 'bmp': case 'webp':
+    case 'md':
+      return 'file-text';
+    case 'canvas':
+      return 'layout';
+    case 'pdf':
+      return 'file';
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'svg':
+    case 'bmp':
+    case 'webp':
       return 'image';
-    case 'mp4': case 'webm': case 'mov': case 'mkv': case 'ogv':
+    case 'mp4':
+    case 'webm':
+    case 'mov':
+    case 'mkv':
+    case 'ogv':
       return 'video';
-    case 'mp3': case 'wav': case 'm4a': case 'ogg': case 'flac':
+    case 'mp3':
+    case 'wav':
+    case 'm4a':
+    case 'ogg':
+    case 'flac':
       return 'music';
-    default: return 'file';
+    default:
+      return 'file';
   }
 }

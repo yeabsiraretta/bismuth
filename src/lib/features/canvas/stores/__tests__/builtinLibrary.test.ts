@@ -7,8 +7,20 @@ vi.mock('@/features/canvas/services/components', () => ({
 }));
 
 vi.mock('@/features/canvas/stores/elements/canvasStore', () => ({
-  currentCanvas: { subscribe: vi.fn((cb) => { cb(null); return () => {}; }), update: vi.fn(), set: vi.fn() },
-  selectedElements: { subscribe: vi.fn((cb) => { cb([]); return () => {}; }) },
+  currentCanvas: {
+    subscribe: vi.fn((cb) => {
+      cb(null);
+      return () => {};
+    }),
+    update: vi.fn(),
+    set: vi.fn(),
+  },
+  selectedElements: {
+    subscribe: vi.fn((cb) => {
+      cb([]);
+      return () => {};
+    }),
+  },
   clearSelection: vi.fn(),
   selectElement: vi.fn(),
 }));

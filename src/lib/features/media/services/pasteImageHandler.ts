@@ -46,7 +46,7 @@ export function savePasteConfig(config: PasteImageConfig): void {
  */
 export function hasImageData(transfer: DataTransfer): boolean {
   if (transfer.files.length > 0) {
-    return Array.from(transfer.files).some(f => f.type.startsWith('image/'));
+    return Array.from(transfer.files).some((f) => f.type.startsWith('image/'));
   }
   return transfer.types.includes('image/png') || transfer.types.includes('image/jpeg');
 }
@@ -55,7 +55,7 @@ export function hasImageData(transfer: DataTransfer): boolean {
  * Extract image files from a DataTransfer.
  */
 export function getImageFiles(transfer: DataTransfer): File[] {
-  return Array.from(transfer.files).filter(f => f.type.startsWith('image/'));
+  return Array.from(transfer.files).filter((f) => f.type.startsWith('image/'));
 }
 
 /**
@@ -71,7 +71,7 @@ export async function processDroppedImage(
   imageFile: File,
   vaultRoot: string,
   notePath: string,
-  config: ConversionConfig,
+  config: ConversionConfig
 ): Promise<string | null> {
   try {
     const converted = await convertBlob(imageFile, config);
@@ -104,7 +104,7 @@ export async function processDroppedImageWithConfig(
   imageFile: File,
   vaultRoot: string,
   notePath: string,
-  config: ConversionConfig,
+  config: ConversionConfig
 ): Promise<string | null> {
   try {
     const { get: svelteGet } = await import('svelte/store');
@@ -148,7 +148,11 @@ function buildRelativePath(fromDir: string, toFile: string): string {
   const toParts = toFile.split('/').filter(Boolean);
 
   let common = 0;
-  while (common < fromParts.length && common < toParts.length && fromParts[common] === toParts[common]) {
+  while (
+    common < fromParts.length &&
+    common < toParts.length &&
+    fromParts[common] === toParts[common]
+  ) {
     common++;
   }
 

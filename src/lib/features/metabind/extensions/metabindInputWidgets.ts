@@ -12,23 +12,23 @@ import type { InputFieldDeclaration } from '../types/metabind';
 import { log } from '@/utils/logger';
 
 /** Callback for writing a frontmatter value change. */
-export type FieldUpdateCallback = (
-  view: EditorView,
-  property: string,
-  value: unknown
-) => void;
+export type FieldUpdateCallback = (view: EditorView, property: string, value: unknown) => void;
 
 export class MetaBindInputWidget extends WidgetType {
   constructor(
     private decl: InputFieldDeclaration,
     private value: unknown,
-    private onUpdate: FieldUpdateCallback,
-  ) { super(); }
+    private onUpdate: FieldUpdateCallback
+  ) {
+    super();
+  }
 
   eq(other: MetaBindInputWidget): boolean {
-    return this.decl.property === other.decl.property
-      && this.decl.fieldType === other.decl.fieldType
-      && this.value === other.value;
+    return (
+      this.decl.property === other.decl.property &&
+      this.decl.fieldType === other.decl.fieldType &&
+      this.value === other.value
+    );
   }
 
   toDOM(view: EditorView): HTMLElement {
@@ -37,24 +37,49 @@ export class MetaBindInputWidget extends WidgetType {
     wrap.setAttribute('data-mb-property', this.decl.property);
 
     switch (this.decl.fieldType) {
-      case 'toggle': this.renderToggle(wrap, view); break;
-      case 'text': this.renderText(wrap, view); break;
-      case 'number': this.renderNumber(wrap, view); break;
-      case 'slider': this.renderSlider(wrap, view); break;
-      case 'date': this.renderDate(wrap, view); break;
-      case 'time': this.renderTime(wrap, view); break;
-      case 'select': this.renderSelect(wrap, view); break;
-      case 'multi-select': this.renderMultiSelect(wrap, view); break;
-      case 'textarea': this.renderTextarea(wrap, view); break;
-      case 'color': this.renderColor(wrap, view); break;
-      case 'suggester': this.renderText(wrap, view); break;
-      default: wrap.textContent = `[unknown: ${this.decl.fieldType}]`;
+      case 'toggle':
+        this.renderToggle(wrap, view);
+        break;
+      case 'text':
+        this.renderText(wrap, view);
+        break;
+      case 'number':
+        this.renderNumber(wrap, view);
+        break;
+      case 'slider':
+        this.renderSlider(wrap, view);
+        break;
+      case 'date':
+        this.renderDate(wrap, view);
+        break;
+      case 'time':
+        this.renderTime(wrap, view);
+        break;
+      case 'select':
+        this.renderSelect(wrap, view);
+        break;
+      case 'multi-select':
+        this.renderMultiSelect(wrap, view);
+        break;
+      case 'textarea':
+        this.renderTextarea(wrap, view);
+        break;
+      case 'color':
+        this.renderColor(wrap, view);
+        break;
+      case 'suggester':
+        this.renderText(wrap, view);
+        break;
+      default:
+        wrap.textContent = `[unknown: ${this.decl.fieldType}]`;
     }
 
     return wrap;
   }
 
-  ignoreEvent(): boolean { return true; }
+  ignoreEvent(): boolean {
+    return true;
+  }
 
   // ─── Renderers ───────────────────────────────────────────────────────
 
@@ -188,7 +213,7 @@ export class MetaBindInputWidget extends WidgetType {
       cb.type = 'checkbox';
       cb.checked = current.includes(choice);
       cb.addEventListener('change', () => {
-        const updated = choices.filter(c => {
+        const updated = choices.filter((c) => {
           const el = container.querySelector(`input[data-choice="${c}"]`) as HTMLInputElement;
           return el?.checked;
         });

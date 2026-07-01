@@ -153,11 +153,26 @@
     flex-shrink: 0;
   }
 
-  .status--idea { color: var(--text-muted, #71717a); background: var(--background-secondary, #f4f4f5); }
-  .status--planned { color: var(--color-info, #3b82f6); background: rgba(59, 130, 246, 0.1); }
-  .status--in-progress { color: var(--interactive-accent, #dc2626); background: rgba(220, 38, 38, 0.1); }
-  .status--done { color: var(--color-success, #16a34a); background: rgba(22, 163, 74, 0.1); }
-  .status--deferred { color: var(--color-warning, #d97706); background: rgba(217, 119, 6, 0.1); }
+  .status--idea {
+    color: var(--text-muted, #71717a);
+    background: var(--background-secondary, #f4f4f5);
+  }
+  .status--planned {
+    color: var(--color-info, #3b82f6);
+    background: rgba(59, 130, 246, 0.1);
+  }
+  .status--in-progress {
+    color: var(--interactive-accent, #dc2626);
+    background: rgba(220, 38, 38, 0.1);
+  }
+  .status--done {
+    color: var(--color-success, #16a34a);
+    background: rgba(22, 163, 74, 0.1);
+  }
+  .status--deferred {
+    color: var(--color-warning, #d97706);
+    background: rgba(217, 119, 6, 0.1);
+  }
 
   .card-meta {
     display: flex;

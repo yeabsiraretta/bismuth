@@ -5,17 +5,9 @@
 import { writable, derived, get } from 'svelte/store';
 import { openNote } from '@/appNavigation';
 import { log } from '@/utils/logger';
-import type {
-  JournalConfig,
-  JournalShelf,
-  PeriodicSettings,
-} from '../types';
+import type { JournalConfig, JournalShelf, PeriodicSettings } from '../types';
 import { DEFAULT_PERIODIC_SETTINGS } from '../types/defaults';
-import {
-  createJournalNote,
-  navigatePeriod,
-  resolveNotePath,
-} from '../services/journalService';
+import { createJournalNote, navigatePeriod, resolveNotePath } from '../services/journalService';
 import { generatePrefixedId } from '@/utils/id';
 
 const STORAGE_KEY = 'bismuth-journal-settings';
@@ -39,7 +31,7 @@ function loadSettings(): PeriodicSettings {
 export const journalSettings = writable<PeriodicSettings>(loadSettings());
 
 // Persist on change
-journalSettings.subscribe(settings => {
+journalSettings.subscribe((settings) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
   } catch (e) {
@@ -64,18 +56,18 @@ export const journalLoading = writable(false);
 // ─── Derived Stores ───────────────────────────────────────────────────────
 
 /** All journal definitions */
-export const journals = derived(journalSettings, $s => $s.journals);
+export const journals = derived(journalSettings, ($s) => $s.journals);
 
 /** All shelves */
-export const shelves = derived(journalSettings, $s => $s.shelves);
+export const shelves = derived(journalSettings, ($s) => $s.shelves);
 
 /** Whether shelves are enabled */
-export const shelvesEnabled = derived(journalSettings, $s => $s.shelvesEnabled);
+export const shelvesEnabled = derived(journalSettings, ($s) => $s.shelvesEnabled);
 
 /** The active journal config */
 export const activeJournal = derived(
   [journals, activeJournalId],
-  ([$journals, $id]) => $journals.find(j => j.id === $id) ?? $journals[0] ?? null,
+  ([$journals, $id]) => $journals.find((j) => j.id === $id) ?? $journals[0] ?? null
 );
 
 /** Journals filtered by active shelf */
@@ -83,12 +75,12 @@ export const filteredJournals = derived(
   [journals, activeShelfId, shelvesEnabled],
   ([$journals, $shelfId, $enabled]) => {
     if (!$enabled || !$shelfId) return $journals;
-    return $journals.filter(j => j.shelfId === $shelfId);
-  },
+    return $journals.filter((j) => j.shelfId === $shelfId);
+  }
 );
 
 /** Journals grouped by type for quick access */
-export const journalsByType = derived(journals, $journals => {
+export const journalsByType = derived(journals, ($journals) => {
   const map = new Map<string, JournalConfig[]>();
   for (const j of $journals) {
     const key = j.type;
@@ -105,7 +97,7 @@ export function addJournal(journal: Omit<JournalConfig, 'id'>): string {
   const id = generatePrefixedId('jrn');
   const full: JournalConfig = { ...journal, id };
 
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
     journals: [...s.journals, full],
   }));
@@ -116,17 +108,17 @@ export function addJournal(journal: Omit<JournalConfig, 'id'>): string {
 
 /** Update an existing journal. */
 export function updateJournal(id: string, updates: Partial<JournalConfig>): void {
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
-    journals: s.journals.map(j => j.id === id ? { ...j, ...updates } : j),
+    journals: s.journals.map((j) => (j.id === id ? { ...j, ...updates } : j)),
   }));
 }
 
 /** Delete a journal. */
 export function deleteJournal(id: string): void {
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
-    journals: s.journals.filter(j => j.id !== id),
+    journals: s.journals.filter((j) => j.id !== id),
   }));
   log.info('Journal deleted', { id });
 }
@@ -136,7 +128,7 @@ export function deleteJournal(id: string): void {
 /** Add a new shelf. */
 export function addShelf(name: string): string {
   const id = generatePrefixedId('shelf');
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
     shelves: [...s.shelves, { id, name, order: s.shelves.length }],
   }));
@@ -146,18 +138,18 @@ export function addShelf(name: string): string {
 
 /** Update a shelf. */
 export function updateShelf(id: string, updates: Partial<JournalShelf>): void {
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
-    shelves: s.shelves.map(sh => sh.id === id ? { ...sh, ...updates } : sh),
+    shelves: s.shelves.map((sh) => (sh.id === id ? { ...sh, ...updates } : sh)),
   }));
 }
 
 /** Delete a shelf and unassign its journals. */
 export function deleteShelf(id: string): void {
-  journalSettings.update(s => ({
+  journalSettings.update((s) => ({
     ...s,
-    shelves: s.shelves.filter(sh => sh.id !== id),
-    journals: s.journals.map(j => j.shelfId === id ? { ...j, shelfId: null } : j),
+    shelves: s.shelves.filter((sh) => sh.id !== id),
+    journals: s.journals.map((j) => (j.shelfId === id ? { ...j, shelfId: null } : j)),
   }));
   log.info('Shelf deleted', { id });
 }
@@ -191,7 +183,7 @@ export async function openActiveJournalNote(): Promise<string | null> {
 /** Open today's daily note. */
 export async function openTodaysDailyNote(): Promise<string | null> {
   const allJournals = get(journals);
-  const daily = allJournals.find(j => j.type === 'daily') ?? allJournals[0];
+  const daily = allJournals.find((j) => j.type === 'daily') ?? allJournals[0];
   if (!daily) return null;
 
   journalLoading.set(true);
@@ -225,7 +217,7 @@ export function goToJournalToday(): void {
 /** Get the resolved path for a journal note (without creating it). */
 export function getJournalNotePath(date: Date, journalId: string): string | null {
   const allJournals = get(journals);
-  const journal = allJournals.find(j => j.id === journalId);
+  const journal = allJournals.find((j) => j.id === journalId);
   if (!journal) return null;
   return resolveNotePath(date, journal);
 }

@@ -30,11 +30,7 @@
   });
 </script>
 
-<div
-  class="popover popover-{placement}"
-  style="--popover-offset: {offset}px"
-  role="dialog"
->
+<div class="popover popover-{placement}" style="--popover-offset: {offset}px" role="dialog">
   <slot />
 </div>
 

@@ -1,7 +1,15 @@
 import type { Point } from '@/features/canvas/types/settings';
 
 /** Trigger type for an interaction. */
-export type InteractionTrigger = 'click' | 'hover' | 'press' | 'drag' | 'key_down' | 'mouse_enter' | 'mouse_leave' | 'after_timeout';
+export type InteractionTrigger =
+  | 'click'
+  | 'hover'
+  | 'press'
+  | 'drag'
+  | 'key_down'
+  | 'mouse_enter'
+  | 'mouse_leave'
+  | 'after_timeout';
 
 /** Action performed when an interaction triggers. */
 export type InteractionAction =
@@ -14,7 +22,15 @@ export type InteractionAction =
 
 /** Transition animation between states/frames. */
 export interface Transition {
-  type: 'instant' | 'dissolve' | 'smart_animate' | 'slide_in' | 'slide_out' | 'push' | 'move_in' | 'move_out';
+  type:
+    | 'instant'
+    | 'dissolve'
+    | 'smart_animate'
+    | 'slide_in'
+    | 'slide_out'
+    | 'push'
+    | 'move_in'
+    | 'move_out';
   duration: number;
   easing: 'linear' | 'ease_in' | 'ease_out' | 'ease_in_out' | 'spring' | 'custom';
   /** Custom cubic-bezier control points. */

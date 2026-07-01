@@ -18,10 +18,26 @@ const ABS_PATH_RE = /(?:\/(?:Users|home|var|tmp|opt|etc)\/[^\s'",:})\]]+|[A-Z]:\
 
 /** Keys whose values are known to contain sensitive paths. */
 const PATH_KEYS = new Set([
-  'path', 'newPath', 'oldPath', 'from', 'to', 'toFolder',
-  'target', 'targetFolder', 'notePath', 'vaultPath', 'rootPath',
-  'root_path', 'vault_root', 'source', 'filePath', 'outputPath',
-  'staged_path', 'audio_path', 'config_path', 'diffPath',
+  'path',
+  'newPath',
+  'oldPath',
+  'from',
+  'to',
+  'toFolder',
+  'target',
+  'targetFolder',
+  'notePath',
+  'vaultPath',
+  'rootPath',
+  'root_path',
+  'vault_root',
+  'source',
+  'filePath',
+  'outputPath',
+  'staged_path',
+  'audio_path',
+  'config_path',
+  'diffPath',
 ]);
 
 /**
@@ -50,7 +66,9 @@ export function scrubPaths(message: string): string {
  * Deep-sanitize a context object, redacting path-like values.
  * Returns a new object (does not mutate the original).
  */
-export function sanitizeContext(ctx: Record<string, unknown> | undefined): Record<string, unknown> | undefined {
+export function sanitizeContext(
+  ctx: Record<string, unknown> | undefined
+): Record<string, unknown> | undefined {
   if (!ctx || !IS_PROD) return ctx;
   const clean: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(ctx)) {

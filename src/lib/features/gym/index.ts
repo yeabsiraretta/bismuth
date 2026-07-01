@@ -46,7 +46,7 @@ import { getSessionsForDate } from './services/gym';
 export async function resolveWorkoutLogToken(
   vaultRoot: string,
   vaultId: string,
-  date: string,
+  date: string
 ): Promise<string> {
   const sessions = await getSessionsForDate(vaultRoot, vaultId, date);
 

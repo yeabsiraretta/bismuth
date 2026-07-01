@@ -6,11 +6,11 @@
 
 /** Supported Anki note types (maps to default Anki note models). */
 export type FlashcardType =
-  | 'basic'           // Front --- Back
-  | 'basic-reversed'  // Front --- --- Back (two cards)
-  | 'multiline'       // Question ? Answer (SR-style)
+  | 'basic' // Front --- Back
+  | 'basic-reversed' // Front --- --- Back (two cards)
+  | 'multiline' // Question ? Answer (SR-style)
   | 'multiline-reversed' // Question ?? Answer (SR-style)
-  | 'cloze';          // ==highlight==, {curly}, or **bold** deletions
+  | 'cloze'; // ==highlight==, {curly}, or **bold** deletions
 
 /** Which spaced repetition algorithm to use. */
 export type SchedulerAlgorithm = 'sm2' | 'fsrs';

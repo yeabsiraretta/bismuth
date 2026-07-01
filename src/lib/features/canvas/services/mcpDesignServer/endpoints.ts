@@ -119,7 +119,12 @@ export function generateDesignSummary(canvas: CanvasDocument): DesignSummary {
         spacingEntries.push({ raw: al.gap, token: null, cssVar: null, context: 'gap' });
       }
       if (al.padding.top > 0) {
-        spacingEntries.push({ raw: al.padding.top, token: null, cssVar: null, context: 'padding-top' });
+        spacingEntries.push({
+          raw: al.padding.top,
+          token: null,
+          cssVar: null,
+          context: 'padding-top',
+        });
       }
     }
 
@@ -159,7 +164,8 @@ export function generateDesignSummary(canvas: CanvasDocument): DesignSummary {
     elementTree: extractCanvasTree(canvas),
     _stats: {
       totalElements: canvas.elements.length,
-      componentInstances: canvas.elements.filter((e) => e.element_type === 'component_instance').length,
+      componentInstances: canvas.elements.filter((e) => e.element_type === 'component_instance')
+        .length,
       frames: canvas.elements.filter((e) => e.element_type === 'frame').length,
       textNodes: canvas.elements.filter((e) => e.element_type === 'text').length,
       tokensCovered: 0,

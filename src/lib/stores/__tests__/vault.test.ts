@@ -8,7 +8,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { get } from 'svelte/store'; void get;
+import { get } from 'svelte/store';
+void get;
 
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),

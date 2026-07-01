@@ -5,10 +5,7 @@
  * Pattern follows abcExtension.ts / dataviewExtension.ts.
  */
 
-import {
-  Decoration,
-  ViewPlugin,
-} from '@codemirror/view';
+import { Decoration, ViewPlugin } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate, EditorView } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 import { findSmilesBlocks, findInlineSmiles } from './smilesParser';
@@ -62,11 +59,7 @@ export function smilesExtension() {
         const blocks = findSmilesBlocks(text);
         for (const block of blocks) {
           const widget = new SmilesBlockWidget(block.entries);
-          builder.add(
-            block.to,
-            block.to,
-            Decoration.widget({ widget, side: 1 }),
-          );
+          builder.add(block.to, block.to, Decoration.widget({ widget, side: 1 }));
         }
 
         // Inline widgets
@@ -74,17 +67,13 @@ export function smilesExtension() {
           const inlines = findInlineSmiles(text, extensionConfig.inlinePrefix);
           for (const inline of inlines) {
             const widget = new SmilesInlineWidget(inline.smiles);
-            builder.add(
-              inline.to,
-              inline.to,
-              Decoration.widget({ widget, side: 1 }),
-            );
+            builder.add(inline.to, inline.to, Decoration.widget({ widget, side: 1 }));
           }
         }
 
         this.decorations = builder.finish();
       }
     },
-    { decorations: (v) => v.decorations },
+    { decorations: (v) => v.decorations }
   );
 }

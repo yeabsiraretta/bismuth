@@ -38,7 +38,8 @@
   /** Called when tabs are reordered in lower section */
   export let onLowerReorder: ((tabs: SidebarTab[]) => void) | undefined = undefined;
   /** Called when a tab is moved between upper/lower */
-  export let onSectionChange: ((tabId: string, target: 'upper' | 'lower') => void) | undefined = undefined;
+  export let onSectionChange: ((tabId: string, target: 'upper' | 'lower') => void) | undefined =
+    undefined;
   /** Called when width changes via drag resize */
   export let onWidthChange: ((width: number) => void) | undefined = undefined;
 
@@ -74,9 +75,7 @@
 
   function handleResizeMove(e: MouseEvent) {
     if (!isResizing) return;
-    const delta = position === 'left'
-      ? e.clientX - startX
-      : startX - e.clientX;
+    const delta = position === 'left' ? e.clientX - startX : startX - e.clientX;
     const newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, startWidth + delta));
     width = newWidth;
     onWidthChange?.(newWidth);
@@ -85,9 +84,8 @@
   function handleTouchResizeMove(e: TouchEvent) {
     if (!isResizing) return;
     e.preventDefault();
-    const delta = position === 'left'
-      ? e.touches[0].clientX - startX
-      : startX - e.touches[0].clientX;
+    const delta =
+      position === 'left' ? e.touches[0].clientX - startX : startX - e.touches[0].clientX;
     const newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, startWidth + delta));
     width = newWidth;
     onWidthChange?.(newWidth);
@@ -109,7 +107,10 @@
   }
 
   onDestroy(() => {
-    if (isResizing) { handleResizeEnd(); handleTouchResizeEnd(); }
+    if (isResizing) {
+      handleResizeEnd();
+      handleTouchResizeEnd();
+    }
   });
 </script>
 
@@ -136,7 +137,7 @@
     {onReorder}
     {onLowerReorder}
     {onSectionChange}
-    onTabChange={onTabChange}
+    {onTabChange}
   />
 
   {#if !collapsed}
@@ -227,5 +228,4 @@
   .sidebar-shell.left .resize-handle {
     order: 99;
   }
-
 </style>

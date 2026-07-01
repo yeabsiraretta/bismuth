@@ -20,7 +20,14 @@ describe('linting service', () => {
 
   it('returns lint issues', async () => {
     const issues = [
-      { rule: 'passive-voice', message: 'Passive detected', severity: 'warning', from: 0, to: 5, suggestion: 'Rewrite' },
+      {
+        rule: 'passive-voice',
+        message: 'Passive detected',
+        severity: 'warning',
+        from: 0,
+        to: 5,
+        suggestion: 'Rewrite',
+      },
     ];
     vi.mocked(invoke).mockResolvedValue(issues);
     const result = await lintText('It was done by the team');

@@ -1,6 +1,11 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { pendingReward, acceptPendingReward, skipPendingReward, rewarderConfig } from '../stores/rewarderStore';
+  import {
+    pendingReward,
+    acceptPendingReward,
+    skipPendingReward,
+    rewarderConfig,
+  } from '../stores/rewarderStore';
 
   $: reward = $pendingReward;
   $: quoteMode = $rewarderConfig.quoteMode;
@@ -15,7 +20,10 @@
 
   function handleKeydown(e: KeyboardEvent) {
     if (!reward) return;
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAccept(); }
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleAccept();
+    }
     if (e.key === 'Escape') handleSkip();
   }
 </script>
@@ -71,9 +79,7 @@
           <Icon name="check" size={14} />
           {quoteMode ? 'Close' : 'Claim reward'}
         </button>
-        <button class="btn-skip" on:click={handleSkip}>
-          Skip this reward
-        </button>
+        <button class="btn-skip" on:click={handleSkip}> Skip this reward </button>
       </div>
     </div>
   </div>
@@ -81,71 +87,139 @@
 
 <style>
   .rewarder-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     animation: fadeIn 0.2s ease-out;
   }
   .rewarder-modal {
     background: var(--background-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-l, 12px);
-    padding: 24px; max-width: 360px; width: 90%;
+    padding: 24px;
+    max-width: 360px;
+    width: 90%;
     text-align: center;
     animation: scaleIn 0.25s ease-out;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   }
   .rewarder-modal.legendary {
     border-color: var(--status-warning);
-    box-shadow: 0 0 30px color-mix(in srgb, var(--status-warning) 20%, transparent),
-                0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 0 30px color-mix(in srgb, var(--status-warning) 20%, transparent),
+      0 20px 60px rgba(0, 0, 0, 0.3);
   }
   .rewarder-modal.rare {
     border-color: var(--interactive-accent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--interactive-accent) 15%, transparent),
-                0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 0 20px color-mix(in srgb, var(--interactive-accent) 15%, transparent),
+      0 20px 60px rgba(0, 0, 0, 0.3);
   }
   .reward-header {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-bottom: 16px; color: var(--interactive-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--interactive-accent);
   }
-  .reward-title { font-size: 16px; font-weight: 700; }
+  .reward-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
   .reward-image {
-    margin: 12px auto; max-width: 200px; max-height: 200px;
-    border-radius: var(--radius-m, 8px); overflow: hidden;
+    margin: 12px auto;
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: var(--radius-m, 8px);
+    overflow: hidden;
   }
   .reward-image img {
-    width: 100%; height: auto; object-fit: cover; display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
   }
   .reward-name {
-    font-size: 18px; font-weight: 600; color: var(--text-normal);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-normal);
     margin: 12px 0 8px;
   }
   .reward-task {
-    font-size: 12px; color: var(--text-muted); margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
   }
   .reward-badge {
-    display: inline-block; padding: 2px 10px; border-radius: 12px;
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
     background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
-    color: var(--interactive-accent); margin-bottom: 16px;
+    color: var(--interactive-accent);
+    margin-bottom: 16px;
   }
-  .reward-actions { display: flex; flex-direction: column; gap: 8px; }
+  .reward-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
   .btn-accept {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; padding: 10px; border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px;
+    border: none;
     border-radius: var(--radius-m, 8px);
-    background: var(--interactive-accent); color: var(--text-on-accent);
-    font-size: 14px; font-weight: 600; cursor: pointer;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     transition: opacity var(--transition-fast);
   }
-  .btn-accept:hover { opacity: 0.9; }
-  .btn-skip {
-    background: none; border: none; padding: 6px;
-    color: var(--text-muted); font-size: 12px; cursor: pointer;
+  .btn-accept:hover {
+    opacity: 0.9;
   }
-  .btn-skip:hover { color: var(--text-normal); text-decoration: underline; }
+  .btn-skip {
+    background: none;
+    border: none;
+    padding: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .btn-skip:hover {
+    color: var(--text-normal);
+    text-decoration: underline;
+  }
 
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 </style>

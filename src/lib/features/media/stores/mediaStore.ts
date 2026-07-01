@@ -21,7 +21,7 @@ const redoStack = writable<(PhotoOperation | VideoOperation)[][]>([]);
 /** Whether the current chain has unsaved edits. */
 export const isDirty = derived(
   [editChain],
-  ([$chain]) => $chain !== null && $chain.operations.length > 0,
+  ([$chain]) => $chain !== null && $chain.operations.length > 0
 );
 
 // --- Actions ---

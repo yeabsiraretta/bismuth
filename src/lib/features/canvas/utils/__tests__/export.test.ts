@@ -58,7 +58,14 @@ describe('exportToSVG', () => {
   });
 
   it('renders rectangle elements', () => {
-    const el = makeElement({ id: 'r1', element_type: 'rectangle', x: 0, y: 0, width: 50, height: 50 });
+    const el = makeElement({
+      id: 'r1',
+      element_type: 'rectangle',
+      x: 0,
+      y: 0,
+      width: 50,
+      height: 50,
+    });
     const svg = exportToSVG(makeDocument({ elements: [el] }));
     expect(svg).toContain('<rect');
   });
@@ -237,7 +244,7 @@ describe('downloadSVG', () => {
 
     downloadSVG('<svg></svg>', 'export.svg');
     expect(createObjectURLSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'image/svg+xml' }),
+      expect.objectContaining({ type: 'image/svg+xml' })
     );
   });
 });

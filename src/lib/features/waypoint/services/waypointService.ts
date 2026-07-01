@@ -4,12 +4,7 @@
  */
 
 import type { Note } from '@/types/data/vault';
-import type {
-  MarkerKind,
-  MarkerTrigger,
-  TocEntry,
-  WaypointConfig,
-} from '../types/waypoint';
+import type { MarkerKind, MarkerTrigger, TocEntry, WaypointConfig } from '../types/waypoint';
 import { beginMarker, endMarker, triggerComment } from '../types/waypoint';
 
 // ─── Path helpers ───────────────────────────────────────────────────────────
@@ -101,14 +96,14 @@ export function collectTocEntries(
   allNotes: Note[],
   folderNoteMap: Map<string, string>,
   markerMap: Map<string, MarkerKind>,
-  config: WaypointConfig,
+  config: WaypointConfig
 ): TocEntry[] {
   const entries: TocEntry[] = [];
   const folderDepth = folderPath.split('/').length;
 
   // Notes inside this folder (recursive)
   const contained = allNotes.filter(
-    (n) => n.path.startsWith(folderPath + '/') && n.path !== folderNoteMap.get(folderPath),
+    (n) => n.path.startsWith(folderPath + '/') && n.path !== folderNoteMap.get(folderPath)
   );
 
   // Identify subfolders with waypoints (pruning boundaries)
@@ -162,10 +157,7 @@ export function collectTocEntries(
 // ─── TOC rendering ──────────────────────────────────────────────────────────
 
 /** Render TOC entries as a markdown list with wikilinks. */
-export function renderToc(
-  entries: TocEntry[],
-  config: WaypointConfig,
-): string {
+export function renderToc(entries: TocEntry[], config: WaypointConfig): string {
   return entries
     .map((e) => {
       const indent = config.indentString.repeat(e.depth);
@@ -181,7 +173,7 @@ export function renderToc(
 export function generateWaypointBlock(
   kind: MarkerKind,
   entries: TocEntry[],
-  config: WaypointConfig,
+  config: WaypointConfig
 ): string {
   const trigger = kind === 'waypoint' ? config.waypointTrigger : config.landmarkTrigger;
   const begin = beginMarker(kind, trigger);
@@ -202,7 +194,7 @@ export function updateNoteContent(
   content: string,
   kind: MarkerKind,
   entries: TocEntry[],
-  config: WaypointConfig,
+  config: WaypointConfig
 ): string | null {
   const trigger = kind === 'waypoint' ? config.waypointTrigger : config.landmarkTrigger;
   const triggerLine = triggerComment(trigger);

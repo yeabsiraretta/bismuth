@@ -10,9 +10,24 @@ export interface TokenDef {
 }
 
 export const COLOR_TOKENS: TokenDef[] = [
-  { key: '--background-primary', label: 'Background Primary', category: 'background', type: 'color' },
-  { key: '--background-secondary', label: 'Background Secondary', category: 'background', type: 'color' },
-  { key: '--background-modifier-hover', label: 'Hover Background', category: 'background', type: 'color' },
+  {
+    key: '--background-primary',
+    label: 'Background Primary',
+    category: 'background',
+    type: 'color',
+  },
+  {
+    key: '--background-secondary',
+    label: 'Background Secondary',
+    category: 'background',
+    type: 'color',
+  },
+  {
+    key: '--background-modifier-hover',
+    label: 'Hover Background',
+    category: 'background',
+    type: 'color',
+  },
   { key: '--text-normal', label: 'Text Normal', category: 'text', type: 'color' },
   { key: '--text-muted', label: 'Text Muted', category: 'text', type: 'color' },
   { key: '--text-faint', label: 'Text Faint', category: 'text', type: 'color' },
@@ -23,21 +38,75 @@ export const COLOR_TOKENS: TokenDef[] = [
 ];
 
 export const TYPOGRAPHY_TOKENS: TokenDef[] = [
-  { key: '--font-text', label: 'Text Font', category: 'typography', type: 'font', defaultValue: 'Inter' },
-  { key: '--font-mono', label: 'Monospace Font', category: 'typography', type: 'font', defaultValue: 'JetBrains Mono' },
-  { key: '--font-ui-small', label: 'UI Small', category: 'typography', type: 'size', defaultValue: '12px' },
-  { key: '--font-ui-medium', label: 'UI Medium', category: 'typography', type: 'size', defaultValue: '14px' },
-  { key: '--font-ui-large', label: 'UI Large', category: 'typography', type: 'size', defaultValue: '16px' },
+  {
+    key: '--font-text',
+    label: 'Text Font',
+    category: 'typography',
+    type: 'font',
+    defaultValue: 'Inter',
+  },
+  {
+    key: '--font-mono',
+    label: 'Monospace Font',
+    category: 'typography',
+    type: 'font',
+    defaultValue: 'JetBrains Mono',
+  },
+  {
+    key: '--font-ui-small',
+    label: 'UI Small',
+    category: 'typography',
+    type: 'size',
+    defaultValue: '12px',
+  },
+  {
+    key: '--font-ui-medium',
+    label: 'UI Medium',
+    category: 'typography',
+    type: 'size',
+    defaultValue: '14px',
+  },
+  {
+    key: '--font-ui-large',
+    label: 'UI Large',
+    category: 'typography',
+    type: 'size',
+    defaultValue: '16px',
+  },
 ];
 
 export const SPACING_TOKENS: TokenDef[] = [
-  { key: '--spacing-xs', label: 'Extra Small', category: 'spacing', type: 'size', defaultValue: '4px' },
+  {
+    key: '--spacing-xs',
+    label: 'Extra Small',
+    category: 'spacing',
+    type: 'size',
+    defaultValue: '4px',
+  },
   { key: '--spacing-s', label: 'Small', category: 'spacing', type: 'size', defaultValue: '8px' },
   { key: '--spacing-m', label: 'Medium', category: 'spacing', type: 'size', defaultValue: '12px' },
   { key: '--spacing-l', label: 'Large', category: 'spacing', type: 'size', defaultValue: '16px' },
-  { key: '--spacing-xl', label: 'Extra Large', category: 'spacing', type: 'size', defaultValue: '24px' },
-  { key: '--radius-s', label: 'Radius Small', category: 'spacing', type: 'size', defaultValue: '4px' },
-  { key: '--radius-m', label: 'Radius Medium', category: 'spacing', type: 'size', defaultValue: '8px' },
+  {
+    key: '--spacing-xl',
+    label: 'Extra Large',
+    category: 'spacing',
+    type: 'size',
+    defaultValue: '24px',
+  },
+  {
+    key: '--radius-s',
+    label: 'Radius Small',
+    category: 'spacing',
+    type: 'size',
+    defaultValue: '4px',
+  },
+  {
+    key: '--radius-m',
+    label: 'Radius Medium',
+    category: 'spacing',
+    type: 'size',
+    defaultValue: '8px',
+  },
 ];
 
 /** Get the current computed value of a CSS variable from :root */

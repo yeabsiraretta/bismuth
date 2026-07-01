@@ -4,7 +4,13 @@
 import { writable, get } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 import { log } from '@/utils/logger';
-import type { Exercise, WorkoutSession, WorkoutSet, NutritionEntry, VolumeEntry } from '../types/gym';
+import type {
+  Exercise,
+  WorkoutSession,
+  WorkoutSet,
+  NutritionEntry,
+  VolumeEntry,
+} from '../types/gym';
 import * as gymService from '../services/gym';
 
 /** All available exercises (built-in + custom) */
@@ -85,7 +91,7 @@ export async function addSetToSession(
   exerciseId: string,
   setOrder: number,
   reps?: number,
-  weightKg?: number,
+  weightKg?: number
 ): Promise<void> {
   const session = get(activeSession);
   if (!session) {
@@ -93,7 +99,15 @@ export async function addSetToSession(
   }
 
   try {
-    const setId = await gymService.addSet(vaultRoot, vaultId, session.id, exerciseId, setOrder, reps, weightKg);
+    const setId = await gymService.addSet(
+      vaultRoot,
+      vaultId,
+      session.id,
+      exerciseId,
+      setOrder,
+      reps,
+      weightKg
+    );
     const newSet: WorkoutSet = {
       id: setId,
       vaultId,
@@ -103,7 +117,7 @@ export async function addSetToSession(
       reps,
       weightKg,
     };
-    activeSession.update(s => s ? { ...s, sets: [...(s.sets ?? []), newSet] } : null);
+    activeSession.update((s) => (s ? { ...s, sets: [...(s.sets ?? []), newSet] } : null));
     log.info('Added set to session', { setId, exerciseId });
   } catch (err) {
     log.error('Failed to add set', err as Error);
@@ -117,13 +131,11 @@ export async function finishSession(vaultRoot: string, vaultId: string): Promise
   const startTime = get(sessionStartTime);
   if (!session) return;
 
-  const durationMin = startTime
-    ? Math.round((Date.now() - startTime) / 60000)
-    : undefined;
+  const durationMin = startTime ? Math.round((Date.now() - startTime) / 60000) : undefined;
 
   try {
     await gymService.updateSession(vaultRoot, vaultId, session.id, durationMin);
-    activeSession.update(s => s ? { ...s, durationMin } : null);
+    activeSession.update((s) => (s ? { ...s, durationMin } : null));
     sessionStartTime.set(null);
     log.info('Finished session', { sessionId: session.id, durationMin });
   } catch (err) {
@@ -136,11 +148,11 @@ export async function finishSession(vaultRoot: string, vaultId: string): Promise
 export async function deleteSession(
   vaultRoot: string,
   vaultId: string,
-  sessionId: string,
+  sessionId: string
 ): Promise<void> {
   try {
     await gymService.deleteSession(vaultRoot, vaultId, sessionId);
-    activeSession.update(s => (s?.id === sessionId ? null : s));
+    activeSession.update((s) => (s?.id === sessionId ? null : s));
     log.info('Deleted session', { sessionId });
   } catch (err) {
     log.error('Failed to delete session', err as Error);
@@ -179,12 +191,21 @@ export async function updateNutritionEntry(
   calories?: number,
   proteinG?: number,
   carbsG?: number,
-  fatG?: number,
+  fatG?: number
 ): Promise<void> {
   try {
-    const id = await gymService.addNutrition(vaultRoot, vaultId, date, mealName, calories, proteinG, carbsG, fatG);
+    const id = await gymService.addNutrition(
+      vaultRoot,
+      vaultId,
+      date,
+      mealName,
+      calories,
+      proteinG,
+      carbsG,
+      fatG
+    );
     const entry: NutritionEntry = { id, vaultId, date, mealName, calories, proteinG, carbsG, fatG };
-    todayNutrition.update(entries => [...entries, entry]);
+    todayNutrition.update((entries) => [...entries, entry]);
     log.info('Added nutrition entry', { id, mealName });
   } catch (err) {
     log.error('Failed to add nutrition', err as Error);

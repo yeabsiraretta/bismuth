@@ -4,13 +4,21 @@
   import { openNote } from '@/appNavigation';
   import { notes } from '@/stores/vault/vault';
   import {
-    selectedTag, tagFilteredNotes,
-    selectedProperty, propertyFilteredNotes,
-    selectedNotes, toggleNoteSelection, clearNoteSelection,
+    selectedTag,
+    tagFilteredNotes,
+    selectedProperty,
+    propertyFilteredNotes,
+    selectedNotes,
+    toggleNoteSelection,
+    clearNoteSelection,
   } from '../stores/navigatorActions';
   import {
-    getFileName, getPreview, formatDate, getNoteTags,
-    getSourceNotes, applyFilter,
+    getFileName,
+    getPreview,
+    formatDate,
+    getNoteTags,
+    getSourceNotes,
+    applyFilter,
   } from '../stores/listPaneLogic';
   import type { Note } from '@/types/data/vault';
 
@@ -22,23 +30,26 @@
   $: sortDirection = $navigatorStore.sortDirection;
   $: filterQuery = $navigatorStore.filterQuery;
   $: activeTab = $navigatorStore.activeTab;
-  $: pinnedPaths = selectedFolder
-    ? ($navigatorStore.pinnedNotes[selectedFolder] || [])
-    : [];
+  $: pinnedPaths = selectedFolder ? $navigatorStore.pinnedNotes[selectedFolder] || [] : [];
 
   $: sourceNotes = getSourceNotes(
-    activeTab, $notes, selectedFolder,
-    $selectedTag, $tagFilteredNotes,
-    $selectedProperty, $propertyFilteredNotes,
+    activeTab,
+    $notes,
+    selectedFolder,
+    $selectedTag,
+    $tagFilteredNotes,
+    $selectedProperty,
+    $propertyFilteredNotes
   );
   $: filteredNotes = applyFilter(sourceNotes, filterQuery, sortField, sortDirection);
-  $: pinnedNotes = filteredNotes.filter(n => pinnedPaths.includes(n.path));
-  $: unpinnedNotes = filteredNotes.filter(n => !pinnedPaths.includes(n.path));
-  $: hasSelection = activeTab === 'folders'
-    ? !!selectedFolder
-    : activeTab === 'tags'
-      ? !!$selectedTag
-      : !!$selectedProperty;
+  $: pinnedNotes = filteredNotes.filter((n) => pinnedPaths.includes(n.path));
+  $: unpinnedNotes = filteredNotes.filter((n) => !pinnedPaths.includes(n.path));
+  $: hasSelection =
+    activeTab === 'folders'
+      ? !!selectedFolder
+      : activeTab === 'tags'
+        ? !!$selectedTag
+        : !!$selectedProperty;
 
   function handleNoteClick(note: Note, e: MouseEvent) {
     if (e.metaKey || e.ctrlKey) {
@@ -46,7 +57,7 @@
       return;
     }
     clearNoteSelection();
-    navigatorStore.update(s => ({ ...s, selectedNote: note }));
+    navigatorStore.update((s) => ({ ...s, selectedNote: note }));
     setActivePane('list');
     openNote(note.path);
   }
@@ -83,7 +94,7 @@
       e.preventDefault();
       if (focusIndex >= 0 && focusIndex < allNotes.length) {
         const note = allNotes[focusIndex];
-        navigatorStore.update(s => ({ ...s, selectedNote: note }));
+        navigatorStore.update((s) => ({ ...s, selectedNote: note }));
         openNote(note.path);
       }
     } else if (e.key === 'ArrowLeft') {

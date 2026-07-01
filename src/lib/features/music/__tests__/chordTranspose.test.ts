@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
-  transposeNote, transposeChord, transposeChordLine,
-  transposeLines, transposeLabel, transposeOptions,
+  transposeNote,
+  transposeChord,
+  transposeChordLine,
+  transposeLines,
+  transposeLabel,
+  transposeOptions,
 } from '../services/chords/chordTranspose';
 import type { ChordToken, ChordLine } from '../types/chords';
 
@@ -80,10 +84,14 @@ describe('transposeLines', () => {
   it('transposes chord lines only', () => {
     const lines: ChordLine[] = [
       { type: 'section', text: '[Verse]' },
-      { type: 'chord', text: 'Am C', chords: [
-        { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
-        { symbol: 'C', root: 'C', quality: '', column: 3 },
-      ] },
+      {
+        type: 'chord',
+        text: 'Am C',
+        chords: [
+          { symbol: 'Am', root: 'A', quality: 'm', column: 0 },
+          { symbol: 'C', root: 'C', quality: '', column: 3 },
+        ],
+      },
       { type: 'lyric', text: 'Hello world' },
     ];
     const result = transposeLines(lines, 2);

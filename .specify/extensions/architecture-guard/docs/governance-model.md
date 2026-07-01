@@ -6,11 +6,11 @@ This document explains how Architecture Guard separates governance, architecture
 
 Architecture Guard separates engineering governance and architecture enforcement into different documents.
 
-| Artifact | Purpose | Location |
-| --- | --- | --- |
-| `constitution.md` | Engineering philosophy and high-level governance | `.specify/memory/constitution.md` |
+| Artifact                       | Purpose                                                     | Location                                       |
+| ------------------------------ | ----------------------------------------------------------- | ---------------------------------------------- |
+| `constitution.md`              | Engineering philosophy and high-level governance            | `.specify/memory/constitution.md`              |
 | `architecture_constitution.md` | Layer boundaries, module ownership, and architectural rules | `.specify/memory/architecture_constitution.md` |
-| `security_constitution.md` | Repository-wide security rules and trust boundaries | `.specify/memory/security_constitution.md` |
+| `security_constitution.md`     | Repository-wide security rules and trust boundaries         | `.specify/memory/security_constitution.md`     |
 
 Architecture Guard primarily validates against:
 
@@ -46,11 +46,11 @@ When a command encounters analysis marked `[OPTIONAL SUB-AGENT DELEGATION]`:
 
 ### Decision Criteria
 
-| Scenario | Decision |
-| --- | --- |
-| Fewer than 50 files and fewer than 10,000 lines | Inline execution |
-| 50 files or more, or 10,000 lines or more | Sub-agent execution |
-| 20 or more memory documents | Sub-agent execution |
+| Scenario                                        | Decision            |
+| ----------------------------------------------- | ------------------- |
+| Fewer than 50 files and fewer than 10,000 lines | Inline execution    |
+| 50 files or more, or 10,000 lines or more       | Sub-agent execution |
+| 20 or more memory documents                     | Sub-agent execution |
 
 ### Override Flags
 
@@ -67,4 +67,3 @@ When a command encounters analysis marked `[OPTIONAL SUB-AGENT DELEGATION]`:
 - `governed-implement.md` Step 2 — Memory synthesis for implementation
 
 This keeps typical PRs fast while still allowing large refactors to distribute work more thoroughly.
-

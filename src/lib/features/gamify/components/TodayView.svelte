@@ -5,8 +5,8 @@
   import { questProfile, getXpSummary } from '../stores/questStore';
   import { featureFlags } from '@/stores/settings/features';
 
-  $: todayTasks = $gamifyTasks.filter(t => !t.completed);
-  $: completedToday = $gamifyTasks.filter(t => t.completed);
+  $: todayTasks = $gamifyTasks.filter((t) => !t.completed);
+  $: completedToday = $gamifyTasks.filter((t) => t.completed);
   $: xpSummary = getXpSummary();
   $: gamifyEnabled = $featureFlags['gamify'];
 
@@ -16,10 +16,14 @@
 
   function getDifficultyColor(d: string): string {
     switch (d) {
-      case 'easy': return 'var(--success-color, #22c55e)';
-      case 'medium': return 'var(--warning-color, #f59e0b)';
-      case 'hard': return 'var(--error-color, #ef4444)';
-      default: return 'var(--text-muted)';
+      case 'easy':
+        return 'var(--success-color, #22c55e)';
+      case 'medium':
+        return 'var(--warning-color, #f59e0b)';
+      case 'hard':
+        return 'var(--error-color, #ef4444)';
+      default:
+        return 'var(--text-muted)';
     }
   }
 </script>
@@ -85,40 +89,129 @@
 </div>
 
 <style>
-  .today-view { display: flex; flex-direction: column; gap: 12px; }
+  .today-view {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
   .xp-bar {
-    padding: 10px; background: var(--panel-bg-alt, #181825);
+    padding: 10px;
+    background: var(--panel-bg-alt, #181825);
     border-radius: 6px;
   }
-  .xp-info { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .level { font-size: 12px; font-weight: 700; color: var(--accent-color, #6366f1); }
-  .xp-text { font-size: 11px; color: var(--text-muted); flex: 1; }
-  .streak { font-size: 11px; color: var(--warning-color, #f59e0b); }
+  .xp-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .level {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-color, #6366f1);
+  }
+  .xp-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .streak {
+    font-size: 11px;
+    color: var(--warning-color, #f59e0b);
+  }
   .xp-progress {
-    height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
   }
-  .xp-fill { height: 100%; background: var(--accent-color, #6366f1); transition: width 0.3s; }
-  .task-section { display: flex; flex-direction: column; gap: 4px; }
-  .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; padding: 4px 0; }
+  .xp-fill {
+    height: 100%;
+    background: var(--accent-color, #6366f1);
+    transition: width 0.3s;
+  }
+  .task-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 4px 0;
+  }
   .task-item {
-    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-    border-radius: 4px; border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
   }
-  .task-item:hover { background: var(--hover-bg); }
-  .task-item.completed { opacity: 0.6; }
-  .task-item.completed .task-text { text-decoration: line-through; }
+  .task-item:hover {
+    background: var(--hover-bg);
+  }
+  .task-item.completed {
+    opacity: 0.6;
+  }
+  .task-item.completed .task-text {
+    text-decoration: line-through;
+  }
   .check-btn {
-    background: none; border: none; padding: 0; cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
     color: var(--text-muted);
   }
-  .check-btn:hover { color: var(--success-color, #22c55e); }
-  .task-text { flex: 1; font-size: 12px; }
-  .difficulty-badge { font-size: 10px; font-weight: 700; }
-  .counter { font-size: 10px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .counter-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-  .counter-bar { width: 48px; height: 4px; border-radius: 2px; appearance: none; border: none; background: var(--border-color); }
-  .counter-bar::-webkit-progress-bar { background: var(--border-color); border-radius: 2px; }
-  .counter-bar::-webkit-progress-value { background: var(--accent-color, #6366f1); border-radius: 2px; }
-  .counter-bar::-moz-progress-bar { background: var(--accent-color, #6366f1); border-radius: 2px; }
-  .empty-section { font-size: 12px; color: var(--text-muted); padding: 12px; text-align: center; }
+  .check-btn:hover {
+    color: var(--success-color, #22c55e);
+  }
+  .task-text {
+    flex: 1;
+    font-size: 12px;
+  }
+  .difficulty-badge {
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .counter {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .counter-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .counter-bar {
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    appearance: none;
+    border: none;
+    background: var(--border-color);
+  }
+  .counter-bar::-webkit-progress-bar {
+    background: var(--border-color);
+    border-radius: 2px;
+  }
+  .counter-bar::-webkit-progress-value {
+    background: var(--accent-color, #6366f1);
+    border-radius: 2px;
+  }
+  .counter-bar::-moz-progress-bar {
+    background: var(--accent-color, #6366f1);
+    border-radius: 2px;
+  }
+  .empty-section {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 12px;
+    text-align: center;
+  }
 </style>

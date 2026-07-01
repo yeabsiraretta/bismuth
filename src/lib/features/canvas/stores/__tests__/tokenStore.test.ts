@@ -109,11 +109,13 @@ describe('tokenStore', () => {
     it('enforces max depth limit (SC-03)', () => {
       const tokens: DesignToken[] = [];
       for (let i = 0; i < 12; i++) {
-        tokens.push(makeToken({
-          id: `t${i}`,
-          aliasOf: i < 11 ? `t${i + 1}` : undefined,
-          values: i === 11 ? { light: 'deep' } : {},
-        }));
+        tokens.push(
+          makeToken({
+            id: `t${i}`,
+            aliasOf: i < 11 ? `t${i + 1}` : undefined,
+            values: i === 11 ? { light: 'deep' } : {},
+          })
+        );
       }
       createCollection(makeCollection({ tokens }));
       const value = resolveToken('t0', 'light');
@@ -127,12 +129,14 @@ describe('tokenStore', () => {
 
   describe('getTokensForMode', () => {
     it('returns all resolved values', () => {
-      createCollection(makeCollection({
-        tokens: [
-          makeToken({ id: 'c1', values: { light: 'red', dark: 'darkred' } }),
-          makeToken({ id: 'c2', values: { light: 'blue', dark: 'darkblue' } }),
-        ],
-      }));
+      createCollection(
+        makeCollection({
+          tokens: [
+            makeToken({ id: 'c1', values: { light: 'red', dark: 'darkred' } }),
+            makeToken({ id: 'c2', values: { light: 'blue', dark: 'darkblue' } }),
+          ],
+        })
+      );
       const result = getTokensForMode('dark');
       expect(result['c1']).toBe('darkred');
       expect(result['c2']).toBe('darkblue');

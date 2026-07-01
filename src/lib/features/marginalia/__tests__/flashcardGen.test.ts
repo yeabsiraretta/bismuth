@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
-  extractFlashcards, formatFlashcardsSection, formatAnkiExport,
-  injectFlashcards, flashcardStats,
+  extractFlashcards,
+  formatFlashcardsSection,
+  formatAnkiExport,
+  injectFlashcards,
+  flashcardStats,
 } from '../services/flashcardGen';
 
 describe('extractFlashcards', () => {

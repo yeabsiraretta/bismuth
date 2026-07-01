@@ -41,17 +41,68 @@
 </div>
 
 <style>
-  .diff-view { padding: var(--spacing-s); font-size: 11px; }
-  .diff-empty { color: var(--text-muted); text-align: center; padding: var(--spacing-m); }
-  .diff-summary { display: flex; align-items: center; gap: var(--spacing-s); padding-bottom: var(--spacing-s); border-bottom: 1px solid var(--border-subtle); margin-bottom: var(--spacing-s); }
-  .diff-stat { font-weight: var(--font-semibold); font-variant-numeric: tabular-nums; }
-  .diff-stat.added { color: var(--color-success); }
-  .diff-stat.removed { color: var(--color-error); }
-  .diff-stat.changed { color: var(--color-warning); }
-  .diff-versions { margin-left: auto; color: var(--text-muted); }
-  .diff-ops { list-style: none; margin: 0; padding: 0; max-height: 200px; overflow-y: auto; }
-  .diff-op { display: flex; align-items: center; gap: var(--spacing-xs); padding: 2px 0; font-family: var(--font-mono); }
-  .op-badge { width: 14px; text-align: center; font-weight: bold; }
-  .op-path { color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .diff-more { color: var(--text-muted); font-style: italic; padding-top: var(--spacing-xs); }
+  .diff-view {
+    padding: var(--spacing-s);
+    font-size: 11px;
+  }
+  .diff-empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-m);
+  }
+  .diff-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding-bottom: var(--spacing-s);
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: var(--spacing-s);
+  }
+  .diff-stat {
+    font-weight: var(--font-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+  .diff-stat.added {
+    color: var(--color-success);
+  }
+  .diff-stat.removed {
+    color: var(--color-error);
+  }
+  .diff-stat.changed {
+    color: var(--color-warning);
+  }
+  .diff-versions {
+    margin-left: auto;
+    color: var(--text-muted);
+  }
+  .diff-ops {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .diff-op {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 2px 0;
+    font-family: var(--font-mono);
+  }
+  .op-badge {
+    width: 14px;
+    text-align: center;
+    font-weight: bold;
+  }
+  .op-path {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .diff-more {
+    color: var(--text-muted);
+    font-style: italic;
+    padding-top: var(--spacing-xs);
+  }
 </style>

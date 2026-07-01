@@ -61,8 +61,14 @@
       lines.push({ text: `+${parsed.metrics.addedLines} lines added`, type: 'added' });
       lines.push({ text: `-${parsed.metrics.removedLines} lines removed`, type: 'removed' });
       lines.push({ text: ` ${parsed.metrics.totalLines} total lines in source`, type: 'context' });
-      lines.push({ text: ` heading delta: ${parsed.metrics.headingDelta > 0 ? '+' : ''}${parsed.metrics.headingDelta}`, type: 'context' });
-      lines.push({ text: ` structural delta: ${parsed.metrics.structuralTokenDelta > 0 ? '+' : ''}${parsed.metrics.structuralTokenDelta}`, type: 'context' });
+      lines.push({
+        text: ` heading delta: ${parsed.metrics.headingDelta > 0 ? '+' : ''}${parsed.metrics.headingDelta}`,
+        type: 'context',
+      });
+      lines.push({
+        text: ` structural delta: ${parsed.metrics.structuralTokenDelta > 0 ? '+' : ''}${parsed.metrics.structuralTokenDelta}`,
+        type: 'context',
+      });
       lines.push({ text: ` bump type: ${parsed.bumpType}`, type: 'context' });
       lines.push({ text: ` summary: ${parsed.summary}`, type: 'context' });
       diffLines = lines;
@@ -70,9 +76,7 @@
       // Fall back to raw text display line by line.
       diffLines = raw.split('\n').map((text) => ({
         text,
-        type: text.startsWith('+') ? 'added'
-          : text.startsWith('-') ? 'removed'
-          : 'context',
+        type: text.startsWith('+') ? 'added' : text.startsWith('-') ? 'removed' : 'context',
       }));
     }
   }
@@ -108,8 +112,7 @@
       {#each diffLines as line}
         <div
           class="diff-line diff-line--{line.type}"
-          aria-label={lineAriaLabel(line.type)}
-        >{line.text}</div>
+          aria-label={lineAriaLabel(line.type)}>{line.text}</div>
       {/each}
     </pre>
   {/if}
@@ -128,14 +131,14 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    border-bottom: 1px solid var(--background-modifier-border, rgba(0,0,0,0.1));
+    border-bottom: 1px solid var(--background-modifier-border, rgba(0, 0, 0, 0.1));
     flex-shrink: 0;
   }
 
   .back-btn {
     padding: 3px 8px;
     font-size: 0.8rem;
-    border: 1px solid var(--background-modifier-border, rgba(0,0,0,0.15));
+    border: 1px solid var(--background-modifier-border, rgba(0, 0, 0, 0.15));
     border-radius: 4px;
     background: transparent;
     cursor: pointer;
@@ -144,7 +147,7 @@
   }
 
   .back-btn:hover {
-    background: var(--background-modifier-hover, rgba(0,0,0,0.05));
+    background: var(--background-modifier-hover, rgba(0, 0, 0, 0.05));
   }
 
   .diff-title {

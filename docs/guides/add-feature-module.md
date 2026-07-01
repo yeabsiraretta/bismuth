@@ -68,14 +68,11 @@ import type { MyItem, MyFilter } from '../types';
 export const allItems = writable<MyItem[]>([]);
 export const activeFilter = writable<MyFilter>('all');
 
-export const filteredItems = derived(
-  [allItems, activeFilter],
-  ([$items, $filter]) => {
-    if ($filter === 'all') return $items;
-    // apply filter logic
-    return $items;
-  }
-);
+export const filteredItems = derived([allItems, activeFilter], ([$items, $filter]) => {
+  if ($filter === 'all') return $items;
+  // apply filter logic
+  return $items;
+});
 ```
 
 ### 4. Create the service (IPC wrapper)

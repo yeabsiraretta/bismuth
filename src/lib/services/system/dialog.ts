@@ -35,7 +35,7 @@ export async function pickFile(options?: DialogOpenOptions): Promise<string | st
 /** Opens a file picker for importing a single file. Returns path or null. */
 export async function pickImportFile(options?: DialogOpenOptions): Promise<string | null> {
   const result = await pickFile({ ...options, multiple: false });
-  return Array.isArray(result) ? result[0] ?? null : result;
+  return Array.isArray(result) ? (result[0] ?? null) : result;
 }
 
 /** Opens a save dialog. Returns the selected path or null if cancelled. */

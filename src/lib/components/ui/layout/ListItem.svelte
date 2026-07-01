@@ -36,11 +36,21 @@
     transition: background-color 0.1s ease;
   }
 
-  .list-item:hover:not(:disabled) { background: var(--background-modifier-hover); }
-  .list-item.active { background: var(--background-secondary-alt); }
-  .list-item:disabled { opacity: var(--opacity-disabled, 0.5); cursor: not-allowed; }
+  .list-item:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
+  .list-item.active {
+    background: var(--background-secondary-alt);
+  }
+  .list-item:disabled {
+    opacity: var(--opacity-disabled, 0.5);
+    cursor: not-allowed;
+  }
 
-  .list-item-leading { flex-shrink: 0; color: var(--text-muted); }
+  .list-item-leading {
+    flex-shrink: 0;
+    color: var(--text-muted);
+  }
 
   .list-item-content {
     flex: 1;
@@ -50,7 +60,11 @@
     gap: var(--spacing-xxs, 2px);
   }
 
-  .list-item-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .list-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   .list-item-subtitle {
     font-size: var(--font-smallest);
@@ -60,5 +74,8 @@
     white-space: nowrap;
   }
 
-  .list-item-trailing { flex-shrink: 0; color: var(--text-faint); }
+  .list-item-trailing {
+    flex-shrink: 0;
+    color: var(--text-faint);
+  }
 </style>

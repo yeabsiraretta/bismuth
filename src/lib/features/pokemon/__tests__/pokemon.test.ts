@@ -8,7 +8,10 @@ vi.mock('@/utils/logger', () => ({
 }));
 
 const typeChart = typeChartData as Record<string, Record<string, number>>;
-const pokedex = pokedexData as Record<string, { id: string; name: string; types: string[]; baseStats: Stats; abilities: string[] }>;
+const pokedex = pokedexData as Record<
+  string,
+  { id: string; name: string; types: string[]; baseStats: Stats; abilities: string[] }
+>;
 
 describe('Pokemon feature — Showdown Parser', () => {
   it('returns error for empty input', async () => {
@@ -56,17 +59,40 @@ describe('Pokemon feature — Damage Calculator (with real data)', () => {
     const { calculateDamage, defaultEvs, defaultIvs } = await import('../services/damageCalc');
     const attacker = {
       species: pokedex['clefable'],
-      item: null, ability: 'Magic Guard', nature: 'Bold' as const,
-      evs: defaultEvs(), ivs: defaultIvs(), moves: [null, null, null, null], level: 50,
+      item: null,
+      ability: 'Magic Guard',
+      nature: 'Bold' as const,
+      evs: defaultEvs(),
+      ivs: defaultIvs(),
+      moves: [null, null, null, null],
+      level: 50,
     };
     const defender = {
       species: pokedex['gengar'],
-      item: null, ability: 'Levitate', nature: 'Timid' as const,
-      evs: defaultEvs(), ivs: defaultIvs(), moves: [null, null, null, null], level: 50,
+      item: null,
+      ability: 'Levitate',
+      nature: 'Timid' as const,
+      evs: defaultEvs(),
+      ivs: defaultIvs(),
+      moves: [null, null, null, null],
+      level: 50,
     };
-    const move: Move = { id: 'hyper-voice', name: 'Hyper Voice', type: 'Normal', power: 90, category: 'special', accuracy: 100 };
+    const move: Move = {
+      id: 'hyper-voice',
+      name: 'Hyper Voice',
+      type: 'Normal',
+      power: 90,
+      category: 'special',
+      accuracy: 100,
+    };
 
-    const result = calculateDamage(attacker as unknown as TeamSlot, defender as unknown as TeamSlot, move, {}, typeChart);
+    const result = calculateDamage(
+      attacker as unknown as TeamSlot,
+      defender as unknown as TeamSlot,
+      move,
+      {},
+      typeChart
+    );
     expect(result.min).toBe(0);
     expect(result.max).toBe(0);
     expect(result.rolls.every((r: number) => r === 0)).toBe(true);
@@ -76,19 +102,47 @@ describe('Pokemon feature — Damage Calculator (with real data)', () => {
     const { calculateDamage, defaultEvs, defaultIvs } = await import('../services/damageCalc');
     const attacker = {
       species: pokedex['garchomp'],
-      item: null, ability: 'Rough Skin', nature: 'Jolly' as const,
+      item: null,
+      ability: 'Rough Skin',
+      nature: 'Jolly' as const,
       evs: { ...defaultEvs(), atk: 252, spe: 252, hp: 4 },
-      ivs: defaultIvs(), moves: [null, null, null, null], level: 50,
+      ivs: defaultIvs(),
+      moves: [null, null, null, null],
+      level: 50,
     };
-    const defenderSpecies = { id: 'ironhands', name: 'Iron Hands', types: ['Fighting', 'Electric'] as [PokemonType, PokemonType?], baseStats: { hp: 154, atk: 140, def: 108, spa: 50, spd: 68, spe: 50 }, abilities: ['Quark Drive'] };
+    const defenderSpecies = {
+      id: 'ironhands',
+      name: 'Iron Hands',
+      types: ['Fighting', 'Electric'] as [PokemonType, PokemonType?],
+      baseStats: { hp: 154, atk: 140, def: 108, spa: 50, spd: 68, spe: 50 },
+      abilities: ['Quark Drive'],
+    };
     const defender = {
       species: defenderSpecies,
-      item: null, ability: 'Quark Drive', nature: 'Adamant' as const,
-      evs: defaultEvs(), ivs: defaultIvs(), moves: [null, null, null, null], level: 50,
+      item: null,
+      ability: 'Quark Drive',
+      nature: 'Adamant' as const,
+      evs: defaultEvs(),
+      ivs: defaultIvs(),
+      moves: [null, null, null, null],
+      level: 50,
     };
-    const move: Move = { id: 'earthquake', name: 'Earthquake', type: 'Ground', power: 100, category: 'physical', accuracy: 100 };
+    const move: Move = {
+      id: 'earthquake',
+      name: 'Earthquake',
+      type: 'Ground',
+      power: 100,
+      category: 'physical',
+      accuracy: 100,
+    };
 
-    const result = calculateDamage(attacker as unknown as TeamSlot, defender as unknown as TeamSlot, move, {}, typeChart);
+    const result = calculateDamage(
+      attacker as unknown as TeamSlot,
+      defender as unknown as TeamSlot,
+      move,
+      {},
+      typeChart
+    );
     // Ground vs Fighting/Electric: neither is immune or immune to Ground
     expect(result.rolls).toHaveLength(16);
     // May or may not be positive depending on effectiveness; just verify structure
@@ -99,16 +153,15 @@ describe('Pokemon feature — Damage Calculator (with real data)', () => {
   it('defaultEvs returns 0 for all stats', async () => {
     const { defaultEvs } = await import('../services/damageCalc');
     const evs = defaultEvs();
-    expect(Object.values(evs).every(v => v === 0)).toBe(true);
+    expect(Object.values(evs).every((v) => v === 0)).toBe(true);
   });
 
   it('defaultIvs returns 31 for all stats', async () => {
     const { defaultIvs } = await import('../services/damageCalc');
     const ivs = defaultIvs();
-    expect(Object.values(ivs).every(v => v === 31)).toBe(true);
+    expect(Object.values(ivs).every((v) => v === 31)).toBe(true);
   });
 });
-
 
 vi.mock('@/utils/logger', () => ({
   log: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
@@ -116,8 +169,46 @@ vi.mock('@/utils/logger', () => ({
 
 // Minimal type chart: Ground → Fairy = 0.5, Normal → Ghost = 0
 const MINIMAL_TYPE_CHART: Record<string, Record<string, number>> = {
-  Ground: { Normal: 1, Fire: 2, Water: 1, Grass: 0.5, Electric: 2, Ice: 1, Fighting: 1, Poison: 0.5, Ground: 1, Flying: 0, Psychic: 1, Bug: 0.5, Rock: 2, Ghost: 1, Dragon: 1, Dark: 1, Steel: 2, Fairy: 1 },
-  Normal: { Normal: 1, Fire: 1, Water: 1, Grass: 1, Electric: 1, Ice: 1, Fighting: 1, Poison: 1, Ground: 1, Flying: 1, Psychic: 1, Bug: 1, Rock: 0.5, Ghost: 0, Dragon: 1, Dark: 1, Steel: 0.5, Fairy: 1 },
+  Ground: {
+    Normal: 1,
+    Fire: 2,
+    Water: 1,
+    Grass: 0.5,
+    Electric: 2,
+    Ice: 1,
+    Fighting: 1,
+    Poison: 0.5,
+    Ground: 1,
+    Flying: 0,
+    Psychic: 1,
+    Bug: 0.5,
+    Rock: 2,
+    Ghost: 1,
+    Dragon: 1,
+    Dark: 1,
+    Steel: 2,
+    Fairy: 1,
+  },
+  Normal: {
+    Normal: 1,
+    Fire: 1,
+    Water: 1,
+    Grass: 1,
+    Electric: 1,
+    Ice: 1,
+    Fighting: 1,
+    Poison: 1,
+    Ground: 1,
+    Flying: 1,
+    Psychic: 1,
+    Bug: 1,
+    Rock: 0.5,
+    Ghost: 0,
+    Dragon: 1,
+    Dark: 1,
+    Steel: 0.5,
+    Fairy: 1,
+  },
 };
 
 describe('Pokemon feature — Showdown Parser', () => {
@@ -170,20 +261,45 @@ describe('Pokemon feature — Damage Calculator', () => {
   it('returns all-zero rolls for immune type matchup (Normal vs Ghost)', async () => {
     const { calculateDamage } = await import('../services/damageCalc');
     const attacker = {
-      species: { id: 'test', name: 'Test', types: ['Normal'] as [PokemonType], baseStats: { hp: 60, atk: 65, def: 60, spa: 130, spd: 95, spe: 110 }, abilities: [] },
-      item: null, ability: '', nature: 'Hardy' as const,
+      species: {
+        id: 'test',
+        name: 'Test',
+        types: ['Normal'] as [PokemonType],
+        baseStats: { hp: 60, atk: 65, def: 60, spa: 130, spd: 95, spe: 110 },
+        abilities: [],
+      },
+      item: null,
+      ability: '',
+      nature: 'Hardy' as const,
       evs: { hp: 0, atk: 0, def: 0, spa: 252, spd: 0, spe: 0 },
       ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-      moves: [null, null, null, null] as TeamSlot['moves'], level: 50,
+      moves: [null, null, null, null] as TeamSlot['moves'],
+      level: 50,
     };
     const defender = {
-      species: { id: 'test2', name: 'Gengar', types: ['Ghost'] as [PokemonType], baseStats: { hp: 60, atk: 65, def: 60, spa: 130, spd: 95, spe: 110 }, abilities: [] },
-      item: null, ability: '', nature: 'Hardy' as const,
+      species: {
+        id: 'test2',
+        name: 'Gengar',
+        types: ['Ghost'] as [PokemonType],
+        baseStats: { hp: 60, atk: 65, def: 60, spa: 130, spd: 95, spe: 110 },
+        abilities: [],
+      },
+      item: null,
+      ability: '',
+      nature: 'Hardy' as const,
       evs: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 },
       ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-      moves: [null, null, null, null] as TeamSlot['moves'], level: 50,
+      moves: [null, null, null, null] as TeamSlot['moves'],
+      level: 50,
     };
-    const move: Move = { id: 'hyper-voice', name: 'Hyper Voice', type: 'Normal', power: 90, category: 'special', accuracy: 100 };
+    const move: Move = {
+      id: 'hyper-voice',
+      name: 'Hyper Voice',
+      type: 'Normal',
+      power: 90,
+      category: 'special',
+      accuracy: 100,
+    };
 
     const result = calculateDamage(attacker, defender, move, undefined, MINIMAL_TYPE_CHART);
     expect(result.min).toBe(0);
@@ -194,20 +310,45 @@ describe('Pokemon feature — Damage Calculator', () => {
   it('returns positive min/max for a super-effective Ground attack', async () => {
     const { calculateDamage } = await import('../services/damageCalc');
     const attacker = {
-      species: { id: 'garchomp', name: 'Garchomp', types: ['Dragon', 'Ground'] as [PokemonType, PokemonType], baseStats: { hp: 108, atk: 130, def: 95, spa: 80, spd: 85, spe: 102 }, abilities: [] },
-      item: null, ability: '', nature: 'Jolly' as const,
+      species: {
+        id: 'garchomp',
+        name: 'Garchomp',
+        types: ['Dragon', 'Ground'] as [PokemonType, PokemonType],
+        baseStats: { hp: 108, atk: 130, def: 95, spa: 80, spd: 85, spe: 102 },
+        abilities: [],
+      },
+      item: null,
+      ability: '',
+      nature: 'Jolly' as const,
       evs: { hp: 4, atk: 252, def: 0, spa: 0, spd: 0, spe: 252 },
       ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-      moves: [null, null, null, null] as TeamSlot['moves'], level: 50,
+      moves: [null, null, null, null] as TeamSlot['moves'],
+      level: 50,
     };
     const defender = {
-      species: { id: 'excadrill', name: 'Excadrill', types: ['Ground', 'Steel'] as [PokemonType, PokemonType], baseStats: { hp: 110, atk: 135, def: 60, spa: 50, spd: 65, spe: 88 }, abilities: [] },
-      item: null, ability: '', nature: 'Impish' as const,
+      species: {
+        id: 'excadrill',
+        name: 'Excadrill',
+        types: ['Ground', 'Steel'] as [PokemonType, PokemonType],
+        baseStats: { hp: 110, atk: 135, def: 60, spa: 50, spd: 65, spe: 88 },
+        abilities: [],
+      },
+      item: null,
+      ability: '',
+      nature: 'Impish' as const,
       evs: { hp: 252, atk: 0, def: 4, spa: 0, spd: 0, spe: 252 },
       ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
-      moves: [null, null, null, null] as TeamSlot['moves'], level: 50,
+      moves: [null, null, null, null] as TeamSlot['moves'],
+      level: 50,
     };
-    const move: Move = { id: 'earthquake', name: 'Earthquake', type: 'Ground', power: 100, category: 'physical', accuracy: 100 };
+    const move: Move = {
+      id: 'earthquake',
+      name: 'Earthquake',
+      type: 'Ground',
+      power: 100,
+      category: 'physical',
+      accuracy: 100,
+    };
 
     // Ground on Ground/Steel: Ground is immune to Ground, so effectiveness = 0
     const result = calculateDamage(attacker, defender, move, undefined, MINIMAL_TYPE_CHART);
@@ -224,5 +365,3 @@ describe('Pokemon feature — Damage Calculator', () => {
     expect(Object.keys(evs)).toEqual(['hp', 'atk', 'def', 'spa', 'spd', 'spe']);
   });
 });
-
-

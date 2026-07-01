@@ -22,11 +22,7 @@ export {
   isLanguageExcluded,
 } from './services/codeBlockParser';
 
-export {
-  getLanguageInfo,
-  getLanguageColor,
-  getLanguageName,
-} from './services/languageIcons';
+export { getLanguageInfo, getLanguageColor, getLanguageName } from './services/languageIcons';
 
 export { CodeBlockWidget } from './services/codeBlockWidget';
 export { codeStylerTheme } from './services/codeStylerTheme';

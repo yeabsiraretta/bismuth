@@ -41,7 +41,9 @@ describe('entity service', () => {
     it('calls invoke with notePath', async () => {
       vi.mocked(invoke).mockResolvedValue({ incoming: [], outgoing: [] });
       const result = await getEntityRelationships('/vault/person.md');
-      expect(invoke).toHaveBeenCalledWith('get_entity_relationships', { notePath: '/vault/person.md' });
+      expect(invoke).toHaveBeenCalledWith('get_entity_relationships', {
+        notePath: '/vault/person.md',
+      });
       expect(result).toEqual({ incoming: [], outgoing: [] });
     });
   });

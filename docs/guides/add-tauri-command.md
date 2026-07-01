@@ -39,6 +39,7 @@ pub async fn get_word_count(
 ```
 
 Rules:
+
 - Add a one-line `///` rustdoc comment to every `#[tauri::command]` function.
 - Return `Result<T, String>` — the string error is serialized to JS.
 - Acquire locks in alphabetical order if you need more than one to avoid deadlocks.

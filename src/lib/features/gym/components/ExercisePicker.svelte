@@ -21,7 +21,16 @@
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   let filteredExercises: Exercise[] = [];
 
-  const muscleGroups = ['chest', 'back', 'legs', 'shoulders', 'arms', 'core', 'cardio', 'full_body'];
+  const muscleGroups = [
+    'chest',
+    'back',
+    'legs',
+    'shoulders',
+    'arms',
+    'core',
+    'cardio',
+    'full_body',
+  ];
   const equipmentTypes = ['barbell', 'dumbbell', 'machine', 'cable', 'bodyweight', 'other'];
 
   $: allExercises = $exerciseList;
@@ -29,8 +38,9 @@
   $: {
     if (debounceTimer) clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      filteredExercises = allExercises.filter(ex => {
-        const matchesSearch = !searchText || ex.name.toLowerCase().includes(searchText.toLowerCase());
+      filteredExercises = allExercises.filter((ex) => {
+        const matchesSearch =
+          !searchText || ex.name.toLowerCase().includes(searchText.toLowerCase());
         const matchesGroup = !filterMuscleGroup || ex.muscleGroup === filterMuscleGroup;
         return matchesSearch && matchesGroup;
       });
@@ -54,7 +64,13 @@
   async function saveCustomExercise() {
     if (!customName.trim()) return;
     try {
-      await gymService.createExercise(vaultRoot, vaultId, customName.trim(), customMuscleGroup, customEquipment);
+      await gymService.createExercise(
+        vaultRoot,
+        vaultId,
+        customName.trim(),
+        customMuscleGroup,
+        customEquipment
+      );
       await invalidateExerciseCache(vaultRoot);
       customName = '';
       showCustomForm = false;
@@ -77,15 +93,15 @@
   <div class="filter-chips" role="group" aria-label="Filter by muscle group">
     <button
       class="chip {filterMuscleGroup === '' ? 'active' : ''}"
-      on:click={() => (filterMuscleGroup = '')}
-    >All</button>
+      on:click={() => (filterMuscleGroup = '')}>All</button
+    >
     {#each muscleGroups as group}
       <button
         class="chip {filterMuscleGroup === group ? 'active' : ''}"
         on:click={() => (filterMuscleGroup = filterMuscleGroup === group ? '' : group)}
         role="checkbox"
-        aria-checked={filterMuscleGroup === group}
-      >{group.replace('_', ' ')}</button>
+        aria-checked={filterMuscleGroup === group}>{group.replace('_', ' ')}</button
+      >
     {/each}
   </div>
 
@@ -115,7 +131,9 @@
 
   <div class="custom-exercise-section">
     {#if !showCustomForm}
-      <button class="add-custom-btn" on:click={() => (showCustomForm = true)}>+ Add Custom Exercise</button>
+      <button class="add-custom-btn" on:click={() => (showCustomForm = true)}
+        >+ Add Custom Exercise</button
+      >
     {:else}
       <div class="custom-form">
         <input
@@ -136,7 +154,9 @@
           {/each}
         </select>
         <div class="form-actions">
-          <button class="save-btn" on:click={saveCustomExercise} disabled={!customName.trim()}>Save</button>
+          <button class="save-btn" on:click={saveCustomExercise} disabled={!customName.trim()}
+            >Save</button
+          >
           <button class="cancel-btn" on:click={() => (showCustomForm = false)}>Cancel</button>
         </div>
       </div>
@@ -145,58 +165,144 @@
 </div>
 
 <style>
-  .exercise-picker { display: flex; flex-direction: column; gap: var(--spacing-s); height: 100%; }
+  .exercise-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+    height: 100%;
+  }
   .search-input {
-    width: 100%; padding: var(--spacing-s) var(--spacing-m);
-    background: var(--background-secondary); border: 1px solid var(--background-modifier-border);
-    border-radius: var(--radius-m); color: var(--text-normal); font-size: var(--font-ui-small);
+    width: 100%;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
   }
-  .filter-chips { display: flex; flex-wrap: wrap; gap: var(--spacing-xs); }
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
   .chip {
-    padding: 2px var(--spacing-s); border-radius: 999px; font-size: var(--font-smallest);
-    background: var(--background-secondary); border: 1px solid var(--background-modifier-border);
-    color: var(--text-muted); cursor: pointer;
+    padding: 2px var(--spacing-s);
+    border-radius: 999px;
+    font-size: var(--font-smallest);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    color: var(--text-muted);
+    cursor: pointer;
   }
-  .chip.active { background: var(--interactive-accent); color: var(--text-on-accent); border-color: var(--interactive-accent); }
-  .exercise-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+  .chip.active {
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border-color: var(--interactive-accent);
+  }
+  .exercise-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+  }
   .exercise-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: var(--spacing-s) var(--spacing-m); cursor: pointer; border-radius: var(--radius-s);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-s) var(--spacing-m);
+    cursor: pointer;
+    border-radius: var(--radius-s);
   }
-  .exercise-item:hover, .exercise-item:focus { background: var(--background-modifier-hover); outline: none; }
-  .exercise-name { font-size: var(--font-ui-small); color: var(--text-normal); }
-  .exercise-meta { display: flex; gap: var(--spacing-xs); align-items: center; }
+  .exercise-item:hover,
+  .exercise-item:focus {
+    background: var(--background-modifier-hover);
+    outline: none;
+  }
+  .exercise-name {
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
+  }
+  .exercise-meta {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+  }
   .muscle-badge {
-    font-size: var(--font-smallest); background: var(--background-secondary);
-    color: var(--text-muted); padding: 1px var(--spacing-xs); border-radius: var(--radius-s);
+    font-size: var(--font-smallest);
+    background: var(--background-secondary);
+    color: var(--text-muted);
+    padding: 1px var(--spacing-xs);
+    border-radius: var(--radius-s);
   }
   .custom-badge {
-    font-size: var(--font-smallest); background: var(--color-accent, var(--interactive-accent));
-    color: var(--text-on-accent); padding: 1px var(--spacing-xs); border-radius: var(--radius-s);
+    font-size: var(--font-smallest);
+    background: var(--color-accent, var(--interactive-accent));
+    color: var(--text-on-accent);
+    padding: 1px var(--spacing-xs);
+    border-radius: var(--radius-s);
   }
-  .no-results { padding: var(--spacing-m); color: var(--text-muted); text-align: center; font-size: var(--font-ui-small); }
-  .custom-exercise-section { border-top: 1px solid var(--background-modifier-border); padding-top: var(--spacing-s); }
+  .no-results {
+    padding: var(--spacing-m);
+    color: var(--text-muted);
+    text-align: center;
+    font-size: var(--font-ui-small);
+  }
+  .custom-exercise-section {
+    border-top: 1px solid var(--background-modifier-border);
+    padding-top: var(--spacing-s);
+  }
   .add-custom-btn {
-    width: 100%; padding: var(--spacing-s); background: transparent;
-    border: 1px dashed var(--background-modifier-border); border-radius: var(--radius-m);
-    color: var(--text-muted); cursor: pointer; font-size: var(--font-ui-small);
+    width: 100%;
+    padding: var(--spacing-s);
+    background: transparent;
+    border: 1px dashed var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
   }
-  .add-custom-btn:hover { border-color: var(--interactive-accent); color: var(--interactive-accent); }
-  .custom-form { display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .form-input, .form-select {
-    padding: var(--spacing-s); background: var(--background-secondary);
-    border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s);
-    color: var(--text-normal); font-size: var(--font-ui-small);
+  .add-custom-btn:hover {
+    border-color: var(--interactive-accent);
+    color: var(--interactive-accent);
   }
-  .form-actions { display: flex; gap: var(--spacing-s); }
+  .custom-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .form-input,
+  .form-select {
+    padding: var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+  }
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-s);
+  }
   .save-btn {
-    flex: 1; padding: var(--spacing-s); background: var(--interactive-accent);
-    color: var(--text-on-accent); border: none; border-radius: var(--radius-s); cursor: pointer;
+    flex: 1;
+    padding: var(--spacing-s);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-s);
+    cursor: pointer;
   }
-  .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   .cancel-btn {
-    padding: var(--spacing-s) var(--spacing-m); background: transparent;
-    border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s);
-    color: var(--text-muted); cursor: pointer;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: transparent;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
   }
 </style>

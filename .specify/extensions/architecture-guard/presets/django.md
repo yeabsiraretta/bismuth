@@ -14,79 +14,79 @@ When reviewing a Django project, map generic architecture boundaries to Django p
 
 ### Entry Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Views (`views.py` - Function-based or Class-based) |
-| URL routing and dispatch | URLs (`urls.py`) |
-| Entry point for CLI commands | Management Commands (`management/commands/`) |
-| Entry point for background work | Celery Tasks / RQ Jobs (`tasks.py`) |
-| Global request/response hooks | Middleware (`middleware.py`) |
-| Entry point for internal events | Signal Receivers (`signals.py`) |
-| Entry point for scheduled work | Celery Beat / Cron jobs |
+| Generic Concept                 | Django Equivalent                                  |
+| ------------------------------- | -------------------------------------------------- |
+| Entry point for HTTP requests   | Views (`views.py` - Function-based or Class-based) |
+| URL routing and dispatch        | URLs (`urls.py`)                                   |
+| Entry point for CLI commands    | Management Commands (`management/commands/`)       |
+| Entry point for background work | Celery Tasks / RQ Jobs (`tasks.py`)                |
+| Global request/response hooks   | Middleware (`middleware.py`)                       |
+| Entry point for internal events | Signal Receivers (`signals.py`)                    |
+| Entry point for scheduled work  | Celery Beat / Cron jobs                            |
 
 ### Validation Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Input validation and normalization | Forms (`forms.py`) or ModelForms |
-| API input validation | DRF Serializers (`serializers.py`) or Pydantic models |
-| Query parameter validation | FilterSets (django-filter) or manual form validation |
-| Custom validation logic | `clean()` methods or custom Validator functions |
+| Generic Concept                    | Django Equivalent                                     |
+| ---------------------------------- | ----------------------------------------------------- |
+| Input validation and normalization | Forms (`forms.py`) or ModelForms                      |
+| API input validation               | DRF Serializers (`serializers.py`) or Pydantic models |
+| Query parameter validation         | FilterSets (django-filter) or manual form validation  |
+| Custom validation logic            | `clean()` methods or custom Validator functions       |
 
 ### Contract Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Stable request shapes | Forms, Serializers, or TypedDicts |
-| Stable response shapes | Serializers, Template Context dictionaries |
-| Shared interfaces | Abstract Base Classes (ABC) or Protocols |
-| Data transfer objects | Dataclasses, Pydantic Models, or NamedTuples |
-| Event contracts | Signal definitions or Message schemas |
+| Generic Concept        | Django Equivalent                            |
+| ---------------------- | -------------------------------------------- |
+| Stable request shapes  | Forms, Serializers, or TypedDicts            |
+| Stable response shapes | Serializers, Template Context dictionaries   |
+| Shared interfaces      | Abstract Base Classes (ABC) or Protocols     |
+| Data transfer objects  | Dataclasses, Pydantic Models, or NamedTuples |
+| Event contracts        | Signal definitions or Message schemas        |
 
 ### Application Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Use case coordination | Service Layer (`services.py`) or "Selectors" (`selectors.py`) |
-| Multi-step workflows | Service functions coordinating multiple models/tasks |
-| Transaction coordination | `@transaction.atomic` decorated services |
+| Generic Concept          | Django Equivalent                                             |
+| ------------------------ | ------------------------------------------------------------- |
+| Use case coordination    | Service Layer (`services.py`) or "Selectors" (`selectors.py`) |
+| Multi-step workflows     | Service functions coordinating multiple models/tasks          |
+| Transaction coordination | `@transaction.atomic` decorated services                      |
 
 ### Domain Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
+| Generic Concept              | Django Equivalent                                   |
+| ---------------------------- | --------------------------------------------------- |
 | Business rules and decisions | Domain classes, Utility functions, or Model methods |
-| Domain models | Django Models (`models.py`) |
-| Access control logic | Model methods or custom Permission classes |
-| Domain enums | `models.TextChoices` or `models.IntegerChoices` |
-| Scoped queries | Custom QuerySets (`as_manager()`) or Managers |
+| Domain models                | Django Models (`models.py`)                         |
+| Access control logic         | Model methods or custom Permission classes          |
+| Domain enums                 | `models.TextChoices` or `models.IntegerChoices`     |
+| Scoped queries               | Custom QuerySets (`as_manager()`) or Managers       |
 
 ### Data Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Persistence abstraction | Django ORM (`models.py`, `managers.py`) |
-| Query building | Managers and QuerySets |
-| Schema management | Migrations (`migrations/`) |
-| Seed data | Fixtures or Factory Boy / Mixer factories |
+| Generic Concept         | Django Equivalent                         |
+| ----------------------- | ----------------------------------------- |
+| Persistence abstraction | Django ORM (`models.py`, `managers.py`)   |
+| Query building          | Managers and QuerySets                    |
+| Schema management       | Migrations (`migrations/`)                |
+| Seed data               | Fixtures or Factory Boy / Mixer factories |
 
 ### Integration Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| External HTTP calls | `requests` or `httpx` wrappers in `integrations/` |
-| External service wrappers | Specialized client classes |
-| File storage | Django Storage backend (`DEFAULT_FILE_STORAGE`) |
-| External Auth | Authentication Backends |
+| Generic Concept           | Django Equivalent                                 |
+| ------------------------- | ------------------------------------------------- |
+| External HTTP calls       | `requests` or `httpx` wrappers in `integrations/` |
+| External service wrappers | Specialized client classes                        |
+| File storage              | Django Storage backend (`DEFAULT_FILE_STORAGE`)   |
+| External Auth             | Authentication Backends                           |
 
 ### Presentation Boundary
 
-| Generic Concept | Django Equivalent |
-| --- | --- |
-| Server-rendered views | Django Templates (`.html`) |
-| Context preparation | `get_context_data()` in CBVs or context processors |
-| API output formatting | DRF Serializers or JSON responses |
-| Template logic isolation | Template Tags and Filters (`templatetags/`) |
+| Generic Concept          | Django Equivalent                                  |
+| ------------------------ | -------------------------------------------------- |
+| Server-rendered views    | Django Templates (`.html`)                         |
+| Context preparation      | `get_context_data()` in CBVs or context processors |
+| API output formatting    | DRF Serializers or JSON responses                  |
+| Template logic isolation | Template Tags and Filters (`templatetags/`)        |
 
 ---
 
@@ -95,12 +95,14 @@ When reviewing a Django project, map generic architecture boundaries to Django p
 ### Views Should Be Thin
 
 Detect when a view:
+
 - Contains complex ORM queries (more than a simple `.get()` or `.filter()`).
 - Directly coordinates multi-step business workflows.
 - Performs external API calls or sends emails (these should be delegated).
 - Manually handles complex error mapping instead of using Forms/Serializers.
 
 **Acceptable in views:**
+
 - Extracting parameters from `request`.
 - Calling a Form/Serializer for validation.
 - Calling a single Service or Selector function.
@@ -109,12 +111,14 @@ Detect when a view:
 ### The "Fat Model" Boundary
 
 Detect when a model:
+
 - Directly calls external services (HTTP, email, etc.).
-- Coordinates changes across *other* unrelated models (orchestration).
+- Coordinates changes across _other_ unrelated models (orchestration).
 - Contains logic that depends on the `request` object (this is an entry layer leak).
 - Grows beyond ~400 lines (consider moving logic to `services.py` or `selectors.py`).
 
 **Acceptable in models:**
+
 - Field definitions and Meta options.
 - Custom `save()` for internal data integrity.
 - Property methods for simple derived data.
@@ -123,6 +127,7 @@ Detect when a model:
 ### Signal Discipline (Anti-Pattern: Hidden Side Effects)
 
 Detect when signals:
+
 - Are used for business logic that could be in a Service.
 - Perform heavy database writes or external calls synchronously.
 - Create circular dependencies between apps.
@@ -132,6 +137,7 @@ Detect when signals:
 ### Forms and Serializers as Gatekeepers [Focus: api]
 
 Detect when:
+
 - Views directly use `request.POST` or `request.data` without a Form/Serializer.
 - Business logic is duplicated between a Form and a Service.
 - Serializers leak internal database fields (like `id` when using UUIDs, or `password_hash`).
@@ -139,6 +145,7 @@ Detect when:
 ### QuerySet Isolation [Focus: db]
 
 Detect when:
+
 - Complex query logic (e.g., `.annotate(total=...)`) is written in a View instead of a custom **Manager** or **QuerySet**.
 - Views or Services perform N+1 queries by missing `select_related()` or `prefetch_related()`.
 
@@ -175,7 +182,7 @@ def create_order(request):
 ```html
 <!-- ❌ Complex logic in template -->
 {% if user.is_authenticated and user.profile.member_type == 'gold' and order.total > 100 %}
-  <p>Free Shipping!</p>
+<p>Free Shipping!</p>
 {% endif %}
 ```
 

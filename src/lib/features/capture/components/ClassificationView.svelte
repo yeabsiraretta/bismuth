@@ -12,7 +12,13 @@
   export let lifecycleStates: LifecycleState[] = [];
   export let tags: string[] = [];
   export let onBack: () => void;
-  export let onSave: (data: { title: string; content: string; type: string; lifecycle: string; tags: string[] }) => void;
+  export let onSave: (data: {
+    title: string;
+    content: string;
+    type: string;
+    lifecycle: string;
+    tags: string[];
+  }) => void;
   export let onDelete: () => void;
 
   let editedTitle = title;
@@ -32,8 +38,8 @@
   function handleSave() {
     const parsedTags = editedTags
       .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
     onSave({
       title: editedTitle,
       content: editedContent,
@@ -220,5 +226,4 @@
     outline: none;
     min-height: 200px;
   }
-
 </style>

@@ -20,12 +20,25 @@
 
   $: breadcrumbs = buildBreadcrumbs(currentNotePath);
 
-  function handleUndo() { onUndo?.(); }
-  function handleRedo() { onRedo?.(); }
-  function handleFormat(format: string) { onFormat?.({ format }); }
-  function formatHandler(f: string) { handleFormat(f); }
-  function handleViewMode(mode: 'edit' | 'preview' | 'split') { viewMode = mode; onViewModeChange?.({ mode }); }
-  function navigateToBreadcrumb(index: number) { onNavigate?.({ path: resolveBreadcrumbPath(breadcrumbs, index) }); }
+  function handleUndo() {
+    onUndo?.();
+  }
+  function handleRedo() {
+    onRedo?.();
+  }
+  function handleFormat(format: string) {
+    onFormat?.({ format });
+  }
+  function formatHandler(f: string) {
+    handleFormat(f);
+  }
+  function handleViewMode(mode: 'edit' | 'preview' | 'split') {
+    viewMode = mode;
+    onViewModeChange?.({ mode });
+  }
+  function navigateToBreadcrumb(index: number) {
+    onNavigate?.({ path: resolveBreadcrumbPath(breadcrumbs, index) });
+  }
 </script>
 
 <div class="editor-toolbar">

@@ -1,6 +1,7 @@
 Before writing or revising the feature spec:
 
 Read:
+
 - config from `.specify/extensions/memory-md/config.yml` when present; otherwise use `memory_root: docs/memory` and `specs_root: specs`
 - Governance Layer (`.specify/memory/`) constitution, standards, or principles first
 - `{memory_root}/INDEX.md` when present
@@ -8,6 +9,7 @@ Read:
 - any nearby feature memory from related unfinished work when clearly relevant
 
 When `optimizer.enabled` is `true` and the CLI is available:
+
 1. Refresh the cache if needed.
 2. Generate or refresh `{specs_root}/<feature>/{memory_synthesis_filename}`.
 3. Read `{specs_root}/<feature>/{memory_synthesis_filename}` first.
@@ -17,6 +19,7 @@ Select only relevant index entries by feature scope, affected modules, named tec
 Respect configured retrieval budgets. If the budget is exceeded, summarize and prioritize instead of reading more memory.
 
 Then:
+
 - extract only the constraints, reused decisions, bug patterns, and architecture boundaries relevant to this feature
 - write or refresh `{specs_root}/<feature>/memory.md` with feature-local notes and open questions
 - write or refresh `{specs_root}/<feature>/memory-synthesis.md` with a compact summary for planning and implementation, within `retrieval.max_synthesis_words` defaulting to 900 words

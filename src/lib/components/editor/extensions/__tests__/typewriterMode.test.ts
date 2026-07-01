@@ -94,10 +94,7 @@ describe('zenMode', () => {
 
 describe('typewriterMode', () => {
   it('combines both typewriter and zen extensions', () => {
-    const exts = typewriterMode(
-      { enabled: true, offset: 0.3 },
-      { enabled: true, visibleLines: 2 },
-    );
+    const exts = typewriterMode({ enabled: true, offset: 0.3 }, { enabled: true, visibleLines: 2 });
     expect(Array.isArray(exts)).toBe(true);
     const state = EditorState.create({ doc: 'test', extensions: exts });
     const tw = state.facet(typewriterFacet);

@@ -14,10 +14,25 @@
 
 /** Block-level tag names that receive data-tag-name attributes. */
 const BLOCK_TAGS = new Set([
-  'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-  'P', 'UL', 'OL', 'BLOCKQUOTE', 'PRE',
-  'TABLE', 'HR', 'DIV', 'FIGURE', 'DL',
-  'DETAILS', 'SECTION', 'ARTICLE',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'P',
+  'UL',
+  'OL',
+  'BLOCKQUOTE',
+  'PRE',
+  'TABLE',
+  'HR',
+  'DIV',
+  'FIGURE',
+  'DL',
+  'DETAILS',
+  'SECTION',
+  'ARTICLE',
 ]);
 
 /**

@@ -25,7 +25,11 @@
     log.info('User clicked Create Blank Vault button');
     try {
       errorMessage = '';
-      const selected = await open({ directory: true, multiple: false, title: 'Select Parent Folder for New Vault' });
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: 'Select Parent Folder for New Vault',
+      });
       if (selected) {
         selectedParentPath = Array.isArray(selected) ? selected[0] : selected;
         pendingTemplate = VaultTemplate.Blank;
@@ -47,7 +51,11 @@
 
   async function confirmVaultCreation() {
     if (!vaultName.trim() || !selectedParentPath || pendingTemplate === null) return;
-    log.info('Creating vault', { name: vaultName, template: VaultTemplate[pendingTemplate], parentPath: selectedParentPath });
+    log.info('Creating vault', {
+      name: vaultName,
+      template: VaultTemplate[pendingTemplate],
+      parentPath: selectedParentPath,
+    });
     try {
       isCreating = true;
       errorMessage = '';
@@ -79,7 +87,11 @@
     try {
       isCreating = true;
       errorMessage = '';
-      const selected = await open({ directory: true, multiple: false, title: 'Open Existing Vault' });
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: 'Open Existing Vault',
+      });
       if (selected) {
         const path = Array.isArray(selected) ? selected[0] : selected;
         await openVault(path);
@@ -119,7 +131,9 @@ __________.__                       __  .__
         <button class="action-card" on:click={handleCreateBlankVault} disabled={isCreating}>
           <div class="action-icon"><Icon name="file-plus" size={28} /></div>
           <h2 class="action-title">Create Blank Vault</h2>
-          <p class="action-description">Start with an empty vault and organize your notes your way</p>
+          <p class="action-description">
+            Start with an empty vault and organize your notes your way
+          </p>
         </button>
 
         <button class="action-card" on:click={() => (view = 'template')} disabled={isCreating}>
@@ -138,11 +152,7 @@ __________.__                       __  .__
       {#if errorMessage}
         <div class="error-message">{errorMessage}</div>
       {/if}
-      <TemplatePicker
-        onBack={() => (view = 'home')}
-        onSelect={handleTemplateSelect}
-        {isCreating}
-      />
+      <TemplatePicker onBack={() => (view = 'home')} onSelect={handleTemplateSelect} {isCreating} />
     {/if}
   </div>
 </div>
@@ -224,7 +234,9 @@ __________.__                       __  .__
     border: none;
     border-radius: var(--radius-m);
     cursor: pointer;
-    transition: background-color var(--transition-medium), transform var(--transition-medium);
+    transition:
+      background-color var(--transition-medium),
+      transform var(--transition-medium);
   }
 
   .start-btn:hover {

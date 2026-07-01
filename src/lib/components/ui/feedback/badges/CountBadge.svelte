@@ -4,10 +4,7 @@
   export let label: string | undefined = undefined;
 </script>
 
-<span
-  class="count-badge count-badge--{variant}"
-  aria-label={label ?? String(count)}
->
+<span class="count-badge count-badge--{variant}" aria-label={label ?? String(count)}>
   {count}
 </span>
 

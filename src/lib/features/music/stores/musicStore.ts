@@ -112,9 +112,7 @@ export function addClip(trackId: string, clip: AudioClip): void {
 export function updateTrack(id: string, patch: Partial<Track>): void {
   activeMusicDoc.update((doc) => {
     if (!doc) return doc;
-    const tracks = doc.tracks.map((t) =>
-      t.id === id ? { ...t, ...patch } : t
-    );
+    const tracks = doc.tracks.map((t) => (t.id === id ? { ...t, ...patch } : t));
     return { ...doc, tracks, modified_at: now() };
   });
   log.debug('[musicStore] updateTrack', { id });
@@ -144,9 +142,7 @@ export function addMidiNote(clipId: string, note: MidiNote): void {
     const tracks = doc.tracks.map((t) => ({
       ...t,
       clips: t.clips.map((c) =>
-        c.id === clipId
-          ? { ...c, midiNotes: [...(c.midiNotes ?? []), note] }
-          : c,
+        c.id === clipId ? { ...c, midiNotes: [...(c.midiNotes ?? []), note] } : c
       ),
     }));
     return { ...doc, tracks, modified_at: now() };
@@ -165,10 +161,10 @@ export function removeMidiNote(clipId: string, startTick: number, pitch: number)
           ? {
               ...c,
               midiNotes: (c.midiNotes ?? []).filter(
-                (n) => !(n.startTick === startTick && n.pitch === pitch),
+                (n) => !(n.startTick === startTick && n.pitch === pitch)
               ),
             }
-          : c,
+          : c
       ),
     }));
     return { ...doc, tracks, modified_at: now() };
@@ -182,9 +178,7 @@ export function updateMidiNotes(clipId: string, notes: MidiNote[]): void {
     if (!doc) return doc;
     const tracks = doc.tracks.map((t) => ({
       ...t,
-      clips: t.clips.map((c) =>
-        c.id === clipId ? { ...c, midiNotes: notes } : c,
-      ),
+      clips: t.clips.map((c) => (c.id === clipId ? { ...c, midiNotes: notes } : c)),
     }));
     return { ...doc, tracks, modified_at: now() };
   });
@@ -205,5 +199,5 @@ export function selectTrack(trackId: string): void {
 
 /** Update BPM on the active music document. */
 export function updateBpm(newBpm: number): void {
-  activeMusicDoc.update((d) => d ? { ...d, bpm: newBpm, modified_at: now() } : d);
+  activeMusicDoc.update((d) => (d ? { ...d, bpm: newBpm, modified_at: now() } : d));
 }

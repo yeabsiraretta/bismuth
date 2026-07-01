@@ -51,9 +51,17 @@
 
   {#if $categories.length > 0}
     <div class="category-filter">
-      <button class="cat-chip" class:active={$categoryFilter === null} on:click={() => setCategoryFilter(null)}>All</button>
+      <button
+        class="cat-chip"
+        class:active={$categoryFilter === null}
+        on:click={() => setCategoryFilter(null)}>All</button
+      >
       {#each $categories as cat}
-        <button class="cat-chip" class:active={$categoryFilter === cat} on:click={() => setCategoryFilter(cat)}>{cat}</button>
+        <button
+          class="cat-chip"
+          class:active={$categoryFilter === cat}
+          on:click={() => setCategoryFilter(cat)}>{cat}</button
+        >
       {/each}
     </div>
   {/if}
@@ -98,7 +106,6 @@
     border-bottom: 1px solid var(--border-color);
     max-height: 300px;
   }
-
 
   .search-bar {
     padding: var(--spacing-xs) var(--spacing-m);

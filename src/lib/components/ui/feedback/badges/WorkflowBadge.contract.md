@@ -15,11 +15,11 @@ giving users an at-a-glance signal about state without requiring them to open th
 
 ## Props
 
-| Prop | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `category` | `WorkflowCategory` | Yes | — | Which color palette and semantic meaning to apply |
-| `label` | `string` | Yes | — | The text shown inside the badge — keep short and human-readable |
-| `showIcon` | `boolean` | No | `false` | Whether to show a leading dot icon for extra visual emphasis |
+| Prop       | Type               | Required | Default | Description                                                     |
+| ---------- | ------------------ | -------- | ------- | --------------------------------------------------------------- |
+| `category` | `WorkflowCategory` | Yes      | —       | Which color palette and semantic meaning to apply               |
+| `label`    | `string`           | Yes      | —       | The text shown inside the badge — keep short and human-readable |
+| `showIcon` | `boolean`          | No       | `false` | Whether to show a leading dot icon for extra visual emphasis    |
 
 **`WorkflowCategory` values**: `draft` | `active` | `complete` | `blocked` | `archived` | `review` | `published` | `pending`
 
@@ -27,12 +27,12 @@ giving users an at-a-glance signal about state without requiring them to open th
 
 ## States
 
-| State | How triggered | Visual change |
-|---|---|---|
-| Default | Always | Colored badge with label |
-| N/A: Disabled | — | Badges are read-only; use the `archived` category to signal inactive |
-| N/A: Loading | — | Not applicable |
-| N/A: Error | — | Use `blocked` category for error states |
+| State         | How triggered | Visual change                                                        |
+| ------------- | ------------- | -------------------------------------------------------------------- |
+| Default       | Always        | Colored badge with label                                             |
+| N/A: Disabled | —             | Badges are read-only; use the `archived` category to signal inactive |
+| N/A: Loading  | —             | Not applicable                                                       |
+| N/A: Error    | —             | Use `blocked` category for error states                              |
 
 ---
 
@@ -45,6 +45,7 @@ interrupting the user
 read-only indicators, not interactive controls.
 
 **Screen reader behavior**:
+
 - Reads the label text (the color is supplementary, never the primary signal)
 - When badge text updates dynamically (e.g., status changes), `aria-live="polite"` announces the
   new label after the current speech finishes
@@ -55,17 +56,17 @@ read-only indicators, not interactive controls.
 
 ## Design tokens used
 
-| CSS property | Token | Fallback |
-|---|---|---|
-| `color` (draft) | `--status-warning` | `#f59e0b` |
-| `color` (active) | `--status-info` | `#3b82f6` |
-| `color` (complete) | `--status-added` | `#10b981` |
-| `color` (blocked) | `--status-deleted` | `#ef4444` |
-| `color` (archived/pending) | `--text-muted` | `#6b7280` |
-| `color` (review) | `--status-modified` | `#3b82f6` |
-| `color` (published) | `--interactive-accent` | `#dc2626` |
-| `background` | `color-mix(in srgb, [token] 15%, transparent)` | derived |
-| `border-radius` | `--radius-s` | `4px` |
+| CSS property               | Token                                          | Fallback  |
+| -------------------------- | ---------------------------------------------- | --------- |
+| `color` (draft)            | `--status-warning`                             | `#f59e0b` |
+| `color` (active)           | `--status-info`                                | `#3b82f6` |
+| `color` (complete)         | `--status-added`                               | `#10b981` |
+| `color` (blocked)          | `--status-deleted`                             | `#ef4444` |
+| `color` (archived/pending) | `--text-muted`                                 | `#6b7280` |
+| `color` (review)           | `--status-modified`                            | `#3b82f6` |
+| `color` (published)        | `--interactive-accent`                         | `#dc2626` |
+| `background`               | `color-mix(in srgb, [token] 15%, transparent)` | derived   |
+| `border-radius`            | `--radius-s`                                   | `4px`     |
 
 ---
 

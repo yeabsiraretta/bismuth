@@ -63,9 +63,11 @@ export function buildMediaFeatureCommands(): Command[] {
       category: 'Flashcards',
       action: async () => {
         const { wrapCloze } = await import('@/features/flashcards');
-        window.dispatchEvent(new CustomEvent('editor-wrap-selection', {
-          detail: { wrapper: (text: string) => wrapCloze(text) },
-        }));
+        window.dispatchEvent(
+          new CustomEvent('editor-wrap-selection', {
+            detail: { wrapper: (text: string) => wrapCloze(text) },
+          })
+        );
       },
     },
     {
@@ -77,9 +79,11 @@ export function buildMediaFeatureCommands(): Command[] {
         const { wrapCloze } = await import('@/features/flashcards');
         const hint = prompt('Enter cloze hint:');
         if (hint !== null) {
-          window.dispatchEvent(new CustomEvent('editor-wrap-selection', {
-            detail: { wrapper: (text: string) => wrapCloze(text, hint) },
-          }));
+          window.dispatchEvent(
+            new CustomEvent('editor-wrap-selection', {
+              detail: { wrapper: (text: string) => wrapCloze(text, hint) },
+            })
+          );
         }
       },
     },
@@ -90,9 +94,11 @@ export function buildMediaFeatureCommands(): Command[] {
       category: 'Flashcards',
       action: async () => {
         const { unwrapClozes } = await import('@/features/flashcards');
-        window.dispatchEvent(new CustomEvent('editor-wrap-selection', {
-          detail: { wrapper: (text: string) => unwrapClozes(text) },
-        }));
+        window.dispatchEvent(
+          new CustomEvent('editor-wrap-selection', {
+            detail: { wrapper: (text: string) => unwrapClozes(text) },
+          })
+        );
       },
     },
     {
@@ -214,7 +220,7 @@ export function buildMediaFeatureCommands(): Command[] {
         const { notes: notesStore } = await import('@/stores/vault/vault');
         const { get } = await import('svelte/store');
         const { openNote } = await import('@/appNavigation');
-        const all = get(notesStore).filter(n => n.path.endsWith('.md'));
+        const all = get(notesStore).filter((n) => n.path.endsWith('.md'));
         if (all.length > 0) {
           const pick = all[Math.floor(Math.random() * all.length)];
           openNote(pick.path);
@@ -288,7 +294,10 @@ export function buildMediaFeatureCommands(): Command[] {
       category: 'Recipe',
       action: async () => {
         const note = get(activeNote);
-        if (!note) { showToast('No note open', 'warning'); return; }
+        if (!note) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { loadRecipe } = await import('@/features/recipe');
         loadRecipe(note.content, note.title);
         showToast('Recipe loaded', 'info');

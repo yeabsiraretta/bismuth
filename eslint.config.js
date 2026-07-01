@@ -47,26 +47,29 @@ export default tseslint.config(
       'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
 
       // Feature barrel enforcement — cross-feature deep imports forbidden
-      'no-restricted-imports': ['error', {
-        patterns: [
-          {
-            group: ['@/features/*/stores/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/services/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/components/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/types/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-        ],
-      }],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/features/*/stores/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/services/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/components/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/types/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+          ],
+        },
+      ],
     },
   },
 
@@ -88,26 +91,29 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
-      'no-restricted-imports': ['error', {
-        patterns: [
-          {
-            group: ['@/features/*/stores/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/services/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/components/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-          {
-            group: ['@/features/*/types/*'],
-            message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
-          },
-        ],
-      }],
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/features/*/stores/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/services/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/components/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+            {
+              group: ['@/features/*/types/*'],
+              message: 'Import from the feature barrel: import { x } from "@/features/<name>"',
+            },
+          ],
+        },
+      ],
     },
   },
 
@@ -126,5 +132,5 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       'max-lines': 'off',
     },
-  },
+  }
 );

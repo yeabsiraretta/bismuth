@@ -41,7 +41,10 @@ describe('ButtonTiny', () => {
   it('fires click event when not disabled', async () => {
     const onClick = vi.fn();
     const { container, component } = render(ButtonTiny, { props: {} });
-    (component as unknown as { $on: (event: string, handler: () => void) => void }).$on('click', onClick);
+    (component as unknown as { $on: (event: string, handler: () => void) => void }).$on(
+      'click',
+      onClick
+    );
     await fireEvent.click(container.querySelector('button') as HTMLElement);
     expect(onClick).toHaveBeenCalledOnce();
   });

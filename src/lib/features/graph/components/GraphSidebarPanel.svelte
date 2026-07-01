@@ -17,7 +17,13 @@
   import type { GraphData, GraphSettings } from '../types';
 
   let graphData: GraphData = { nodes: [], edges: [] };
-  let stats: GraphStats = { nodeCount: 0, edgeCount: 0, orphanCount: 0, tagCount: 0, typeBreakdown: {} };
+  let stats: GraphStats = {
+    nodeCount: 0,
+    edgeCount: 0,
+    orphanCount: 0,
+    tagCount: 0,
+    typeBreakdown: {},
+  };
   let isLoading = false;
   let selectedNode: string | null = null;
 
@@ -42,7 +48,12 @@
     isLoading = false;
   }
 
-  function handleFilter(detail: { tags: string[]; types: string[]; folder: string; depth: number }) {
+  function handleFilter(detail: {
+    tags: string[];
+    types: string[];
+    folder: string;
+    depth: number;
+  }) {
     filterTags = detail.tags;
     filterTypes = detail.types;
     filterFolder = detail.folder;
@@ -63,7 +74,9 @@
     window.dispatchEvent(new CustomEvent('open-graph-view'));
   }
 
-  onMount(() => { refresh(); });
+  onMount(() => {
+    refresh();
+  });
 </script>
 
 <div class="graph-sidebar">
@@ -80,7 +93,11 @@
       <p>Loading graph data...</p>
     </div>
   {:else if stats.nodeCount === 0}
-    <EmptyState icon="share-2" title="No graph data" description="Open a vault to visualize its knowledge graph" />
+    <EmptyState
+      icon="share-2"
+      title="No graph data"
+      description="Open a vault to visualize its knowledge graph"
+    />
   {:else}
     <div class="graph-stats">
       <div class="stat-item">
@@ -107,7 +124,11 @@
         <div class="selected-node-card">
           <Icon name="file-text" size={14} />
           <span class="node-name">{selectedNode.split('/').pop()?.replace('.md', '')}</span>
-          <button class="open-btn" on:click={() => handleOpenNote(selectedNode || '')} title="Open note">
+          <button
+            class="open-btn"
+            on:click={() => handleOpenNote(selectedNode || '')}
+            title="Open note"
+          >
             <Icon name="external-link" size={12} />
           </button>
         </div>
@@ -145,24 +166,118 @@
 </div>
 
 <style>
-  .graph-sidebar { display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
+  .graph-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  }
 
-  .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: var(--spacing-s); color: var(--text-muted); text-align: center; padding: var(--spacing-xl) var(--spacing-m); }
-  .loading-state p { font-size: var(--font-ui-small); font-weight: 500; margin: 0; }
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: var(--spacing-s);
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-xl) var(--spacing-m);
+  }
+  .loading-state p {
+    font-size: var(--font-ui-small);
+    font-weight: 500;
+    margin: 0;
+  }
 
-  .graph-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacing-xs); padding: var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-  .stat-value { font-size: var(--font-size-lg); font-weight: 700; color: var(--text-normal); }
-  .stat-label { font-size: var(--font-size-2xs); color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .graph-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-xs);
+    padding: var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .stat-value {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--text-normal);
+  }
+  .stat-label {
+    font-size: var(--font-size-2xs);
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
 
-  .selected-node-info { padding: var(--spacing-s) var(--spacing-m); border-bottom: 1px solid var(--border-color); }
-  .section-label { font-size: var(--font-size-2xs); font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; display: block; }
-  .selected-node-card { display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-s); background: var(--background-secondary); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-size-xs); }
-  .node-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .open-btn { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: none; border: none; border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; }
-  .open-btn:hover { background: var(--background-modifier-hover); color: var(--interactive-accent); }
+  .selected-node-info {
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .section-label {
+    font-size: var(--font-size-2xs);
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .selected-node-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-secondary);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-size-xs);
+  }
+  .node-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .open-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .open-btn:hover {
+    background: var(--background-modifier-hover);
+    color: var(--interactive-accent);
+  }
 
-  .graph-sidebar-section { border-bottom: 1px solid var(--border-color); }
-  .section-toggle { display: flex; align-items: center; gap: var(--spacing-xs); width: 100%; padding: var(--spacing-s) var(--spacing-m); border: none; background: none; color: var(--text-normal); font-size: var(--font-ui-small); font-weight: 600; cursor: pointer; }
-  .section-toggle:hover { background: var(--interactive-hover); }
+  .graph-sidebar-section {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .section-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
+    padding: var(--spacing-s) var(--spacing-m);
+    border: none;
+    background: none;
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .section-toggle:hover {
+    background: var(--interactive-hover);
+  }
 </style>

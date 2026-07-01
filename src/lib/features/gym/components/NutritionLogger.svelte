@@ -44,7 +44,16 @@
     formError = null;
     isSubmitting = true;
     try {
-      await updateNutritionEntry(vaultRoot, vaultId, selectedDate, name, calories, proteinG, carbsG, fatG);
+      await updateNutritionEntry(
+        vaultRoot,
+        vaultId,
+        selectedDate,
+        name,
+        calories,
+        proteinG,
+        carbsG,
+        fatG
+      );
       mealName = '';
       calories = undefined;
       proteinG = undefined;
@@ -62,7 +71,7 @@
   async function handleDelete(entry: NutritionEntry): Promise<void> {
     try {
       await deleteNutrition(vaultRoot, vaultId, entry.id);
-      todayNutrition.update(list => list.filter(e => e.id !== entry.id));
+      todayNutrition.update((list) => list.filter((e) => e.id !== entry.id));
       log.info('NutritionLogger: entry deleted', { id: entry.id });
     } catch (err) {
       log.error('NutritionLogger: delete failed', err as Error);
@@ -73,7 +82,9 @@
     if (event.key === 'Enter') void handleSubmit();
   }
 
-  onMount(() => { loadTodayNutrition(vaultRoot, vaultId); });
+  onMount(() => {
+    loadTodayNutrition(vaultRoot, vaultId);
+  });
 </script>
 
 <div class="nutrition-logger">
@@ -104,19 +115,50 @@
     <div class="form-row form-row--macros">
       <label class="macro-label">
         <span>kcal</span>
-        <input type="number" class="macro-input" min="0" bind:value={calories} aria-label="Calories" placeholder="0" />
+        <input
+          type="number"
+          class="macro-input"
+          min="0"
+          bind:value={calories}
+          aria-label="Calories"
+          placeholder="0"
+        />
       </label>
       <label class="macro-label">
         <span>Protein (g)</span>
-        <input type="number" class="macro-input" min="0" step="0.1" bind:value={proteinG} aria-label="Protein in grams" placeholder="0" />
+        <input
+          type="number"
+          class="macro-input"
+          min="0"
+          step="0.1"
+          bind:value={proteinG}
+          aria-label="Protein in grams"
+          placeholder="0"
+        />
       </label>
       <label class="macro-label">
         <span>Carbs (g)</span>
-        <input type="number" class="macro-input" min="0" step="0.1" bind:value={carbsG} aria-label="Carbohydrates in grams" placeholder="0" />
+        <input
+          type="number"
+          class="macro-input"
+          min="0"
+          step="0.1"
+          bind:value={carbsG}
+          aria-label="Carbohydrates in grams"
+          placeholder="0"
+        />
       </label>
       <label class="macro-label">
         <span>Fat (g)</span>
-        <input type="number" class="macro-input" min="0" step="0.1" bind:value={fatG} aria-label="Fat in grams" placeholder="0" />
+        <input
+          type="number"
+          class="macro-input"
+          min="0"
+          step="0.1"
+          bind:value={fatG}
+          aria-label="Fat in grams"
+          placeholder="0"
+        />
       </label>
     </div>
     {#if formError}
@@ -126,8 +168,8 @@
       class="submit-btn"
       disabled={isSubmitting}
       on:click={handleSubmit}
-      aria-label="Add meal entry"
-    >{isSubmitting ? 'Saving...' : 'Add Meal'}</button>
+      aria-label="Add meal entry">{isSubmitting ? 'Saving...' : 'Add Meal'}</button
+    >
   </section>
 
   {#if entries.length > 0}
@@ -161,8 +203,8 @@
               class="delete-btn"
               on:click={() => handleDelete(entry)}
               aria-label="Delete {entry.mealName}"
-              title="Delete meal"
-            >&#10005;</button>
+              title="Delete meal">&#10005;</button
+            >
           </li>
         {/each}
       </ul>
@@ -175,33 +217,175 @@
 </div>
 
 <style>
-  .nutrition-logger { display: flex; flex-direction: column; gap: var(--spacing-m); padding: var(--spacing-m); overflow-y: auto; }
-  .date-row { display: flex; align-items: center; gap: var(--spacing-s); }
-  .date-label { font-size: var(--font-ui-small); color: var(--text-muted); }
-  .date-input { padding: var(--spacing-xs) var(--spacing-s); background: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-small); }
-  .add-meal-form { background: var(--background-secondary); border-radius: var(--radius-m); padding: var(--spacing-m); display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .form-title, .summary-title, .list-title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); margin: 0; }
-  .form-row { display: flex; gap: var(--spacing-s); }
-  .form-row--macros { flex-wrap: wrap; gap: var(--spacing-s); }
-  .form-input { padding: var(--spacing-xs) var(--spacing-s); background: var(--background-primary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-small); }
-  .form-input--wide { flex: 1; }
-  .macro-label { display: flex; flex-direction: column; gap: 2px; font-size: var(--font-smallest); color: var(--text-muted); }
-  .macro-input { width: 70px; padding: var(--spacing-xs); background: var(--background-primary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-small); }
-  .form-error { font-size: var(--font-ui-smaller); color: var(--text-error); }
-  .submit-btn { align-self: flex-start; padding: var(--spacing-s) var(--spacing-m); background: var(--interactive-accent); color: var(--text-on-accent, #fff); border: none; border-radius: var(--radius-s); cursor: pointer; font-size: var(--font-ui-small); font-weight: 500; }
-  .submit-btn:disabled { opacity: 0.5; cursor: default; }
-  .daily-summary { padding: var(--spacing-s) 0; border-top: 1px solid var(--background-modifier-border); }
-  .summary-row { display: flex; gap: var(--spacing-m); flex-wrap: wrap; margin-top: var(--spacing-xs); }
-  .summary-item { font-size: var(--font-ui-small); color: var(--text-muted); }
-  .meal-list { display: flex; flex-direction: column; gap: var(--spacing-s); }
-  .meals { list-style: none; margin: var(--spacing-xs) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--spacing-xs); }
-  .meal-item { display: flex; align-items: center; gap: var(--spacing-s); padding: var(--spacing-s); background: var(--background-secondary); border-radius: var(--radius-s); }
-  .meal-main { display: flex; align-items: center; gap: var(--spacing-s); flex: 1; }
-  .meal-name { font-size: var(--font-ui-small); color: var(--text-normal); font-weight: 500; }
-  .meal-calories { font-size: var(--font-ui-small); color: var(--text-muted); }
-  .meal-macros { display: flex; gap: var(--spacing-xs); font-size: var(--font-smallest); color: var(--text-faint); }
-  .delete-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; padding: 2px 4px; border-radius: var(--radius-s); font-size: 11px; }
-  .delete-btn:hover { color: var(--text-error); background: var(--background-modifier-error); }
-  .empty-state { text-align: center; padding: var(--spacing-l) 0; }
-  .empty-text { color: var(--text-muted); font-size: var(--font-ui-small); }
+  .nutrition-logger {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+    padding: var(--spacing-m);
+    overflow-y: auto;
+  }
+  .date-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .date-label {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+  }
+  .date-input {
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+  }
+  .add-meal-form {
+    background: var(--background-secondary);
+    border-radius: var(--radius-m);
+    padding: var(--spacing-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .form-title,
+  .summary-title,
+  .list-title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0;
+  }
+  .form-row {
+    display: flex;
+    gap: var(--spacing-s);
+  }
+  .form-row--macros {
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+  }
+  .form-input {
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+  }
+  .form-input--wide {
+    flex: 1;
+  }
+  .macro-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: var(--font-smallest);
+    color: var(--text-muted);
+  }
+  .macro-input {
+    width: 70px;
+    padding: var(--spacing-xs);
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-small);
+  }
+  .form-error {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-error);
+  }
+  .submit-btn {
+    align-self: flex-start;
+    padding: var(--spacing-s) var(--spacing-m);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent, #fff);
+    border: none;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    font-size: var(--font-ui-small);
+    font-weight: 500;
+  }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .daily-summary {
+    padding: var(--spacing-s) 0;
+    border-top: 1px solid var(--background-modifier-border);
+  }
+  .summary-row {
+    display: flex;
+    gap: var(--spacing-m);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xs);
+  }
+  .summary-item {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+  }
+  .meal-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+  }
+  .meals {
+    list-style: none;
+    margin: var(--spacing-xs) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .meal-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
+    background: var(--background-secondary);
+    border-radius: var(--radius-s);
+  }
+  .meal-main {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    flex: 1;
+  }
+  .meal-name {
+    font-size: var(--font-ui-small);
+    color: var(--text-normal);
+    font-weight: 500;
+  }
+  .meal-calories {
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+  }
+  .meal-macros {
+    display: flex;
+    gap: var(--spacing-xs);
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+  }
+  .delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: var(--radius-s);
+    font-size: 11px;
+  }
+  .delete-btn:hover {
+    color: var(--text-error);
+    background: var(--background-modifier-error);
+  }
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-l) 0;
+  }
+  .empty-text {
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+  }
 </style>

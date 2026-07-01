@@ -11,14 +11,14 @@ import { DEFAULT_CALENDAR_CATEGORIES } from '../types';
 export function filterEventsByRange(
   events: CalendarEvent[],
   range: StatsTimeRange,
-  referenceDate: Date = new Date(),
+  referenceDate: Date = new Date()
 ): CalendarEvent[] {
   if (range === 'all') return events;
 
   const refStr = formatDateStr(referenceDate);
 
   if (range === 'day') {
-    return events.filter(e => e.date === refStr);
+    return events.filter((e) => e.date === refStr);
   }
 
   if (range === 'week') {
@@ -26,7 +26,7 @@ export function filterEventsByRange(
     start.setDate(start.getDate() - start.getDay());
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
-    return events.filter(e => e.date >= formatDateStr(start) && e.date <= formatDateStr(end));
+    return events.filter((e) => e.date >= formatDateStr(start) && e.date <= formatDateStr(end));
   }
 
   // month
@@ -35,14 +35,14 @@ export function filterEventsByRange(
   const startStr = `${y}-${String(m + 1).padStart(2, '0')}-01`;
   const lastDay = new Date(y, m + 1, 0).getDate();
   const endStr = `${y}-${String(m + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-  return events.filter(e => e.date >= startStr && e.date <= endStr);
+  return events.filter((e) => e.date >= startStr && e.date <= endStr);
 }
 
 // ─── Category breakdown ──────────────────────────────────────────────────────
 
 export function computeCategoryBreakdown(
   events: CalendarEvent[],
-  categories: CalendarCategory[] = DEFAULT_CALENDAR_CATEGORIES,
+  categories: CalendarCategory[] = DEFAULT_CALENDAR_CATEGORIES
 ): CategoryStat[] {
   const catMap = new Map<string, { count: number; minutes: number }>();
 
@@ -56,17 +56,19 @@ export function computeCategoryBreakdown(
 
   const totalMinutes = [...catMap.values()].reduce((s, v) => s + v.minutes, 0);
 
-  return [...catMap.entries()].map(([catId, data]) => {
-    const cat = categories.find(c => c.id === catId);
-    return {
-      categoryId: catId,
-      categoryName: cat?.name ?? catId,
-      color: cat?.color ?? 'var(--text-muted)',
-      eventCount: data.count,
-      totalMinutes: data.minutes,
-      percentage: totalMinutes > 0 ? Math.round((data.minutes / totalMinutes) * 100) : 0,
-    };
-  }).sort((a, b) => b.totalMinutes - a.totalMinutes);
+  return [...catMap.entries()]
+    .map(([catId, data]) => {
+      const cat = categories.find((c) => c.id === catId);
+      return {
+        categoryId: catId,
+        categoryName: cat?.name ?? catId,
+        color: cat?.color ?? 'var(--text-muted)',
+        eventCount: data.count,
+        totalMinutes: data.minutes,
+        percentage: totalMinutes > 0 ? Math.round((data.minutes / totalMinutes) * 100) : 0,
+      };
+    })
+    .sort((a, b) => b.totalMinutes - a.totalMinutes);
 }
 
 // ─── Streak tracking ─────────────────────────────────────────────────────────
@@ -77,7 +79,7 @@ export function computeStreaks(events: CalendarEvent[]): {
 } {
   if (!events.length) return { currentStreak: 0, longestStreak: 0 };
 
-  const dates = new Set(events.map(e => e.date));
+  const dates = new Set(events.map((e) => e.date));
   const sorted = [...dates].sort();
   if (!sorted.length) return { currentStreak: 0, longestStreak: 0 };
 
@@ -100,7 +102,7 @@ export function computeStreaks(events: CalendarEvent[]): {
   const today = formatDateStr(new Date());
   const lastDate = sorted[sorted.length - 1];
   const diffToToday = Math.round(
-    (new Date(today).getTime() - new Date(lastDate).getTime()) / 86400000,
+    (new Date(today).getTime() - new Date(lastDate).getTime()) / 86400000
   );
   if (diffToToday > 1) current = 0;
 
@@ -126,12 +128,12 @@ export function computeCalendarStats(
   events: CalendarEvent[],
   categories?: CalendarCategory[],
   range: StatsTimeRange = 'all',
-  referenceDate?: Date,
+  referenceDate?: Date
 ): CalendarStats {
   const filtered = filterEventsByRange(events, range, referenceDate);
   const totalMinutes = filtered.reduce((s, e) => s + (e.durationMinutes ?? 0), 0);
-  const completedCount = filtered.filter(e => e.completed).length;
-  const uniqueDays = new Set(filtered.map(e => e.date)).size;
+  const completedCount = filtered.filter((e) => e.completed).length;
+  const uniqueDays = new Set(filtered.map((e) => e.date)).size;
   const { currentStreak, longestStreak } = computeStreaks(filtered);
 
   return {

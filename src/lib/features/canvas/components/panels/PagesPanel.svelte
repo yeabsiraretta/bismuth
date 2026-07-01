@@ -45,7 +45,12 @@
   <div class="canvas-panel-header">
     <Icon name="layers" size={14} />
     <span class="canvas-panel-title">Pages</span>
-    <button class="canvas-btn canvas-btn--icon-sm" onclick={handleAddPage} title="Add page" aria-label="Add page">
+    <button
+      class="canvas-btn canvas-btn--icon-sm"
+      onclick={handleAddPage}
+      title="Add page"
+      aria-label="Add page"
+    >
       <Icon name="plus" size={14} />
     </button>
   </div>
@@ -73,7 +78,10 @@
             <div class="page-actions">
               <button
                 class="canvas-btn canvas-btn--icon-sm"
-                onclick={(e) => { e.stopPropagation(); startRename(page.id, page.name); }}
+                onclick={(e) => {
+                  e.stopPropagation();
+                  startRename(page.id, page.name);
+                }}
                 title="Rename"
                 aria-label="Rename page"
               >
@@ -82,7 +90,10 @@
               {#if ($currentCanvas?.pages?.length || 0) > 1}
                 <button
                   class="canvas-btn canvas-btn--icon-sm danger"
-                  onclick={(e) => { e.stopPropagation(); deletePage(page.id); }}
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    deletePage(page.id);
+                  }}
                   title="Delete"
                   aria-label="Delete page"
                 >
@@ -102,7 +113,6 @@
 </div>
 
 <style>
-
   .pages-panel {
     border-bottom: 1px solid var(--border-color);
     max-height: 200px;

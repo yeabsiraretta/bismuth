@@ -15,7 +15,7 @@ interface PeriodicNoteResult {
  */
 export async function openOrCreatePeriodicNote(
   date: string,
-  periodType: PeriodType,
+  periodType: PeriodType
 ): Promise<PeriodicNoteResult> {
   log.info('Periodic notes: opening/creating', { date, periodType });
   const vault = get(currentVault);
@@ -60,9 +60,6 @@ export async function getPeriodicNotesForRange(
  * Gets the path where a periodic note would be located for a given date.
  * Does not create the file.
  */
-export function getPeriodicNotePath(
-  date: string,
-  periodType: PeriodType
-): string {
+export function getPeriodicNotePath(date: string, periodType: PeriodType): string {
   return `Periodic Notes/${periodType}/${date}.md`;
 }

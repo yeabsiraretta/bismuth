@@ -11,7 +11,9 @@ import { getSecret, setSecret, deleteSecret } from '../keychain';
 const mockInvoke = vi.mocked(invoke);
 
 describe('keychain service (T055)', () => {
-  beforeEach(() => { mockInvoke.mockReset(); });
+  beforeEach(() => {
+    mockInvoke.mockReset();
+  });
 
   describe('getSecret — three return states', () => {
     it('returns { found: true, value, available: true } when secret exists', async () => {
@@ -43,7 +45,10 @@ describe('keychain service (T055)', () => {
   it('setSecret calls set_secret IPC command', async () => {
     mockInvoke.mockResolvedValue(undefined);
     await setSecret('llm-api-key', 'secret-value');
-    expect(mockInvoke).toHaveBeenCalledWith('set_secret', { key: 'llm-api-key', value: 'secret-value' });
+    expect(mockInvoke).toHaveBeenCalledWith('set_secret', {
+      key: 'llm-api-key',
+      value: 'secret-value',
+    });
   });
 
   it('deleteSecret calls delete_secret IPC command', async () => {

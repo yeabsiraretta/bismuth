@@ -19,6 +19,7 @@ If `flash-mem` is available, use `/speckit.memory-md.prepare-context` or the MCP
 ## Goal
 
 Provide a single command that ensures:
+
 1. Implementation tasks are historical-context aware (`flash-mem`).
 2. A task list is generated or validated (`/speckit.tasks`).
 3. Security requirements are represented in tasks (Security Review).
@@ -29,10 +30,12 @@ Provide a single command that ensures:
 ### Step 1 — Detect Optional Extensions
 
 Check for the existence of:
+
 - `flash-mem`
 - `spec-kit-security-review`
 
 **Detection Logic**:
+
 1. Read `.specify/extensions.yml` and check the `installed` list. If an extension ID is present there, consider it available.
 2. Fall back to checking for the extension directory in `.specify/extensions/` only if the YAML is missing or the list is empty.
 3. If they are missing from both, degrade gracefully by skipping their respective steps.
@@ -42,6 +45,7 @@ Check for the existence of:
 IF `flash-mem` is available:
 
 #### SQLite / MCP Flow (Required for `flash-mem`)
+
 Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP tools to retrieve context. Do not read the `.md` memory files directly, as they are only backups.
 
 1. **Prepare Context**: Execute `/speckit.memory-md.prepare-context --feature specs/<feature> --query "architecture decisions constraints boundaries <feature>"`.
@@ -50,11 +54,13 @@ Because `flash-mem` uses SQLite as its source of truth, you **MUST** use its MCP
 4. **Token Report**: Execute the `speckit_memory_token_report` MCP tool provided by `flash-mem` with `feature: "<feature>"` and display the token savings in the summary.
 
 #### Markdown-Only Flow (Fallback)
+
 If `flash-mem` is unavailable, use the standard synthesis command:
 
 1. **Execute Synthesis**: Run `/speckit.memory-md.plan-with-memory` to synthesize and save `specs/<feature>/memory-synthesis.md`.
 
 **[OPTIONAL SUB-AGENT DELEGATION]**
+
 - If `flash-mem` has ≥ 20 decision documents: Consider sub-agent for synthesis
 - Sub-agent command: `/speckit.memory-md.plan-with-memory`
 - Sub-agent benefits: Faster traversal, better filtering, detailed synthesis
@@ -67,6 +73,7 @@ If `flash-mem` is unavailable, use the standard synthesis command:
 You must orchestrate the `/speckit.tasks` workflow directly.
 
 **CRITICAL INSTRUCTION**: You must NOT just advise the user or stop here. You must actually generate the tasks:
+
 1. **Execute Tasks**: Run `/speckit.tasks` to generate and save `specs/<feature>/tasks.md`.
 
    **If `/speckit.tasks` is not available as a registered command** (i.e., the AI agent does not recognize it as a slash command), fall back to inline task generation:
@@ -84,20 +91,23 @@ You must orchestrate the `/speckit.tasks` workflow directly.
 ### Step 4 — Security Review on Tasks
 
 IF `spec-kit-security-review` is available:
+
 1. **Execute Review**: Run `/speckit.security-review.tasks` to review the task list.
 2. Check for missing tasks related to:
-    - Validation, authorization, and trust boundaries.
-    - Secure integration and audit/logging.
+   - Validation, authorization, and trust boundaries.
+   - Secure integration and audit/logging.
 3. Update `specs/<feature>/security-constraints.md` with any new findings.
 
 ### Step 5 — Architecture Refactor Generation
 
 Run:
+
 ```text
 /speckit.architecture-guard.refactor-generator
 ```
 
 It MUST convert architecture findings into:
+
 - Explicit implementation, migration, or refactor tasks.
 - Boundary-level or contract-level corrections.
 - **Prefer module-level tasks** over broad system rewrites.
@@ -105,6 +115,7 @@ It MUST convert architecture findings into:
 ### Step 6 — Proactive Durable Memory Preservation
 
 If the task generation or security review identified new architectural lessons or reusable patterns:
+
 1. **Proactive Execution**: You **MUST automatically execute** `/speckit.memory-md.capture` as the final part of this turn. Do not just recommend it; run the command.
 2. **Standard**: Use the formal capture flow to propose entries and wait for user approval.
 
@@ -115,20 +126,24 @@ Produce a final `Governed Tasks Summary` for the user.
 ## Graceful Degradation
 
 **Without `flash-mem`**:
+
 - Skip Step 2 (Memory Synthesis)
 - Continue to `/speckit.tasks` directly
 - Assume no historical task constraints beyond Constitution
 
 **Without Security Review**:
+
 - Skip Step 4 (Security Review on Tasks)
 - Continue to refactor-generator directly
 - Flag missing security task validation in summary
 
 **If No Architecture Violations**:
+
 - Report "Architecture refactor tasks: None"
 - Task list is complete
 
 **Minimal Viable Workflow** (only Architecture Guard + Spec Kit):
+
 - Generate tasks via core Spec Kit
 - Validate against Constitution + architecture boundaries
 - Produce summary
@@ -141,19 +156,23 @@ The command MUST return:
 # Governed Tasks Summary
 
 ## Memory Context
+
 - **Status**: [Synthesized / Skipped / Missing]
 - **Relevant Decisions**: [List of historical constraints affecting these tasks]
 
 ## Security Task Review
+
 - **Missing Security Tasks**: [List of missing auth/val/audit tasks]
 - **Constraints**: [Key security boundaries to respect]
 
 ## Architecture Task Review
+
 - **Refactor Tasks**: [Tasks generated by refactor-generator]
 - **Migration Tasks**: [Specific steps for architectural migration]
 - **Architecture Risks**: [Drift or conflicts detected in the task list]
 
 ## Recommended Next Step
+
 - [e.g., Continue to /speckit.architecture-guard.governed-implement]
 - [e.g., Revise tasks to address missing security items]
 - [e.g., Update architecture constitution if standard is outdated]

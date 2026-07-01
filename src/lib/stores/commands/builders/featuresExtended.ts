@@ -23,7 +23,10 @@ export function buildExtendedFeatureCommands(): Command[] {
       category: 'Symbols',
       action: async () => {
         const note = get(activeNote);
-        if (!note) { showToast('No note open', 'warning'); return; }
+        if (!note) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { prettifyText, getRules } = await import('@/features/symbols');
         const result = prettifyText(note.content, getRules());
         if (result !== note.content) {
@@ -256,7 +259,8 @@ export function buildExtendedFeatureCommands(): Command[] {
     {
       id: 'keyshots:change-preset',
       name: 'Keyshots: Change Preset',
-      description: 'Cycle through IDE hotkey presets (Clear, Keyshots, VS Code, JetBrains, Visual Studio)',
+      description:
+        'Cycle through IDE hotkey presets (Clear, Keyshots, VS Code, JetBrains, Visual Studio)',
       category: 'Editor',
       action: async () => {
         const { cyclePreset } = await import('@/features/keyshots');

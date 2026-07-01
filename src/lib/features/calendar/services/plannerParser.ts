@@ -16,7 +16,8 @@ import type { PlannerEntry, CalendarEvent } from '../types';
  * Regex for timed task lines in daily notes.
  * Groups: 1=status(space/x), 2=startHH, 3=startMM, 4=endHH (optional), 5=endMM (optional), 6=text
  */
-const TIMED_TASK_RE = /^- \[([ xX])\]\s*(?:#task\s+)?(\d{1,2}):(\d{2})(?:\s*-\s*(\d{1,2}):(\d{2}))?\s+(.+)$/;
+const TIMED_TASK_RE =
+  /^- \[([ xX])\]\s*(?:#task\s+)?(\d{1,2}):(\d{2})(?:\s*-\s*(\d{1,2}):(\d{2}))?\s+(.+)$/;
 
 /** Scheduled date shorthand: ⏳ YYYY-MM-DD */
 const SCHEDULED_SHORT_RE = /[⏳]\s*(\d{4}-\d{2}-\d{2})/;
@@ -34,7 +35,7 @@ const SCHEDULED_DV_ALT_RE = /\(scheduled::\s*(\d{4}-\d{2}-\d{2})\)/;
 export function parsePlannerEntries(
   content: string,
   sourcePath: string,
-  plannerHeading: string = 'Day planner',
+  plannerHeading: string = 'Day planner'
 ): PlannerEntry[] {
   const lines = content.split('\n');
   const entries: PlannerEntry[] = [];
@@ -121,10 +122,7 @@ function timeToMinutes(time: string): number {
  * For daily notes, the date comes from the note's date.
  * For scheduled tasks, the date comes from the scheduledDate property.
  */
-export function plannerEntriesToEvents(
-  entries: PlannerEntry[],
-  date: string,
-): CalendarEvent[] {
+export function plannerEntriesToEvents(entries: PlannerEntry[], date: string): CalendarEvent[] {
   return entries.map((entry) => {
     const eventDate = entry.scheduledDate ?? date;
     const startMinute = timeToMinutes(entry.startTime);
@@ -157,7 +155,13 @@ export function plannerEntriesToEvents(
  * These are tasks that have both a time and a scheduled date property.
  */
 export function parseScheduledTasks(
-  tasks: Array<{ text: string; source_path: string; line: number; scheduled_date: string | null; status: string }>,
+  tasks: Array<{
+    text: string;
+    source_path: string;
+    line: number;
+    scheduled_date: string | null;
+    status: string;
+  }>
 ): PlannerEntry[] {
   const entries: PlannerEntry[] = [];
 
@@ -177,7 +181,11 @@ export function parseScheduledTasks(
     }
 
     entries.push({
-      text: match[6].replace(SCHEDULED_SHORT_RE, '').replace(SCHEDULED_DV_RE, '').replace(SCHEDULED_DV_ALT_RE, '').trim(),
+      text: match[6]
+        .replace(SCHEDULED_SHORT_RE, '')
+        .replace(SCHEDULED_DV_RE, '')
+        .replace(SCHEDULED_DV_ALT_RE, '')
+        .trim(),
       completed: task.status === 'done',
       startTime,
       endTime,

@@ -90,7 +90,12 @@ let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 export function startPlannerSync(): void {
   stopPlannerSync();
   void loadPlannerEvents();
-  refreshTimerId = setInterval(() => { void loadPlannerEvents(); }, 2 * 60 * 1000);
+  refreshTimerId = setInterval(
+    () => {
+      void loadPlannerEvents();
+    },
+    2 * 60 * 1000
+  );
   log.info('Planner sync started');
 }
 

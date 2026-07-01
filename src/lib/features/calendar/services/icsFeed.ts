@@ -14,14 +14,18 @@ function loadFeeds(): IcsFeedConfig[] {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function loadCache(): Record<string, CalendarEvent[]> {
   try {
     const stored = localStorage.getItem(CACHE_KEY);
     return stored ? JSON.parse(stored) : {};
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 /** Configured ICS feeds. */
@@ -34,32 +38,38 @@ export const icsEventCache = writable<Record<string, CalendarEvent[]>>(loadCache
 export const allIcsEvents = writable<CalendarEvent[]>([]);
 
 // Persist feeds
-icsFeeds.subscribe(feeds => {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(feeds)); }
-  catch (e) { log.warn('Failed to persist ICS feeds', { error: String(e) }); }
+icsFeeds.subscribe((feeds) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(feeds));
+  } catch (e) {
+    log.warn('Failed to persist ICS feeds', { error: String(e) });
+  }
 });
 
 // Update flattened events when cache changes
-icsEventCache.subscribe(cache => {
+icsEventCache.subscribe((cache) => {
   const all = Object.values(cache).flat();
   allIcsEvents.set(all);
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); }
-  catch (e) { log.warn('Failed to persist ICS cache', { error: String(e) }); }
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch (e) {
+    log.warn('Failed to persist ICS cache', { error: String(e) });
+  }
 });
 
 /** Add a new ICS feed. */
 export function addIcsFeed(feed: Omit<IcsFeedConfig, 'id'>): string {
   const id = `ics-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
   const full: IcsFeedConfig = { ...feed, id };
-  icsFeeds.update(feeds => [...feeds, full]);
+  icsFeeds.update((feeds) => [...feeds, full]);
   log.info('ICS feed added', { id, name: feed.name, url: feed.url });
   return id;
 }
 
 /** Remove an ICS feed and its cached events. */
 export function removeIcsFeed(id: string): void {
-  icsFeeds.update(feeds => feeds.filter(f => f.id !== id));
-  icsEventCache.update(cache => {
+  icsFeeds.update((feeds) => feeds.filter((f) => f.id !== id));
+  icsEventCache.update((cache) => {
     const next = { ...cache };
     delete next[id];
     return next;
@@ -69,13 +79,13 @@ export function removeIcsFeed(id: string): void {
 
 /** Update feed config. */
 export function updateIcsFeed(id: string, updates: Partial<IcsFeedConfig>): void {
-  icsFeeds.update(feeds => feeds.map(f => f.id === id ? { ...f, ...updates } : f));
+  icsFeeds.update((feeds) => feeds.map((f) => (f.id === id ? { ...f, ...updates } : f)));
 }
 
 /** Fetch and parse a single ICS feed. */
 export async function fetchIcsFeed(feedId: string): Promise<void> {
   const feeds = get(icsFeeds);
-  const feed = feeds.find(f => f.id === feedId);
+  const feed = feeds.find((f) => f.id === feedId);
   if (!feed || !feed.enabled) return;
 
   log.info('Fetching ICS feed', { id: feedId, url: feed.url });
@@ -87,9 +97,9 @@ export async function fetchIcsFeed(feedId: string): Promise<void> {
 
     const icsText = await response.text();
     const events = parseIcsText(icsText);
-    const calEvents = events.map(e => icsEventToCalendarEvent(e, feed));
+    const calEvents = events.map((e) => icsEventToCalendarEvent(e, feed));
 
-    icsEventCache.update(cache => ({ ...cache, [feedId]: calEvents }));
+    icsEventCache.update((cache) => ({ ...cache, [feedId]: calEvents }));
     updateIcsFeed(feedId, {
       lastFetched: new Date().toISOString(),
       error: undefined,
@@ -106,9 +116,7 @@ export async function fetchIcsFeed(feedId: string): Promise<void> {
 /** Fetch all enabled ICS feeds. */
 export async function fetchAllIcsFeeds(): Promise<void> {
   const feeds = get(icsFeeds);
-  await Promise.allSettled(
-    feeds.filter(f => f.enabled).map(f => fetchIcsFeed(f.id)),
-  );
+  await Promise.allSettled(feeds.filter((f) => f.enabled).map((f) => fetchIcsFeed(f.id)));
 }
 
 /** Parse ICS text into IcsEvent objects. */
@@ -226,7 +234,12 @@ let syncTimerId: ReturnType<typeof setInterval> | null = null;
 export function startIcsSync(): void {
   stopIcsSync();
   void fetchAllIcsFeeds();
-  syncTimerId = setInterval(() => { void fetchAllIcsFeeds(); }, 15 * 60 * 1000);
+  syncTimerId = setInterval(
+    () => {
+      void fetchAllIcsFeeds();
+    },
+    15 * 60 * 1000
+  );
   log.info('ICS sync started');
 }
 

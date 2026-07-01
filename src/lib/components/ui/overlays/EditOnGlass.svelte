@@ -62,7 +62,9 @@
     outline: 1px solid var(--border-hover);
   }
 
-  .eog-content { width: 100%; }
+  .eog-content {
+    width: 100%;
+  }
 
   .eog-hover-overlay {
     position: absolute;

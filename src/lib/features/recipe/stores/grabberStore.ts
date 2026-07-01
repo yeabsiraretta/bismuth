@@ -15,7 +15,9 @@ function loadConfig(): RecipeGrabberConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_GRABBER_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_GRABBER_CONFIG };
 }
 
@@ -32,17 +34,17 @@ const stateInternal = writable<GrabberState>({ ...DEFAULT_GRABBER_STATE });
 const lastGrabbedInternal = writable<GrabbedRecipeData | null>(null);
 
 /** Current grabber configuration. */
-export const grabberConfig = derived(configInternal, $c => $c);
+export const grabberConfig = derived(configInternal, ($c) => $c);
 
 /** Current grab operation state. */
-export const grabberState = derived(stateInternal, $s => $s);
+export const grabberState = derived(stateInternal, ($s) => $s);
 
 /** Last successfully grabbed recipe data (raw). */
-export const lastGrabbedRecipe = derived(lastGrabbedInternal, $r => $r);
+export const lastGrabbedRecipe = derived(lastGrabbedInternal, ($r) => $r);
 
 /** Update grabber config and persist. */
 export function updateGrabberConfig(patch: Partial<RecipeGrabberConfig>): void {
-  configInternal.update(c => {
+  configInternal.update((c) => {
     const next = { ...c, ...patch };
     saveConfig(next);
     return next;
@@ -63,9 +65,11 @@ export async function grabRecipeFromUrl(url: string): Promise<string> {
     const data = await fetchRecipeFromUrl(url);
     lastGrabbedInternal.set(data);
     let config: RecipeGrabberConfig = DEFAULT_GRABBER_CONFIG;
-    configInternal.subscribe(c => { config = c; })();
+    configInternal.subscribe((c) => {
+      config = c;
+    })();
     const markdown = applyRecipeTemplate(config.template, data);
-    stateInternal.update(s => ({ ...s, isGrabbing: false }));
+    stateInternal.update((s) => ({ ...s, isGrabbing: false }));
     log.info('grabberStore: recipe grabbed', { name: data.name, url });
     return markdown;
   } catch (err) {
@@ -84,7 +88,9 @@ export async function grabRecipeAsNote(url: string): Promise<string> {
   const data = await fetchRecipeFromUrl(url);
   lastGrabbedInternal.set(data);
   let config: RecipeGrabberConfig = DEFAULT_GRABBER_CONFIG;
-  configInternal.subscribe(c => { config = c; })();
+  configInternal.subscribe((c) => {
+    config = c;
+  })();
   const markdown = applyRecipeTemplate(config.template, data);
   const filename = recipeToFilename(data.name);
   const { writeNote, refreshNotes } = await import('@/services/vault/vault');
@@ -95,7 +101,7 @@ export async function grabRecipeAsNote(url: string): Promise<string> {
   const path = `${filename}.md`;
   await writeNote(path, markdown);
   await refreshNotes();
-  stateInternal.update(s => ({ ...s, isGrabbing: false }));
+  stateInternal.update((s) => ({ ...s, isGrabbing: false }));
   log.info('grabberStore: recipe note created', { path, name: data.name });
   return path;
 }

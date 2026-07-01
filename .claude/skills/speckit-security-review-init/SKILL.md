@@ -17,8 +17,8 @@ The Security Constitution is the "source of truth" for all security audits. It d
 
 Check for the existence of:
 
-* `.specify/memory/security_constitution.md`
-* `constitution.md` (root, `.specify/memory/`, or `docs/memory/`)
+- `.specify/memory/security_constitution.md`
+- `constitution.md` (root, `.specify/memory/`, or `docs/memory/`)
 
 ### If `security_constitution.md` exists:
 
@@ -50,26 +50,26 @@ Ask the following questions in a conversational way (do not dump all at once).
 
 ## 1. Trust Boundaries & Attack Surface
 
-*   "What are the primary entry points for users and external systems?"
-*   "Are there internal services or databases that must remain completely isolated from the public web?"
-*   "Does the application handle multi-tenant data that must be strictly isolated at the database or application level?"
+- "What are the primary entry points for users and external systems?"
+- "Are there internal services or databases that must remain completely isolated from the public web?"
+- "Does the application handle multi-tenant data that must be strictly isolated at the database or application level?"
 
 ## 2. Identity & Access
 
-*   "What is the primary authentication mechanism? (e.g., JWT, Session, OAuth2, OpenID Connect)"
-*   "How are permissions managed? (e.g., RBAC, ABAC, or simple Admin/User roles)"
-*   "Are there specific sensitive actions that require multi-factor authentication (MFA) or step-up auth?"
+- "What is the primary authentication mechanism? (e.g., JWT, Session, OAuth2, OpenID Connect)"
+- "How are permissions managed? (e.g., RBAC, ABAC, or simple Admin/User roles)"
+- "Are there specific sensitive actions that require multi-factor authentication (MFA) or step-up auth?"
 
 ## 3. Data Sensitivity & Compliance
 
-*   "What types of sensitive data does the project handle? (e.g., PII, PHI, Financial, Secrets, IP)"
-*   "Are there specific compliance frameworks you need to adhere to? (e.g., OWASP Top 10, SOC2, GDPR)"
-*   "What is the data retention and disposal policy for sensitive information?"
+- "What types of sensitive data does the project handle? (e.g., PII, PHI, Financial, Secrets, IP)"
+- "Are there specific compliance frameworks you need to adhere to? (e.g., OWASP Top 10, SOC2, GDPR)"
+- "What is the data retention and disposal policy for sensitive information?"
 
 ## 4. Secrets & Infrastructure
 
-*   "How are secrets (API keys, DB credentials) managed and injected? (e.g., Vault, AWS Secrets Manager, Environment Variables)"
-*   "Are there specific security headers or TLS requirements that must be enforced project-wide?"
+- "How are secrets (API keys, DB credentials) managed and injected? (e.g., Vault, AWS Secrets Manager, Environment Variables)"
+- "Are there specific security headers or TLS requirements that must be enforced project-wide?"
 
 ---
 
@@ -94,10 +94,10 @@ Once enough context is gathered, generate the final document.
 
 # Guardrails
 
-*   **Actionable**: Rules must be specific enough for an AI to audit code against them (e.g., "Use `Auth::user()`" is better than "Be secure").
-*   **Enforceable**: Avoid vague statements like "Security is a priority."
-*   **Decoupled**: Do not assume a specific cloud provider unless the user specifies one.
-*   **Non-Destructive**: Never overwrite an existing constitution without explicit user approval.
+- **Actionable**: Rules must be specific enough for an AI to audit code against them (e.g., "Use `Auth::user()`" is better than "Be secure").
+- **Enforceable**: Avoid vague statements like "Security is a priority."
+- **Decoupled**: Do not assume a specific cloud provider unless the user specifies one.
+- **Non-Destructive**: Never overwrite an existing constitution without explicit user approval.
 
 ---
 

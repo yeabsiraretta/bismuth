@@ -27,10 +27,36 @@ export function formatDate(date: Date, format: string): string {
   const d = date.getDate();
   const dayOfWeek = date.getDay();
 
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const monthShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const dayShort = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  const monthShort = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // ISO week number
   const jan4 = new Date(y, 0, 4);
@@ -41,21 +67,21 @@ export function formatDate(date: Date, format: string): string {
   const quarter = Math.floor(m / 3) + 1;
 
   const tokens: Record<string, string> = {
-    'YYYY': String(y),
-    'YY': String(y).slice(-2),
-    'MMMM': monthNames[m],
-    'MMM': monthShort[m],
-    'MM': String(m + 1).padStart(2, '0'),
-    'M': String(m + 1),
-    'DD': String(d).padStart(2, '0'),
-    'D': String(d),
-    'dddd': dayNames[dayOfWeek],
-    'ddd': dayShort[dayOfWeek],
-    'dd': dayShort[dayOfWeek].slice(0, 2),
-    'd': String(dayOfWeek),
-    'WW': String(weekNum).padStart(2, '0'),
-    'W': String(weekNum),
-    'Q': String(quarter),
+    YYYY: String(y),
+    YY: String(y).slice(-2),
+    MMMM: monthNames[m],
+    MMM: monthShort[m],
+    MM: String(m + 1).padStart(2, '0'),
+    M: String(m + 1),
+    DD: String(d).padStart(2, '0'),
+    D: String(d),
+    dddd: dayNames[dayOfWeek],
+    ddd: dayShort[dayOfWeek],
+    dd: dayShort[dayOfWeek].slice(0, 2),
+    d: String(dayOfWeek),
+    WW: String(weekNum).padStart(2, '0'),
+    W: String(weekNum),
+    Q: String(quarter),
   };
 
   let result = format;
@@ -95,10 +121,18 @@ export function applyDateOffset(date: Date, offset: string): Date {
 
   const result = new Date(date);
   switch (unit) {
-    case 'd': result.setDate(result.getDate() + amount); break;
-    case 'w': result.setDate(result.getDate() + amount * 7); break;
-    case 'm': result.setMonth(result.getMonth() + amount); break;
-    case 'y': result.setFullYear(result.getFullYear() + amount); break;
+    case 'd':
+      result.setDate(result.getDate() + amount);
+      break;
+    case 'w':
+      result.setDate(result.getDate() + amount * 7);
+      break;
+    case 'm':
+      result.setMonth(result.getMonth() + amount);
+      break;
+    case 'y':
+      result.setFullYear(result.getFullYear() + amount);
+      break;
   }
   return result;
 }
@@ -111,21 +145,24 @@ export function applyDateOffset(date: Date, offset: string): Date {
  * @returns Resolved string with all variables replaced
  */
 export function resolveTemplateVars(template: string, ctx: TemplateContext): string {
-  return template.replace(VAR_REGEX, (match, name: string, offsetStr: string | undefined, customFormat: string | undefined) => {
-    try {
-      return resolveVar(name, offsetStr, customFormat, ctx);
-    } catch (err) {
-      log.warn('Template variable resolution failed', { match, error: String(err) });
-      return match;
+  return template.replace(
+    VAR_REGEX,
+    (match, name: string, offsetStr: string | undefined, customFormat: string | undefined) => {
+      try {
+        return resolveVar(name, offsetStr, customFormat, ctx);
+      } catch (err) {
+        log.warn('Template variable resolution failed', { match, error: String(err) });
+        return match;
+      }
     }
-  });
+  );
 }
 
 function resolveVar(
   name: string,
   offsetStr: string | undefined,
   customFormat: string | undefined,
-  ctx: TemplateContext,
+  ctx: TemplateContext
 ): string {
   const fmt = customFormat || ctx.journal.dateFormat;
 

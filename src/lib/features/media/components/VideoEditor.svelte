@@ -69,7 +69,10 @@
     } finally {
       clearInterval(interval);
       ffmpegProgress = 100;
-      setTimeout(() => { ffmpegLoading = false; ffmpegProgress = 0; }, 500);
+      setTimeout(() => {
+        ffmpegLoading = false;
+        ffmpegProgress = 0;
+      }, 500);
     }
   }
 
@@ -102,9 +105,14 @@
     try {
       await simulateFFmpegLoad();
       const ops = [
-        { type: 'trim' as const, params: { start: trimStart, end: trimEnd > 0 ? trimEnd : duration } },
+        {
+          type: 'trim' as const,
+          params: { start: trimStart, end: trimEnd > 0 ? trimEnd : duration },
+        },
         { type: 'speed' as const, params: { factor: playbackSpeed } },
-        ...(activeFilterId !== 'none' ? [{ type: 'filter' as const, params: { name: activeFilterId } }] : []),
+        ...(activeFilterId !== 'none'
+          ? [{ type: 'filter' as const, params: { name: activeFilterId } }]
+          : []),
       ];
       await applyVideoOps(sourcePath, ops);
       showToast('Video exported successfully', 'success');
@@ -119,7 +127,9 @@
     }
   }
 
-  onDestroy(() => { isProcessing.set(false); });
+  onDestroy(() => {
+    isProcessing.set(false);
+  });
 </script>
 
 <div class="video-editor">
@@ -127,7 +137,9 @@
   {#if coopAvailable === null || coopAvailable === false}
     <div class="coop-banner" role="alert" aria-live="polite">
       <div class="coop-banner-content">
-        <span class="coop-status-icon" aria-hidden="true">{coopAvailable === false ? '&#9888;' : '&#9432;'}</span>
+        <span class="coop-status-icon" aria-hidden="true"
+          >{coopAvailable === false ? '&#9888;' : '&#9432;'}</span
+        >
         <span class="coop-message">
           {#if coopAvailable === false}
             COOP/COEP headers not active. Video operations require <code>SharedArrayBuffer</code>.
@@ -210,26 +222,141 @@
 </div>
 
 <style>
-  .video-editor { display: flex; flex-direction: column; height: 100%; overflow: hidden; background-color: var(--background-primary, #fff); }
-  .coop-banner { background-color: var(--background-modifier-warning, #fef3c7); border-bottom: 1px solid var(--color-yellow, #f59e0b); flex-shrink: 0; }
-  .coop-banner-content { display: flex; align-items: center; gap: var(--spacing-s, 8px); padding: var(--spacing-s, 8px) var(--spacing-m, 12px); flex-wrap: wrap; }
-  .coop-status-icon { font-size: 14px; flex-shrink: 0; }
-  .coop-message { flex: 1; font-size: var(--font-ui-smaller, 11px); color: var(--text-normal, #111827); min-width: 180px; }
-  .coop-message code { background: rgba(0,0,0,.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
-  .coop-check-btn { padding: var(--spacing-xs, 4px) var(--spacing-s, 8px); background: var(--interactive-accent, #3b82f6); color: var(--text-on-accent, #fff); border: none; border-radius: var(--radius-s, 4px); font-size: var(--font-ui-smaller, 11px); cursor: pointer; flex-shrink: 0; }
-  .coop-check-btn:disabled { opacity: 0.5; cursor: default; }
-  .ffmpeg-progress-bar { padding: var(--spacing-xs, 4px) var(--spacing-m, 12px); background: var(--background-secondary, #f9fafb); border-bottom: 1px solid var(--border-color, #e5e7eb); flex-shrink: 0; }
-  .ffmpeg-progress-label { font-size: var(--font-ui-smaller, 11px); color: var(--text-muted, #6b7280); margin-bottom: var(--spacing-xs, 4px); }
-  .ffmpeg-progress-track { height: 4px; background: var(--background-modifier-border, #e5e7eb); border-radius: 2px; overflow: hidden; }
-  .ffmpeg-progress-fill { height: 100%; background: var(--interactive-accent, #3b82f6); border-radius: 2px; transition: width 0.3s ease; }
-  .video-controls { display: flex; align-items: center; gap: var(--spacing-s, 8px); padding: var(--spacing-s, 8px) var(--spacing-m, 12px); border-bottom: 1px solid var(--border-color, #e5e7eb); background-color: var(--background-secondary, #f9fafb); flex-shrink: 0; flex-wrap: wrap; }
-  .control-row { display: flex; align-items: center; gap: var(--spacing-xs, 4px); }
-  .control-label { font-size: var(--font-ui-smaller, 11px); color: var(--text-muted, #6b7280); }
-  .speed-select { font-size: var(--font-ui-smaller, 11px); border: 1px solid var(--border-color, #e5e7eb); border-radius: var(--radius-s, 4px); padding: 2px var(--spacing-xs, 4px); background: var(--background-primary, #fff); color: var(--text-normal, #111827); }
-  .export-btn { margin-left: auto; padding: var(--spacing-xs, 4px) var(--spacing-m, 12px); background: var(--interactive-accent, #3b82f6); color: var(--text-on-accent, #fff); border: none; border-radius: var(--radius-m, 6px); font-size: var(--font-ui-small, 13px); font-weight: 500; cursor: pointer; min-height: 32px; }
-  .export-btn:hover:not(:disabled) { background: var(--interactive-accent-hover, #2563eb); }
-  .export-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .filter-section { flex-shrink: 0; border-top: 1px solid var(--border-color, #e5e7eb); }
-  .section-label { font-size: var(--font-ui-smaller, 11px); font-weight: 600; color: var(--text-muted, #6b7280); text-transform: uppercase; letter-spacing: .05em; margin: var(--spacing-s, 8px) var(--spacing-s, 8px) 0; }
-  .video-error { padding: var(--spacing-s, 8px) var(--spacing-m, 12px); background: var(--background-modifier-error, #fee2e2); color: var(--text-error, #991b1b); font-size: var(--font-ui-smaller, 11px); flex-shrink: 0; }
+  .video-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--background-primary, #fff);
+  }
+  .coop-banner {
+    background-color: var(--background-modifier-warning, #fef3c7);
+    border-bottom: 1px solid var(--color-yellow, #f59e0b);
+    flex-shrink: 0;
+  }
+  .coop-banner-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s, 8px);
+    padding: var(--spacing-s, 8px) var(--spacing-m, 12px);
+    flex-wrap: wrap;
+  }
+  .coop-status-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .coop-message {
+    flex: 1;
+    font-size: var(--font-ui-smaller, 11px);
+    color: var(--text-normal, #111827);
+    min-width: 180px;
+  }
+  .coop-message code {
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 3px;
+    padding: 1px 4px;
+    font-size: 0.9em;
+  }
+  .coop-check-btn {
+    padding: var(--spacing-xs, 4px) var(--spacing-s, 8px);
+    background: var(--interactive-accent, #3b82f6);
+    color: var(--text-on-accent, #fff);
+    border: none;
+    border-radius: var(--radius-s, 4px);
+    font-size: var(--font-ui-smaller, 11px);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .coop-check-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .ffmpeg-progress-bar {
+    padding: var(--spacing-xs, 4px) var(--spacing-m, 12px);
+    background: var(--background-secondary, #f9fafb);
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    flex-shrink: 0;
+  }
+  .ffmpeg-progress-label {
+    font-size: var(--font-ui-smaller, 11px);
+    color: var(--text-muted, #6b7280);
+    margin-bottom: var(--spacing-xs, 4px);
+  }
+  .ffmpeg-progress-track {
+    height: 4px;
+    background: var(--background-modifier-border, #e5e7eb);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .ffmpeg-progress-fill {
+    height: 100%;
+    background: var(--interactive-accent, #3b82f6);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .video-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s, 8px);
+    padding: var(--spacing-s, 8px) var(--spacing-m, 12px);
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    background-color: var(--background-secondary, #f9fafb);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 4px);
+  }
+  .control-label {
+    font-size: var(--font-ui-smaller, 11px);
+    color: var(--text-muted, #6b7280);
+  }
+  .speed-select {
+    font-size: var(--font-ui-smaller, 11px);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: var(--radius-s, 4px);
+    padding: 2px var(--spacing-xs, 4px);
+    background: var(--background-primary, #fff);
+    color: var(--text-normal, #111827);
+  }
+  .export-btn {
+    margin-left: auto;
+    padding: var(--spacing-xs, 4px) var(--spacing-m, 12px);
+    background: var(--interactive-accent, #3b82f6);
+    color: var(--text-on-accent, #fff);
+    border: none;
+    border-radius: var(--radius-m, 6px);
+    font-size: var(--font-ui-small, 13px);
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 32px;
+  }
+  .export-btn:hover:not(:disabled) {
+    background: var(--interactive-accent-hover, #2563eb);
+  }
+  .export-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .filter-section {
+    flex-shrink: 0;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+  }
+  .section-label {
+    font-size: var(--font-ui-smaller, 11px);
+    font-weight: 600;
+    color: var(--text-muted, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: var(--spacing-s, 8px) var(--spacing-s, 8px) 0;
+  }
+  .video-error {
+    padding: var(--spacing-s, 8px) var(--spacing-m, 12px);
+    background: var(--background-modifier-error, #fee2e2);
+    color: var(--text-error, #991b1b);
+    font-size: var(--font-ui-smaller, 11px);
+    flex-shrink: 0;
+  }
 </style>

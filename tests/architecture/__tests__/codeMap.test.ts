@@ -18,8 +18,8 @@ describe('CODE_MAP.md', () => {
     // Extract directory paths from the code map (src/lib/... patterns)
     const dirPatterns = content.match(/`(src\/lib\/[a-z/_-]+\/?)(?:\*)?`/g) ?? [];
     const dirs = dirPatterns
-      .map(p => p.replace(/`/g, '').replace(/\*$/, ''))
-      .filter(p => !p.includes('.'));
+      .map((p) => p.replace(/`/g, '').replace(/\*$/, ''))
+      .filter((p) => !p.includes('.'));
 
     const missing: string[] = [];
     for (const dir of dirs) {
@@ -37,7 +37,7 @@ describe('CODE_MAP.md', () => {
 
     // Extract file paths (patterns with extensions)
     const filePatterns = content.match(/`(src\/lib\/[a-z/_.-]+\.[a-z]+)`/g) ?? [];
-    const files = filePatterns.map(p => p.replace(/`/g, ''));
+    const files = filePatterns.map((p) => p.replace(/`/g, ''));
 
     const missing: string[] = [];
     for (const file of files) {
@@ -52,15 +52,7 @@ describe('CODE_MAP.md', () => {
 
   it('mentions key infrastructure directories', () => {
     const content = readFileSync(CODE_MAP_PATH, 'utf-8');
-    const required = [
-      'config',
-      'types',
-      'utils',
-      'services',
-      'stores',
-      'components',
-      'features',
-    ];
+    const required = ['config', 'types', 'utils', 'services', 'stores', 'components', 'features'];
 
     for (const dir of required) {
       expect(content).toContain(dir);

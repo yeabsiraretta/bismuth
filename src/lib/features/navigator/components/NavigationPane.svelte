@@ -22,7 +22,7 @@
 
   let expandedFolders = new Set<string>();
 
-  $: folderTree = buildFolderTree($notes.map(n => n.path));
+  $: folderTree = buildFolderTree($notes.map((n) => n.path));
   $: activeTab = $navigatorStore.activeTab;
 
   function buildFolderTree(paths: string[]): FolderNode[] {
@@ -50,7 +50,7 @@
 
   function flattenTree(obj: Record<string, TreeBuildNode>): FolderNode[] {
     return Object.values(obj)
-      .map(node => ({
+      .map((node) => ({
         name: node.name,
         path: node.path,
         noteCount: node.noteCount,
@@ -107,6 +107,12 @@
 </div>
 
 <style>
-  .navigation-pane-content { padding: 0; height: 100%; overflow-y: auto; }
-  .tree { padding: 4px; }
+  .navigation-pane-content {
+    padding: 0;
+    height: 100%;
+    overflow-y: auto;
+  }
+  .tree {
+    padding: 4px;
+  }
 </style>

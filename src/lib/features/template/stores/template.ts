@@ -1,5 +1,10 @@
 import { writable, derived, get } from 'svelte/store';
-import { listTemplates, renderTemplate, buildTemplateContext, type Template } from '../services/template';
+import {
+  listTemplates,
+  renderTemplate,
+  buildTemplateContext,
+  type Template,
+} from '../services/template';
 import { currentVault, refreshNotes } from '@/stores/vault/vault';
 import { openNote } from '@/appNavigation';
 import { writeNote } from '@/services/vault/vault';
@@ -26,9 +31,8 @@ export const templatesByCategory = derived(templates, ($t) => {
 });
 
 /** Derived: favorited templates */
-export const pinnedTemplates = derived(
-  [templates, favoriteTemplates],
-  ([$t, $fav]) => $t.filter(t => $fav.includes(t.name))
+export const pinnedTemplates = derived([templates, favoriteTemplates], ([$t, $fav]) =>
+  $t.filter((t) => $fav.includes(t.name))
 );
 
 /** Load all templates from backend. */
@@ -46,8 +50,8 @@ export async function refreshTemplates(): Promise<void> {
 
 /** Toggle a template as favorite */
 export function toggleFavorite(name: string): void {
-  favoriteTemplates.update(favs => {
-    const next = favs.includes(name) ? favs.filter(f => f !== name) : [...favs, name];
+  favoriteTemplates.update((favs) => {
+    const next = favs.includes(name) ? favs.filter((f) => f !== name) : [...favs, name];
     saveFavorites(next);
     return next;
   });
@@ -89,7 +93,9 @@ function loadFavorites(): string[] {
 }
 
 /** Insert a template's content at the active editor cursor position. */
-export async function insertTemplateAtCursor(tmpl: import('../services/template').Template): Promise<void> {
+export async function insertTemplateAtCursor(
+  tmpl: import('../services/template').Template
+): Promise<void> {
   try {
     const context = buildTemplateContext('', tmpl.name);
     const rendered = await renderTemplate(tmpl.content, context);
@@ -105,7 +111,9 @@ export async function insertTemplateAtCursor(tmpl: import('../services/template'
 function saveFavorites(favs: string[]): void {
   try {
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
-  } catch (e) { log.warn('Failed to persist template favorites to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist template favorites to localStorage', { error: String(e) });
+  }
 }
 
 /**
@@ -120,7 +128,7 @@ export async function autoCreateFromTemplate(templateId: string): Promise<void> 
   }
 
   const allTemplates = get(templates);
-  const tmpl = allTemplates.find(t => t.name === templateId);
+  const tmpl = allTemplates.find((t) => t.name === templateId);
   if (!tmpl) {
     log.warn('autoCreateFromTemplate: template not found', { templateId });
     return;

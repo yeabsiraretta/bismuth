@@ -10,8 +10,18 @@ import type { ParsedUri, UriAction, WriteMode } from './types';
 const SCHEME = 'bismuth://';
 
 const VALID_ACTIONS = new Set<UriAction>([
-  'open', 'edit', 'create', 'daily', 'command', 'search',
-  'searchreplace', 'frontmatter', 'canvas', 'workspace', 'bookmark', 'annotate',
+  'open',
+  'edit',
+  'create',
+  'daily',
+  'command',
+  'search',
+  'searchreplace',
+  'frontmatter',
+  'canvas',
+  'workspace',
+  'bookmark',
+  'annotate',
 ]);
 
 /**
@@ -62,7 +72,10 @@ export function parseAdvancedUri(uri: string): ParsedUri | null {
 /**
  * Builds a bismuth:// URI string from an action and parameters.
  */
-export function buildAdvancedUri(action: UriAction, params: Record<string, string | number | boolean | undefined>): string {
+export function buildAdvancedUri(
+  action: UriAction,
+  params: Record<string, string | number | boolean | undefined>
+): string {
   const filtered: Record<string, string> = {};
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== false && v !== '') {

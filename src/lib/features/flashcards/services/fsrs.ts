@@ -23,11 +23,23 @@ export interface FSRSState {
 // ─── Default Parameters (FSRS-4.5 defaults) ────────────────────────────────
 
 const W = [
-  0.4, 0.6, 2.4, 5.8,   // w0-w3: initial stability for Again/Hard/Good/Easy
-  4.93, 0.94, 0.86, 0.01, // w4-w7: difficulty params
-  1.49, 0.14, 0.94,       // w8-w10: stability after recall
-  2.18, 0.05, 0.34, 1.26, // w11-w14: stability after forgetting
-  0.29, 2.61,              // w15-w16: hard/easy penalty/bonus
+  0.4,
+  0.6,
+  2.4,
+  5.8, // w0-w3: initial stability for Again/Hard/Good/Easy
+  4.93,
+  0.94,
+  0.86,
+  0.01, // w4-w7: difficulty params
+  1.49,
+  0.14,
+  0.94, // w8-w10: stability after recall
+  2.18,
+  0.05,
+  0.34,
+  1.26, // w11-w14: stability after forgetting
+  0.29,
+  2.61, // w15-w16: hard/easy penalty/bonus
 ];
 
 const DESIRED_RETENTION = 0.9;
@@ -67,13 +79,15 @@ function clampDifficulty(d: number): number {
 function nextRecallStability(d: number, s: number, r: number, rating: number): number {
   const hardPenalty = rating === 2 ? W[15] : 1;
   const easyBonus = rating === 4 ? W[16] : 1;
-  return s * (
-    1 + Math.exp(W[8]) *
-    (11 - d) *
-    Math.pow(s, -W[9]) *
-    (Math.exp((1 - r) * W[10]) - 1) *
-    hardPenalty *
-    easyBonus
+  return (
+    s *
+    (1 +
+      Math.exp(W[8]) *
+        (11 - d) *
+        Math.pow(s, -W[9]) *
+        (Math.exp((1 - r) * W[10]) - 1) *
+        hardPenalty *
+        easyBonus)
   );
 }
 
@@ -81,10 +95,7 @@ function nextRecallStability(d: number, s: number, r: number, rating: number): n
 function nextForgetStability(d: number, s: number, r: number): number {
   return Math.max(
     0.1,
-    W[11] *
-    Math.pow(d, -W[12]) *
-    (Math.pow(s + 1, W[13]) - 1) *
-    Math.exp((1 - r) * W[14])
+    W[11] * Math.pow(d, -W[12]) * (Math.pow(s + 1, W[13]) - 1) * Math.exp((1 - r) * W[14])
   );
 }
 
@@ -105,7 +116,7 @@ function nextInterval(stability: number): number {
 /** Grade a card using FSRS. Returns updated state and next interval. */
 export function fsrsGrade(
   state: FSRSState | null,
-  grade: ReviewGrade,
+  grade: ReviewGrade
 ): { state: FSRSState; intervalDays: number } {
   const rating = gradeToRating(grade);
   const now = new Date();
@@ -127,7 +138,8 @@ export function fsrsGrade(
   }
 
   // Subsequent review
-  const elapsedDays = Math.max(0,
+  const elapsedDays = Math.max(
+    0,
     (now.getTime() - new Date(state.lastReview).getTime()) / 86400000
   );
   const r = retrievability(elapsedDays, state.stability);

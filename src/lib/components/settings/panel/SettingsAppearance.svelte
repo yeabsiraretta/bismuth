@@ -18,8 +18,21 @@
   export let activeThemePath: string = '';
 
   const INTERFACE_FONTS = ['Inter Variable', 'system-ui', 'Helvetica Neue', 'Segoe UI', 'Arial'];
-  const TEXT_FONTS = ['Inter Variable', 'system-ui', 'Georgia', 'Source Serif 4', "'Times New Roman'"];
-  const MONO_FONTS = ['JetBrains Mono', 'Fira Code', 'Cascadia Code', "'Courier New'", 'Menlo', 'Consolas'];
+  const TEXT_FONTS = [
+    'Inter Variable',
+    'system-ui',
+    'Georgia',
+    'Source Serif 4',
+    "'Times New Roman'",
+  ];
+  const MONO_FONTS = [
+    'JetBrains Mono',
+    'Fira Code',
+    'Cascadia Code',
+    "'Courier New'",
+    'Menlo',
+    'Consolas',
+  ];
 
   let uiScale = Math.round(getStoredZoom() * 100);
 
@@ -30,7 +43,8 @@
   }
 
   function sanitizeFontBlur(field: 'fontInterface' | 'fontText' | 'fontMono') {
-    if (field === 'fontInterface') fontInterface = sanitizeFontValue(fontInterface, 'Inter Variable');
+    if (field === 'fontInterface')
+      fontInterface = sanitizeFontValue(fontInterface, 'Inter Variable');
     else if (field === 'fontText') fontText = sanitizeFontValue(fontText, 'Inter Variable');
     else fontMono = sanitizeFontValue(fontMono, 'JetBrains Mono');
   }
@@ -102,7 +116,15 @@
 
     <div class="setting-item">
       <label for="ui-scale">Scale</label>
-      <input id="ui-scale" type="range" value={uiScale} min="75" max="150" step="5" on:input={handleScaleChange} />
+      <input
+        id="ui-scale"
+        type="range"
+        value={uiScale}
+        min="75"
+        max="150"
+        step="5"
+        on:input={handleScaleChange}
+      />
       <span class="setting-value">{uiScale}%</span>
       <span class="setting-hint">Scale all UI components uniformly (75%–150%)</span>
     </div>
@@ -117,9 +139,14 @@
         <select id="font-interface" bind:value={fontInterface}>
           {#each INTERFACE_FONTS as f}<option value={f}>{f}</option>{/each}
         </select>
-        <input type="text" class="font-custom" bind:value={fontInterface}
+        <input
+          type="text"
+          class="font-custom"
+          bind:value={fontInterface}
           on:blur={() => sanitizeFontBlur('fontInterface')}
-          placeholder="Custom..." aria-label="Custom interface font" />
+          placeholder="Custom..."
+          aria-label="Custom interface font"
+        />
       </div>
       <span class="setting-hint">Font for UI elements (sidebars, panels, menus)</span>
     </div>
@@ -130,9 +157,14 @@
         <select id="font-text" bind:value={fontText}>
           {#each TEXT_FONTS as f}<option value={f}>{f}</option>{/each}
         </select>
-        <input type="text" class="font-custom" bind:value={fontText}
+        <input
+          type="text"
+          class="font-custom"
+          bind:value={fontText}
           on:blur={() => sanitizeFontBlur('fontText')}
-          placeholder="Custom..." aria-label="Custom text font" />
+          placeholder="Custom..."
+          aria-label="Custom text font"
+        />
       </div>
       <span class="setting-hint">Font for note content and the editor</span>
     </div>
@@ -143,9 +175,14 @@
         <select id="font-mono" bind:value={fontMono}>
           {#each MONO_FONTS as f}<option value={f}>{f}</option>{/each}
         </select>
-        <input type="text" class="font-custom" bind:value={fontMono}
+        <input
+          type="text"
+          class="font-custom"
+          bind:value={fontMono}
           on:blur={() => sanitizeFontBlur('fontMono')}
-          placeholder="Custom..." aria-label="Custom monospace font" />
+          placeholder="Custom..."
+          aria-label="Custom monospace font"
+        />
       </div>
       <span class="setting-hint">Font for code blocks and monospace content</span>
     </div>
@@ -155,7 +192,9 @@
     <h4>Theme Store</h4>
     <ThemeBrowser
       bind:activeThemePath
-      onThemeChange={(path) => { activeThemePath = path; }}
+      onThemeChange={(path) => {
+        activeThemePath = path;
+      }}
     />
   </div>
 
@@ -197,7 +236,9 @@
     align-items: center;
   }
 
-  .font-row select { flex: 1; }
+  .font-row select {
+    flex: 1;
+  }
 
   .font-custom {
     width: 160px;

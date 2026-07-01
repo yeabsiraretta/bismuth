@@ -16,13 +16,19 @@
   import type { RssArticle } from '../services/rss';
   import { log } from '@/utils/logger';
 
-  onMount(() => { loadArticles(); });
+  onMount(() => {
+    loadArticles();
+  });
 
   let savedConfirmId: string | null = null;
 
   function formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString(undefined, {
-      month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 
@@ -43,7 +49,9 @@
     try {
       await saveArticleToVault(article);
       savedConfirmId = article.id;
-      setTimeout(() => { savedConfirmId = null; }, 2000);
+      setTimeout(() => {
+        savedConfirmId = null;
+      }, 2000);
     } catch (error) {
       log.error('RssViewport: save to vault failed', error as Error);
     }
@@ -124,7 +132,13 @@
               {savedConfirmId === $activeArticle.id ? 'Saved' : 'Save to Vault'}
             </button>
             {#if $activeArticle.url}
-              <a class="action-btn" href={$activeArticle.url} target="_blank" rel="noopener noreferrer" title="Open in browser">
+              <a
+                class="action-btn"
+                href={$activeArticle.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Open in browser"
+              >
                 <Icon name="external-link" size={14} />
               </a>
             {/if}
@@ -133,11 +147,20 @@
         <div class="reading-body">
           {#if $activeArticle.content}
             <!-- eslint-disable-next-line svelte/no-at-html-tags -- Content sanitized by DOMPurify -->
-            {@html DOMPurify.sanitize($activeArticle.content, { FORBID_TAGS: ['style'], FORBID_ATTR: ['onerror', 'onload', 'onclick'] })}
+            {@html DOMPurify.sanitize($activeArticle.content, {
+              FORBID_TAGS: ['style'],
+              FORBID_ATTR: ['onerror', 'onload', 'onclick'],
+            })}
           {:else if $activeArticle.summary}
             <p>{$activeArticle.summary}</p>
           {:else}
-            <p class="no-content">No content available. <a href={$activeArticle.url} target="_blank" rel="noopener noreferrer">Open in browser</a></p>
+            <p class="no-content">
+              No content available. <a
+                href={$activeArticle.url}
+                target="_blank"
+                rel="noopener noreferrer">Open in browser</a
+              >
+            </p>
           {/if}
         </div>
       </div>
@@ -146,55 +169,177 @@
 </div>
 
 <style>
-  .rss-viewport { display: flex; flex-direction: column; height: 100%; background: var(--panel-bg); }
+  .rss-viewport {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--panel-bg);
+  }
   .rss-toolbar {
-    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
     border-bottom: 1px solid var(--border-color);
   }
   .back-btn {
-    display: flex; align-items: center; gap: 6px; background: none; border: none;
-    color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
   }
-  .back-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
-  .toolbar-spacer { flex: 1; }
+  .back-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+  }
+  .toolbar-spacer {
+    flex: 1;
+  }
   .filter-btn {
-    padding: 4px 10px; border: 1px solid var(--border-color); border-radius: 4px;
-    background: none; color: var(--text-primary); font-size: 11px; cursor: pointer;
+    padding: 4px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: none;
+    color: var(--text-primary);
+    font-size: 11px;
+    cursor: pointer;
   }
-  .filter-btn.active { background: var(--accent-bg); border-color: var(--accent-color); }
-  .rss-content { display: flex; flex: 1; overflow: hidden; }
+  .filter-btn.active {
+    background: var(--accent-bg);
+    border-color: var(--accent-color);
+  }
+  .rss-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
   .article-list {
-    width: 320px; min-width: 240px; border-right: 1px solid var(--border-color);
-    overflow-y: auto; display: flex; flex-direction: column;
+    width: 320px;
+    min-width: 240px;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
-  .article-list.collapsed { width: 0; min-width: 0; overflow: hidden; }
+  .article-list.collapsed {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
   .article-item {
-    display: flex; flex-direction: column; gap: 4px; padding: 10px 12px;
-    border-bottom: 1px solid var(--border-color); background: none; border-left: none;
-    border-right: none; border-top: none; text-align: left; cursor: pointer; width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
   }
-  .article-item:hover { background: var(--hover-bg); }
-  .article-item.active { background: var(--accent-bg); }
-  .article-item.unread .article-title { font-weight: 600; }
-  .article-header { display: flex; align-items: flex-start; gap: 6px; }
-  .article-title { font-size: 12px; flex: 1; line-height: 1.3; }
-  .article-summary { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin: 0; }
-  .article-meta { display: flex; gap: 8px; font-size: 10px; color: var(--text-muted); }
-  .reading-pane { flex: 1; overflow-y: auto; padding: 24px; }
-  .reading-header { margin-bottom: 16px; }
-  .reading-header h2 { font-size: 20px; margin: 0 0 8px; line-height: 1.3; }
-  .reading-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; }
-  .reading-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .article-item:hover {
+    background: var(--hover-bg);
+  }
+  .article-item.active {
+    background: var(--accent-bg);
+  }
+  .article-item.unread .article-title {
+    font-weight: 600;
+  }
+  .article-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .article-title {
+    font-size: 12px;
+    flex: 1;
+    line-height: 1.3;
+  }
+  .article-summary {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .article-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .reading-pane {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+  }
+  .reading-header {
+    margin-bottom: 16px;
+  }
+  .reading-header h2 {
+    font-size: 20px;
+    margin: 0 0 8px;
+    line-height: 1.3;
+  }
+  .reading-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 12px;
+  }
+  .reading-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
   .action-btn {
-    display: flex; align-items: center; gap: 4px; padding: 4px 8px;
-    border: 1px solid var(--border-color); border-radius: 4px;
-    background: none; color: var(--text-primary); cursor: pointer; text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    text-decoration: none;
   }
-  .action-btn:hover { background: var(--hover-bg); }
-  .action-btn.starred { color: #eab308; border-color: #eab308; }
-  .action-btn.saved { background: var(--accent-bg); color: var(--accent-color); border-color: var(--accent-color); }
-  .reading-body { font-size: 14px; line-height: 1.7; }
-  .reading-body :global(img) { max-width: 100%; border-radius: 4px; }
-  .loading, .empty { padding: 32px; text-align: center; color: var(--text-muted); }
-  .no-content { color: var(--text-muted); }
+  .action-btn:hover {
+    background: var(--hover-bg);
+  }
+  .action-btn.starred {
+    color: #eab308;
+    border-color: #eab308;
+  }
+  .action-btn.saved {
+    background: var(--accent-bg);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+  }
+  .reading-body {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .reading-body :global(img) {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  .loading,
+  .empty {
+    padding: 32px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .no-content {
+    color: var(--text-muted);
+  }
 </style>

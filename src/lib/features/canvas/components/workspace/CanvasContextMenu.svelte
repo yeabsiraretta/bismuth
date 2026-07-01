@@ -42,7 +42,8 @@
         break;
       case 'editComponent':
         if (selectedInstance) {
-          const defId = (selectedInstance.properties as Record<string, unknown>).definitionId as string;
+          const defId = (selectedInstance.properties as Record<string, unknown>)
+            .definitionId as string;
           if (defId) enterComponentEditMode(defId);
         }
         break;

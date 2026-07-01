@@ -30,7 +30,9 @@ describe('readDocument', () => {
     vi.mocked(invoke).mockResolvedValue(JSON.stringify(mockDoc));
     const result = await readDocument('token', 'tok_001');
     expect(result).toEqual(mockDoc);
-    expect(invoke).toHaveBeenCalledWith('design_doc_read', { path: '.bismuth/design-docs/tokens.json' });
+    expect(invoke).toHaveBeenCalledWith('design_doc_read', {
+      path: '.bismuth/design-docs/tokens.json',
+    });
   });
 
   it('returns null when invoke rejects', async () => {
@@ -42,7 +44,9 @@ describe('readDocument', () => {
   it('builds correct path for component type', async () => {
     vi.mocked(invoke).mockRejectedValue(new Error('Not found'));
     await readDocument('component', 'btn_001');
-    expect(invoke).toHaveBeenCalledWith('design_doc_read', { path: '.bismuth/design-docs/components/btn_001.json' });
+    expect(invoke).toHaveBeenCalledWith('design_doc_read', {
+      path: '.bismuth/design-docs/components/btn_001.json',
+    });
   });
 });
 
@@ -56,10 +60,13 @@ describe('writeDocument', () => {
   it('invokes design_doc_write with path and content', async () => {
     vi.mocked(invoke).mockResolvedValue(undefined);
     await writeDocument(mockDoc);
-    expect(invoke).toHaveBeenCalledWith('design_doc_write', expect.objectContaining({
-      path: '.bismuth/design-docs/tokens.json',
-      content: expect.stringContaining('"tok_001"'),
-    }));
+    expect(invoke).toHaveBeenCalledWith(
+      'design_doc_write',
+      expect.objectContaining({
+        path: '.bismuth/design-docs/tokens.json',
+        content: expect.stringContaining('"tok_001"'),
+      })
+    );
   });
 
   it('increments version number', async () => {
@@ -79,17 +86,25 @@ describe('writeDocument', () => {
 
 describe('listDocuments', () => {
   it('returns document list on success', async () => {
-    const mockMeta = [{ document_type: 'token', document_id: 'tok_001', name: 'Test', version: 1, modified_at: '' }];
+    const mockMeta = [
+      { document_type: 'token', document_id: 'tok_001', name: 'Test', version: 1, modified_at: '' },
+    ];
     vi.mocked(invoke).mockResolvedValue(mockMeta);
     const result = await listDocuments('token');
     expect(result).toEqual(mockMeta);
-    expect(invoke).toHaveBeenCalledWith('design_doc_list', { basePath: '.bismuth/design-docs', docType: 'token' });
+    expect(invoke).toHaveBeenCalledWith('design_doc_list', {
+      basePath: '.bismuth/design-docs',
+      docType: 'token',
+    });
   });
 
   it('passes null docType when no filter', async () => {
     vi.mocked(invoke).mockResolvedValue([]);
     await listDocuments();
-    expect(invoke).toHaveBeenCalledWith('design_doc_list', { basePath: '.bismuth/design-docs', docType: null });
+    expect(invoke).toHaveBeenCalledWith('design_doc_list', {
+      basePath: '.bismuth/design-docs',
+      docType: null,
+    });
   });
 
   it('returns empty array on error', async () => {
@@ -115,6 +130,8 @@ describe('deleteDocument', () => {
   it('uses correct path for component type', async () => {
     vi.mocked(invoke).mockResolvedValue(undefined);
     await deleteDocument('component', 'comp_1');
-    expect(invoke).toHaveBeenCalledWith('design_doc_delete', { path: '.bismuth/design-docs/components/comp_1.json' });
+    expect(invoke).toHaveBeenCalledWith('design_doc_delete', {
+      path: '.bismuth/design-docs/components/comp_1.json',
+    });
   });
 });

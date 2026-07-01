@@ -78,7 +78,6 @@ export interface LayoutPreset {
   isDefault?: boolean;
 }
 
-
 // ─── Theme ───────────────────────────────────────────────────────────────────
 
 export type Theme = 'light' | 'dark' | 'auto';

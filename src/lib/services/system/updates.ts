@@ -47,7 +47,9 @@ export async function checkAppVersion(): Promise<AppVersionInfo & { channel: str
   const endpoint = buildUpdateEndpoint(channel);
   log.debug('checkAppVersion', { channel, endpoint });
   try {
-    const result = await invoke<{ current_version: string; checked_at: number }>('check_app_version');
+    const result = await invoke<{ current_version: string; checked_at: number }>(
+      'check_app_version'
+    );
     return { currentVersion: result.current_version, checkedAt: result.checked_at, channel };
   } catch (error) {
     log.error('Failed to check app version', error as Error);

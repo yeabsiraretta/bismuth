@@ -123,15 +123,15 @@ This injects refactor tasks into `plan.md` and `tasks.md` so the AI has explicit
 
 ## Commands
 
-| Command | Phase | Output | When To Use |
-| --- | --- | --- | --- |
-| `init` | Setup | `.specify/memory/constitution.md`, `.specify/memory/architecture_constitution.md`, `.specify/memory/security_constitution.md` | Once at project start; rerun to refine standards |
-| `architecture-workflow` | General Review | Violations, severity and priority, refactor tasks, evolution proposals | Entry point for end-to-end review; good for dashboards |
-| `architecture-review` | Validation | Cached-context alignment status, boundary issues, contract drift | After `/specify`, `/plan`, or `/implement` |
-| `violation-detection` | Detection | Drift summary, boundary violations, module coupling | Focus on specific architecture problems |
-| `refactor-generator` | Planning | Refactor task generation | After review; convert violations to non-blocking refactor tasks |
-| `architecture-apply` | Implementation | After refactor decisions | Inject refactor tasks into `tasks.md` and `plan.md` using the approved review context |
-| `architecture-verify` | Verification | Task fulfillment report, gap analysis | Final gate after implementation to ensure all tasks are delivered, with cached memory context if available |
+| Command                 | Phase          | Output                                                                                                                        | When To Use                                                                                                |
+| ----------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `init`                  | Setup          | `.specify/memory/constitution.md`, `.specify/memory/architecture_constitution.md`, `.specify/memory/security_constitution.md` | Once at project start; rerun to refine standards                                                           |
+| `architecture-workflow` | General Review | Violations, severity and priority, refactor tasks, evolution proposals                                                        | Entry point for end-to-end review; good for dashboards                                                     |
+| `architecture-review`   | Validation     | Cached-context alignment status, boundary issues, contract drift                                                              | After `/specify`, `/plan`, or `/implement`                                                                 |
+| `violation-detection`   | Detection      | Drift summary, boundary violations, module coupling                                                                           | Focus on specific architecture problems                                                                    |
+| `refactor-generator`    | Planning       | Refactor task generation                                                                                                      | After review; convert violations to non-blocking refactor tasks                                            |
+| `architecture-apply`    | Implementation | After refactor decisions                                                                                                      | Inject refactor tasks into `tasks.md` and `plan.md` using the approved review context                      |
+| `architecture-verify`   | Verification   | Task fulfillment report, gap analysis                                                                                         | Final gate after implementation to ensure all tasks are delivered, with cached memory context if available |
 
 ## Optimizer-Aware Memory Flow
 

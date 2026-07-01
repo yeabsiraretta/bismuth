@@ -23,9 +23,15 @@ export async function refreshChangelog(limit?: number): Promise<void> {
   try {
     const entries = await getRecentChangelog(limit ?? s.changelogMaxFiles);
     const excluded = parseExcludedFolders(s.changelogExcludedFolders);
-    const filtered = excluded.length > 0
-      ? entries.filter(e => !excluded.some(folder => e.path.includes(`/${folder}/`) || e.path.startsWith(`${folder}/`)))
-      : entries;
+    const filtered =
+      excluded.length > 0
+        ? entries.filter(
+            (e) =>
+              !excluded.some(
+                (folder) => e.path.includes(`/${folder}/`) || e.path.startsWith(`${folder}/`)
+              )
+          )
+        : entries;
     changelogEntries.set(filtered.slice(0, s.changelogMaxFiles));
   } catch {
     // Silently fail — changelog is non-critical
@@ -67,12 +73,16 @@ export async function writeChangelogFile(): Promise<void> {
 }
 
 /** Updates changelog: appends the entry, refreshes store, and optionally writes file. */
-export async function updateChangelog(path: string, action: ChangelogEntry['action'], wordsDelta = 0): Promise<void> {
+export async function updateChangelog(
+  path: string,
+  action: ChangelogEntry['action'],
+  wordsDelta = 0
+): Promise<void> {
   const s = get(settings);
   const excluded = parseExcludedFolders(s.changelogExcludedFolders);
 
   // Skip excluded folders
-  if (excluded.some(folder => path.includes(`/${folder}/`) || path.startsWith(`${folder}/`))) {
+  if (excluded.some((folder) => path.includes(`/${folder}/`) || path.startsWith(`${folder}/`))) {
     return;
   }
 
@@ -113,7 +123,7 @@ export function cleanupChangelogListeners(): void {
 function parseExcludedFolders(raw: string): string[] {
   return raw
     .split(',')
-    .map(s => s.trim())
+    .map((s) => s.trim())
     .filter(Boolean);
 }
 

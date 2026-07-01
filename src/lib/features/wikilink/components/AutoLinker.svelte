@@ -173,24 +173,139 @@
 {/if}
 
 <style>
-  .auto-linker-overlay { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: var(--background-modifier-cover, rgba(0, 0, 0, 0.5)); }
-  .auto-linker-modal { width: 640px; max-width: calc(90vw / var(--ui-scale, 1)); max-height: calc(80vh / var(--ui-scale, 1)); display: flex; flex-direction: column; background: var(--background-primary, #1e1e1e); border: 1px solid var(--background-modifier-border, #3a3a3a); border-radius: 8px; box-shadow: var(--shadow-xl, 0 8px 24px rgba(0, 0, 0, 0.4)); }
-  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--background-modifier-border, #3a3a3a); }
-  .modal-header h2 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 14px; font-weight: 600; color: var(--text-normal, #e0e0e0); }
-  .header-controls { display: flex; align-items: center; gap: 12px; }
-  .case-toggle { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted, #a0a0a0); cursor: pointer; }
-  .close-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: none; border-radius: 4px; background: transparent; color: var(--text-muted, #a0a0a0); cursor: pointer; }
-  .close-btn:hover { background: var(--interactive-hover, #2f2f2f); color: var(--text-normal, #e0e0e0); }
-  .modal-body { flex: 1; overflow-y: auto; padding: 12px 20px; }
-  .loading-state, .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 40px 20px; color: var(--text-muted, #a0a0a0); }
-  .empty-state .hint { font-size: 12px; color: var(--text-faint, #707070); }
-  .suggestions-list { display: flex; flex-direction: column; gap: 4px; }
-  .modal-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--background-modifier-border, #3a3a3a); }
-  .selection-count { font-size: 12px; color: var(--text-muted, #a0a0a0); }
-  .footer-actions { display: flex; gap: 8px; }
-  .btn-secondary { padding: 6px 14px; border: 1px solid var(--background-modifier-border, #3a3a3a); border-radius: 4px; background: transparent; color: var(--text-normal, #e0e0e0); font-size: 13px; cursor: pointer; }
-  .btn-secondary:hover { background: var(--interactive-hover, #2f2f2f); }
-  .btn-primary { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border: none; border-radius: 4px; background: var(--interactive-accent, #dc2626); color: var(--text-on-accent, #ffffff); font-size: 13px; cursor: pointer; }
-  .btn-primary:hover:not(:disabled) { background: var(--interactive-accent-hover, #b91c1c); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .auto-linker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background-modifier-cover, rgba(0, 0, 0, 0.5));
+  }
+  .auto-linker-modal {
+    width: 640px;
+    max-width: calc(90vw / var(--ui-scale, 1));
+    max-height: calc(80vh / var(--ui-scale, 1));
+    display: flex;
+    flex-direction: column;
+    background: var(--background-primary, #1e1e1e);
+    border: 1px solid var(--background-modifier-border, #3a3a3a);
+    border-radius: 8px;
+    box-shadow: var(--shadow-xl, 0 8px 24px rgba(0, 0, 0, 0.4));
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--background-modifier-border, #3a3a3a);
+  }
+  .modal-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-normal, #e0e0e0);
+  }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .case-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted, #a0a0a0);
+    cursor: pointer;
+  }
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-muted, #a0a0a0);
+    cursor: pointer;
+  }
+  .close-btn:hover {
+    background: var(--interactive-hover, #2f2f2f);
+    color: var(--text-normal, #e0e0e0);
+  }
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 20px;
+  }
+  .loading-state,
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px 20px;
+    color: var(--text-muted, #a0a0a0);
+  }
+  .empty-state .hint {
+    font-size: 12px;
+    color: var(--text-faint, #707070);
+  }
+  .suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid var(--background-modifier-border, #3a3a3a);
+  }
+  .selection-count {
+    font-size: 12px;
+    color: var(--text-muted, #a0a0a0);
+  }
+  .footer-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .btn-secondary {
+    padding: 6px 14px;
+    border: 1px solid var(--background-modifier-border, #3a3a3a);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-normal, #e0e0e0);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    background: var(--interactive-hover, #2f2f2f);
+  }
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 4px;
+    background: var(--interactive-accent, #dc2626);
+    color: var(--text-on-accent, #ffffff);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--interactive-accent-hover, #b91c1c);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>

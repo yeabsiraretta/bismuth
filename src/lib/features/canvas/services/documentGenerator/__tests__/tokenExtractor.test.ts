@@ -7,9 +7,30 @@ import { extractTokens } from '../tokenExtractor';
 import type { CanvasVariable } from '@/features/canvas/types';
 
 const mockVariables: CanvasVariable[] = [
-  { id: 'v1', name: 'primary', type: 'color', collection: 'Colors', values: { light: '#3b82f6', dark: '#60a5fa' }, description: 'Brand color' },
-  { id: 'v2', name: 'secondary', type: 'color', collection: 'Colors', values: { light: '#6b7280', dark: '#9ca3af' }, description: undefined },
-  { id: 'v3', name: 'm', type: 'number', collection: 'Spacing', values: { default: 16 }, description: 'Medium spacing' },
+  {
+    id: 'v1',
+    name: 'primary',
+    type: 'color',
+    collection: 'Colors',
+    values: { light: '#3b82f6', dark: '#60a5fa' },
+    description: 'Brand color',
+  },
+  {
+    id: 'v2',
+    name: 'secondary',
+    type: 'color',
+    collection: 'Colors',
+    values: { light: '#6b7280', dark: '#9ca3af' },
+    description: undefined,
+  },
+  {
+    id: 'v3',
+    name: 'm',
+    type: 'number',
+    collection: 'Spacing',
+    values: { default: 16 },
+    description: 'Medium spacing',
+  },
 ] as unknown as CanvasVariable[];
 
 describe('extractTokens', () => {

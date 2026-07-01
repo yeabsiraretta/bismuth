@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { inspectEnabled, hoveredElement, measureFrom, measureTo } from '@/features/canvas/stores/design/inspectMode';
+  import {
+    inspectEnabled,
+    hoveredElement,
+    measureFrom,
+    measureTo,
+  } from '@/features/canvas/stores/design/inspectMode';
   import SpacingVisualizer from './SpacingVisualizer.svelte';
 
   export let scale: number = 1;
@@ -16,9 +21,9 @@
 
   export let elements: ElementRect[] = [];
 
-  $: hoveredRect = elements.find(el => el.id === $hoveredElement);
-  $: fromRect = elements.find(el => el.id === $measureFrom);
-  $: toRect = elements.find(el => el.id === $measureTo);
+  $: hoveredRect = elements.find((el) => el.id === $hoveredElement);
+  $: fromRect = elements.find((el) => el.id === $measureFrom);
+  $: toRect = elements.find((el) => el.id === $measureTo);
 </script>
 
 {#if $inspectEnabled}
@@ -68,9 +73,27 @@
 {/if}
 
 <style>
-  .inspect-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 40; }
-  .element-highlight { position: absolute; border: 1px solid; pointer-events: none; }
-  .element-highlight.hovered { border-color: var(--inspect-highlight); background: color-mix(in srgb, var(--inspect-highlight) 5%, transparent); }
-  .element-highlight.from { border-color: var(--inspect-source); border-style: dashed; }
-  .element-highlight.to { border-color: var(--inspect-target); border-style: dashed; }
+  .inspect-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+  }
+  .element-highlight {
+    position: absolute;
+    border: 1px solid;
+    pointer-events: none;
+  }
+  .element-highlight.hovered {
+    border-color: var(--inspect-highlight);
+    background: color-mix(in srgb, var(--inspect-highlight) 5%, transparent);
+  }
+  .element-highlight.from {
+    border-color: var(--inspect-source);
+    border-style: dashed;
+  }
+  .element-highlight.to {
+    border-color: var(--inspect-target);
+    border-style: dashed;
+  }
 </style>

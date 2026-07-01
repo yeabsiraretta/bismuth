@@ -13,8 +13,9 @@ export const stories = writable<Story[]>(svc.loadStories());
 export const activeStoryId = writable<string | null>(null);
 export const dashboardView = writable<DashboardView>('stories');
 
-export const activeStory = derived([stories, activeStoryId], ([$stories, $id]) =>
-  $stories.find(s => s.id === $id) ?? null,
+export const activeStory = derived(
+  [stories, activeStoryId],
+  ([$stories, $id]) => $stories.find((s) => s.id === $id) ?? null
 );
 
 export const isOneStoryMode = derived(storytellerConfig, ($cfg) => $cfg.oneStoryMode);
@@ -26,9 +27,11 @@ export function selectStory(id: string): void {
 
 export function addStory(name: string): Story {
   let cfg: StorytellerConfig = DEFAULT_STORYTELLER_CONFIG;
-  storytellerConfig.subscribe(c => { cfg = c; })();
+  storytellerConfig.subscribe((c) => {
+    cfg = c;
+  })();
   const story = svc.createStory(name, cfg);
-  stories.update(list => {
+  stories.update((list) => {
     const next = [...list, story];
     svc.persistStories(next);
     return next;
@@ -40,16 +43,16 @@ export function addStory(name: string): Story {
 }
 
 export function removeStory(storyId: string): void {
-  stories.update(list => {
+  stories.update((list) => {
     const next = svc.deleteStory(list, storyId);
     svc.persistStories(next);
     return next;
   });
-  activeStoryId.update(id => id === storyId ? null : id);
+  activeStoryId.update((id) => (id === storyId ? null : id));
 }
 
 export function editStory(updated: Story): void {
-  stories.update(list => {
+  stories.update((list) => {
     const next = svc.updateStory(list, updated);
     svc.persistStories(next);
     return next;
@@ -57,7 +60,7 @@ export function editStory(updated: Story): void {
 }
 
 export function updateConfig(partial: Partial<StorytellerConfig>): void {
-  storytellerConfig.update(cfg => {
+  storytellerConfig.update((cfg) => {
     const next = { ...cfg, ...partial };
     svc.saveConfig(next);
     return next;

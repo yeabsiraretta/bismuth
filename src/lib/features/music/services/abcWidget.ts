@@ -10,7 +10,11 @@ import { WidgetType } from '@codemirror/view';
 import type { EditorView } from '@codemirror/view';
 
 interface AbcjsApi {
-  renderAbc(target: HTMLElement | string, abc: string, options?: Record<string, unknown>): unknown[];
+  renderAbc(
+    target: HTMLElement | string,
+    abc: string,
+    options?: Record<string, unknown>
+  ): unknown[];
 }
 
 let abcjsModule: AbcjsApi | null = null;
@@ -21,7 +25,7 @@ async function loadAbcjs(): Promise<AbcjsApi | null> {
   if (abcjsLoadFailed) return null;
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mod = await import('abcjs') as any;
+    const mod = (await import('abcjs')) as any;
     abcjsModule = mod.default ?? mod;
     return abcjsModule;
   } catch {
@@ -34,7 +38,7 @@ export class AbcNotationWidget extends WidgetType {
   constructor(
     private notation: string,
     private options: Record<string, unknown>,
-    private optionsError?: string,
+    private optionsError?: string
   ) {
     super();
   }
@@ -42,13 +46,15 @@ export class AbcNotationWidget extends WidgetType {
   toDOM(_view: EditorView): HTMLElement {
     const wrap = document.createElement('div');
     wrap.className = 'cm-abc-notation';
-    wrap.style.cssText = 'padding: 8px; border-radius: 6px; background: var(--background-primary); border: 1px solid var(--border-color); margin: 4px 0;';
+    wrap.style.cssText =
+      'padding: 8px; border-radius: 6px; background: var(--background-primary); border: 1px solid var(--border-color); margin: 4px 0;';
 
     // Options error banner
     if (this.optionsError) {
       const banner = document.createElement('div');
       banner.className = 'abc-error-banner';
-      banner.style.cssText = 'background: color-mix(in srgb, var(--text-error) 12%, transparent); color: var(--text-error); padding: 6px 10px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;';
+      banner.style.cssText =
+        'background: color-mix(in srgb, var(--text-error) 12%, transparent); color: var(--text-error); padding: 6px 10px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;';
       banner.textContent = `⚠ ${this.optionsError}`;
       wrap.appendChild(banner);
     }
@@ -63,7 +69,8 @@ export class AbcNotationWidget extends WidgetType {
     if (titleMatch) {
       const titleEl = document.createElement('div');
       titleEl.className = 'abc-title';
-      titleEl.style.cssText = 'font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600;';
+      titleEl.style.cssText =
+        'font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600;';
       titleEl.textContent = `♪ ${titleMatch[1].trim()}`;
       wrap.insertBefore(titleEl, renderDiv);
     }
@@ -114,8 +121,10 @@ export class AbcNotationWidget extends WidgetType {
   }
 
   eq(other: AbcNotationWidget): boolean {
-    return this.notation === other.notation &&
-      JSON.stringify(this.options) === JSON.stringify(other.options);
+    return (
+      this.notation === other.notation &&
+      JSON.stringify(this.options) === JSON.stringify(other.options)
+    );
   }
 }
 

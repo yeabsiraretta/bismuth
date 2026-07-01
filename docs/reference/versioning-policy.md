@@ -17,6 +17,7 @@ Example: 1.2.3-beta.1+20260525
 ### Version Components
 
 **MAJOR** (X.0.0):
+
 - Incompatible API changes
 - Breaking changes to public interfaces
 - Removal of deprecated features
@@ -24,6 +25,7 @@ Example: 1.2.3-beta.1+20260525
 - User-facing breaking changes
 
 **MINOR** (0.X.0):
+
 - New features (backward compatible)
 - New user stories implemented
 - Non-breaking API additions
@@ -31,6 +33,7 @@ Example: 1.2.3-beta.1+20260525
 - Significant improvements
 
 **PATCH** (0.0.X):
+
 - Bug fixes (backward compatible)
 - Performance improvements
 - Documentation updates
@@ -38,11 +41,13 @@ Example: 1.2.3-beta.1+20260525
 - Minor improvements
 
 **PRERELEASE** (optional):
+
 - Alpha: `1.0.0-alpha.1` (early testing)
 - Beta: `1.0.0-beta.1` (feature complete, testing)
 - RC: `1.0.0-rc.1` (release candidate)
 
 **BUILD** (optional):
+
 - Build metadata: `1.0.0+20260525`
 - Not considered in version precedence
 
@@ -62,6 +67,7 @@ During initial development (versions 0.x.x):
    - **0.x.y**: Bug fixes and minor improvements (should be backward compatible)
 
 3. **Examples**:
+
    ```
    0.1.0 → 0.2.0  (new features, possible breaking changes)
    0.2.0 → 0.2.1  (bug fixes, backward compatible)
@@ -105,24 +111,28 @@ During initial development (versions 0.x.x):
 ### Release Types
 
 #### Alpha Releases (0.x.0-alpha.y)
+
 - **Purpose**: Early testing, unstable
 - **Audience**: Developers, early adopters
 - **Frequency**: As needed during development
 - **Example**: `0.1.0-alpha.1`
 
 #### Beta Releases (0.x.0-beta.y)
+
 - **Purpose**: Feature complete, testing
 - **Audience**: Beta testers, power users
 - **Frequency**: Before each minor release
 - **Example**: `0.1.0-beta.1`
 
 #### Release Candidates (0.x.0-rc.y)
+
 - **Purpose**: Final testing before release
 - **Audience**: All users
 - **Frequency**: 1-2 weeks before release
 - **Example**: `0.1.0-rc.1`
 
 #### Stable Releases (0.x.0)
+
 - **Purpose**: Production use
 - **Audience**: All users
 - **Frequency**: Every 4 weeks (minor), as needed (patch)
@@ -135,6 +145,7 @@ During initial development (versions 0.x.x):
 When bumping version, update these files:
 
 1. **`package.json`**
+
    ```json
    {
      "version": "0.1.0"
@@ -142,12 +153,14 @@ When bumping version, update these files:
    ```
 
 2. **`src-tauri/Cargo.toml`**
+
    ```toml
    [package]
    version = "0.1.0"
    ```
 
 3. **`src-tauri/tauri.conf.json`**
+
    ```json
    {
      "package": {
@@ -183,6 +196,7 @@ pnpm release -- --prerelease alpha
 ```
 
 **What `standard-version` does**:
+
 1. Bumps version in all files
 2. Updates CHANGELOG.md from commits
 3. Creates a git commit
@@ -293,6 +307,7 @@ git push origin develop
 ### Dependency Versioning
 
 **Rust (Cargo.toml)**:
+
 ```toml
 [dependencies]
 serde = "1.0"           # ^1.0.0 (compatible)
@@ -301,11 +316,12 @@ tauri = "=1.5.4"        # Exact version
 ```
 
 **npm (package.json)**:
+
 ```json
 {
   "dependencies": {
-    "svelte": "^4.2.0",      // Compatible (4.x.x)
-    "@tauri-apps/api": "~1.5.0"  // Patch updates (1.5.x)
+    "svelte": "^4.2.0", // Compatible (4.x.x)
+    "@tauri-apps/api": "~1.5.0" // Patch updates (1.5.x)
   }
 }
 ```
@@ -323,22 +339,27 @@ tauri = "=1.5.4"        # Exact version
 ### How to Handle
 
 1. **Deprecation First** (if possible):
+
    ```rust
    #[deprecated(since = "0.5.0", note = "Use new_function instead")]
    pub fn old_function() { }
    ```
 
 2. **Document in CHANGELOG**:
+
    ```markdown
    ### Changed
+
    - **BREAKING**: Renamed `old_function` to `new_function` (#123)
    ```
 
 3. **Provide Migration Guide**:
+
    ```markdown
    ## Migration from 0.4.0 to 0.5.0
-   
+
    ### API Changes
+
    - `old_function()` → `new_function()`
    - `OldStruct` → `NewStruct`
    ```
@@ -351,6 +372,7 @@ tauri = "=1.5.4"        # Exact version
 ### Pre-1.0.0 Breaking Changes
 
 During 0.x.x development:
+
 - Breaking changes allowed in minor versions
 - Document clearly in CHANGELOG
 - Provide migration notes
@@ -419,12 +441,14 @@ git push origin v0.1.0
 Using conventional commits, versions can be auto-determined:
 
 **Commit Types → Version Bump**:
+
 - `feat:` → Minor version (0.x.0)
 - `fix:` → Patch version (0.0.x)
 - `BREAKING CHANGE:` → Major version (x.0.0)
 - `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `chore:` → No version bump
 
 **Example**:
+
 ```bash
 # These commits:
 feat(US1): add vault editor
@@ -472,6 +496,7 @@ pub fn version_info() -> String {
 **Problem**: Different versions in different files
 
 **Solution**:
+
 ```bash
 # Use standard-version to sync all files
 pnpm release -- --dry-run  # Preview changes
@@ -483,6 +508,7 @@ pnpm release:patch         # Apply changes
 **Problem**: Git tag already exists
 
 **Solution**:
+
 ```bash
 # Delete and recreate
 git tag -d v0.1.0
@@ -496,6 +522,7 @@ git push origin v0.1.0
 **Problem**: Release process failed mid-way
 
 **Solution**:
+
 ```bash
 # Rollback version changes
 git reset --hard HEAD~1

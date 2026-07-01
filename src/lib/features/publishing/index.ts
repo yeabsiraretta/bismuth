@@ -4,7 +4,15 @@
  */
 
 // Types
-export type { DeployTarget, PublishConfig, PublishableNote, PublishResult, PublishStatus, PublishHistoryEntry, SiteSettings } from './types';
+export type {
+  DeployTarget,
+  PublishConfig,
+  PublishableNote,
+  PublishResult,
+  PublishStatus,
+  PublishHistoryEntry,
+  SiteSettings,
+} from './types';
 
 // Stores
 export {

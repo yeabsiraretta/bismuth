@@ -24,11 +24,16 @@ function formatDate(iso: string): string {
 /** Returns the appropriate icon name for a changelog action. */
 export function getActionIcon(action: string): string {
   switch (action) {
-    case 'created': return 'plus';
-    case 'modified': return 'edit-3';
-    case 'deleted': return 'trash-2';
-    case 'renamed': return 'arrow-right';
-    default: return 'file';
+    case 'created':
+      return 'plus';
+    case 'modified':
+      return 'edit-3';
+    case 'deleted':
+      return 'trash-2';
+    case 'renamed':
+      return 'arrow-right';
+    default:
+      return 'file';
   }
 }
 

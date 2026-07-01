@@ -157,7 +157,10 @@ export function buildNavigationCommands(actions: DefaultCommandActions): Command
         const { activeEditorTabId, moveTabToGroup } = await import('@/stores/editor/tabs');
         const { createTabGroup } = await import('@/stores/editor/tabFeatures');
         const id = get(activeEditorTabId);
-        if (id) { const gid = createTabGroup('Group'); moveTabToGroup(id, gid); }
+        if (id) {
+          const gid = createTabGroup('Group');
+          moveTabToGroup(id, gid);
+        }
       },
     },
     {
@@ -170,7 +173,7 @@ export function buildNavigationCommands(actions: DefaultCommandActions): Command
         const { activeEditorTabId, editorTabs } = await import('@/stores/editor/tabs');
         const { setTabZoom } = await import('@/stores/editor/tabFeatures');
         const id = get(activeEditorTabId);
-        const tab = get(editorTabs).find(t => t.id === id);
+        const tab = get(editorTabs).find((t) => t.id === id);
         if (tab) setTabZoom(tab.id, tab.zoomLevel + 10);
       },
     },
@@ -184,7 +187,7 @@ export function buildNavigationCommands(actions: DefaultCommandActions): Command
         const { activeEditorTabId, editorTabs } = await import('@/stores/editor/tabs');
         const { setTabZoom } = await import('@/stores/editor/tabFeatures');
         const id = get(activeEditorTabId);
-        const tab = get(editorTabs).find(t => t.id === id);
+        const tab = get(editorTabs).find((t) => t.id === id);
         if (tab) setTabZoom(tab.id, tab.zoomLevel - 10);
       },
     },
@@ -225,7 +228,10 @@ export function buildNavigationCommands(actions: DefaultCommandActions): Command
         const vaultRoot = note.path.split('/').slice(0, -1).join('/');
         const r = await rearrangeNoteAttachments(note.path, vaultRoot);
         const { showToast } = await import('@/stores/toast/toast');
-        showToast(`Moved ${r.moved}, skipped ${r.skipped}${r.errors.length ? `, ${r.errors.length} errors` : ''}`, 'info');
+        showToast(
+          `Moved ${r.moved}, skipped ${r.skipped}${r.errors.length ? `, ${r.errors.length} errors` : ''}`,
+          'info'
+        );
       },
     },
     {
@@ -240,7 +246,7 @@ export function buildNavigationCommands(actions: DefaultCommandActions): Command
         const allNotes = sGet(notesStore);
         if (allNotes.length === 0) return;
         const vaultRoot = allNotes[0].path.split('/').slice(0, -1).join('/');
-        const paths = allNotes.map(n => n.path);
+        const paths = allNotes.map((n) => n.path);
         const r = await rearrangeAllAttachments(paths, vaultRoot);
         const { showToast } = await import('@/stores/toast/toast');
         showToast(`Rearranged: ${r.moved} moved, ${r.skipped} skipped`, 'info');

@@ -15,8 +15,8 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   };
 }
 
-const start = new Date(2026, 5, 1);  // 2026-06-01
-const end = new Date(2026, 6, 1);    // 2026-07-01
+const start = new Date(2026, 5, 1); // 2026-06-01
+const end = new Date(2026, 6, 1); // 2026-07-01
 
 describe('expandRecurringEvents', () => {
   it('passes non-recurring events through if in range', () => {
@@ -55,12 +55,12 @@ describe('expandRecurringEvents', () => {
 
   it('expands weekly every 2 weeks', () => {
     const event = makeEvent({
-      date: '2026-06-01',  // Monday
+      date: '2026-06-01', // Monday
       recurring: { frequency: 'weekly', interval: 2 },
     });
     const result = expandRecurringEvents([event], start, end);
     expect(result.length).toBe(3); // Jun 1, Jun 15, Jun 29
-    expect(result.map(e => e.date)).toEqual(['2026-06-01', '2026-06-15', '2026-06-29']);
+    expect(result.map((e) => e.date)).toEqual(['2026-06-01', '2026-06-15', '2026-06-29']);
   });
 
   it('respects endDate for recurring event', () => {
@@ -74,8 +74,8 @@ describe('expandRecurringEvents', () => {
   });
 
   it('expands monthly event', () => {
-    const rangeStart = new Date(2026, 0, 1);  // Jan 1
-    const rangeEnd = new Date(2026, 5, 30);   // Jun 30
+    const rangeStart = new Date(2026, 0, 1); // Jan 1
+    const rangeEnd = new Date(2026, 5, 30); // Jun 30
     const event = makeEvent({
       date: '2026-01-15',
       recurring: { frequency: 'monthly', interval: 1 },
@@ -94,7 +94,7 @@ describe('expandRecurringEvents', () => {
       recurring: { frequency: 'monthly', interval: 1 },
     });
     const result = expandRecurringEvents([event], rangeStart, rangeEnd);
-    const dates = result.map(e => e.date);
+    const dates = result.map((e) => e.date);
     expect(dates).toContain('2026-01-31');
     expect(dates).toContain('2026-02-28'); // Feb clamped to 28
     expect(dates).toContain('2026-03-31');

@@ -5,6 +5,7 @@
 **Plain. Descriptive. Consistent.**
 
 The design system prioritizes:
+
 1. **Clarity over decoration** - Plain text labels, no unnecessary embellishments
 2. **Simplicity over complexity** - 2-3 colors maximum, high contrast
 3. **Consistency over variety** - Reuse components, standardize patterns
@@ -18,25 +19,18 @@ The design system prioritizes:
 ## Color System
 
 ### CSS Variables (Light Theme)
+
 ```css
---bg-primary: #ffffff       /* Main background */
---bg-secondary: #f5f5f5     /* Sidebar, secondary areas */
---bg-hover: #f0f0f0         /* Hover states */
---bg-active: #e3f2fd        /* Active/selected items */
-
---text-primary: #333        /* Main text */
---text-muted: #666          /* Secondary text */
-
---border-color: #ddd        /* Borders, dividers */
---accent-color: #007bff     /* Primary actions */
-
---success-bg: #d4edda       /* Success states */
---success-text: #155724
---warning-bg: #fff3cd       /* Warning states */
---warning-text: #856404
+--bg-primary: #ffffff /* Main background */ --bg-secondary: #f5f5f5 /* Sidebar, secondary areas */
+  --bg-hover: #f0f0f0 /* Hover states */ --bg-active: #e3f2fd /* Active/selected items */
+  --text-primary: #333 /* Main text */ --text-muted: #666 /* Secondary text */ --border-color: #ddd
+  /* Borders, dividers */ --accent-color: #007bff /* Primary actions */ --success-bg: #d4edda
+  /* Success states */ --success-text: #155724 --warning-bg: #fff3cd /* Warning states */
+  --warning-text: #856404;
 ```
 
 ### Usage
+
 - Always use CSS variables, never hardcoded colors
 - Enables easy theme switching (dark mode future)
 - Consistent across all components
@@ -48,6 +42,7 @@ The design system prioritizes:
 ### Icon Component (`src/lib/components/icons/Icon.svelte`)
 
 **Props**:
+
 - `name: string` - Icon identifier
 - `size: number = 20` - Size in pixels
 - `color: string = 'currentColor'` - Stroke color
@@ -56,12 +51,14 @@ The design system prioritizes:
 **Available Icons**:
 
 **File Operations**:
+
 - `file` - Document icon
 - `file-plus` - Create new file
 - `folder` - Folder icon
 - `folder-open` - Open folder
 
 **Actions**:
+
 - `plus` - Add/create
 - `trash` - Delete
 - `edit` - Edit/modify
@@ -70,26 +67,31 @@ The design system prioritizes:
 - `x` - Close/cancel
 
 **Navigation**:
+
 - `chevron-right` - Expand/next
 - `chevron-down` - Collapse/dropdown
 - `search` - Search
 
 **Status**:
+
 - `loader` - Loading spinner
 - `alert-circle` - Warning/error
 
 **Canvas/Editor**:
+
 - `layout` - Layout/grid
 - `maximize` - Expand view
 - `minimize` - Collapse view
 
 ### Usage Example
+
 ```svelte
 <Icon name="file-plus" size={18} />
 <Icon name="folder-open" size={24} color="var(--accent-color)" />
 ```
 
 ### Adding New Icons
+
 1. Find Feather icon path from https://feathericons.com
 2. Add to `icons` object in `Icon.svelte`
 3. Use descriptive kebab-case name
@@ -99,6 +101,7 @@ The design system prioritizes:
 ## Typography
 
 ### Hierarchy
+
 ```css
 h1: 1.75rem, font-weight: 600  /* Page titles */
 h2: 1.1rem, font-weight: 600   /* Section headers */
@@ -109,8 +112,14 @@ small: 0.875rem                /* Helper text */
 ```
 
 ### Font Stack
+
 ```css
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+font-family:
+  'Inter',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  sans-serif;
 ```
 
 ---
@@ -120,6 +129,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ### Buttons
 
 **Primary Button**:
+
 ```svelte
 <button class="btn btn-primary">
   <Icon name="plus" size={18} />
@@ -128,6 +138,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
 **Secondary Button**:
+
 ```svelte
 <button class="btn btn-secondary">
   <Icon name="folder-open" size={18} />
@@ -136,6 +147,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
 **Danger Button**:
+
 ```svelte
 <button class="btn btn-danger">
   <Icon name="trash" size={18} />
@@ -144,6 +156,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
 **Styles**:
+
 ```css
 .btn {
   display: flex;
@@ -162,6 +175,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ### Modals
 
 **Structure**:
+
 ```svelte
 <div class="modal-overlay">
   <div class="modal">
@@ -176,6 +190,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
 **Styles**:
+
 ```css
 .modal-overlay {
   position: fixed;
@@ -199,6 +214,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ### Lists
 
 **File/Note List**:
+
 ```svelte
 <ul class="note-list">
   {#each items as item}
@@ -219,6 +235,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ### Document Structure for Canvas
 
 **Markdown Note Format** (canvas-compatible):
+
 ```markdown
 ---
 id: 202405261130
@@ -233,14 +250,16 @@ modified: 2024-05-26T11:35:00Z
 Content here...
 
 ## References
+
 [#citekey]: Author (Year): Title, Publisher.
 ```
 
 ### Canvas Embedding
 
 **Note Card Component** (for canvas):
+
 ```svelte
-<div class="canvas-card" data-note-id="{note.id}">
+<div class="canvas-card" data-note-id={note.id}>
   <div class="card-header">
     <Icon name="file" size={16} />
     <h4>{note.title}</h4>
@@ -257,6 +276,7 @@ Content here...
 ### Data Exchange Format
 
 **Export to Canvas** (JSON):
+
 ```json
 {
   "type": "bismuth-note",
@@ -270,13 +290,14 @@ Content here...
     "modified": "2024-05-26T11:35:00Z"
   },
   "links": [
-    {"type": "wikilink", "target": "202405261125"},
-    {"type": "citation", "citekey": "author2024"}
+    { "type": "wikilink", "target": "202405261125" },
+    { "type": "citation", "citekey": "author2024" }
   ]
 }
 ```
 
 **Import from Canvas**:
+
 - Accept same JSON format
 - Parse and create note file
 - Preserve all metadata
@@ -287,6 +308,7 @@ Content here...
 ## Layout System
 
 ### Grid Layout (for canvas)
+
 ```css
 .canvas-grid {
   display: grid;
@@ -297,6 +319,7 @@ Content here...
 ```
 
 ### Flex Layout (current)
+
 ```css
 .app {
   display: flex;
@@ -321,6 +344,7 @@ Content here...
 ## Spacing System
 
 **Consistent spacing scale**:
+
 ```css
 0.25rem  /* 4px  - tight spacing */
 0.5rem   /* 8px  - small gaps */
@@ -336,12 +360,14 @@ Content here...
 ## Animation Guidelines
 
 ### Transitions
+
 ```css
-transition: all 0.2s;  /* Standard */
-transition: transform 0.3s ease-out;  /* Smooth movement */
+transition: all 0.2s; /* Standard */
+transition: transform 0.3s ease-out; /* Smooth movement */
 ```
 
 ### Hover Effects
+
 ```css
 .btn:hover {
   transform: translateY(-2px);
@@ -350,9 +376,12 @@ transition: transform 0.3s ease-out;  /* Smooth movement */
 ```
 
 ### Loading States
+
 ```css
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {
@@ -365,6 +394,7 @@ transition: transform 0.3s ease-out;  /* Smooth movement */
 ## Accessibility
 
 ### Focus States
+
 ```css
 button:focus-visible {
   outline: 2px solid var(--accent-color);
@@ -373,6 +403,7 @@ button:focus-visible {
 ```
 
 ### ARIA Labels
+
 ```svelte
 <button aria-label="Create new note">
   <Icon name="plus" size={18} />
@@ -380,6 +411,7 @@ button:focus-visible {
 ```
 
 ### Keyboard Navigation
+
 - All interactive elements must be keyboard accessible
 - Modal dialogs close on Escape
 - Forms submit on Enter
@@ -389,6 +421,7 @@ button:focus-visible {
 ## Future: Canvas Editor Integration
 
 ### Requirements
+
 1. **Drag-and-drop** notes from sidebar to canvas
 2. **Bidirectional sync** between editor and canvas
 3. **Visual connections** (lines between related notes)
@@ -396,6 +429,7 @@ button:focus-visible {
 5. **Export canvas** as image or JSON
 
 ### Data Model
+
 ```typescript
 interface CanvasNode {
   id: string;
@@ -425,6 +459,7 @@ interface Canvas {
 ## Component Checklist
 
 When creating new components:
+
 - [ ] Use Icon component (no emojis)
 - [ ] Use CSS variables for colors
 - [ ] Follow spacing system

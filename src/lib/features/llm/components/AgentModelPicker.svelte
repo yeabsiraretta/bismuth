@@ -12,11 +12,7 @@
   /** Whether the Claude API option is shown (only when key is set in keychain). */
   export let claudeKeyAvailable: boolean = false;
 
-  const CLAUDE_MODELS = [
-    'claude-opus-4-7',
-    'claude-sonnet-4-6',
-    'claude-haiku-4-5-20251001',
-  ];
+  const CLAUDE_MODELS = ['claude-opus-4-7', 'claude-sonnet-4-6', 'claude-haiku-4-5-20251001'];
 
   let ollamaModels: string[] = [];
   let isLoading = false;
@@ -54,7 +50,9 @@
     setModel(target.value);
   }
 
-  onMount(() => { void refreshModels(); });
+  onMount(() => {
+    void refreshModels();
+  });
 </script>
 
 <div class="model-picker">
@@ -98,8 +96,8 @@
         on:click={refreshModels}
         disabled={isLoading}
         aria-label="Refresh Ollama models"
-        title="Refresh models"
-      >Refresh</button>
+        title="Refresh models">Refresh</button
+      >
     </div>
   {/if}
 
@@ -122,13 +120,57 @@
 </div>
 
 <style>
-  .model-picker { display: flex; flex-direction: column; gap: var(--spacing-xs); padding: var(--spacing-s); border-bottom: 1px solid var(--background-modifier-border); }
-  .picker-row { display: flex; align-items: center; gap: var(--spacing-s); }
-  .picker-label { font-size: var(--font-ui-smaller); color: var(--text-muted); width: 56px; flex-shrink: 0; }
-  .picker-select { flex: 1; padding: var(--spacing-xs) var(--spacing-s); background: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-normal); font-size: var(--font-ui-smaller); }
-  .picker-loading { font-size: var(--font-ui-smaller); color: var(--text-muted); font-style: italic; }
-  .picker-warning { font-size: var(--font-ui-smaller); color: var(--text-warning, #f59e0b); font-weight: 500; }
-  .refresh-btn { padding: 2px var(--spacing-s); background: transparent; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); color: var(--text-muted); cursor: pointer; font-size: var(--font-smallest); }
-  .refresh-btn:hover:not(:disabled) { color: var(--text-normal); }
-  .refresh-btn:disabled { opacity: 0.5; cursor: default; }
+  .model-picker {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-s);
+    border-bottom: 1px solid var(--background-modifier-border);
+  }
+  .picker-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+  }
+  .picker-label {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-muted);
+    width: 56px;
+    flex-shrink: 0;
+  }
+  .picker-select {
+    flex: 1;
+    padding: var(--spacing-xs) var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-normal);
+    font-size: var(--font-ui-smaller);
+  }
+  .picker-loading {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .picker-warning {
+    font-size: var(--font-ui-smaller);
+    color: var(--text-warning, #f59e0b);
+    font-weight: 500;
+  }
+  .refresh-btn {
+    padding: 2px var(--spacing-s);
+    background: transparent;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-s);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: var(--font-smallest);
+  }
+  .refresh-btn:hover:not(:disabled) {
+    color: var(--text-normal);
+  }
+  .refresh-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 </style>

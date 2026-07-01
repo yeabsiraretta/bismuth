@@ -1,8 +1,19 @@
 import type { Fill, Stroke, BlendMode } from '@/features/canvas/types/paint';
 import type { VectorNetwork, BooleanOperation, TextSegment } from '@/features/canvas/types/paint';
 import type { Effect } from '@/features/canvas/types/paint';
-import type { Interaction, CodeConnect, GridLayoutConfig } from '@/features/canvas/types/interactions';
-import type { Point, Shadow, CornerRadius, AutoLayout, Constraints, DeviceType } from '@/features/canvas/types/settings';
+import type {
+  Interaction,
+  CodeConnect,
+  GridLayoutConfig,
+} from '@/features/canvas/types/interactions';
+import type {
+  Point,
+  Shadow,
+  CornerRadius,
+  AutoLayout,
+  Constraints,
+  DeviceType,
+} from '@/features/canvas/types/settings';
 
 /** A single visual element on the canvas (shape, text, frame, etc.). */
 export interface CanvasElement {
@@ -74,10 +85,7 @@ export type ArrowHeadStyle =
   | 'none';
 
 /** Edge pathfinding algorithm. */
-export type EdgePathfinding =
-  | 'direct'
-  | 'orthogonal'
-  | 'curved';
+export type EdgePathfinding = 'direct' | 'orthogonal' | 'curved';
 
 /** Border rendering style. */
 export type BorderStyle = 'solid' | 'dashed' | 'dotted' | 'none';

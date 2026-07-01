@@ -146,7 +146,12 @@ describe('computeLinkSuggestions', () => {
     const active = { path: '/vault/my-dev-note.md', title: 'Dev Note', content: '#dev some code' };
     const suggestions = computeLinkSuggestions(active, allNotes);
     const paths = suggestions.map((n) => n.path);
-    expect(paths.some((p) => p.includes('project-alpha') || p.includes('project-beta') || p.includes('alpha-notes'))).toBe(true);
+    expect(
+      paths.some(
+        (p) =>
+          p.includes('project-alpha') || p.includes('project-beta') || p.includes('alpha-notes')
+      )
+    ).toBe(true);
   });
 
   it('returns at most 5 suggestions', () => {

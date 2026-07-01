@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { currentCanvas, selectedFlowLink, clearFlowLinkSelection } from '@/features/canvas/stores';
+  import {
+    currentCanvas,
+    selectedFlowLink,
+    clearFlowLinkSelection,
+  } from '@/features/canvas/stores';
   import { updateFlowLink } from '@/features/canvas/stores';
   import type { CanvasElement, FlowLink, FlowTransition } from '@/features/canvas/types';
   import Icon from '@/components/icons/Icon.svelte';
@@ -31,7 +35,9 @@
     clearFlowLinkSelection();
   }
 
-  function dismiss() { clearFlowLinkSelection(); }
+  function dismiss() {
+    clearFlowLinkSelection();
+  }
 
   function onEditorKeydown(ev: KeyboardEvent) {
     if (ev.key === 'Enter') saveEdits();
@@ -40,7 +46,13 @@
 </script>
 
 {#if link && $selectedFlowLink === linkId}
-  <div class="bismuth-flow-editor" on:keydown={onEditorKeydown} role="dialog" aria-label="Edit flow link" tabindex="-1">
+  <div
+    class="bismuth-flow-editor"
+    on:keydown={onEditorKeydown}
+    role="dialog"
+    aria-label="Edit flow link"
+    tabindex="-1"
+  >
     <header class="bfe-head">
       <Icon name="git-branch" size={16} />
       <span>Edit Flow Link</span>
@@ -82,25 +94,34 @@
 <style>
   .bismuth-flow-editor {
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-m, 8px);
     padding: var(--spacing-m, 16px);
     min-width: 260px;
-    box-shadow: var(--shadow-l, 0 8px 24px rgba(0,0,0,0.3));
+    box-shadow: var(--shadow-l, 0 8px 24px rgba(0, 0, 0, 0.3));
     z-index: var(--layer-popover, 1000);
-    display: flex; flex-direction: column; gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     outline: none;
   }
   .bfe-head {
-    display: flex; align-items: center; gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-weight: var(--font-semibold, 600);
     font-size: var(--font-ui-small);
     color: var(--text-normal);
   }
-  .bfe-field { display: flex; flex-direction: column; gap: 4px; }
+  .bfe-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
   .bfe-lbl {
     font-size: var(--font-smallest, 0.75rem);
     color: var(--text-muted);
@@ -113,21 +134,36 @@
     background: var(--color-bg);
     color: var(--text-normal);
     font-size: var(--font-ui-small);
-    outline: none; width: 100%;
+    outline: none;
+    width: 100%;
   }
-  .bfe-ctrl:focus { border-color: var(--interactive-accent); }
-  .bfe-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+  .bfe-ctrl:focus {
+    border-color: var(--interactive-accent);
+  }
+  .bfe-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+  }
   .bfe-btn {
-    padding: 6px 14px; border-radius: var(--radius-s, 4px);
-    font-size: var(--font-ui-small); cursor: pointer;
+    padding: 6px 14px;
+    border-radius: var(--radius-s, 4px);
+    font-size: var(--font-ui-small);
+    cursor: pointer;
     border: 1px solid var(--color-border);
-    background: var(--color-bg); color: var(--text-normal);
+    background: var(--color-bg);
+    color: var(--text-normal);
   }
-  .bfe-btn:hover { background: var(--color-surface-hover); }
+  .bfe-btn:hover {
+    background: var(--color-surface-hover);
+  }
   .bfe-btn-primary {
     background: var(--interactive-accent);
     border-color: var(--interactive-accent);
     color: var(--text-on-accent);
   }
-  .bfe-btn-primary:hover { opacity: 0.9; }
+  .bfe-btn-primary:hover {
+    opacity: 0.9;
+  }
 </style>

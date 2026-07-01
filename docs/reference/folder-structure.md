@@ -214,11 +214,13 @@ src-tauri/src/
 ### When to Create a Folder
 
 **Create a folder when**:
+
 - ✅ 2+ related files exist
 - ✅ Files share a common domain/feature
 - ✅ Logical grouping improves navigation
 
 **Don't create a folder when**:
+
 - ❌ Only 1 file exists (unless it's a placeholder for future growth)
 - ❌ Files are unrelated
 - ❌ It adds unnecessary nesting
@@ -226,6 +228,7 @@ src-tauri/src/
 ### Nesting Guidelines
 
 **Good Nesting** (2-3 levels):
+
 ```
 components/
   vault/
@@ -234,6 +237,7 @@ components/
 ```
 
 **Over-Nesting** (avoid):
+
 ```
 components/
   vault/
@@ -254,6 +258,7 @@ export { default as FileTree } from './FileTree.svelte';
 ```
 
 **Benefits**:
+
 - Clean imports: `import { WelcomeScreen } from '$lib/components/vault'`
 - Encapsulation: Internal structure can change
 - Discoverability: Single entry point
@@ -261,24 +266,29 @@ export { default as FileTree } from './FileTree.svelte';
 ### File Naming
 
 **Components**: PascalCase
+
 - `WelcomeScreen.svelte`
 - `ResizablePanel.svelte`
 - `GraphView.svelte`
 
 **Utilities/Services**: camelCase
+
 - `wikilink.ts`
 - `graphExport.ts`
 - `vault.ts`
 
 **Types**: camelCase (matching what they define)
+
 - `vault.ts` (exports `Vault` type)
 - `note.ts` (exports `Note` type)
 
 **Constants**: camelCase
+
 - `constants.ts`
 - `settings.ts`
 
 **Tests**: Match source file + `.test.ts`
+
 - `wikilink.test.ts` (tests `wikilink.ts`)
 
 ## Migration Plan
@@ -286,6 +296,7 @@ export { default as FileTree } from './FileTree.svelte';
 ### Phase 1: Create Missing Folders
 
 1. Move vault-related components:
+
    ```
    components/WelcomeScreen.svelte → components/vault/WelcomeScreen.svelte
    components/VaultPicker.svelte → components/vault/VaultPicker.svelte
@@ -295,18 +306,21 @@ export { default as FileTree } from './FileTree.svelte';
    ```
 
 2. Move note-related components:
+
    ```
    components/NoteEditor.svelte → components/note/NoteEditor.svelte
    components/Editor.svelte → components/editor/Editor.svelte (already there)
    ```
 
 3. Organize services:
+
    ```
    services/vault.ts → services/vault/vault.ts
    services/search.ts → services/search/search.ts
    ```
 
 4. Organize stores:
+
    ```
    stores/vault.ts → stores/vault/vault.ts
    stores/layout.ts → stores/layout/layout.ts
@@ -321,6 +335,7 @@ export { default as FileTree } from './FileTree.svelte';
 ### Phase 2: Create Index Files
 
 Create `index.ts` in each folder:
+
 - `components/vault/index.ts`
 - `components/note/index.ts`
 - `services/vault/index.ts`
@@ -333,6 +348,7 @@ Create `index.ts` in each folder:
 ### Phase 3: Update Imports
 
 Update all imports to use new paths:
+
 ```typescript
 // Before
 import WelcomeScreen from '$lib/components/WelcomeScreen.svelte';
@@ -352,6 +368,7 @@ Check for duplicate files (e.g., `Editor.svelte` in two places) and consolidate.
 Group by feature, not file type:
 
 **Good**:
+
 ```
 vault/
   WelcomeScreen.svelte
@@ -361,6 +378,7 @@ vault/
 ```
 
 **Bad**:
+
 ```
 components/
   WelcomeScreen.svelte
@@ -374,6 +392,7 @@ tests/
 ### 2. Colocation
 
 Keep related files close:
+
 ```
 wikilink/
   wikilink.ts
@@ -384,6 +403,7 @@ wikilink/
 ### 3. Barrel Exports
 
 Use index files for clean exports:
+
 ```typescript
 // utils/index.ts
 export * from './wikilink';
@@ -393,6 +413,7 @@ export * from './graph';
 ### 4. Avoid Deep Nesting
 
 Max 3 levels deep:
+
 ```
 lib/
   components/      # Level 1

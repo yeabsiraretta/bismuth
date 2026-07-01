@@ -64,9 +64,7 @@ export function computeGridLayout(
     numCols = Math.max(1, Math.floor((contentWidth + colGap) / (minWidth + colGap)));
   }
 
-  const numRows = gridConfig.rows > 0
-    ? gridConfig.rows
-    : Math.ceil(children.length / numCols);
+  const numRows = gridConfig.rows > 0 ? gridConfig.rows : Math.ceil(children.length / numCols);
 
   const cellWidth = (contentWidth - (numCols - 1) * colGap) / numCols;
   const cellHeight = (contentHeight - (numRows - 1) * rowGap) / numRows;
@@ -92,9 +90,20 @@ export function computeGridLayout(
         occupied.add(`${r},${c}`);
       }
     }
-    results.push(computeGridCellPosition(
-      frame, child, placement, cellWidth, cellHeight, colGap, rowGap, padding, alignItems, justifyItems
-    ));
+    results.push(
+      computeGridCellPosition(
+        frame,
+        child,
+        placement,
+        cellWidth,
+        cellHeight,
+        colGap,
+        rowGap,
+        padding,
+        alignItems,
+        justifyItems
+      )
+    );
   }
 
   let autoRow = 1;
@@ -117,9 +126,20 @@ export function computeGridLayout(
     };
 
     occupied.add(`${autoRow},${autoCol}`);
-    results.push(computeGridCellPosition(
-      frame, child, placement, cellWidth, cellHeight, colGap, rowGap, padding, alignItems, justifyItems
-    ));
+    results.push(
+      computeGridCellPosition(
+        frame,
+        child,
+        placement,
+        cellWidth,
+        cellHeight,
+        colGap,
+        rowGap,
+        padding,
+        alignItems,
+        justifyItems
+      )
+    );
 
     autoCol++;
     if (autoCol > numCols) {

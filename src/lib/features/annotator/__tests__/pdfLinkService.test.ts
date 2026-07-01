@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import {
-  parsePdfLink, findPdfLinks, renderCopyTemplate, generatePdfLink,
+  parsePdfLink,
+  findPdfLinks,
+  renderCopyTemplate,
+  generatePdfLink,
 } from '../services/pdfLinkService';
 import type { LinkTemplateVars } from '../services/pdfLinkService';
 import { DEFAULT_PDF_PLUS_CONFIG } from '../types';
@@ -95,8 +98,12 @@ describe('renderCopyTemplate', () => {
 describe('generatePdfLink', () => {
   it('generates a link using default config', () => {
     const link = generatePdfLink(
-      'docs/paper.pdf', 3, 'hello world', null, 'yellow',
-      DEFAULT_PDF_PLUS_CONFIG,
+      'docs/paper.pdf',
+      3,
+      'hello world',
+      null,
+      'yellow',
+      DEFAULT_PDF_PLUS_CONFIG
     );
     expect(link).toContain('docs/paper.pdf');
     expect(link).toContain('page=3');
@@ -106,9 +113,12 @@ describe('generatePdfLink', () => {
 
   it('includes selection coordinates when provided', () => {
     const link = generatePdfLink(
-      'file.pdf', 1, 'text',
+      'file.pdf',
+      1,
+      'text',
       { startLine: 0, startChar: 5, endLine: 2, endChar: 10 },
-      'red', DEFAULT_PDF_PLUS_CONFIG,
+      'red',
+      DEFAULT_PDF_PLUS_CONFIG
     );
     expect(link).toContain('selection=0,5,2,10');
   });

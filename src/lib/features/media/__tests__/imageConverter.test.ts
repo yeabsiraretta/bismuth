@@ -5,7 +5,12 @@
 
 import { describe, it, expect } from 'vitest';
 import { computeResizeDimensions } from '../services/imageConverter';
-import { applyRenamePattern, extractBaseName, extractDir, buildOutputPath } from '../services/imageRename';
+import {
+  applyRenamePattern,
+  extractBaseName,
+  extractDir,
+  buildOutputPath,
+} from '../services/imageRename';
 import type { RenameConfig } from '../types/media';
 
 describe('computeResizeDimensions', () => {

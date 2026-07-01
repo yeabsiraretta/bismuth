@@ -39,12 +39,46 @@
 </div>
 
 <style>
-  .spacing-visualizer { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
-  .measurement { position: absolute; display: flex; align-items: center; justify-content: center; }
-  .measurement.horizontal { height: 1px; }
-  .measurement.vertical { width: 1px; flex-direction: column; }
-  .line { position: absolute; background: var(--inspect-measure); }
-  .horizontal .line { width: 100%; height: 1px; }
-  .vertical .line { height: 100%; width: 1px; }
-  .label { position: relative; background: var(--inspect-measure); color: white; padding: 1px 4px; border-radius: 2px; font-size: 10px; font-weight: 600; white-space: nowrap; z-index: 1; }
+  .spacing-visualizer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+  .measurement {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .measurement.horizontal {
+    height: 1px;
+  }
+  .measurement.vertical {
+    width: 1px;
+    flex-direction: column;
+  }
+  .line {
+    position: absolute;
+    background: var(--inspect-measure);
+  }
+  .horizontal .line {
+    width: 100%;
+    height: 1px;
+  }
+  .vertical .line {
+    height: 100%;
+    width: 1px;
+  }
+  .label {
+    position: relative;
+    background: var(--inspect-measure);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 1;
+  }
 </style>

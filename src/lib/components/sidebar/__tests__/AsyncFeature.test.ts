@@ -23,7 +23,7 @@ function createLoader(moduleCache: Map<string, unknown>) {
     featureId: string,
     loader: () => Promise<{ default: unknown }>,
     onSuccess: (comp: unknown) => void,
-    onError: () => void,
+    onError: () => void
   ): Promise<void> {
     if (moduleCache.has(featureId)) {
       onSuccess(moduleCache.get(featureId));
@@ -36,11 +36,18 @@ function createLoader(moduleCache: Map<string, unknown>) {
       moduleCache.set(featureId, mod.default);
       onSuccess(mod.default);
       (recordFeatureUse as (...args: unknown[]) => void)(featureId);
-      (log.interaction as (...args: unknown[]) => void)('ui', 'feature-load', { featureId, durationMs });
+      (log.interaction as (...args: unknown[]) => void)('ui', 'feature-load', {
+        featureId,
+        durationMs,
+      });
     } catch (e) {
       const durationMs = Math.round(performance.now() - start);
       (log.error as (...args: unknown[]) => void)(`Failed to load feature: ${featureId}`, e);
-      (log.interaction as (...args: unknown[]) => void)('ui', 'feature-load-error', { featureId, durationMs, error: String(e) });
+      (log.interaction as (...args: unknown[]) => void)('ui', 'feature-load-error', {
+        featureId,
+        durationMs,
+        error: String(e),
+      });
       onError();
     }
   };
@@ -77,7 +84,11 @@ describe('AsyncFeature logic', () => {
   it('emits feature-load interaction on success', async () => {
     const loader = vi.fn().mockResolvedValue({ default: {} });
     await loadFeature('graph', loader, vi.fn(), vi.fn());
-    expect(log.interaction).toHaveBeenCalledWith('ui', 'feature-load', expect.objectContaining({ featureId: 'graph' }));
+    expect(log.interaction).toHaveBeenCalledWith(
+      'ui',
+      'feature-load',
+      expect.objectContaining({ featureId: 'graph' })
+    );
   });
 
   it('calls onError and logs on failed load', async () => {
@@ -88,7 +99,11 @@ describe('AsyncFeature logic', () => {
 
     expect(onError).toHaveBeenCalled();
     expect(log.error).toHaveBeenCalledWith(expect.stringContaining('canvas'), expect.any(Error));
-    expect(log.interaction).toHaveBeenCalledWith('ui', 'feature-load-error', expect.objectContaining({ featureId: 'canvas' }));
+    expect(log.interaction).toHaveBeenCalledWith(
+      'ui',
+      'feature-load-error',
+      expect.objectContaining({ featureId: 'canvas' })
+    );
   });
 
   it('returns cached module on second call without calling loader again', async () => {

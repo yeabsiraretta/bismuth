@@ -5,18 +5,43 @@
 
 // Types
 export type {
-  PokemonType, MoveCategory, Generation, Stats,
-  PokemonSpecies, Move, Item, Nature, TeamSlot, Team,
-  DamageResult, FieldConditions, TypeEffectiveness,
+  PokemonType,
+  MoveCategory,
+  Generation,
+  Stats,
+  PokemonSpecies,
+  Move,
+  Item,
+  Nature,
+  TeamSlot,
+  Team,
+  DamageResult,
+  FieldConditions,
+  TypeEffectiveness,
 } from './types/pokemon';
 
 // Store
 export {
-  activeTeam, calcAttacker, calcDefender, calcMove,
-  calcField, calcResult, isDataLoaded, dataLoadError, generation,
-  loadPokemonData, getPokedex, getMovesDb, getItemsDb,
-  addToTeam, updateSlot, loadTeam,
-  setCalcAttacker, setCalcDefender, setCalcMove, setCalcField,
+  activeTeam,
+  calcAttacker,
+  calcDefender,
+  calcMove,
+  calcField,
+  calcResult,
+  isDataLoaded,
+  dataLoadError,
+  generation,
+  loadPokemonData,
+  getPokedex,
+  getMovesDb,
+  getItemsDb,
+  addToTeam,
+  updateSlot,
+  loadTeam,
+  setCalcAttacker,
+  setCalcDefender,
+  setCalcMove,
+  setCalcField,
 } from './stores/pokemonStore';
 
 // Services

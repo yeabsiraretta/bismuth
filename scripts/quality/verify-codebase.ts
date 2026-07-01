@@ -29,7 +29,10 @@ function run(cmd: string): string {
 }
 
 function lines(output: string): string[] {
-  return output.split('\n').map((l) => l.trim()).filter(Boolean);
+  return output
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
 }
 
 interface CheckResult {
@@ -52,9 +55,7 @@ function printResult(result: CheckResult): boolean {
 
 // ── Check 1: Component naming ─────────────────────────────────────────────
 function checkComponentNaming(): CheckResult {
-  const raw = run(
-    `find src -name "*.svelte" ! -path "*/node_modules/*" ! -path "*/dist/*"`
-  );
+  const raw = run(`find src -name "*.svelte" ! -path "*/node_modules/*" ! -path "*/dist/*"`);
   const violations = lines(raw).filter((f) => /\/[a-z][^/]*\.svelte$/.test(f));
   return { name: 'Component naming (PascalCase .svelte)', violations };
 }
@@ -71,9 +72,7 @@ function checkBarrelRule(): CheckResult {
     if (!entry.isDirectory()) continue;
     const indexPath = join(featuresDir, entry.name, 'index.ts');
     if (!existsSync(indexPath)) {
-      violations.push(
-        `src/lib/features/${entry.name}/index.ts (missing)`
-      );
+      violations.push(`src/lib/features/${entry.name}/index.ts (missing)`);
     }
   }
   return { name: 'Barrel rule (index.ts per feature)', violations };
@@ -86,7 +85,7 @@ const SIZE_TOLERANCE = 350;
 function checkFileSizes(): CheckResult {
   const raw = run(
     `find src -type f \\( -name "*.ts" -o -name "*.svelte" \\) ` +
-    `! -path "*/node_modules/*" ! -path "*/dist/*" ! -path "*/.svelte-kit/*"`
+      `! -path "*/node_modules/*" ! -path "*/dist/*" ! -path "*/.svelte-kit/*"`
   );
   const violations: string[] = [];
   for (const filePath of lines(raw)) {
@@ -94,7 +93,9 @@ function checkFileSizes(): CheckResult {
     const countRaw = run(`wc -l < "${abs}"`).trim();
     const count = parseInt(countRaw, 10);
     if (!Number.isNaN(count) && count > SIZE_TOLERANCE) {
-      violations.push(`${filePath}: ${count} lines (limit ${SIZE_LIMIT}, tolerance ${SIZE_TOLERANCE})`);
+      violations.push(
+        `${filePath}: ${count} lines (limit ${SIZE_LIMIT}, tolerance ${SIZE_TOLERANCE})`
+      );
     }
   }
   return { name: `File size (>${SIZE_TOLERANCE}-line violations)`, violations };
@@ -105,9 +106,9 @@ function checkFileSizes(): CheckResult {
 function checkLoggerRule(): CheckResult {
   const raw = run(
     `grep -rn "console\\.log" src/lib ` +
-    `--include="*.ts" --include="*.svelte" ` +
-    `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\." ` +
-    `| grep -v "utils/logger/"`
+      `--include="*.ts" --include="*.svelte" ` +
+      `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\." ` +
+      `| grep -v "utils/logger/"`
   );
   const violations = lines(raw);
   return { name: 'Logger rule (no console.log in source)', violations };
@@ -115,10 +116,7 @@ function checkLoggerRule(): CheckResult {
 
 // ── Check 5: No Tauri imports in components ───────────────────────────────
 function checkTauriInComponents(): CheckResult {
-  const raw = run(
-    `grep -rn "from '@tauri-apps" src/lib/components ` +
-    `--include="*.svelte"`
-  );
+  const raw = run(`grep -rn "from '@tauri-apps" src/lib/components ` + `--include="*.svelte"`);
   const violations = lines(raw);
   return { name: 'No direct @tauri-apps imports in components/', violations };
 }
@@ -129,8 +127,8 @@ function checkTauriInComponents(): CheckResult {
 function checkCrossFeatureImports(): CheckResult {
   const raw = run(
     `grep -rn "from '@/features/[^']*/" src/lib ` +
-    `--include="*.ts" --include="*.svelte" ` +
-    `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\."`
+      `--include="*.ts" --include="*.svelte" ` +
+      `| grep -v "__tests__" | grep -v "\\.spec\\." | grep -v "\\.test\\."`
   );
   const violations: string[] = [];
   for (const line of lines(raw)) {

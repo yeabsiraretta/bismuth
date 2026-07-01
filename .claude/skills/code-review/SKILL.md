@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Deep code review: bugs, PRs, best fix, read code first"
+description: 'Deep code review: bugs, PRs, best fix, read code first'
 ---
 
 # Code Review Skill
@@ -53,21 +53,25 @@ Call out when a fix is only symptom-level. If a slightly larger refactor makes t
 ## Bismuth-Specific Checks
 
 ### File Size Compliance
+
 - Check if changes push file over 300-line limit
 - If so, recommend refactoring before adding functionality
 - Reference: Constitution Principle VI
 
 ### Test Coverage
+
 - Verify tests exist for changed behavior
 - Check coverage doesn't drop below 90%
 - Reference: Constitution Principle II
 
 ### UX Impact
+
 - If UI changes, verify UX evaluation was done
 - Check against `.claude/ux-evaluator.md` principles
 - Reference: Constitution Principle III
 
 ### Tech Stack Alignment
+
 - Frontend: Svelte 4.2+ with TypeScript
 - Backend: Rust with Tauri 1.5+
 - Editor: CodeMirror 6
@@ -82,6 +86,7 @@ Call out when a fix is only symptom-level. If a slightly larger refactor makes t
 **Type**: [bug fix/feature/refactor]
 
 ### Summary
+
 [One or two sentences about what changed]
 
 ### Analysis
@@ -92,14 +97,17 @@ Call out when a fix is only symptom-level. If a slightly larger refactor makes t
 ### Evaluation
 
 **Best Fix**: [Yes/No + explanation]
+
 - [Why this approach is/isn't optimal]
 - [Alternative if not optimal]
 
 **Refactor Opportunity**: [Yes/No]
+
 - [Specific shape if yes]
 - [Why it would improve design]
 
 **Proof Checked**:
+
 - [✓] Tests pass
 - [✓] Coverage maintained
 - [✓] File size limits respected

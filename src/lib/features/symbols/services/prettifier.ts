@@ -45,7 +45,7 @@ export function findMatch(
   textBefore: string,
   inserted: string,
   rules: SymbolRule[],
-  charAfter: string = '',
+  charAfter: string = ''
 ): ReplacementMatch | null {
   const combined = textBefore + inserted;
 
@@ -80,14 +80,14 @@ export function findMatch(
  * Useful for "prettify entire document" command.
  */
 export function prettifyText(text: string, rules: SymbolRule[]): string {
-  const sorted = sortRules(rules.filter(r => r.enabled));
+  const sorted = sortRules(rules.filter((r) => r.enabled));
   let result = text;
 
   for (const rule of sorted) {
     if (isWordTrigger(rule.trigger)) {
       const regex = new RegExp(
         `(?<=^|[\\s.,;:!?()\\[\\]{}'"])${escapeRegExp(rule.trigger)}(?=$|[\\s.,;:!?()\\[\\]{}'"])`,
-        'g',
+        'g'
       );
       result = result.replace(regex, rule.replacement);
     } else {

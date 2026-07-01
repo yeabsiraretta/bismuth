@@ -90,7 +90,9 @@ import * as settingsMock from '@/features/settings';
 import * as ocrStoreMock from '../stores/ocrStore';
 
 // Typed accessors
-const _settingsStore = settingsMock.settings as unknown as ReturnType<typeof writable<Record<string, unknown>>>;
+const _settingsStore = settingsMock.settings as unknown as ReturnType<
+  typeof writable<Record<string, unknown>>
+>;
 const _activeJobs = ocrStoreMock.activeJobs as ReturnType<typeof writable<unknown[]>>;
 const _activeJobId = ocrStoreMock.activeJobId as ReturnType<typeof writable<string | null>>;
 
@@ -107,8 +109,13 @@ function makeContainer(): HTMLElement {
 }
 
 function cleanup(): void {
-  if (mounted) { unmount(mounted); mounted = null; }
-  if (container?.parentNode) { container.parentNode.removeChild(container); }
+  if (mounted) {
+    unmount(mounted);
+    mounted = null;
+  }
+  if (container?.parentNode) {
+    container.parentNode.removeChild(container);
+  }
 }
 
 afterEach(() => {
@@ -276,4 +283,3 @@ describe('OcrCorrectionHighlight — confidence classes', () => {
     expect(el.querySelectorAll('.ocr-word')).toHaveLength(0);
   });
 });
-

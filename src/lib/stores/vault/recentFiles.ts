@@ -16,14 +16,18 @@ function loadRecent(): RecentFileEntry[] {
     if (saved) {
       return JSON.parse(saved) as RecentFileEntry[];
     }
-  } catch (e) { log.warn('Failed to load recent files from localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to load recent files from localStorage', { error: String(e) });
+  }
   return [];
 }
 
 function persistRecent(entries: RecentFileEntry[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  } catch (e) { log.warn('Failed to persist recent files to localStorage', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist recent files to localStorage', { error: String(e) });
+  }
 }
 
 function createRecentFilesStore() {
@@ -34,7 +38,7 @@ function createRecentFilesStore() {
     /** Add a file to the recent list (moves to top if already present) */
     addRecent(path: string, title: string): void {
       update((current) => {
-        const filtered = current.filter(e => e.path !== path);
+        const filtered = current.filter((e) => e.path !== path);
         const next = [{ path, title, timestamp: Date.now() }, ...filtered].slice(0, MAX_ENTRIES);
         persistRecent(next);
         return next;
@@ -43,7 +47,7 @@ function createRecentFilesStore() {
     /** Remove a specific entry from the recent list */
     removeRecent(path: string): void {
       update((current) => {
-        const next = current.filter(e => e.path !== path);
+        const next = current.filter((e) => e.path !== path);
         persistRecent(next);
         return next;
       });

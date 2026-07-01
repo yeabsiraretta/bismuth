@@ -14,14 +14,44 @@
     { key: '--opacity-disabled', label: 'Disabled Opacity', type: 'opacity', defaultValue: '0.4' },
     { key: '--opacity-muted', label: 'Muted Opacity', type: 'opacity', defaultValue: '0.6' },
     { key: '--opacity-overlay', label: 'Overlay Opacity', type: 'opacity', defaultValue: '0.8' },
-    { key: '--shadow-s', label: 'Shadow Small', type: 'shadow', defaultValue: '0 1px 2px rgba(0,0,0,0.1)' },
-    { key: '--shadow-m', label: 'Shadow Medium', type: 'shadow', defaultValue: '0 4px 8px rgba(0,0,0,0.12)' },
-    { key: '--shadow-l', label: 'Shadow Large', type: 'shadow', defaultValue: '0 8px 24px rgba(0,0,0,0.16)' },
+    {
+      key: '--shadow-s',
+      label: 'Shadow Small',
+      type: 'shadow',
+      defaultValue: '0 1px 2px rgba(0,0,0,0.1)',
+    },
+    {
+      key: '--shadow-m',
+      label: 'Shadow Medium',
+      type: 'shadow',
+      defaultValue: '0 4px 8px rgba(0,0,0,0.12)',
+    },
+    {
+      key: '--shadow-l',
+      label: 'Shadow Large',
+      type: 'shadow',
+      defaultValue: '0 8px 24px rgba(0,0,0,0.16)',
+    },
     { key: '--blur-s', label: 'Blur Small', type: 'blur', defaultValue: '4px' },
     { key: '--blur-m', label: 'Blur Medium', type: 'blur', defaultValue: '8px' },
-    { key: '--transition-fast', label: 'Transition Fast', type: 'duration', defaultValue: '0.1s ease' },
-    { key: '--transition-normal', label: 'Transition Normal', type: 'duration', defaultValue: '0.2s ease' },
-    { key: '--transition-slow', label: 'Transition Slow', type: 'duration', defaultValue: '0.3s ease' },
+    {
+      key: '--transition-fast',
+      label: 'Transition Fast',
+      type: 'duration',
+      defaultValue: '0.1s ease',
+    },
+    {
+      key: '--transition-normal',
+      label: 'Transition Normal',
+      type: 'duration',
+      defaultValue: '0.2s ease',
+    },
+    {
+      key: '--transition-slow',
+      label: 'Transition Slow',
+      type: 'duration',
+      defaultValue: '0.3s ease',
+    },
   ];
 
   let values: Record<string, string> = {};
@@ -53,7 +83,7 @@
 <div class="effects-section">
   <div class="section-group">
     <h5>Opacity</h5>
-    {#each EFFECT_TOKENS.filter(t => t.type === 'opacity') as token}
+    {#each EFFECT_TOKENS.filter((t) => t.type === 'opacity') as token}
       <div class="token-row">
         <span class="token-label">{token.label}</span>
         <div class="token-controls">
@@ -67,7 +97,14 @@
           />
           <span class="token-value">{values[token.key] || token.defaultValue}</span>
           {#if isOverridden(token.key)}
-            <button class="reset-btn" on:click={() => { resetToken(token.key); values[token.key] = getTokenValue(token.key) || token.defaultValue; }} title="Reset">
+            <button
+              class="reset-btn"
+              on:click={() => {
+                resetToken(token.key);
+                values[token.key] = getTokenValue(token.key) || token.defaultValue;
+              }}
+              title="Reset"
+            >
               <Icon name="x" size={12} />
             </button>
           {/if}
@@ -78,7 +115,7 @@
 
   <div class="section-group">
     <h5>Shadows</h5>
-    {#each EFFECT_TOKENS.filter(t => t.type === 'shadow') as token}
+    {#each EFFECT_TOKENS.filter((t) => t.type === 'shadow') as token}
       <div class="token-row">
         <span class="token-label">{token.label}</span>
         <div class="token-controls">
@@ -88,9 +125,19 @@
             placeholder={token.defaultValue}
             on:change={(e) => handleChange(token.key, e)}
           />
-          <div class="preview-shadow" style="box-shadow: {values[token.key] || token.defaultValue};"></div>
+          <div
+            class="preview-shadow"
+            style="box-shadow: {values[token.key] || token.defaultValue};"
+          ></div>
           {#if isOverridden(token.key)}
-            <button class="reset-btn" on:click={() => { resetToken(token.key); values[token.key] = getTokenValue(token.key) || token.defaultValue; }} title="Reset">
+            <button
+              class="reset-btn"
+              on:click={() => {
+                resetToken(token.key);
+                values[token.key] = getTokenValue(token.key) || token.defaultValue;
+              }}
+              title="Reset"
+            >
               <Icon name="x" size={12} />
             </button>
           {/if}
@@ -101,7 +148,7 @@
 
   <div class="section-group">
     <h5>Blur</h5>
-    {#each EFFECT_TOKENS.filter(t => t.type === 'blur') as token}
+    {#each EFFECT_TOKENS.filter((t) => t.type === 'blur') as token}
       <div class="token-row">
         <span class="token-label">{token.label}</span>
         <div class="token-controls">
@@ -112,7 +159,14 @@
             on:change={(e) => handleChange(token.key, e)}
           />
           {#if isOverridden(token.key)}
-            <button class="reset-btn" on:click={() => { resetToken(token.key); values[token.key] = getTokenValue(token.key) || token.defaultValue; }} title="Reset">
+            <button
+              class="reset-btn"
+              on:click={() => {
+                resetToken(token.key);
+                values[token.key] = getTokenValue(token.key) || token.defaultValue;
+              }}
+              title="Reset"
+            >
               <Icon name="x" size={12} />
             </button>
           {/if}
@@ -123,7 +177,7 @@
 
   <div class="section-group">
     <h5>Transitions</h5>
-    {#each EFFECT_TOKENS.filter(t => t.type === 'duration') as token}
+    {#each EFFECT_TOKENS.filter((t) => t.type === 'duration') as token}
       <div class="token-row">
         <span class="token-label">{token.label}</span>
         <div class="token-controls">
@@ -134,7 +188,14 @@
             on:change={(e) => handleChange(token.key, e)}
           />
           {#if isOverridden(token.key)}
-            <button class="reset-btn" on:click={() => { resetToken(token.key); values[token.key] = getTokenValue(token.key) || token.defaultValue; }} title="Reset">
+            <button
+              class="reset-btn"
+              on:click={() => {
+                resetToken(token.key);
+                values[token.key] = getTokenValue(token.key) || token.defaultValue;
+              }}
+              title="Reset"
+            >
               <Icon name="x" size={12} />
             </button>
           {/if}

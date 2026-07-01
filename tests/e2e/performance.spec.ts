@@ -16,10 +16,9 @@ test.describe('NFR-006: Cold Startup Time', () => {
     await page.goto('/');
 
     // Wait for the app to be interactive (main content visible)
-    await page.waitForSelector(
-      '[data-testid="app-ready"], .app-container, .welcome-screen, main',
-      { timeout: 5000 }
-    );
+    await page.waitForSelector('[data-testid="app-ready"], .app-container, .welcome-screen, main', {
+      timeout: 5000,
+    });
 
     const loadTime = Date.now() - startTime;
 

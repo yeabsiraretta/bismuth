@@ -1,5 +1,5 @@
 ---
-description: "Performs broader or full-system security review across the codebase. Recommended for milestone reviews, release reviews, or major architecture validation."
+description: 'Performs broader or full-system security review across the codebase. Recommended for milestone reviews, release reviews, or major architecture validation.'
 scripts:
   sh: ../../scripts/bash/detect-changed-files.sh
   ps: ../../scripts/powershell/detect-changed-files.ps1
@@ -367,7 +367,7 @@ Check for:
 
 Before writing the report body, emit a YAML frontmatter block at the very start of the output document. Populate all values from your analysis. Copy the `field_summaries` section verbatim — it is static schema documentation that enables any LLM or indexer reading only the header to understand the full field schema without parsing the report body.
 
-````yaml
+```yaml
 ---
 document_type: security-review
 review_type: audit
@@ -385,24 +385,24 @@ owasp_categories: [<A01>, <A05>, ...]
 cwe_ids: [<CWE-89>, ...]
 field_summaries:
   document_type: "Always 'security-review'. Allows indexers to skip non-review documents."
-  review_type: "Which command generated this document: audit, branch, staged, plan, tasks, or followup."
-  assessment_date: "ISO 8601 date the review was performed (YYYY-MM-DD)."
-  overall_risk: "Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL)."
-  critical_count: "Number of Critical findings (CVSS 9.0-10.0)."
-  high_count: "Number of High findings (CVSS 7.0-8.9)."
-  medium_count: "Number of Medium findings (CVSS 4.0-6.9)."
-  low_count: "Number of Low findings (CVSS 0.1-3.9)."
-  informational_count: "Number of Informational findings."
-  owasp_categories: "OWASP Top 10 2025 categories (A01-A10) that have at least one finding."
-  cwe_ids: "CWE identifiers referenced in this document."
-  finding_id: "Unique finding identifier (SEC-NNN) for cross-referencing and task linkage."
-  location: "File path and line number of the vulnerable code (path/to/file.ext:line)."
-  owasp_category: "OWASP Top 10 2025 category for this finding (AXX:2025-Name)."
-  cwe: "Common Weakness Enumeration identifier with short name (CWE-NNN: Name)."
-  cvss_score: "CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low."
-  spec_kit_task: "Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN)."
+  review_type: 'Which command generated this document: audit, branch, staged, plan, tasks, or followup.'
+  assessment_date: 'ISO 8601 date the review was performed (YYYY-MM-DD).'
+  overall_risk: 'Highest severity tier with active findings (CRITICAL, HIGH, MODERATE, LOW, INFORMATIONAL).'
+  critical_count: 'Number of Critical findings (CVSS 9.0-10.0).'
+  high_count: 'Number of High findings (CVSS 7.0-8.9).'
+  medium_count: 'Number of Medium findings (CVSS 4.0-6.9).'
+  low_count: 'Number of Low findings (CVSS 0.1-3.9).'
+  informational_count: 'Number of Informational findings.'
+  owasp_categories: 'OWASP Top 10 2025 categories (A01-A10) that have at least one finding.'
+  cwe_ids: 'CWE identifiers referenced in this document.'
+  finding_id: 'Unique finding identifier (SEC-NNN) for cross-referencing and task linkage.'
+  location: 'File path and line number of the vulnerable code (path/to/file.ext:line).'
+  owasp_category: 'OWASP Top 10 2025 category for this finding (AXX:2025-Name).'
+  cwe: 'Common Weakness Enumeration identifier with short name (CWE-NNN: Name).'
+  cvss_score: 'CVSS v3.1 base score (0.0-10.0). 9.0+=Critical, 7.0-8.9=High, 4.0-6.9=Medium, 0.1-3.9=Low.'
+  spec_kit_task: 'Spec-Kit task ID for backlog tracking and remediation follow-up (TASK-SEC-NNN).'
 ---
-````
+```
 
 Then follow with the report body.
 
@@ -613,6 +613,7 @@ Produce a comprehensive **SECURITY REVIEW REPORT** with the following structure:
 [Any limitations of the assessment]
 
 ### D. Action Plan
+
 1. **Critical Remediation**: Fix all Critical/High vulnerabilities before merge.
 2. **Architecture Hardening**: Resolve trust boundary and data flow risks.
 3. **Report Findings**: For each finding, report severity, location, OWASP category, description, remediation, and Spec-Kit task.
@@ -620,6 +621,7 @@ Produce a comprehensive **SECURITY REVIEW REPORT** with the following structure:
 5. **Proactive Durable Memory Preservation**: If systemic vulnerabilities or reusable security patterns were identified, you **MUST** proactively execute `/speckit.memory-md.capture` as the final part of this turn. Use the formal capture flow to propose entries and wait for user approval.
 
 ### E. Next Steps
+
 1. Review findings with development team
 2. Prioritize remediation tasks
 3. **Preserve Durable Lessons**: If systemic vulnerabilities or reusable security patterns were identified, run `/speckit.memory-md.capture`.
@@ -706,7 +708,7 @@ TASK-SEC-[NNN]: [Actionable Title]
 - Acceptance Criteria: [How to verify the fix]
 - References: [Links to relevant documentation]
 
-```
+````
 
 These tasks should be ready to import into Spec-Kit's task tracking system.
 
@@ -728,7 +730,7 @@ After the report, output the following proposed routing row for the user to past
 
 ```text
 | <relative path where this doc is saved> | audit | <assessment_date> | <overall_risk> | C:<critical_count> H:<high_count> M:<medium_count> L:<low_count> | <owasp_categories comma-separated> |
-```
+````
 
 Example:
 

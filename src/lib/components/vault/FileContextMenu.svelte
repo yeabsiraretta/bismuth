@@ -162,7 +162,9 @@
 <div
   class="context-menu-overlay"
   on:click={onClose}
-  on:keydown={(e) => { if (e.key === 'Escape') onClose(); }}
+  on:keydown={(e) => {
+    if (e.key === 'Escape') onClose();
+  }}
   role="presentation"
 >
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

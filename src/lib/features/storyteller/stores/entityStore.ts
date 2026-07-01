@@ -3,7 +3,12 @@
  */
 
 import { writable, derived, get } from 'svelte/store';
-import type { StorytellerEntity, EntityType, EntityRelationship, CustomFieldDefinition } from '../types/entity';
+import type {
+  StorytellerEntity,
+  EntityType,
+  EntityRelationship,
+  CustomFieldDefinition,
+} from '../types/entity';
 import * as svc from '../services/entityService';
 import { activeStoryId } from './storyStore';
 
@@ -14,19 +19,21 @@ export const activeEntityId = writable<string | null>(null);
 export const entityTypeFilter = writable<EntityType | null>(null);
 
 export const storyEntities = derived([allEntities, activeStoryId], ([$all, $storyId]) =>
-  $storyId ? svc.getEntitiesByStory($all, $storyId) : [],
+  $storyId ? svc.getEntitiesByStory($all, $storyId) : []
 );
 
-export const filteredEntities = derived([storyEntities, entityTypeFilter], ([$entities, $filter]) =>
-  $filter ? $entities.filter(e => e.type === $filter) : $entities,
+export const filteredEntities = derived(
+  [storyEntities, entityTypeFilter],
+  ([$entities, $filter]) => ($filter ? $entities.filter((e) => e.type === $filter) : $entities)
 );
 
 export const activeEntity = derived([allEntities, activeEntityId], ([$all, $id]) =>
-  $id ? svc.getEntityById($all, $id) ?? null : null,
+  $id ? (svc.getEntityById($all, $id) ?? null) : null
 );
 
-export const activeEntityRelationships = derived([allRelationships, activeEntityId], ([$rels, $id]) =>
-  $id ? svc.getRelationshipsForEntity($rels, $id) : [],
+export const activeEntityRelationships = derived(
+  [allRelationships, activeEntityId],
+  ([$rels, $id]) => ($id ? svc.getRelationshipsForEntity($rels, $id) : [])
 );
 
 export const entityCountsByType = derived(storyEntities, ($entities) => {
@@ -37,11 +44,15 @@ export const entityCountsByType = derived(storyEntities, ($entities) => {
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
-export function addEntity(type: EntityType, name: string, overrides?: Partial<StorytellerEntity>): StorytellerEntity {
+export function addEntity(
+  type: EntityType,
+  name: string,
+  overrides?: Partial<StorytellerEntity>
+): StorytellerEntity {
   const storyId = get(activeStoryId);
   if (!storyId) throw new Error('No active story');
   const entity = svc.createEntity(type, name, storyId, overrides);
-  allEntities.update(list => {
+  allEntities.update((list) => {
     const next = [...list, entity];
     svc.persistEntities(next);
     return next;
@@ -50,7 +61,7 @@ export function addEntity(type: EntityType, name: string, overrides?: Partial<St
 }
 
 export function editEntity(updated: StorytellerEntity): void {
-  allEntities.update(list => {
+  allEntities.update((list) => {
     const next = svc.updateEntity(list, updated);
     svc.persistEntities(next);
     return next;
@@ -58,17 +69,17 @@ export function editEntity(updated: StorytellerEntity): void {
 }
 
 export function removeEntity(entityId: string): void {
-  allEntities.update(list => {
+  allEntities.update((list) => {
     const next = svc.deleteEntity(list, entityId);
     svc.persistEntities(next);
     return next;
   });
-  allRelationships.update(rels => {
+  allRelationships.update((rels) => {
     const next = svc.deleteRelationshipsForEntity(rels, entityId);
     svc.persistRelationships(next);
     return next;
   });
-  activeEntityId.update(id => id === entityId ? null : id);
+  activeEntityId.update((id) => (id === entityId ? null : id));
 }
 
 export function selectEntity(entityId: string | null): void {
@@ -76,11 +87,14 @@ export function selectEntity(entityId: string | null): void {
 }
 
 export function addRelationship(
-  sourceId: string, targetId: string,
-  kind: EntityRelationship['kind'], label: string, bidirectional = true,
+  sourceId: string,
+  targetId: string,
+  kind: EntityRelationship['kind'],
+  label: string,
+  bidirectional = true
 ): EntityRelationship {
   const rel = svc.createRelationship(sourceId, targetId, kind, label, bidirectional);
-  allRelationships.update(list => {
+  allRelationships.update((list) => {
     const next = [...list, rel];
     svc.persistRelationships(next);
     return next;
@@ -89,7 +103,7 @@ export function addRelationship(
 }
 
 export function removeRelationship(relId: string): void {
-  allRelationships.update(list => {
+  allRelationships.update((list) => {
     const next = svc.deleteRelationship(list, relId);
     svc.persistRelationships(next);
     return next;
@@ -101,9 +115,9 @@ export function setTypeFilter(type: EntityType | null): void {
 }
 
 export function saveCustomField(field: CustomFieldDefinition): void {
-  customFields.update(list => {
-    const idx = list.findIndex(f => f.id === field.id);
-    const next = idx >= 0 ? list.map((f, i) => i === idx ? field : f) : [...list, field];
+  customFields.update((list) => {
+    const idx = list.findIndex((f) => f.id === field.id);
+    const next = idx >= 0 ? list.map((f, i) => (i === idx ? field : f)) : [...list, field];
     svc.persistCustomFields(next);
     return next;
   });

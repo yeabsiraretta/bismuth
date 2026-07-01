@@ -18,7 +18,14 @@
   export let notes = '';
   export let transitionType: SlideMetadata['transitionType'] = 'instant';
   export let transitionDuration = 300;
-  export let onUpdateNotes: ((detail: { frameId: string; notes: string; transitionType: SlideMetadata['transitionType']; transitionDuration: number }) => void) | undefined = undefined;
+  export let onUpdateNotes:
+    | ((detail: {
+        frameId: string;
+        notes: string;
+        transitionType: SlideMetadata['transitionType'];
+        transitionDuration: number;
+      }) => void)
+    | undefined = undefined;
 
   let localNotes = notes;
   let localTransitionType = transitionType;

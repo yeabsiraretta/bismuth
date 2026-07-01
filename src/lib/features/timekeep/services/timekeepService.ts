@@ -119,9 +119,13 @@ export function formatTimestamp(isoStr: string, pattern: string = 'YY-MM-DD HH:m
   const mm = String(d.getMinutes()).padStart(2, '0');
   const ss = String(d.getSeconds()).padStart(2, '0');
   return pattern
-    .replace('YYYY', yyyy).replace('YY', yy)
-    .replace('MM', MM).replace('DD', dd)
-    .replace('HH', HH).replace('mm', mm).replace('ss', ss);
+    .replace('YYYY', yyyy)
+    .replace('YY', yy)
+    .replace('MM', MM)
+    .replace('DD', dd)
+    .replace('HH', HH)
+    .replace('mm', mm)
+    .replace('ss', ss);
 }
 
 // ─── Sub-entry management ───────────────────────────────────────────────────
@@ -154,7 +158,9 @@ export function createTimekeep(title: string = 'Untitled Timekeep'): Timekeep {
 }
 
 export function hasRunningEntry(data: TimekeepData): boolean {
-  return data.entries.some(e => isRunning(e) || (e.subEntries?.some(s => isRunning(s)) ?? false));
+  return data.entries.some(
+    (e) => isRunning(e) || (e.subEntries?.some((s) => isRunning(s)) ?? false)
+  );
 }
 
 export function getRunningEntries(data: TimekeepData): TimekeepEntry[] {

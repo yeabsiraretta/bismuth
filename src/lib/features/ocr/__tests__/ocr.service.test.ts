@@ -28,12 +28,7 @@ vi.mock('@/utils/logger', () => ({
 vi.mock('@tauri-apps/api/core');
 
 import { invoke } from '@tauri-apps/api/core';
-import {
-  importImage,
-  cleanupOcrTemp,
-  appendCorrection,
-  getCorrections,
-} from '../services/ocr';
+import { importImage, cleanupOcrTemp, appendCorrection, getCorrections } from '../services/ocr';
 import type { CorrectionEntry } from '../types/ocr';
 
 const mockEntry: CorrectionEntry = {
@@ -46,7 +41,9 @@ const mockEntry: CorrectionEntry = {
 };
 
 describe('ocr.service — importImage', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('invokes import_image with the correct command string', async () => {
     vi.mocked(invoke).mockResolvedValueOnce({
@@ -65,7 +62,11 @@ describe('ocr.service — importImage', () => {
   });
 
   it('returns the job payload from invoke', async () => {
-    const payload = { jobId: 'ocr-2', stagedPath: '/vault/.bismuth/ocr-temp/x.png', language: 'am' };
+    const payload = {
+      jobId: 'ocr-2',
+      stagedPath: '/vault/.bismuth/ocr-temp/x.png',
+      language: 'am',
+    };
     vi.mocked(invoke).mockResolvedValueOnce(payload);
 
     const result = await importImage('/img.png', 'am', '/vault');
@@ -81,7 +82,9 @@ describe('ocr.service — importImage', () => {
 });
 
 describe('ocr.service — cleanupOcrTemp', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('invokes cleanup_ocr_temp with stagedPath and vaultRoot', async () => {
     vi.mocked(invoke).mockResolvedValueOnce(undefined);
@@ -105,14 +108,16 @@ describe('ocr.service — cleanupOcrTemp', () => {
   it('propagates rejection from invoke', async () => {
     vi.mocked(invoke).mockRejectedValueOnce(new Error('path outside vault'));
 
-    await expect(
-      cleanupOcrTemp('/tmp/external.jpg', '/vault'),
-    ).rejects.toThrow('path outside vault');
+    await expect(cleanupOcrTemp('/tmp/external.jpg', '/vault')).rejects.toThrow(
+      'path outside vault'
+    );
   });
 });
 
 describe('ocr.service — appendCorrection', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('invokes append_ocr_correction with correct args', async () => {
     vi.mocked(invoke).mockResolvedValueOnce(undefined);
@@ -147,7 +152,9 @@ describe('ocr.service — appendCorrection', () => {
 });
 
 describe('ocr.service — getCorrections', () => {
-  beforeEach(() => { vi.clearAllMocks(); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('invokes get_ocr_corrections with vaultRoot, language, and n', async () => {
     vi.mocked(invoke).mockResolvedValueOnce([mockEntry]);

@@ -24,22 +24,27 @@ function loadConfig(): TopicLinkingConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_TOPIC_LINKING_CONFIG, ...JSON.parse(raw) };
-  } catch { /* defaults */ }
+  } catch {
+    /* defaults */
+  }
   return { ...DEFAULT_TOPIC_LINKING_CONFIG };
 }
 
 function persistConfig(config: TopicLinkingConfig): void {
-  try { localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }
-  catch (e) { log.warn('topic-linking: config persist failed', { error: String(e) }); }
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  } catch (e) {
+    log.warn('topic-linking: config persist failed', { error: String(e) });
+  }
 }
 
 const configStore = writable<TopicLinkingConfig>(loadConfig());
 configStore.subscribe(persistConfig);
 
-export const topicConfig = derived(configStore, $c => $c);
+export const topicConfig = derived(configStore, ($c) => $c);
 
 export function updateTopicConfig(partial: Partial<TopicLinkingConfig>): void {
-  configStore.update(c => ({ ...c, ...partial }));
+  configStore.update((c) => ({ ...c, ...partial }));
 }
 
 export function resetTopicConfig(): void {
@@ -97,7 +102,7 @@ export async function runLinkTopics(accessors: VaultAccessors): Promise<void> {
     });
     showToast(
       `Generated ${result.topics.length} topics from ${result.documentCount} documents`,
-      'success',
+      'success'
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -124,7 +129,10 @@ export async function runExtractWebLinks(accessors: VaultAccessors): Promise<voi
     for (const link of links) {
       try {
         const hostname = new URL(link.url).hostname.replace(/\./g, '_');
-        const slug = (link.displayText || hostname).replace(/[^a-zA-Z0-9\s-]/g, '').slice(0, 60).trim();
+        const slug = (link.displayText || hostname)
+          .replace(/[^a-zA-Z0-9\s-]/g, '')
+          .slice(0, 60)
+          .trim();
         const fileName = `${config.generatedFolder}/${slug || hostname}.md`;
         const content = generateWebLinkNote(link);
         await accessors.writeFile(fileName, content);

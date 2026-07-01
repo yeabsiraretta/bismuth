@@ -4,26 +4,42 @@
  */
 
 export type ElementType =
-  | 'campaign' | 'adventure' | 'chapter' | 'session' | 'scene'
-  | 'event' | 'location' | 'clue' | 'npc' | 'faction'
-  | 'object' | 'monster' | 'subplot' | 'pc';
+  | 'campaign'
+  | 'adventure'
+  | 'chapter'
+  | 'session'
+  | 'scene'
+  | 'event'
+  | 'location'
+  | 'clue'
+  | 'npc'
+  | 'faction'
+  | 'object'
+  | 'monster'
+  | 'subplot'
+  | 'pc';
 
 export type RelationshipType = 'bidirectional' | 'unidirectional' | 'parent' | 'child';
 
 export type StoryCircleStage =
-  | 'you' | 'need' | 'go' | 'search' | 'find' | 'take' | 'return' | 'change';
+  'you' | 'need' | 'go' | 'search' | 'find' | 'take' | 'return' | 'change';
 
 export type NpcType = 'main' | 'supporting' | 'extra';
 
-export type CharacterArc =
-  | 'positive' | 'disillusionment' | 'fall' | 'corruption' | 'flat';
+export type CharacterArc = 'positive' | 'disillusionment' | 'fall' | 'corruption' | 'flat';
 
 export type SceneType =
-  | 'action' | 'combat' | 'decision' | 'encounter' | 'exposition'
-  | 'investigation' | 'preparation' | 'recap' | 'social-combat';
+  | 'action'
+  | 'combat'
+  | 'decision'
+  | 'encounter'
+  | 'exposition'
+  | 'investigation'
+  | 'preparation'
+  | 'recap'
+  | 'social-combat';
 
-export type CustomAttributeType =
-  | 'text' | 'number' | 'option' | 'checkbox' | 'long-text' | 'date';
+export type CustomAttributeType = 'text' | 'number' | 'option' | 'checkbox' | 'long-text' | 'date';
 
 export interface StoryCircleEntry {
   stage: StoryCircleStage;

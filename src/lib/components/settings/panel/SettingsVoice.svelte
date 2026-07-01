@@ -17,8 +17,8 @@
         <option value="mp3">MP3 (universal playback)</option>
       </select>
       <span class="setting-hint col-span-full">
-        Container format for recorded audio files.
-        WebM is recommended for best browser compatibility.
+        Container format for recorded audio files. WebM is recommended for best browser
+        compatibility.
       </span>
     </div>
   </div>

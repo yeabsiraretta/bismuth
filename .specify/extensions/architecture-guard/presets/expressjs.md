@@ -14,48 +14,48 @@ When reviewing an Express project, map generic architecture boundaries to Expres
 
 ### Entry Boundary
 
-| Generic Concept | Express Equivalent |
-| --- | --- |
-| Entry point for HTTP requests | Routes (`router.get`, `router.post`) |
-| Request processing | Controllers (`export const getX = (req, res) => { ... }`) |
-| Request/Response hooks | Middleware (`app.use`, `router.use`) |
-| Global error handling | Error Middleware (`(err, req, res, next) => { ... }`) |
+| Generic Concept               | Express Equivalent                                        |
+| ----------------------------- | --------------------------------------------------------- |
+| Entry point for HTTP requests | Routes (`router.get`, `router.post`)                      |
+| Request processing            | Controllers (`export const getX = (req, res) => { ... }`) |
+| Request/Response hooks        | Middleware (`app.use`, `router.use`)                      |
+| Global error handling         | Error Middleware (`(err, req, res, next) => { ... }`)     |
 
 ### Validation Boundary
 
-| Generic Concept | Express Equivalent |
-| --- | --- |
-| Input validation | `express-validator`, `zod`, or `joi` middlewares |
+| Generic Concept    | Express Equivalent                               |
+| ------------------ | ------------------------------------------------ |
+| Input validation   | `express-validator`, `zod`, or `joi` middlewares |
 | Schema enforcement | Validation middleware applied at the route level |
 
 ### Contract Boundary
 
-| Generic Concept | Express Equivalent |
-| --- | --- |
-| API contracts | TypeScript Interfaces or JSON Schemas |
-| Shared response shapes | Custom response wrappers or classes |
+| Generic Concept        | Express Equivalent                    |
+| ---------------------- | ------------------------------------- |
+| API contracts          | TypeScript Interfaces or JSON Schemas |
+| Shared response shapes | Custom response wrappers or classes   |
 
 ### Application Boundary
 
-| Generic Concept | NestJS Equivalent (Context) |
-| --- | --- |
-| Shared logic coordination | Services (`src/services/`) |
-| Use case orchestration | Service classes or functions |
+| Generic Concept           | NestJS Equivalent (Context)  |
+| ------------------------- | ---------------------------- |
+| Shared logic coordination | Services (`src/services/`)   |
+| Use case orchestration    | Service classes or functions |
 
 ### Domain Boundary
 
-| Generic Concept | Express Equivalent |
-| --- | --- |
+| Generic Concept              | Express Equivalent                                     |
+| ---------------------------- | ------------------------------------------------------ |
 | Business rules and decisions | Pure JS/TS Functions in `src/domain/` or `src/models/` |
-| Domain entities | TypeScript Interfaces or Classes |
+| Domain entities              | TypeScript Interfaces or Classes                       |
 
 ### Data Boundary
 
-| Generic Concept | Express Equivalent |
-| --- | --- |
-| Persistence abstraction | Repositories (`src/repositories/`) |
-| Persistence models | Mongoose Schemas, TypeORM Entities, Sequelize Models |
-| Database Migration | Knex Migrations, TypeORM Migrations, etc. |
+| Generic Concept         | Express Equivalent                                   |
+| ----------------------- | ---------------------------------------------------- |
+| Persistence abstraction | Repositories (`src/repositories/`)                   |
+| Persistence models      | Mongoose Schemas, TypeORM Entities, Sequelize Models |
+| Database Migration      | Knex Migrations, TypeORM Migrations, etc.            |
 
 ---
 
@@ -64,11 +64,13 @@ When reviewing an Express project, map generic architecture boundaries to Expres
 ### Fat Route Handlers (Anti-Pattern: Spaghetti Routes)
 
 Detect when a route handler (the function passed to `router.get` or `app.post`):
+
 - Directly performs database queries (e.g., `await User.find()`).
 - Contains business logic calculations or multi-step domain workflows.
 - Directly handles low-level error formatting.
 
 **Acceptable in route handlers (Controllers):**
+
 - Extracting `req.params`, `req.query`, and `req.body`.
 - Calling a Service function/method.
 - Sending the response with `res.status().json()`.
@@ -76,18 +78,21 @@ Detect when a route handler (the function passed to `router.get` or `app.post`):
 ### Missing Validation Middleware [Focus: api]
 
 Detect when:
+
 - A Controller uses `req.body` directly without a preceding validation middleware.
 - Validation logic is written inside the Controller body instead of a separate middleware.
 
 ### Global Error Handling Boundary
 
 Detect when:
+
 - Controllers use `try/catch` to manually send `res.status(500)` instead of calling `next(err)`.
 - **Recommendation**: Always use a centralized error handling middleware and pass errors via `next()`.
 
 ### Middleware Responsibility
 
 Detect when:
+
 - Middleware performs database writes or complex business logic (Middleware should be for cross-cutting concerns: Auth, Logging, Parsing).
 - Middleware modifies `req` in a way that is not documented in the shared context.
 

@@ -38,9 +38,8 @@ export const currentWordToken = derived(
 );
 
 /** Derived: progress percentage. */
-export const readerProgress = derived(
-  [readerTokens, readerPosition],
-  ([$tokens, $pos]) => $tokens.length > 0 ? Math.round(($pos / $tokens.length) * 100) : 0
+export const readerProgress = derived([readerTokens, readerPosition], ([$tokens, $pos]) =>
+  $tokens.length > 0 ? Math.round(($pos / $tokens.length) * 100) : 0
 );
 
 /** Derived: estimated time remaining in seconds. */
@@ -54,7 +53,7 @@ export const speedReaderStore = derived(
   [readerOpen, readerTokens, readerPosition, readerState, readerConfig],
   ([$open, $tokens, $pos, $state, $cfg]) => ({
     active: $open,
-    words: $tokens.map(t => t.text),
+    words: $tokens.map((t) => t.text),
     currentIndex: $pos,
     playing: $state === 'playing',
     wpm: $cfg.wpm,
@@ -69,8 +68,12 @@ let playTimer: ReturnType<typeof setTimeout> | null = null;
 function loadReaderConfig(): SpeedReaderConfig {
   try {
     const stored = localStorage.getItem('bismuth-speed-reader-config');
-    return stored ? { ...DEFAULT_SPEED_READER_CONFIG, ...JSON.parse(stored) } : DEFAULT_SPEED_READER_CONFIG;
-  } catch { return DEFAULT_SPEED_READER_CONFIG; }
+    return stored
+      ? { ...DEFAULT_SPEED_READER_CONFIG, ...JSON.parse(stored) }
+      : DEFAULT_SPEED_READER_CONFIG;
+  } catch {
+    return DEFAULT_SPEED_READER_CONFIG;
+  }
 }
 
 /** Start speed reader with given content and optional WPM. */
@@ -80,7 +83,7 @@ export function startSpeedReader(content: string, wpm?: number): void {
     log.warn('Speed Reader: no readable words found');
     return;
   }
-  if (wpm) readerConfig.update(c => ({ ...c, wpm }));
+  if (wpm) readerConfig.update((c) => ({ ...c, wpm }));
   readerTokens.set(tokens);
   readerPosition.set(0);
   readerState.set('paused');
@@ -115,7 +118,7 @@ export function togglePlayPause(): void {
 
 /** Set WPM. */
 export function setWpm(wpm: number): void {
-  readerConfig.update(c => ({ ...c, wpm: Math.max(50, Math.min(1000, wpm)) }));
+  readerConfig.update((c) => ({ ...c, wpm: Math.max(50, Math.min(1000, wpm)) }));
 }
 
 /** Advance one word (called by timer). */
@@ -132,26 +135,32 @@ export function advanceWord(): void {
 /** Skip backward. */
 export function goBack(): void {
   const cfg = get(readerConfig);
-  readerPosition.update(p => Math.max(0, p - cfg.skipWords));
-  if (get(readerState) === 'playing') { stopTimer(); scheduleNext(); }
+  readerPosition.update((p) => Math.max(0, p - cfg.skipWords));
+  if (get(readerState) === 'playing') {
+    stopTimer();
+    scheduleNext();
+  }
 }
 
 /** Skip forward. */
 export function skipForward(): void {
   const cfg = get(readerConfig);
   const tokens = get(readerTokens);
-  readerPosition.update(p => Math.min(tokens.length - 1, p + cfg.skipWords));
-  if (get(readerState) === 'playing') { stopTimer(); scheduleNext(); }
+  readerPosition.update((p) => Math.min(tokens.length - 1, p + cfg.skipWords));
+  if (get(readerState) === 'playing') {
+    stopTimer();
+    scheduleNext();
+  }
 }
 
 /** Adjust WPM by delta. */
 export function adjustWpm(delta: number): void {
-  readerConfig.update(c => ({ ...c, wpm: Math.max(50, Math.min(1000, c.wpm + delta)) }));
+  readerConfig.update((c) => ({ ...c, wpm: Math.max(50, Math.min(1000, c.wpm + delta)) }));
 }
 
 /** Toggle focus mode. */
 export function toggleFocusMode(): void {
-  readerConfig.update(c => ({ ...c, focusMode: !c.focusMode }));
+  readerConfig.update((c) => ({ ...c, focusMode: !c.focusMode }));
 }
 
 /** Reset to start. */
@@ -171,27 +180,39 @@ export function getWordDelay(word: string, wpm: number): number {
 }
 
 function stopTimer(): void {
-  if (playTimer !== null) { clearTimeout(playTimer); playTimer = null; }
+  if (playTimer !== null) {
+    clearTimeout(playTimer);
+    playTimer = null;
+  }
 }
 
 function scheduleNext(): void {
   const tokens = get(readerTokens);
   const pos = get(readerPosition);
   const cfg = get(readerConfig);
-  if (pos >= tokens.length) { readerState.set('finished'); return; }
+  if (pos >= tokens.length) {
+    readerState.set('finished');
+    return;
+  }
   const token = tokens[pos];
   const delay = (60000 / cfg.wpm) * token.delayMultiplier;
   playTimer = setTimeout(() => {
     if (get(readerState) !== 'playing') return;
     const next = get(readerPosition) + 1;
-    if (next >= tokens.length) { readerState.set('finished'); return; }
+    if (next >= tokens.length) {
+      readerState.set('finished');
+      return;
+    }
     readerPosition.set(next);
     scheduleNext();
   }, delay);
 }
 
 /** Persist config. */
-readerConfig.subscribe(cfg => {
-  try { localStorage.setItem('bismuth-speed-reader-config', JSON.stringify(cfg)); }
-  catch (e) { log.warn('Failed to persist speed reader config to localStorage', { error: String(e) }); }
+readerConfig.subscribe((cfg) => {
+  try {
+    localStorage.setItem('bismuth-speed-reader-config', JSON.stringify(cfg));
+  } catch (e) {
+    log.warn('Failed to persist speed reader config to localStorage', { error: String(e) });
+  }
 });

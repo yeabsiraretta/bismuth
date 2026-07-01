@@ -15,20 +15,25 @@ interface PreloadEntry {
 export function recordFeatureUse(featureId: string): void {
   try {
     const entries = loadEntries();
-    const filtered = entries.filter(e => e.id !== featureId);
-    const updated = [...filtered, { id: featureId, usedAt: new Date().toISOString() }].slice(-HINT_MAX);
+    const filtered = entries.filter((e) => e.id !== featureId);
+    const updated = [...filtered, { id: featureId, usedAt: new Date().toISOString() }].slice(
+      -HINT_MAX
+    );
     localStorage.setItem(PRELOAD_KEY, JSON.stringify(updated));
-  } catch (e) { log.warn('Failed to persist feature preload hint', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to persist feature preload hint', { error: String(e) });
+  }
 }
 
 export function getPreloadHints(): string[] {
   try {
     const entries = loadEntries();
     const cutoff = Date.now() - STALENESS_DAYS * 86_400_000;
-    return entries
-      .filter(e => new Date(e.usedAt).getTime() > cutoff)
-      .map(e => e.id);
-  } catch (e) { log.warn('Failed to get preload hints', { error: String(e) }); return []; }
+    return entries.filter((e) => new Date(e.usedAt).getTime() > cutoff).map((e) => e.id);
+  } catch (e) {
+    log.warn('Failed to get preload hints', { error: String(e) });
+    return [];
+  }
 }
 
 export function clearStalePreloadHints(): void {
@@ -39,10 +44,12 @@ export function clearStalePreloadHints(): void {
 
     const entries = loadEntries();
     const cutoff = Date.now() - STALENESS_DAYS * 86_400_000;
-    const pruned = entries.filter(e => new Date(e.usedAt).getTime() > cutoff);
+    const pruned = entries.filter((e) => new Date(e.usedAt).getTime() > cutoff);
     localStorage.setItem(PRELOAD_KEY, JSON.stringify(pruned));
     localStorage.setItem(PRUNE_KEY, new Date().toISOString());
-  } catch (e) { log.warn('Failed to prune stale preload hints', { error: String(e) }); }
+  } catch (e) {
+    log.warn('Failed to prune stale preload hints', { error: String(e) });
+  }
 }
 
 function loadEntries(): PreloadEntry[] {
@@ -59,7 +66,10 @@ function loadEntries(): PreloadEntry[] {
         (e as PreloadEntry).id.length < 50 &&
         typeof (e as PreloadEntry).usedAt === 'string'
     );
-  } catch (e) { log.warn('Failed to parse preload entries from localStorage', { error: String(e) }); return []; }
+  } catch (e) {
+    log.warn('Failed to parse preload entries from localStorage', { error: String(e) });
+    return [];
+  }
 }
 
 /** Lazy-load map keyed by feature ID. Only features with `preloadKey`
@@ -95,7 +105,9 @@ export function preloadPreviouslyUsedFeatures(): void {
   hints.forEach((featureId, i) => {
     const loader = PRELOADABLE[featureId];
     if (loader) {
-      setTimeout(() => { loader().catch(() => {}); }, i * PRELOAD_STAGGER_MS);
+      setTimeout(() => {
+        loader().catch(() => {});
+      }, i * PRELOAD_STAGGER_MS);
     }
   });
 }

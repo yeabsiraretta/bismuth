@@ -94,9 +94,7 @@
         <div class="empty-icon" aria-hidden="true">&#9835;</div>
         <p class="empty-title">No music document</p>
         <p class="empty-desc">Create a new music document to start composing.</p>
-        <button class="new-doc-btn" on:click={handleNewDoc}>
-          New Music Doc
-        </button>
+        <button class="new-doc-btn" on:click={handleNewDoc}> New Music Doc </button>
       </div>
     </div>
   {/if}

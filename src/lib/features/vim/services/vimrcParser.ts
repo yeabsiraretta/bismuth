@@ -11,9 +11,20 @@ import { log } from '@/utils/logger';
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export type VimrcCommandType =
-  | 'map' | 'nmap' | 'imap' | 'vmap' | 'noremap'
-  | 'unmap' | 'nunmap' | 'iunmap' | 'vunmap'
-  | 'exmap' | 'set' | 'let' | 'source' | 'unknown';
+  | 'map'
+  | 'nmap'
+  | 'imap'
+  | 'vmap'
+  | 'noremap'
+  | 'unmap'
+  | 'nunmap'
+  | 'iunmap'
+  | 'vunmap'
+  | 'exmap'
+  | 'set'
+  | 'let'
+  | 'source'
+  | 'unknown';
 
 export interface VimrcCommand {
   type: VimrcCommandType;
@@ -29,15 +40,15 @@ export interface VimrcParseResult {
 
 // ─── Parser ─────────────────────────────────────────────────────────────────
 
-const MAP_COMMANDS = new Set<VimrcCommandType>([
-  'map', 'nmap', 'imap', 'vmap', 'noremap',
-]);
-const UNMAP_COMMANDS = new Set<VimrcCommandType>([
-  'unmap', 'nunmap', 'iunmap', 'vunmap',
-]);
+const MAP_COMMANDS = new Set<VimrcCommandType>(['map', 'nmap', 'imap', 'vmap', 'noremap']);
+const UNMAP_COMMANDS = new Set<VimrcCommandType>(['unmap', 'nunmap', 'iunmap', 'vunmap']);
 const ALL_COMMANDS = new Set<string>([
-  ...MAP_COMMANDS, ...UNMAP_COMMANDS,
-  'exmap', 'set', 'let', 'source',
+  ...MAP_COMMANDS,
+  ...UNMAP_COMMANDS,
+  'exmap',
+  'set',
+  'let',
+  'source',
 ]);
 
 export function parseVimrc(content: string): VimrcParseResult {
@@ -116,8 +127,8 @@ export interface VimSetOption {
 
 export function extractSetOptions(commands: VimrcCommand[]): VimSetOption[] {
   return commands
-    .filter(c => c.type === 'set')
-    .map(c => {
+    .filter((c) => c.type === 'set')
+    .map((c) => {
       const [option] = c.args;
       const eqIdx = option.indexOf('=');
       if (eqIdx >= 0) {

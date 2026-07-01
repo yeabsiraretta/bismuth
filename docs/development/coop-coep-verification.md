@@ -6,9 +6,9 @@
 policy requires that `SharedArrayBuffer` is only available in **cross-origin-isolated**
 contexts, which requires two HTTP response headers:
 
-| Header | Required Value |
-|---|---|
-| `Cross-Origin-Opener-Policy` | `same-origin` |
+| Header                         | Required Value |
+| ------------------------------ | -------------- |
+| `Cross-Origin-Opener-Policy`   | `same-origin`  |
 | `Cross-Origin-Embedder-Policy` | `require-corp` |
 
 When both headers are present and correct, `window.crossOriginIsolated` returns `true`
@@ -34,6 +34,7 @@ Add the headers to `src-tauri/tauri.conf.json` under `app.security`:
 ```
 
 Notes:
+
 - The CSP must include `wasm-unsafe-eval` to allow WebAssembly compilation.
 - `worker-src blob:` is required because ffmpeg.wasm spawns Worker threads from blob URLs.
 - On macOS, WKWebView respects these headers. On Windows, WebView2 also respects them
@@ -75,11 +76,11 @@ All three assertions must pass before proceeding to video work.
 
 ### Platform Results
 
-| Platform | WebView Engine | SharedArrayBuffer | crossOriginIsolated | ffmpeg.wasm loads | Verified By | Date |
-|---|---|---|---|---|---|---|
-| macOS 14+ | WKWebView | [ ] | [ ] | [ ] | | |
-| Windows 11 | WebView2 | [ ] | [ ] | [ ] | | |
-| Linux (Ubuntu 22.04) | WebKitGTK 2.38+ | [ ] | [ ] | [ ] | | |
+| Platform             | WebView Engine  | SharedArrayBuffer | crossOriginIsolated | ffmpeg.wasm loads | Verified By | Date |
+| -------------------- | --------------- | ----------------- | ------------------- | ----------------- | ----------- | ---- |
+| macOS 14+            | WKWebView       | [ ]               | [ ]                 | [ ]               |             |      |
+| Windows 11           | WebView2        | [ ]               | [ ]                 | [ ]               |             |      |
+| Linux (Ubuntu 22.04) | WebKitGTK 2.38+ | [ ]               | [ ]                 | [ ]               |             |      |
 
 Fill in this table with actual results before merging Phase 5.
 
@@ -88,6 +89,7 @@ Fill in this table with actual results before merging Phase 5.
 If any platform fails the `crossOriginIsolated` check:
 
 1. Use the `@ffmpeg/ffmpeg` single-threaded build:
+
    ```typescript
    import { FFmpeg } from '@ffmpeg/ffmpeg';
    const ff = new FFmpeg();

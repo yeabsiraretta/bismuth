@@ -22,12 +22,23 @@ export function abbreviateNumber(n: number): string {
 
 function toSeconds(value: number, unit: string): number {
   switch (unit.toLowerCase()) {
-    case 'ms': case 'milliseconds': return value / 1000;
-    case 's': case 'seconds': return value;
-    case 'm': case 'minutes': return value * 60;
-    case 'h': case 'hours': return value * 3600;
-    case 'd': case 'days': return value * 86400;
-    default: return value;
+    case 'ms':
+    case 'milliseconds':
+      return value / 1000;
+    case 's':
+    case 'seconds':
+      return value;
+    case 'm':
+    case 'minutes':
+      return value * 60;
+    case 'h':
+    case 'hours':
+      return value * 3600;
+    case 'd':
+    case 'days':
+      return value * 86400;
+    default:
+      return value;
   }
 }
 
@@ -55,10 +66,7 @@ export function formatDuration(value: number, unit: string, fmt: string): string
   totalSec %= 3600;
   const m = Math.floor(totalSec / 60);
   const s = Math.floor(totalSec % 60);
-  return fmt
-    .replace(/HH/g, pad(h))
-    .replace(/mm/g, pad(m))
-    .replace(/ss/g, pad(s));
+  return fmt.replace(/HH/g, pad(h)).replace(/mm/g, pad(m)).replace(/ss/g, pad(s));
 }
 
 export function abbreviateDuration(value: number, unit: string): string {
@@ -85,7 +93,7 @@ export function abbreviateDuration(value: number, unit: string): string {
 export function renderPropertyTemplate(
   template: string,
   propertyName: string,
-  propertyValue: unknown,
+  propertyValue: unknown
 ): string {
   const val = String(propertyValue ?? '');
   let result = template;
@@ -110,19 +118,19 @@ export function renderPropertyTemplate(
     /\{\{durationHumanized\s+propertyValue\s+"(\w+)"(?:\s+(true|false))?\}\}/g,
     (_, unit: string, withSuffix: string) => {
       return humanizeDuration(numVal, unit, withSuffix === 'true');
-    },
+    }
   );
   result = result.replace(
     /\{\{durationFormatted\s+propertyValue\s+"(\w+)"\s+"([^"]+)"\}\}/g,
     (_, unit: string, fmt: string) => {
       return formatDuration(numVal, unit, fmt);
-    },
+    }
   );
   result = result.replace(
     /\{\{durationAbbreviated\s+propertyValue\s+"(\w+)"\}\}/g,
     (_, unit: string) => {
       return abbreviateDuration(numVal, unit);
-    },
+    }
   );
 
   return result;

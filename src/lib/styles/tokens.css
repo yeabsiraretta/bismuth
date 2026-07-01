@@ -159,15 +159,15 @@
   --graph-accent: #4a9eff;
 
   /* Canvas inspect mode */
-  --inspect-measure: #F24822;
-  --inspect-highlight: #4A90D9;
-  --inspect-source: #F24822;
-  --inspect-target: #14AE5C;
+  --inspect-measure: #f24822;
+  --inspect-highlight: #4a90d9;
+  --inspect-source: #f24822;
+  --inspect-target: #14ae5c;
 }
 
 /* ========== Light Theme (Default) ========== */
 :root,
-:root[data-theme="light"] {
+:root[data-theme='light'] {
   /* Background colors */
   --background-primary: #ffffff;
   --background-primary-alt: #f8f9fa;
@@ -237,7 +237,7 @@
 }
 
 /* ========== Dark Theme ========== */
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   /* Background colors */
   --background-primary: #1e1e1e;
   --background-primary-alt: #1a1a1a;

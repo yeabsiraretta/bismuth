@@ -1,14 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import {
-  validateValue, coerceValue,
-  missingProperties, isComplete, completionPercent,
+  validateValue,
+  coerceValue,
+  missingProperties,
+  isComplete,
+  completionPercent,
 } from '../services/capture';
 import type { PropertyDefinition } from '../types';
 
 function propDef(overrides: Partial<PropertyDefinition> = {}): PropertyDefinition {
   return {
-    id: 'p1', name: 'test', type: 'number',
-    order: 0, ...overrides,
+    id: 'p1',
+    name: 'test',
+    type: 'number',
+    order: 0,
+    ...overrides,
   };
 }
 
@@ -100,7 +106,12 @@ describe('isComplete', () => {
 
 describe('completionPercent', () => {
   it('returns percentage filled', () => {
-    const defs = [propDef({ name: 'a' }), propDef({ name: 'b' }), propDef({ name: 'c' }), propDef({ name: 'd' })];
+    const defs = [
+      propDef({ name: 'a' }),
+      propDef({ name: 'b' }),
+      propDef({ name: 'c' }),
+      propDef({ name: 'd' }),
+    ];
     expect(completionPercent({ a: 1, b: 2 }, defs)).toBe(50);
   });
 

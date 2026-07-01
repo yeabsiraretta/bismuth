@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { coerceValue, parseLineInlineFields, parseDocumentInlineFields, parseDocumentTasks } from '../inlineFieldParser';
+import {
+  coerceValue,
+  parseLineInlineFields,
+  parseDocumentInlineFields,
+  parseDocumentTasks,
+} from '../inlineFieldParser';
 
 describe('coerceValue', () => {
   it('returns null for empty strings', () => {
@@ -59,7 +64,10 @@ describe('parseLineInlineFields', () => {
   });
 
   it('parses bracket inline fields', () => {
-    const fields = parseLineInlineFields('Some text [status:: active] more text [priority:: high]', 0);
+    const fields = parseLineInlineFields(
+      'Some text [status:: active] more text [priority:: high]',
+      0
+    );
     expect(fields).toHaveLength(2);
     expect(fields[0].key).toBe('status');
     expect(fields[0].value).toBe('active');

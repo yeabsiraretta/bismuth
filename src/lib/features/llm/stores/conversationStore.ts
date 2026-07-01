@@ -39,7 +39,7 @@ export const activeTabId = writable<string>('');
 /** The active conversation tab (derived). */
 export const activeConversation = derived(
   [conversationTabs, activeTabId],
-  ([$tabs, $id]) => $tabs.find(t => t.id === $id) ?? $tabs[0] ?? null,
+  ([$tabs, $id]) => $tabs.find((t) => t.id === $id) ?? $tabs[0] ?? null
 );
 
 /** Messages of the active conversation (derived). */
@@ -59,7 +59,7 @@ export function initConversations(): void {
     activeTabId.set(tab.id);
   } else {
     const currentActive = get(activeTabId);
-    if (!tabs.find(t => t.id === currentActive)) {
+    if (!tabs.find((t) => t.id === currentActive)) {
       activeTabId.set(tabs[0].id);
     }
   }
@@ -70,7 +70,7 @@ export function initConversations(): void {
 /** Create a new conversation tab and switch to it. */
 export function newConversation(title?: string): string {
   const tab = createTab(title);
-  conversationTabs.update(tabs => {
+  conversationTabs.update((tabs) => {
     const next = [...tabs, tab];
     return next.length > MAX_TABS ? next.slice(1) : next;
   });
@@ -82,15 +82,15 @@ export function newConversation(title?: string): string {
 /** Switch to a conversation tab by ID. */
 export function switchConversation(id: string): void {
   const tabs = get(conversationTabs);
-  if (tabs.find(t => t.id === id)) {
+  if (tabs.find((t) => t.id === id)) {
     activeTabId.set(id);
   }
 }
 
 /** Close a conversation tab. If it was the last one, create a fresh tab. */
 export function closeConversation(id: string): void {
-  conversationTabs.update(tabs => {
-    const next = tabs.filter(t => t.id !== id);
+  conversationTabs.update((tabs) => {
+    const next = tabs.filter((t) => t.id !== id);
     if (next.length === 0) {
       const fresh = createTab();
       activeTabId.set(fresh.id);
@@ -109,9 +109,7 @@ export function closeConversation(id: string): void {
 
 /** Rename a conversation tab. */
 export function renameConversation(id: string, title: string): void {
-  conversationTabs.update(tabs =>
-    tabs.map(t => (t.id === id ? { ...t, title } : t)),
-  );
+  conversationTabs.update((tabs) => tabs.map((t) => (t.id === id ? { ...t, title } : t)));
 }
 
 /** Fork the active conversation into a new tab with a copy of current messages. */
@@ -131,7 +129,7 @@ export function forkConversation(): string {
     planMode: conv.planMode,
   };
 
-  conversationTabs.update(tabs => [...tabs, forked]);
+  conversationTabs.update((tabs) => [...tabs, forked]);
   activeTabId.set(forked.id);
   log.info('Conversation forked', { from: conv.id, to: forked.id });
   return forked.id;
@@ -147,8 +145,8 @@ export function addMessageToActive(msg: Omit<AgentMessage, 'id' | 'createdAt'>):
     createdAt: new Date().toISOString(),
   };
 
-  conversationTabs.update(tabs =>
-    tabs.map(t => {
+  conversationTabs.update((tabs) =>
+    tabs.map((t) => {
       if (t.id !== get(activeTabId)) return t;
       const msgs = [...t.messages, full];
       return {
@@ -156,15 +154,15 @@ export function addMessageToActive(msg: Omit<AgentMessage, 'id' | 'createdAt'>):
         messages: msgs.length > MAX_MESSAGES_PER_TAB ? msgs.slice(-MAX_MESSAGES_PER_TAB) : msgs,
         updatedAt: new Date().toISOString(),
       };
-    }),
+    })
   );
   return full;
 }
 
 /** Update the last assistant message (for streaming). */
 export function updateLastAssistantMessage(content: string): void {
-  conversationTabs.update(tabs =>
-    tabs.map(t => {
+  conversationTabs.update((tabs) =>
+    tabs.map((t) => {
       if (t.id !== get(activeTabId)) return t;
       const msgs = [...t.messages];
       for (let i = msgs.length - 1; i >= 0; i--) {
@@ -174,14 +172,14 @@ export function updateLastAssistantMessage(content: string): void {
         }
       }
       return { ...t, messages: msgs };
-    }),
+    })
   );
 }
 
 /** Clear messages in the active conversation. */
 export function clearActiveConversation(): void {
-  conversationTabs.update(tabs =>
-    tabs.map(t => (t.id === get(activeTabId) ? { ...t, messages: [] } : t)),
+  conversationTabs.update((tabs) =>
+    tabs.map((t) => (t.id === get(activeTabId) ? { ...t, messages: [] } : t))
   );
   log.info('Active conversation cleared');
 }
@@ -190,15 +188,15 @@ export function clearActiveConversation(): void {
 
 /** Toggle plan mode for the active conversation. */
 export function togglePlanMode(): void {
-  conversationTabs.update(tabs =>
-    tabs.map(t => (t.id === get(activeTabId) ? { ...t, planMode: !t.planMode } : t)),
+  conversationTabs.update((tabs) =>
+    tabs.map((t) => (t.id === get(activeTabId) ? { ...t, planMode: !t.planMode } : t))
   );
 }
 
 /** Compact: summarize and collapse older messages (keep last 5). */
 export function compactConversation(): void {
-  conversationTabs.update(tabs =>
-    tabs.map(t => {
+  conversationTabs.update((tabs) =>
+    tabs.map((t) => {
       if (t.id !== get(activeTabId) || t.messages.length <= 5) return t;
       const kept = t.messages.slice(-5);
       const summary: AgentMessage = {
@@ -208,7 +206,7 @@ export function compactConversation(): void {
         createdAt: new Date().toISOString(),
       };
       return { ...t, messages: [summary, ...kept] };
-    }),
+    })
   );
   log.info('Conversation compacted');
 }

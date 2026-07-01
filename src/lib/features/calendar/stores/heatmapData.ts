@@ -33,9 +33,9 @@ export interface HeatmapConfig {
 export type HeatmapDataSource = 'events' | 'time-tracked' | 'word-count' | 'custom-field';
 
 export const COLOR_SCHEMES: Record<HeatmapColorScheme, string[]> = {
-  green:  ['#c6e48b', '#7bc96f', '#49af5d', '#2e8840', '#196127'],
-  blue:   ['#8cb9ff', '#69a3ff', '#428bff', '#1872ff', '#0058e2'],
-  red:    ['#ff9e82', '#ff7b55', '#ff4d1a', '#e73400', '#bd2a00'],
+  green: ['#c6e48b', '#7bc96f', '#49af5d', '#2e8840', '#196127'],
+  blue: ['#8cb9ff', '#69a3ff', '#428bff', '#1872ff', '#0058e2'],
+  red: ['#ff9e82', '#ff7b55', '#ff4d1a', '#e73400', '#bd2a00'],
   orange: ['#ffa244', '#fd7f00', '#dd6f00', '#bf6000', '#9b4e00'],
   purple: ['#d4b5ff', '#b88aff', '#9d5fff', '#8234ff', '#6800e0'],
 };
@@ -48,7 +48,9 @@ function loadConfig(): HeatmapConfig {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return { ...defaultConfig(), ...JSON.parse(stored) };
-  } catch { /* fallthrough */ }
+  } catch {
+    /* fallthrough */
+  }
   return defaultConfig();
 }
 
@@ -65,9 +67,12 @@ function defaultConfig(): HeatmapConfig {
 }
 
 export const heatmapConfig = writable<HeatmapConfig>(loadConfig());
-heatmapConfig.subscribe(cfg => {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg)); }
-  catch (e) { log.warn('Failed to persist heatmap config', { error: String(e) }); }
+heatmapConfig.subscribe((cfg) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+  } catch (e) {
+    log.warn('Failed to persist heatmap config', { error: String(e) });
+  }
 });
 
 // ─── Derived heatmap entries ────────────────────────────────────────────────
@@ -106,21 +111,20 @@ export const heatmapEntries = derived(
   [heatmapConfig, eventHeatmapEntries, timeHeatmapEntries],
   ([$cfg, $events, $time]): HeatmapEntry[] => {
     switch ($cfg.dataSource) {
-      case 'events': return $events;
-      case 'time-tracked': return $time;
-      default: return $events;
+      case 'events':
+        return $events;
+      case 'time-tracked':
+        return $time;
+      default:
+        return $events;
     }
-  },
+  }
 );
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 /** Map a raw intensity value to a 0-4 color-level index. */
-export function intensityLevel(
-  value: number,
-  min: number,
-  max: number,
-): number {
+export function intensityLevel(value: number, min: number, max: number): number {
   if (max <= min || value <= min) return 0;
   if (value >= max) return 4;
   const ratio = (value - min) / (max - min);
@@ -131,10 +135,10 @@ export function intensityLevel(
 export function getIntensityRange(
   entries: HeatmapEntry[],
   cfgStart: number,
-  cfgEnd: number,
+  cfgEnd: number
 ): { min: number; max: number } {
   if (entries.length === 0) return { min: 0, max: 1 };
-  const values = entries.map(e => e.intensity);
+  const values = entries.map((e) => e.intensity);
   const min = cfgStart > 0 ? cfgStart : Math.min(...values);
   const max = cfgEnd > 0 ? cfgEnd : Math.max(...values);
   return { min, max: max <= min ? min + 1 : max };

@@ -9,7 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../../..');
 const SRC = resolve(ROOT, 'src/lib');
 
-
 function findSvelteFiles(dir: string): string[] {
   const results: string[] = [];
   try {
@@ -23,7 +22,9 @@ function findSvelteFiles(dir: string): string[] {
         results.push(fullPath);
       }
     }
-  } catch { /* skip */ }
+  } catch {
+    /* skip */
+  }
   return results;
 }
 
@@ -33,7 +34,8 @@ function extractIconNames(line: string): string[] {
 
   // Match name="literal-icon-name" (must contain a hyphen to be an icon name,
   // or be a known single-word icon). Skip variables like name={icon}
-  const pattern = /name=["']([a-z][a-z0-9-]*-[a-z0-9-]+|search|square|circle|type|image|grid|star|box|copy|save|trash|file|edit|home|lock|mail|menu|plus|x|map|tag|list|info|bold|code|link|move|wifi|zap|loader|eye|sun|moon|settings|activity|calendar|monitor|terminal|download|upload|play|layers)["']/g;
+  const pattern =
+    /name=["']([a-z][a-z0-9-]*-[a-z0-9-]+|search|square|circle|type|image|grid|star|box|copy|save|trash|file|edit|home|lock|mail|menu|plus|x|map|tag|list|info|bold|code|link|move|wifi|zap|loader|eye|sun|moon|settings|activity|calendar|monitor|terminal|download|upload|play|layers)["']/g;
   while ((match = pattern.exec(line)) !== null) {
     names.push(match[1]);
   }

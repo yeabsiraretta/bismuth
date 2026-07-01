@@ -33,9 +33,18 @@ const TYPE_MAP: Record<string, CslEntryType> = {
 // ─── LaTeX cleanup ──────────────────────────────────────────────────────────
 
 const LATEX_ACCENTS: Record<string, string> = {
-  '`': '\u0300', "'": '\u0301', '^': '\u0302', '"': '\u0308',
-  '~': '\u0303', '=': '\u0304', '.': '\u0307', 'u': '\u0306',
-  'v': '\u030C', 'H': '\u030B', 'c': '\u0327', 'd': '\u0323',
+  '`': '\u0300',
+  "'": '\u0301',
+  '^': '\u0302',
+  '"': '\u0308',
+  '~': '\u0303',
+  '=': '\u0304',
+  '.': '\u0307',
+  u: '\u0306',
+  v: '\u030C',
+  H: '\u030B',
+  c: '\u0327',
+  d: '\u0323',
 };
 
 function cleanLatex(str: string): string {
@@ -68,19 +77,22 @@ function cleanLatex(str: string): string {
 
 function parseNames(raw: string): CslName[] {
   if (!raw) return [];
-  return raw.split(/\s+and\s+/i).map((name) => {
-    const cleaned = cleanLatex(name.trim());
-    if (!cleaned) return { literal: '' };
-    // "Last, First" format
-    if (cleaned.includes(',')) {
-      const [family, ...rest] = cleaned.split(',');
-      return { family: family.trim(), given: rest.join(',').trim() };
-    }
-    // "First Last" format
-    const parts = cleaned.split(/\s+/);
-    if (parts.length === 1) return { family: parts[0] };
-    return { family: parts[parts.length - 1], given: parts.slice(0, -1).join(' ') };
-  }).filter((n) => n.family || n.given || n.literal);
+  return raw
+    .split(/\s+and\s+/i)
+    .map((name) => {
+      const cleaned = cleanLatex(name.trim());
+      if (!cleaned) return { literal: '' };
+      // "Last, First" format
+      if (cleaned.includes(',')) {
+        const [family, ...rest] = cleaned.split(',');
+        return { family: family.trim(), given: rest.join(',').trim() };
+      }
+      // "First Last" format
+      const parts = cleaned.split(/\s+/);
+      if (parts.length === 1) return { family: parts[0] };
+      return { family: parts[parts.length - 1], given: parts.slice(0, -1).join(' ') };
+    })
+    .filter((n) => n.family || n.given || n.literal);
 }
 
 // ─── Date parsing ───────────────────────────────────────────────────────────
@@ -93,7 +105,10 @@ function parseDate(year?: string, month?: string, day?: string): CslDate | undef
   if (month) {
     const m = parseInt(month, 10);
     if (!isNaN(m)) parts.push(m);
-    if (day) { const d = parseInt(day, 10); if (!isNaN(d)) parts.push(d); }
+    if (day) {
+      const d = parseInt(day, 10);
+      if (!isNaN(d)) parts.push(d);
+    }
   }
   return { 'date-parts': [parts] };
 }
@@ -138,7 +153,8 @@ function tokenizeEntries(bib: string): RawBibEntry[] {
       let value = '';
 
       if (body[vi] === '{') {
-        let d = 1; vi++;
+        let d = 1;
+        vi++;
         const start = vi;
         while (vi < body.length && d > 0) {
           if (body[vi] === '{') d++;

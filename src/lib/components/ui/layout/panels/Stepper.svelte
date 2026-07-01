@@ -23,11 +23,7 @@
       {@const isDisabled = step.state === 'disabled'}
       {@const progress = pct(step)}
 
-      <li
-        class="stepper-item"
-        data-state={step.state ?? 'empty'}
-        data-active={isActive}
-      >
+      <li class="stepper-item" data-state={step.state ?? 'empty'} data-active={isActive}>
         <button
           class="stepper-step"
           aria-expanded={isActive}
@@ -49,7 +45,10 @@
           </span>
           <span class="stepper-label bismuth-body-sm">{step.label}</span>
           {#if step.decisionsTotal}
-            <span class="stepper-count bismuth-caption" aria-label="{step.decisionsComplete ?? 0} of {step.decisionsTotal} complete">
+            <span
+              class="stepper-count bismuth-caption"
+              aria-label="{step.decisionsComplete ?? 0} of {step.decisionsTotal} complete"
+            >
               {step.decisionsComplete ?? 0}/{step.decisionsTotal}
             </span>
           {/if}
@@ -59,7 +58,9 @@
           <ul class="stepper-substeps" role="list">
             {#each step.subSteps as sub}
               <li class="stepper-substep" data-complete={sub.complete}>
-                <span class="sub-indicator" aria-hidden="true">{sub.complete ? '&#10003;' : '&#9675;'}</span>
+                <span class="sub-indicator" aria-hidden="true"
+                  >{sub.complete ? '&#10003;' : '&#9675;'}</span
+                >
                 <span class="bismuth-body-sm">{sub.label}</span>
               </li>
             {/each}
@@ -71,10 +72,19 @@
 </nav>
 
 <style>
-  .stepper { width: 100%; }
-  .stepper-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .stepper {
+    width: 100%;
+  }
+  .stepper-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
-  .stepper-item[data-active="true"] > .stepper-step {
+  .stepper-item[data-active='true'] > .stepper-step {
     background: color-mix(in srgb, var(--interactive-accent) 8%, var(--background-primary));
     border-radius: var(--radius-s);
   }
@@ -93,44 +103,90 @@
     transition: background var(--transition-fast, 150ms ease);
   }
 
-  .stepper-step:hover:not(:disabled) { background: var(--background-modifier-hover); }
-  .stepper-step:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
-  .stepper-step:disabled { cursor: not-allowed; opacity: 0.5; }
+  .stepper-step:hover:not(:disabled) {
+    background: var(--background-modifier-hover);
+  }
+  .stepper-step:focus-visible {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 2px;
+  }
+  .stepper-step:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 
   .stepper-indicator {
-    width: 16px; height: 16px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .indicator-ring {
-    width: 14px; height: 14px; border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     display: block;
   }
 
   .indicator-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--border-color); display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-color);
+    display: block;
   }
 
-  .indicator-icon { font-size: var(--font-ui-smaller); color: var(--interactive-success, var(--status-added)); }
+  .indicator-icon {
+    font-size: var(--font-ui-smaller);
+    color: var(--interactive-success, var(--status-added));
+  }
 
-  .stepper-item[data-state="complete"] .indicator-icon { color: var(--status-added); }
-  .stepper-item[data-state="in-progress"] .indicator-dot { background: var(--interactive-accent); }
+  .stepper-item[data-state='complete'] .indicator-icon {
+    color: var(--status-added);
+  }
+  .stepper-item[data-state='in-progress'] .indicator-dot {
+    background: var(--interactive-accent);
+  }
 
-  .stepper-label { flex: 1; color: var(--text-normal); }
-  .stepper-step:disabled .stepper-label { color: var(--text-muted); }
+  .stepper-label {
+    flex: 1;
+    color: var(--text-normal);
+  }
+  .stepper-step:disabled .stepper-label {
+    color: var(--text-muted);
+  }
 
-  .stepper-count { color: var(--text-muted); flex-shrink: 0; }
+  .stepper-count {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
 
   .stepper-substeps {
-    list-style: none; margin: 0; padding: 4px 0 4px 24px; display: flex; flex-direction: column; gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0 4px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .stepper-substep {
-    display: flex; align-items: center; gap: 6px;
-    color: var(--text-muted); padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    padding: 3px 0;
   }
 
-  .stepper-substep[data-complete="true"] { color: var(--text-normal); }
-  .sub-indicator { font-size: var(--font-ui-xs); width: 12px; text-align: center; }
+  .stepper-substep[data-complete='true'] {
+    color: var(--text-normal);
+  }
+  .sub-indicator {
+    font-size: var(--font-ui-xs);
+    width: 12px;
+    text-align: center;
+  }
 </style>

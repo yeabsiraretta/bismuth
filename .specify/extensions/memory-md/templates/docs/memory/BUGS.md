@@ -3,7 +3,9 @@
 This file stores durable implementation bug patterns and their mitigations. For systemic, high-risk, or governance-level patterns, see `.specify/memory/BUGS.md`.
 
 ## Template
+
 ### YYYY-MM-DD - Bug / Failure Pattern
+
 **Status**
 Active | Monitored | Retired
 

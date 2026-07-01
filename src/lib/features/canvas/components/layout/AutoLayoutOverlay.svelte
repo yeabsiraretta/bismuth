@@ -4,7 +4,14 @@
   import SizingToggle from './SizingToggle.svelte';
 
   export let layout: AutoLayout;
-  export let children: Array<{ id: string; x: number; y: number; width: number; height: number; layoutChild?: LayoutChild }> = [];
+  export let children: Array<{
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    layoutChild?: LayoutChild;
+  }> = [];
   export let selected: boolean = false;
   export let scale: number = 1;
   export let onSpacingChange: ((value: number) => void) | undefined = undefined;
@@ -22,7 +29,10 @@
         <SpacingHandle
           value={gap}
           direction={isHorizontal ? 'horizontal' : 'vertical'}
-          position={{ x: (isHorizontal ? child.x + child.width : child.x) * scale, y: (isHorizontal ? child.y : child.y + child.height) * scale }}
+          position={{
+            x: (isHorizontal ? child.x + child.width : child.x) * scale,
+            y: (isHorizontal ? child.y : child.y + child.height) * scale,
+          }}
           onChange={onSpacingChange}
         />
       {/if}
@@ -49,18 +59,43 @@
     {/if}
 
     <!-- Padding visualization -->
-    <div class="padding-viz" style="
+    <div
+      class="padding-viz"
+      style="
       border-top: {(layout.padding?.top ?? 0) * scale}px solid rgba(74, 144, 226, 0.1);
       border-right: {(layout.padding?.right ?? 0) * scale}px solid rgba(74, 144, 226, 0.1);
       border-bottom: {(layout.padding?.bottom ?? 0) * scale}px solid rgba(74, 144, 226, 0.1);
       border-left: {(layout.padding?.left ?? 0) * scale}px solid rgba(74, 144, 226, 0.1);
-    "></div>
+    "
+    ></div>
   </div>
 {/if}
 
 <style>
-  .auto-layout-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 30; }
-  .sizing-handle { position: absolute; pointer-events: all; transform: translateX(-50%); }
-  .wrap-indicator { position: absolute; top: -20px; right: 0; font-size: 10px; background: var(--accent); color: white; padding: 1px 4px; border-radius: 2px; }
-  .padding-viz { position: absolute; inset: 0; pointer-events: none; }
+  .auto-layout-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+  }
+  .sizing-handle {
+    position: absolute;
+    pointer-events: all;
+    transform: translateX(-50%);
+  }
+  .wrap-indicator {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    font-size: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+  .padding-viz {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 </style>

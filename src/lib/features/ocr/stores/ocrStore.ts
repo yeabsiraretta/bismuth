@@ -17,7 +17,10 @@ export const activeJobId = writable<string | null>(null);
 
 // ─── Derived ──────────────────────────────────────────────────────────────────
 
-export const ocrEnabled = derived(settings, ($s) => ($s as { ocrEnabled?: boolean }).ocrEnabled ?? false);
+export const ocrEnabled = derived(
+  settings,
+  ($s) => ($s as { ocrEnabled?: boolean }).ocrEnabled ?? false
+);
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
@@ -27,9 +30,7 @@ export function addJob(job: OcrJob): void {
 }
 
 export function updateJob(id: string, patch: Partial<OcrJob>): void {
-  activeJobs.update((jobs) =>
-    jobs.map((j) => (j.id === id ? { ...j, ...patch } : j))
-  );
+  activeJobs.update((jobs) => jobs.map((j) => (j.id === id ? { ...j, ...patch } : j)));
   log.debug('[ocrStore] updateJob', { id });
 }
 
@@ -40,8 +41,6 @@ export function removeJob(id: string): void {
 }
 
 export function clearCompleted(): void {
-  activeJobs.update((jobs) =>
-    jobs.filter((j) => j.status !== 'complete' && j.status !== 'error')
-  );
+  activeJobs.update((jobs) => jobs.filter((j) => j.status !== 'complete' && j.status !== 'error'));
   log.info('[ocrStore] clearCompleted');
 }

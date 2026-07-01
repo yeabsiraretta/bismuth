@@ -25,7 +25,7 @@ export function getRecentVaults(): RecentVault[] {
 
 /** Remove a vault from the recent list. Does NOT delete files on disk. */
 export function removeFromRecentVaults(path: string): void {
-  const recents = getRecentVaults().filter(v => v.path !== path);
+  const recents = getRecentVaults().filter((v) => v.path !== path);
   localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recents));
   log.info('Removed vault from recents');
 }
@@ -34,9 +34,7 @@ export function removeFromRecentVaults(path: string): void {
 export function renameVaultDisplayName(path: string, newName: string): void {
   const trimmed = newName.trim();
   if (!trimmed) return;
-  const recents = getRecentVaults().map(v =>
-    v.path === path ? { ...v, name: trimmed } : v
-  );
+  const recents = getRecentVaults().map((v) => (v.path === path ? { ...v, name: trimmed } : v));
   localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recents));
   log.info('Renamed vault display name', { newName: trimmed });
 }

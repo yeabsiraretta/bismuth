@@ -14,8 +14,14 @@
   export let onDragEnd: (() => void) | undefined = undefined;
 
   let isDragging = false;
-  function handleDragStart(e: DragEvent) { isDragging = true; onDragStart?.(e); }
-  function handleDragEnd() { isDragging = false; onDragEnd?.(); }
+  function handleDragStart(e: DragEvent) {
+    isDragging = true;
+    onDragStart?.(e);
+  }
+  function handleDragEnd() {
+    isDragging = false;
+    onDragEnd?.();
+  }
 </script>
 
 <button

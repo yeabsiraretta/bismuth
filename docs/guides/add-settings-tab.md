@@ -44,13 +44,7 @@ Open `src/lib/stores/settings/settingsState.ts`. Find the `SettingsTab` union ty
 
 ```typescript
 export type SettingsTab =
-  | 'general'
-  | 'editor'
-  | 'appearance'
-  | 'vault'
-  | 'shortcuts'
-  | 'updates'
-  | 'my-feature'; // add this
+  'general' | 'editor' | 'appearance' | 'vault' | 'shortcuts' | 'updates' | 'my-feature'; // add this
 ```
 
 If `settingsState.ts` exposes a default tab constant, leave it unchanged — your new tab does not need to be the default.
@@ -87,9 +81,7 @@ Minimal component scaffold:
   <h3 class="settings-section-title">My Feature</h3>
 
   <div class="settings-row">
-    <label for="my-feature-enabled" class="settings-label">
-      Enable My Feature
-    </label>
+    <label for="my-feature-enabled" class="settings-label"> Enable My Feature </label>
     <input
       id="my-feature-enabled"
       type="checkbox"
@@ -99,9 +91,7 @@ Minimal component scaffold:
   </div>
 
   <div class="settings-row">
-    <label for="my-feature-threshold" class="settings-label">
-      Threshold
-    </label>
+    <label for="my-feature-threshold" class="settings-label"> Threshold </label>
     <input
       id="my-feature-threshold"
       type="range"

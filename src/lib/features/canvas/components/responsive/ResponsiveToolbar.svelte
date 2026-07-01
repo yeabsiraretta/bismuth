@@ -13,7 +13,11 @@
 {#if active}
   <div class="responsive-toolbar">
     <BreakpointBar bind:activeBreakpoint />
-    <span class="width-display">{activeBreakpoint ? `${activeBreakpoint.minWidth}-${activeBreakpoint.maxWidth}px` : 'Custom'}</span>
+    <span class="width-display"
+      >{activeBreakpoint
+        ? `${activeBreakpoint.minWidth}-${activeBreakpoint.maxWidth}px`
+        : 'Custom'}</span
+    >
   </div>
 {/if}
 

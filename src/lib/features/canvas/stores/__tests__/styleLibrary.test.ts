@@ -44,7 +44,7 @@ describe('styleLibrary', () => {
       applyStyle('el-1', style.id);
       applyStyle('el-1', style.id);
       const linked = getLinkedElements(style.id);
-      expect(linked.filter(id => id === 'el-1')).toHaveLength(1);
+      expect(linked.filter((id) => id === 'el-1')).toHaveLength(1);
     });
 
     it('should detach an element from a style', () => {
@@ -60,14 +60,14 @@ describe('styleLibrary', () => {
     it('should update style properties', () => {
       const style = createStyle('Test', 'fill', { color: '#000' });
       updateStyle(style.id, { color: '#FFF' });
-      const updated = get(sharedStyles).find(s => s.id === style.id);
+      const updated = get(sharedStyles).find((s) => s.id === style.id);
       expect(updated?.properties['color']).toBe('#FFF');
     });
 
     it('should update the updatedAt timestamp', () => {
       const style = createStyle('Test', 'fill', {});
       updateStyle(style.id, { color: '#123' });
-      const updated = get(sharedStyles).find(s => s.id === style.id);
+      const updated = get(sharedStyles).find((s) => s.id === style.id);
       expect(updated?.updatedAt).toBeDefined();
       expect(updated?.updatedAt).not.toBe('');
     });

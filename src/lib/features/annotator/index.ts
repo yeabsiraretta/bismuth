@@ -51,13 +51,7 @@ export {
   deserializeAnnotations,
   resolveTargetType,
 } from './services/annotationMarkdown';
-export {
-  openPdf,
-  renderPage,
-  getPageText,
-  searchText,
-  closePdf,
-} from './services/pdfService';
+export { openPdf, renderPage, getPageText, searchText, closePdf } from './services/pdfService';
 export {
   parsePdfLink,
   findPdfLinks,

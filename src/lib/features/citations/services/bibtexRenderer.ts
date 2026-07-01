@@ -48,17 +48,17 @@ function escapeHtml(str: string): string {
 function typeLabel(type: string): string {
   const labels: Record<string, string> = {
     'article-journal': 'Article',
-    'book': 'Book',
-    'chapter': 'Book Chapter',
+    book: 'Book',
+    chapter: 'Book Chapter',
     'paper-conference': 'Conference Paper',
-    'thesis': 'Thesis',
-    'report': 'Report',
-    'webpage': 'Web Page',
-    'dataset': 'Dataset',
-    'software': 'Software',
-    'manuscript': 'Manuscript',
-    'patent': 'Patent',
-    'article': 'Article',
+    thesis: 'Thesis',
+    report: 'Report',
+    webpage: 'Web Page',
+    dataset: 'Dataset',
+    software: 'Software',
+    manuscript: 'Manuscript',
+    patent: 'Patent',
+    article: 'Article',
   };
   return labels[type] || type.charAt(0).toUpperCase() + type.slice(1);
 }
@@ -103,10 +103,11 @@ function renderEntry(entry: CslEntry): string {
   if (entry.ISBN) fields.push(renderField('ISBN', entry.ISBN));
   if (entry.URL && entry.URL !== doiUrl) fields.push(renderLinkField('URL', entry.URL));
   if (entry.abstract) {
-    const truncated = entry.abstract.length > 250
-      ? entry.abstract.slice(0, 250) + '...'
-      : entry.abstract;
-    fields.push(`<div class="bib-abstract"><span class="bib-label">Abstract:</span> <span class="bib-value bib-abstract-text">${escapeHtml(truncated)}</span></div>`);
+    const truncated =
+      entry.abstract.length > 250 ? entry.abstract.slice(0, 250) + '...' : entry.abstract;
+    fields.push(
+      `<div class="bib-abstract"><span class="bib-label">Abstract:</span> <span class="bib-value bib-abstract-text">${escapeHtml(truncated)}</span></div>`
+    );
   }
   if (entry.keyword) fields.push(renderKeywords(entry.keyword));
 
@@ -115,7 +116,9 @@ function renderEntry(entry: CslEntry): string {
 
 function renderKeywords(keywords: string): string {
   const tags = keywords.split(/[,;]\s*/).filter(Boolean);
-  const chips = tags.map(t => `<span class="bib-keyword">${escapeHtml(t.trim())}</span>`).join(' ');
+  const chips = tags
+    .map((t) => `<span class="bib-keyword">${escapeHtml(t.trim())}</span>`)
+    .join(' ');
   return `<div class="bib-field bib-keywords"><span class="bib-label">Keywords:</span> ${chips}</div>`;
 }
 

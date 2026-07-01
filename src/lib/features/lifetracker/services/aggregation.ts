@@ -3,8 +3,14 @@
  * trend calculation, moving averages, list value counting.
  */
 import type {
-  DataPoint, AggregatedPoint, HeatmapCell, TrendInfo,
-  AggregationMethod, TimeGranularity, ColorScheme, FirstDayOfWeek,
+  DataPoint,
+  AggregatedPoint,
+  HeatmapCell,
+  TrendInfo,
+  AggregationMethod,
+  TimeGranularity,
+  ColorScheme,
+  FirstDayOfWeek,
 } from '../types';
 import { COLOR_SCHEMES } from '../types';
 
@@ -13,12 +19,18 @@ import { COLOR_SCHEMES } from '../types';
 function aggregate(values: number[], method: AggregationMethod): number {
   if (values.length === 0) return 0;
   switch (method) {
-    case 'sum': return values.reduce((a, b) => a + b, 0);
-    case 'average': return values.reduce((a, b) => a + b, 0) / values.length;
-    case 'count': return values.length;
-    case 'min': return Math.min(...values);
-    case 'max': return Math.max(...values);
-    case 'latest': return values[values.length - 1];
+    case 'sum':
+      return values.reduce((a, b) => a + b, 0);
+    case 'average':
+      return values.reduce((a, b) => a + b, 0) / values.length;
+    case 'count':
+      return values.length;
+    case 'min':
+      return Math.min(...values);
+    case 'max':
+      return Math.max(...values);
+    case 'latest':
+      return values[values.length - 1];
   }
 }
 
@@ -27,16 +39,20 @@ function aggregate(values: number[], method: AggregationMethod): number {
 function bucketKey(date: string, granularity: TimeGranularity): string {
   const d = new Date(date);
   switch (granularity) {
-    case 'daily': return date;
+    case 'daily':
+      return date;
     case 'weekly': {
       const day = d.getDay();
       const diff = day === 0 ? 6 : day - 1;
       d.setDate(d.getDate() - diff);
       return d.toISOString().slice(0, 10);
     }
-    case 'monthly': return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    case 'quarterly': return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`;
-    case 'yearly': return `${d.getFullYear()}`;
+    case 'monthly':
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    case 'quarterly':
+      return `${d.getFullYear()}-Q${Math.floor(d.getMonth() / 3) + 1}`;
+    case 'yearly':
+      return `${d.getFullYear()}`;
   }
 }
 
@@ -45,7 +61,7 @@ function bucketKey(date: string, granularity: TimeGranularity): string {
 export function aggregateTimeSeries(
   points: DataPoint[],
   granularity: TimeGranularity,
-  method: AggregationMethod,
+  method: AggregationMethod
 ): AggregatedPoint[] {
   const buckets = new Map<string, number[]>();
 
@@ -81,7 +97,8 @@ export function movingAverage(points: AggregatedPoint[], window: number): Aggreg
 // ─── Trend calculation ───────────────────────────────────────────────────────
 
 export function computeTrend(points: AggregatedPoint[], periodSize = 7): TrendInfo {
-  if (points.length < periodSize * 2) return { direction: 'flat', percentChange: 0, arrow: '\u2192' };
+  if (points.length < periodSize * 2)
+    return { direction: 'flat', percentChange: 0, arrow: '\u2192' };
 
   const recent = points.slice(-periodSize);
   const previous = points.slice(-periodSize * 2, -periodSize);
@@ -89,7 +106,12 @@ export function computeTrend(points: AggregatedPoint[], periodSize = 7): TrendIn
   const recentAvg = recent.reduce((s, p) => s + p.value, 0) / recent.length;
   const prevAvg = previous.reduce((s, p) => s + p.value, 0) / previous.length;
 
-  if (prevAvg === 0) return { direction: recentAvg > 0 ? 'up' : 'flat', percentChange: 0, arrow: recentAvg > 0 ? '\u2191' : '\u2192' };
+  if (prevAvg === 0)
+    return {
+      direction: recentAvg > 0 ? 'up' : 'flat',
+      percentChange: 0,
+      arrow: recentAvg > 0 ? '\u2191' : '\u2192',
+    };
 
   const pct = ((recentAvg - prevAvg) / Math.abs(prevAvg)) * 100;
   const rounded = Math.round(pct * 10) / 10;
@@ -108,13 +130,13 @@ export function buildHeatmap(
   points: DataPoint[],
   method: AggregationMethod,
   firstDay: FirstDayOfWeek,
-  weeks = 52,
+  weeks = 52
 ): HeatmapCell[] {
   const aggregated = aggregateTimeSeries(points, 'daily', method);
-  const values = aggregated.map(p => p.value);
+  const values = aggregated.map((p) => p.value);
   const maxVal = values.length > 0 ? Math.max(...values) : 1;
 
-  const byDate = new Map(aggregated.map(p => [p.date, p.value]));
+  const byDate = new Map(aggregated.map((p) => [p.date, p.value]));
 
   const today = new Date();
   const cells: HeatmapCell[] = [];
@@ -129,7 +151,8 @@ export function buildHeatmap(
     const weekIndex = Math.floor((totalDays - 1 - i) / 7);
     const value = byDate.get(dateStr) ?? 0;
     const ratio = maxVal > 0 ? value / maxVal : 0;
-    const level: HeatmapCell['level'] = value === 0 ? 0 : ratio < 0.25 ? 1 : ratio < 0.5 ? 2 : ratio < 0.75 ? 3 : 4;
+    const level: HeatmapCell['level'] =
+      value === 0 ? 0 : ratio < 0.25 ? 1 : ratio < 0.5 ? 2 : ratio < 0.75 ? 3 : 4;
 
     cells.push({ date: dateStr, value, level, dayOfWeek, weekIndex });
   }
@@ -161,7 +184,7 @@ export function countListValues(points: DataPoint[]): { label: string; count: nu
 
 export function detectScale(points: AggregatedPoint[]): { min: number; max: number } {
   if (points.length === 0) return { min: 0, max: 100 };
-  const values = points.map(p => p.value);
+  const values = points.map((p) => p.value);
   const min = Math.min(...values);
   const max = Math.max(...values);
   const padding = (max - min) * 0.1 || 1;
@@ -173,10 +196,15 @@ export function detectScale(points: AggregatedPoint[]): { min: number; max: numb
 export function formatDateLabel(date: string, granularity: TimeGranularity): string {
   const d = new Date(date);
   switch (granularity) {
-    case 'daily': return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    case 'weekly': return `W${Math.ceil(d.getDate() / 7)}`;
-    case 'monthly': return d.toLocaleDateString('en-US', { month: 'short' });
-    case 'quarterly': return `Q${Math.floor(d.getMonth() / 3) + 1}`;
-    case 'yearly': return `${d.getFullYear()}`;
+    case 'daily':
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    case 'weekly':
+      return `W${Math.ceil(d.getDate() / 7)}`;
+    case 'monthly':
+      return d.toLocaleDateString('en-US', { month: 'short' });
+    case 'quarterly':
+      return `Q${Math.floor(d.getMonth() / 3) + 1}`;
+    case 'yearly':
+      return `${d.getFullYear()}`;
   }
 }

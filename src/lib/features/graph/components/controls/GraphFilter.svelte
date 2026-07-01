@@ -2,7 +2,12 @@
   import Icon from '@/components/icons/Icon.svelte';
   import { toggleArrayItem, buildFilterState, getDefaultFilterState } from './graphFilterLogic';
 
-  export let onFilter: (detail: { tags: string[]; types: string[]; folder: string; depth: number }) => void = () => {};
+  export let onFilter: (detail: {
+    tags: string[];
+    types: string[];
+    folder: string;
+    depth: number;
+  }) => void = () => {};
   export let selectedTags: string[] = [];
   export let selectedTypes: string[] = [];
   export let folderFilter: string = '';
@@ -14,16 +19,31 @@
   let showTagDropdown = false;
   let showTypeDropdown = false;
 
-  function emitFilter() { onFilter(buildFilterState(selectedTags, selectedTypes, folderFilter, linkDepth)); }
+  function emitFilter() {
+    onFilter(buildFilterState(selectedTags, selectedTypes, folderFilter, linkDepth));
+  }
 
-  function toggleTag(tag: string) { selectedTags = toggleArrayItem(selectedTags, tag); emitFilter(); }
-  function toggleType(type: string) { selectedTypes = toggleArrayItem(selectedTypes, type); emitFilter(); }
-  function updateFolderFilter() { emitFilter(); }
-  function updateDepth() { emitFilter(); }
+  function toggleTag(tag: string) {
+    selectedTags = toggleArrayItem(selectedTags, tag);
+    emitFilter();
+  }
+  function toggleType(type: string) {
+    selectedTypes = toggleArrayItem(selectedTypes, type);
+    emitFilter();
+  }
+  function updateFolderFilter() {
+    emitFilter();
+  }
+  function updateDepth() {
+    emitFilter();
+  }
 
   function clearFilters() {
     const d = getDefaultFilterState();
-    selectedTags = d.tags; selectedTypes = d.types; folderFilter = d.folder; linkDepth = d.depth;
+    selectedTags = d.tags;
+    selectedTypes = d.types;
+    folderFilter = d.folder;
+    linkDepth = d.depth;
     onFilter(d);
   }
 </script>

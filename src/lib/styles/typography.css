@@ -8,7 +8,8 @@
   /* Font Families
    * --font-sans is overridden at runtime by settings store applyCSS()
    * when user selects a custom font. This is the default fallback. */
-  --font-sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+  --font-sans:
+    'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
   --font-serif: 'Georgia', 'Times New Roman', serif;
@@ -608,27 +609,39 @@ abbr[title] {
     /* 15px on mobile */
   }
 
-  .cm-editor h1, .editor-content h1, .markdown-content h1 {
+  .cm-editor h1,
+  .editor-content h1,
+  .markdown-content h1 {
     font-size: var(--text-3xl);
   }
 
-  .cm-editor h2, .editor-content h2, .markdown-content h2 {
+  .cm-editor h2,
+  .editor-content h2,
+  .markdown-content h2 {
     font-size: var(--text-2xl);
   }
 
-  .cm-editor h3, .editor-content h3, .markdown-content h3 {
+  .cm-editor h3,
+  .editor-content h3,
+  .markdown-content h3 {
     font-size: var(--text-xl);
   }
 
-  .cm-editor h4, .editor-content h4, .markdown-content h4 {
+  .cm-editor h4,
+  .editor-content h4,
+  .markdown-content h4 {
     font-size: var(--text-lg);
   }
 
-  .cm-editor h5, .editor-content h5, .markdown-content h5 {
+  .cm-editor h5,
+  .editor-content h5,
+  .markdown-content h5 {
     font-size: var(--text-base);
   }
 
-  .cm-editor h6, .editor-content h6, .markdown-content h6 {
+  .cm-editor h6,
+  .editor-content h6,
+  .markdown-content h6 {
     font-size: var(--text-sm);
   }
 }
@@ -640,27 +653,39 @@ abbr[title] {
     color: #000;
   }
 
-  .cm-editor h1, .editor-content h1, .markdown-content h1 {
+  .cm-editor h1,
+  .editor-content h1,
+  .markdown-content h1 {
     font-size: 24pt;
   }
 
-  .cm-editor h2, .editor-content h2, .markdown-content h2 {
+  .cm-editor h2,
+  .editor-content h2,
+  .markdown-content h2 {
     font-size: 20pt;
   }
 
-  .cm-editor h3, .editor-content h3, .markdown-content h3 {
+  .cm-editor h3,
+  .editor-content h3,
+  .markdown-content h3 {
     font-size: 16pt;
   }
 
-  .cm-editor h4, .editor-content h4, .markdown-content h4 {
+  .cm-editor h4,
+  .editor-content h4,
+  .markdown-content h4 {
     font-size: 14pt;
   }
 
-  .cm-editor h5, .editor-content h5, .markdown-content h5 {
+  .cm-editor h5,
+  .editor-content h5,
+  .markdown-content h5 {
     font-size: 12pt;
   }
 
-  .cm-editor h6, .editor-content h6, .markdown-content h6 {
+  .cm-editor h6,
+  .editor-content h6,
+  .markdown-content h6 {
     font-size: 10pt;
   }
 
@@ -701,19 +726,64 @@ abbr[title] {
  */
 
 /* Heading scale — structural hierarchy */
-.bismuth-heading-xl  { font-size: var(--font-size-3xl); font-weight: var(--font-semibold); line-height: var(--leading-tight); }
-.bismuth-heading-lg  { font-size: var(--font-size-2xl); font-weight: var(--font-semibold); line-height: var(--leading-tight); }
-.bismuth-heading-md  { font-size: var(--font-size-xl);  font-weight: var(--font-semibold); line-height: var(--leading-snug); }
-.bismuth-heading-sm  { font-size: var(--font-size-lg);  font-weight: var(--font-semibold); line-height: var(--leading-normal); }
+.bismuth-heading-xl {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+}
+.bismuth-heading-lg {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-tight);
+}
+.bismuth-heading-md {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-snug);
+}
+.bismuth-heading-sm {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-semibold);
+  line-height: var(--leading-normal);
+}
 
 /* Body scale — content text */
-.bismuth-body        { font-size: var(--font-size-md);  line-height: var(--leading-relaxed); }
-.bismuth-body-sm     { font-size: var(--font-size-sm);  line-height: var(--leading-normal); }
-.bismuth-body-code   { font-size: var(--font-size-sm);  font-family: var(--font-mono); }
-.bismuth-caption     { font-size: var(--font-size-xs);  color: var(--text-muted); line-height: var(--leading-normal); }
+.bismuth-body {
+  font-size: var(--font-size-md);
+  line-height: var(--leading-relaxed);
+}
+.bismuth-body-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--leading-normal);
+}
+.bismuth-body-code {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+}
+.bismuth-caption {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  line-height: var(--leading-normal);
+}
 
 /* Overflow utilities — apply only when content breaks its bounding box */
-.bismuth-truncate    { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bismuth-clamp-2     { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.bismuth-clamp-3     { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.bismuth-nowrap      { white-space: nowrap; }
+.bismuth-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bismuth-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bismuth-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bismuth-nowrap {
+  white-space: nowrap;
+}

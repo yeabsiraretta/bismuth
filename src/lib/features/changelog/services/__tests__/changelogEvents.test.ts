@@ -51,7 +51,7 @@ describe('subscribeChangelogEvent', () => {
     expect(handler).not.toHaveBeenCalled();
     expect(log.warn).toHaveBeenCalledWith(
       'changelogEvents: unexpected payload, discarding',
-      expect.objectContaining({ eventName: 'vault://file-deleted' }),
+      expect.objectContaining({ eventName: 'vault://file-deleted' })
     );
   });
 
@@ -81,8 +81,11 @@ describe('subscribeChangelogEvent', () => {
 
   it('unsubscribe is safe to call before listen resolves', async () => {
     let resolvePromise!: (fn: () => void) => void;
-    (listen as ReturnType<typeof vi.fn>).mockImplementation(() =>
-      new Promise((res) => { resolvePromise = res; })
+    (listen as ReturnType<typeof vi.fn>).mockImplementation(
+      () =>
+        new Promise((res) => {
+          resolvePromise = res;
+        })
     );
     const unsub = subscribeChangelogEvent('vault://file-created', vi.fn());
     const unsubPromise = unsub();

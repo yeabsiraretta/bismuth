@@ -12,12 +12,23 @@
   import { openNote as navOpenNote } from '@/appNavigation';
   import { loadGraphSession, saveGraphSession } from '../stores/graphSession';
   import {
-    createController, render as ctrlRender, loadGraphData as ctrlLoad,
-    initializeSimulation as ctrlInitSim, startWarmup,
-    handleClick as ctrlClick, handleContextMenu as ctrlCtxMenu, handleContextAction,
-    applyFilterUpdate, fitToView as ctrlFitToView, resetView as ctrlResetView,
-    handleGraphMouseDown, handleGraphMouseMove, handleGraphMouseUp,
-    handleGraphWheel, handleGraphKeyDown, type GraphViewController,
+    createController,
+    render as ctrlRender,
+    loadGraphData as ctrlLoad,
+    initializeSimulation as ctrlInitSim,
+    startWarmup,
+    handleClick as ctrlClick,
+    handleContextMenu as ctrlCtxMenu,
+    handleContextAction,
+    applyFilterUpdate,
+    fitToView as ctrlFitToView,
+    resetView as ctrlResetView,
+    handleGraphMouseDown,
+    handleGraphMouseMove,
+    handleGraphMouseUp,
+    handleGraphWheel,
+    handleGraphKeyDown,
+    type GraphViewController,
   } from './view/graphViewController';
 
   // Restore session on mount
@@ -50,52 +61,179 @@
   // Restore camera state after first render
   let sessionRestored = false;
 
-  function toggleFilter() { filterOpen = !filterOpen; if (filterOpen) settingsOpen = false; }
-  function toggleSettings() { settingsOpen = !settingsOpen; if (settingsOpen) filterOpen = false; }
-  function fp() { return { searchQuery, showOrphans: settings.showOrphans, isLocal, centerNode, depth, tags: filterTags, types: filterTypes, folder: filterFolder, hiddenTags: $hiddenTags, width, height }; }
-  function doRender() { ctrl = ctrlRender(ctx, canvasEl, ctrl, settings, colorGroups, width, height); }
-  function syncCtrl(c: GraphViewController) { ctrl = c; }
+  function toggleFilter() {
+    filterOpen = !filterOpen;
+    if (filterOpen) settingsOpen = false;
+  }
+  function toggleSettings() {
+    settingsOpen = !settingsOpen;
+    if (settingsOpen) filterOpen = false;
+  }
+  function fp() {
+    return {
+      searchQuery,
+      showOrphans: settings.showOrphans,
+      isLocal,
+      centerNode,
+      depth,
+      tags: filterTags,
+      types: filterTypes,
+      folder: filterFolder,
+      hiddenTags: $hiddenTags,
+      width,
+      height,
+    };
+  }
+  function doRender() {
+    ctrl = ctrlRender(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
+  }
+  function syncCtrl(c: GraphViewController) {
+    ctrl = c;
+  }
 
   async function loadData() {
     ctrl = await ctrlLoad(ctx, canvasEl, ctrl, settings, colorGroups, fp(), syncCtrl);
-    if (!sessionRestored && (session.offsetX !== 0 || session.offsetY !== 0 || session.scale !== 1)) {
-      ctrl = { ...ctrl, rState: { ...ctrl.rState, offsetX: session.offsetX, offsetY: session.offsetY, scale: session.scale, selectedNode: session.selectedNode } };
+    if (
+      !sessionRestored &&
+      (session.offsetX !== 0 || session.offsetY !== 0 || session.scale !== 1)
+    ) {
+      ctrl = {
+        ...ctrl,
+        rState: {
+          ...ctrl.rState,
+          offsetX: session.offsetX,
+          offsetY: session.offsetY,
+          scale: session.scale,
+          selectedNode: session.selectedNode,
+        },
+      };
       doRender();
     }
     sessionRestored = true;
   }
-  async function initSim() { ctrl = await ctrlInitSim(ctx, canvasEl, ctrl, settings, colorGroups, fp(), syncCtrl); }
+  async function initSim() {
+    ctrl = await ctrlInitSim(ctx, canvasEl, ctrl, settings, colorGroups, fp(), syncCtrl);
+  }
 
-  $: if (ctrl.graphData.nodes.length > 0 && !ctrl.initializing) { ctrl = applyFilterUpdate(ctrl, fp()); doRender(); }
+  $: if (ctrl.graphData.nodes.length > 0 && !ctrl.initializing) {
+    ctrl = applyFilterUpdate(ctrl, fp());
+    doRender();
+  }
 
   let saveTimer: ReturnType<typeof setTimeout> | null = null;
   function persistSession() {
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       saveGraphSession({
-        offsetX: ctrl.rState.offsetX, offsetY: ctrl.rState.offsetY, scale: ctrl.rState.scale,
-        selectedNode: ctrl.rState.selectedNode, isLocal, centerNode, depth, searchQuery,
-        filterTags, filterTypes, filterFolder, filterDepth, settings, colorGroups,
+        offsetX: ctrl.rState.offsetX,
+        offsetY: ctrl.rState.offsetY,
+        scale: ctrl.rState.scale,
+        selectedNode: ctrl.rState.selectedNode,
+        isLocal,
+        centerNode,
+        depth,
+        searchQuery,
+        filterTags,
+        filterTypes,
+        filterFolder,
+        filterDepth,
+        settings,
+        colorGroups,
       });
     }, 500);
   }
 
-  function handleFilter(d: { tags: string[]; types: string[]; folder: string; depth: number }) { filterTags = d.tags; filterTypes = d.types; filterFolder = d.folder; filterDepth = d.depth; persistSession(); }
-  function onMouseDown(e: MouseEvent) { ctrl = { ...ctrl, rState: handleGraphMouseDown(e, canvasEl, ctrl.nodes, ctrl.rState) }; doRender(); }
-  function onMouseMove(e: MouseEvent) { ctrl = { ...ctrl, rState: handleGraphMouseMove(e, canvasEl, ctrl.nodes, ctrl.rState) }; doRender(); }
-  function onMouseUp() { ctrl = { ...ctrl, rState: handleGraphMouseUp(ctrl.rState) }; persistSession(); }
-  function onWheel(e: WheelEvent) { ctrl = { ...ctrl, rState: handleGraphWheel(e, ctrl.rState) }; doRender(); persistSession(); }
-  function onKeyDown(e: KeyboardEvent) { ctrl = { ...ctrl, rState: handleGraphKeyDown(e, ctrl.rState) }; doRender(); }
-  function onClick(e: MouseEvent) { ctrl = ctrlClick(e, canvasEl, ctrl, navOpenNote); persistSession(); }
-  function onContextMenu(e: MouseEvent) { const r = ctrlCtxMenu(e, canvasEl, ctrl); ctrl = r.ctrl; contextMenuNode = r.node; contextMenuX = r.x; contextMenuY = r.y; contextMenuVisible = r.visible; }
-  function onCtxAction(d: { action: string; node: GraphNode | null }) { handleContextAction(d.action, d.node, navOpenNote, (nid) => { isLocal = true; centerNode = nid; initSim(); }); }
-  function onFitToView() { ctrl = ctrlFitToView(ctx, canvasEl, ctrl, settings, colorGroups, width, height); persistSession(); }
-  function onResetView() { ctrl = ctrlResetView(ctx, canvasEl, ctrl, settings, colorGroups, width, height); persistSession(); }
-  function handleResize() { if (canvasEl) { width = canvasEl.parentElement?.clientWidth || 800; height = canvasEl.parentElement?.clientHeight || 600; canvasEl.width = width; canvasEl.height = height; doRender(); } }
-  function handleSettingsEvent(e: Event) { const detail = (e as CustomEvent<GraphSettings>).detail; if (detail) { settings = { ...settings, ...detail }; doRender(); persistSession(); } }
+  function handleFilter(d: { tags: string[]; types: string[]; folder: string; depth: number }) {
+    filterTags = d.tags;
+    filterTypes = d.types;
+    filterFolder = d.folder;
+    filterDepth = d.depth;
+    persistSession();
+  }
+  function onMouseDown(e: MouseEvent) {
+    ctrl = { ...ctrl, rState: handleGraphMouseDown(e, canvasEl, ctrl.nodes, ctrl.rState) };
+    doRender();
+  }
+  function onMouseMove(e: MouseEvent) {
+    ctrl = { ...ctrl, rState: handleGraphMouseMove(e, canvasEl, ctrl.nodes, ctrl.rState) };
+    doRender();
+  }
+  function onMouseUp() {
+    ctrl = { ...ctrl, rState: handleGraphMouseUp(ctrl.rState) };
+    persistSession();
+  }
+  function onWheel(e: WheelEvent) {
+    ctrl = { ...ctrl, rState: handleGraphWheel(e, ctrl.rState) };
+    doRender();
+    persistSession();
+  }
+  function onKeyDown(e: KeyboardEvent) {
+    ctrl = { ...ctrl, rState: handleGraphKeyDown(e, ctrl.rState) };
+    doRender();
+  }
+  function onClick(e: MouseEvent) {
+    ctrl = ctrlClick(e, canvasEl, ctrl, navOpenNote);
+    persistSession();
+  }
+  function onContextMenu(e: MouseEvent) {
+    const r = ctrlCtxMenu(e, canvasEl, ctrl);
+    ctrl = r.ctrl;
+    contextMenuNode = r.node;
+    contextMenuX = r.x;
+    contextMenuY = r.y;
+    contextMenuVisible = r.visible;
+  }
+  function onCtxAction(d: { action: string; node: GraphNode | null }) {
+    handleContextAction(d.action, d.node, navOpenNote, (nid) => {
+      isLocal = true;
+      centerNode = nid;
+      initSim();
+    });
+  }
+  function onFitToView() {
+    ctrl = ctrlFitToView(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
+    persistSession();
+  }
+  function onResetView() {
+    ctrl = ctrlResetView(ctx, canvasEl, ctrl, settings, colorGroups, width, height);
+    persistSession();
+  }
+  function handleResize() {
+    if (canvasEl) {
+      width = canvasEl.parentElement?.clientWidth || 800;
+      height = canvasEl.parentElement?.clientHeight || 600;
+      canvasEl.width = width;
+      canvasEl.height = height;
+      doRender();
+    }
+  }
+  function handleSettingsEvent(e: Event) {
+    const detail = (e as CustomEvent<GraphSettings>).detail;
+    if (detail) {
+      settings = { ...settings, ...detail };
+      doRender();
+      persistSession();
+    }
+  }
 
-  onMount(() => { ctx = canvasEl.getContext('2d'); handleResize(); ctrl = { ...ctrl, layoutWorker: new GraphLayoutWorker() }; loadData(); window.addEventListener('resize', handleResize); window.addEventListener('keydown', onKeyDown); window.addEventListener('graph-settings-change', handleSettingsEvent); });
-  onDestroy(() => { if (saveTimer) clearTimeout(saveTimer); persistSession(); if (ctrl.animationFrame) cancelAnimationFrame(ctrl.animationFrame); ctrl.layoutWorker?.terminate(); window.removeEventListener('resize', handleResize); window.removeEventListener('keydown', onKeyDown); window.removeEventListener('graph-settings-change', handleSettingsEvent); });
+  onMount(() => {
+    ctx = canvasEl.getContext('2d');
+    handleResize();
+    ctrl = { ...ctrl, layoutWorker: new GraphLayoutWorker() };
+    loadData();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('graph-settings-change', handleSettingsEvent);
+  });
+  onDestroy(() => {
+    if (saveTimer) clearTimeout(saveTimer);
+    persistSession();
+    if (ctrl.animationFrame) cancelAnimationFrame(ctrl.animationFrame);
+    ctrl.layoutWorker?.terminate();
+    window.removeEventListener('resize', handleResize);
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('graph-settings-change', handleSettingsEvent);
+  });
 </script>
 
 <div class="graph-view">
@@ -116,7 +254,12 @@
 
     <div class="graph-search-bar">
       <Icon name="search" size={14} />
-      <input type="text" placeholder="Filter nodes..." bind:value={searchQuery} class="search-input" />
+      <input
+        type="text"
+        placeholder="Filter nodes..."
+        bind:value={searchQuery}
+        class="search-input"
+      />
     </div>
 
     <div class="graph-toolbar">
@@ -124,13 +267,24 @@
         <Icon name="filter" size={14} />
         <span class="toolbar-label">Filters</span>
       </button>
-      <button class="toolbar-btn" on:click={toggleSettings} title="Settings" class:active={settingsOpen}>
+      <button
+        class="toolbar-btn"
+        on:click={toggleSettings}
+        title="Settings"
+        class:active={settingsOpen}
+      >
         <Icon name="settings" size={14} />
         <span class="toolbar-label">Settings</span>
       </button>
       <button
         class="toolbar-btn"
-        on:click={() => { settings.animate = !settings.animate; if (settings.animate) { ctrl = startWarmup(ctx, canvasEl, ctrl, settings, colorGroups, width, height, syncCtrl); } persistSession(); }}
+        on:click={() => {
+          settings.animate = !settings.animate;
+          if (settings.animate) {
+            ctrl = startWarmup(ctx, canvasEl, ctrl, settings, colorGroups, width, height, syncCtrl);
+          }
+          persistSession();
+        }}
         title={settings.animate ? 'Pause simulation' : 'Start simulation'}
         class:active={settings.animate}
       >
@@ -166,9 +320,12 @@
           </button>
         </div>
         <GraphFilter
-          availableTags={ctrl.availableTags} availableTypes={ctrl.availableTypes}
-          selectedTags={filterTags} selectedTypes={filterTypes}
-          folderFilter={filterFolder} linkDepth={filterDepth}
+          availableTags={ctrl.availableTags}
+          availableTypes={ctrl.availableTypes}
+          selectedTags={filterTags}
+          selectedTypes={filterTypes}
+          folderFilter={filterFolder}
+          linkDepth={filterDepth}
           onFilter={handleFilter}
         />
       </div>
@@ -176,9 +333,16 @@
 
     {#if isLocal && centerNode}
       <GraphLocalInfo
-        {centerNode} {depth}
-        onDepthChange={(d) => { depth = d; }}
-        onShowGlobal={() => { isLocal = false; centerNode = null; initSim(); }}
+        {centerNode}
+        {depth}
+        onDepthChange={(d) => {
+          depth = d;
+        }}
+        onShowGlobal={() => {
+          isLocal = false;
+          centerNode = null;
+          initSim();
+        }}
       />
     {/if}
   </div>
@@ -208,8 +372,13 @@
     overflow: hidden;
   }
 
-  canvas { display: block; cursor: grab; }
-  canvas:active { cursor: grabbing; }
+  canvas {
+    display: block;
+    cursor: grab;
+  }
+  canvas:active {
+    cursor: grabbing;
+  }
 
   /* ─── Search bar (top-left, always visible) ─── */
   .graph-search-bar {

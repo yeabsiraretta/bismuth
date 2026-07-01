@@ -6,7 +6,11 @@ import { writable, derived } from 'svelte/store';
 import { notes } from '@/stores/vault/vault';
 import type { Note } from '@/types/data/vault';
 import { log } from '@/utils/logger';
-import { renameTag as serviceRenameTag, mergeTags as serviceMergeTags, type RenameResult } from '../services/tags';
+import {
+  renameTag as serviceRenameTag,
+  mergeTags as serviceMergeTags,
+  type RenameResult,
+} from '../services/tags';
 
 export interface TagNode {
   name: string;
@@ -158,29 +162,32 @@ export function showTag(tagName: string) {
  * Notes whose ONLY tags are hidden get excluded from the file list.
  * Notes with at least one visible tag (or no tags at all) remain visible.
  */
-export const filteredNotes = derived([notes, hiddenTags], ([$notes, $hidden]: [Note[], Set<string>]) => {
-  if ($hidden.size === 0) return $notes;
+export const filteredNotes = derived(
+  [notes, hiddenTags],
+  ([$notes, $hidden]: [Note[], Set<string>]) => {
+    if ($hidden.size === 0) return $notes;
 
-  return $notes.filter((note: Note) => {
-    const noteTags: string[] = [];
+    return $notes.filter((note: Note) => {
+      const noteTags: string[] = [];
 
-    // Collect frontmatter tags
-    const fmTags = note.frontmatter?.['tags'];
-    if (Array.isArray(fmTags)) {
-      noteTags.push(...fmTags);
-    }
+      // Collect frontmatter tags
+      const fmTags = note.frontmatter?.['tags'];
+      if (Array.isArray(fmTags)) {
+        noteTags.push(...fmTags);
+      }
 
-    // Collect inline tags
-    const inlineTags = note.content?.match(/#([a-zA-Z0-9_/-]+)/g) || [];
-    inlineTags.forEach((t: string) => noteTags.push(t.slice(1)));
+      // Collect inline tags
+      const inlineTags = note.content?.match(/#([a-zA-Z0-9_/-]+)/g) || [];
+      inlineTags.forEach((t: string) => noteTags.push(t.slice(1)));
 
-    // If no tags at all, keep visible
-    if (noteTags.length === 0) return true;
+      // If no tags at all, keep visible
+      if (noteTags.length === 0) return true;
 
-    // If ALL tags are hidden, exclude from file list
-    return noteTags.some((t: string) => !$hidden.has(t));
-  });
-});
+      // If ALL tags are hidden, exclude from file list
+      return noteTags.some((t: string) => !$hidden.has(t));
+    });
+  }
+);
 
 // Load persisted hidden tags on module init
 loadHiddenTags();

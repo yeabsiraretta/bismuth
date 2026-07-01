@@ -4,10 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { log } from '@/utils/logger';
 import type { BackupConfig, BackupInfo } from '../types';
 
-export async function createBackup(
-  vaultRoot: string,
-  customName?: string,
-): Promise<BackupInfo> {
+export async function createBackup(vaultRoot: string, customName?: string): Promise<BackupInfo> {
   try {
     return await invoke<BackupInfo>('backup_create', {
       vaultRoot,
@@ -47,10 +44,7 @@ export async function getBackupConfig(vaultRoot: string): Promise<BackupConfig> 
   }
 }
 
-export async function saveBackupConfig(
-  vaultRoot: string,
-  config: BackupConfig,
-): Promise<void> {
+export async function saveBackupConfig(vaultRoot: string, config: BackupConfig): Promise<void> {
   try {
     await invoke('backup_save_config', { vaultRoot, config });
   } catch (e) {

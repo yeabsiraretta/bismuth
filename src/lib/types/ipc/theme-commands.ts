@@ -2,7 +2,10 @@
  * Theme IPC Commands — Theme and style settings
  */
 
-interface CommandContract<P, R> { params: P; result: R }
+interface CommandContract<P, R> {
+  params: P;
+  result: R;
+}
 
 export interface ThemeCommands {
   initialize_theme_service: CommandContract<{ vaultPath: string }, void>;

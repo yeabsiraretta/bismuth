@@ -19,7 +19,12 @@ export type {
   AwardedReward,
   RewarderConfig,
 } from './types';
-export { DIFFICULTY_COINS, DIFFICULTY_META, DEFAULT_REWARDER_CONFIG, DEFAULT_OCCURRENCE_CHANCES } from './types';
+export {
+  DIFFICULTY_COINS,
+  DIFFICULTY_META,
+  DEFAULT_REWARDER_CONFIG,
+  DEFAULT_OCCURRENCE_CHANCES,
+} from './types';
 
 // Stores (gamify)
 export {
@@ -55,11 +60,19 @@ export {
 
 // Stores (rewarder)
 export {
-  rewarderConfig, rewarderEnabled,
-  updateRewarderConfig, resetRewarderConfig, getRewarderConfig,
-  awardedRewards, recentAwards, awardedToday,
-  pendingReward, acceptPendingReward, skipPendingReward,
-  rollRewardForTask, clearAwardHistory,
+  rewarderConfig,
+  rewarderEnabled,
+  updateRewarderConfig,
+  resetRewarderConfig,
+  getRewarderConfig,
+  awardedRewards,
+  recentAwards,
+  awardedToday,
+  pendingReward,
+  acceptPendingReward,
+  skipPendingReward,
+  rollRewardForTask,
+  clearAwardHistory,
 } from './stores/rewarderStore';
 
 // Services
@@ -71,8 +84,10 @@ export {
 } from './services/gamifyService';
 
 export {
-  parseRewardsFile, parseRewardLine,
-  rollForReward, decrementInventory,
+  parseRewardsFile,
+  parseRewardLine,
+  rollForReward,
+  decrementInventory,
   generateSampleRewards,
 } from './services/rewarderService';
 

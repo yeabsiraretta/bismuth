@@ -19,9 +19,17 @@
     goToToday,
   } from '../../stores/calendarStore';
   import {
-    selectionMode, selectedCount, clearSelection,
-    batchDelete, batchComplete, batchDuplicate, batchShift,
-    canUndo, canRedo, undo, redo,
+    selectionMode,
+    selectedCount,
+    clearSelection,
+    batchDelete,
+    batchComplete,
+    batchDuplicate,
+    batchShift,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
   } from '../../stores/batchOps';
   import { todayCapacity, formatCapacityTime, utilizationColor } from '../../stores/capacityStore';
   import type { CalendarViewMode } from '../../types';
@@ -46,13 +54,19 @@
   $: headerLabel = getHeaderLabel($calendarFocusDate, $calendarViewMode);
 
   function getHeaderLabel(date: Date, mode: CalendarViewMode): string {
-    if (mode === 'year' || mode === 'heatmap' || mode === 'gantt') return date.getFullYear().toString();
+    if (mode === 'year' || mode === 'heatmap' || mode === 'gantt')
+      return date.getFullYear().toString();
     if (mode === 'list') return 'Upcoming Events';
     if (mode === 'month') {
       return date.toLocaleString('default', { month: 'long', year: 'numeric' });
     }
     if (mode === 'day') {
-      return date.toLocaleDateString('default', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      return date.toLocaleDateString('default', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
     }
     // Week: show range
     const start = new Date(date);
@@ -60,7 +74,11 @@
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
     const startStr = start.toLocaleDateString('default', { month: 'short', day: 'numeric' });
-    const endStr = end.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric' });
+    const endStr = end.toLocaleDateString('default', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
     return `${startStr} – ${endStr}`;
   }
 
@@ -69,7 +87,6 @@
     eventDialogStartMinute = startMinute;
     showEventDialog = true;
   }
-
 </script>
 
 <div class="calendar-view">
@@ -77,10 +94,20 @@
   <header class="calendar-toolbar">
     <div class="toolbar-left">
       <button class="btn-today" on:click={goToToday}>Today</button>
-      <button class="btn-nav" on:click={() => navigateCalendar('prev')} title="Previous" aria-label="Previous">
+      <button
+        class="btn-nav"
+        on:click={() => navigateCalendar('prev')}
+        title="Previous"
+        aria-label="Previous"
+      >
         <Icon name="chevron-left" size={16} />
       </button>
-      <button class="btn-nav" on:click={() => navigateCalendar('next')} title="Next" aria-label="Next">
+      <button
+        class="btn-nav"
+        on:click={() => navigateCalendar('next')}
+        title="Next"
+        aria-label="Next"
+      >
         <Icon name="chevron-right" size={16} />
       </button>
       <h2 class="header-label">{headerLabel}</h2>
@@ -91,7 +118,7 @@
           <button
             class="view-btn"
             class:active={$calendarViewMode === opt.id}
-            on:click={() => $calendarViewMode = opt.id}
+            on:click={() => ($calendarViewMode = opt.id)}
           >
             {opt.label}
           </button>
@@ -100,19 +127,24 @@
       <button
         class="btn-nav"
         class:active={showTimeline}
-        on:click={() => plannerSettings.update(s => ({ ...s, showTimeline: !s.showTimeline }))}
+        on:click={() => plannerSettings.update((s) => ({ ...s, showTimeline: !s.showTimeline }))}
         title="Toggle timeline"
         aria-label="Toggle timeline sidebar"
       >
         <Icon name="clock" size={16} />
       </button>
-      <button class="btn-nav" on:click={() => (showIcsSettings = !showIcsSettings)} title="Calendar feeds" aria-label="Calendar feeds">
+      <button
+        class="btn-nav"
+        on:click={() => (showIcsSettings = !showIcsSettings)}
+        title="Calendar feeds"
+        aria-label="Calendar feeds"
+      >
         <Icon name="globe" size={16} />
       </button>
       <button
         class="btn-nav"
         class:active={$selectionMode}
-        on:click={() => selectionMode.update(v => !v)}
+        on:click={() => selectionMode.update((v) => !v)}
         title="Toggle selection mode"
         aria-label="Toggle batch selection"
       >
@@ -124,7 +156,11 @@
       <button class="btn-nav" disabled={!$canRedo} on:click={redo} title="Redo" aria-label="Redo">
         <Icon name="corner-up-right" size={16} />
       </button>
-      <button class="btn-add" on:click={() => handleCreateEvent(new Date().toISOString().slice(0, 10))} title="New event">
+      <button
+        class="btn-add"
+        on:click={() => handleCreateEvent(new Date().toISOString().slice(0, 10))}
+        title="New event"
+      >
         <Icon name="plus" size={16} />
       </button>
     </div>
@@ -134,11 +170,21 @@
   {#if $selectionMode && $selectedCount > 0}
     <div class="batch-toolbar">
       <span class="batch-count">{$selectedCount} selected</span>
-      <button class="batch-btn" on:click={batchComplete} title="Complete selected"><Icon name="check" size={14} /> Complete</button>
-      <button class="batch-btn" on:click={batchDuplicate} title="Duplicate selected"><Icon name="copy" size={14} /> Duplicate</button>
-      <button class="batch-btn" on:click={() => batchShift(1)} title="Shift forward 1 day"><Icon name="chevron-right" size={14} /> +1d</button>
-      <button class="batch-btn" on:click={() => batchShift(-1)} title="Shift back 1 day"><Icon name="chevron-left" size={14} /> -1d</button>
-      <button class="batch-btn danger" on:click={batchDelete} title="Delete selected"><Icon name="trash-2" size={14} /> Delete</button>
+      <button class="batch-btn" on:click={batchComplete} title="Complete selected"
+        ><Icon name="check" size={14} /> Complete</button
+      >
+      <button class="batch-btn" on:click={batchDuplicate} title="Duplicate selected"
+        ><Icon name="copy" size={14} /> Duplicate</button
+      >
+      <button class="batch-btn" on:click={() => batchShift(1)} title="Shift forward 1 day"
+        ><Icon name="chevron-right" size={14} /> +1d</button
+      >
+      <button class="batch-btn" on:click={() => batchShift(-1)} title="Shift back 1 day"
+        ><Icon name="chevron-left" size={14} /> -1d</button
+      >
+      <button class="batch-btn danger" on:click={batchDelete} title="Delete selected"
+        ><Icon name="trash-2" size={14} /> Delete</button
+      >
       <button class="batch-btn" on:click={clearSelection}>Cancel</button>
     </div>
   {/if}
@@ -150,11 +196,16 @@
       <div class="capacity-track">
         <div
           class="capacity-fill"
-          style="width: {Math.min(100, $todayCapacity.utilization * 100)}%; background: {utilizationColor($todayCapacity.utilization)}"
+          style="width: {Math.min(
+            100,
+            $todayCapacity.utilization * 100
+          )}%; background: {utilizationColor($todayCapacity.utilization)}"
         ></div>
       </div>
       <span class="capacity-text">
-        {formatCapacityTime($todayCapacity.scheduledMinutes)} / {formatCapacityTime($todayCapacity.totalMinutes)}
+        {formatCapacityTime($todayCapacity.scheduledMinutes)} / {formatCapacityTime(
+          $todayCapacity.totalMinutes
+        )}
       </span>
     </div>
   {/if}
@@ -225,9 +276,22 @@
     flex-shrink: 0;
   }
 
-  .toolbar-left { display: flex; align-items: center; gap: 8px; }
-  .toolbar-right { display: flex; align-items: center; gap: 12px; }
-  .header-label { font-size: 1.1rem; font-weight: 600; margin: 0; color: var(--text-normal); }
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-normal);
+  }
 
   .btn-today {
     padding: 6px 14px;
@@ -241,7 +305,9 @@
     transition: background 0.15s;
   }
 
-  .btn-today:hover { background: var(--background-modifier-hover); }
+  .btn-today:hover {
+    background: var(--background-modifier-hover);
+  }
 
   .btn-nav {
     display: flex;
@@ -307,7 +373,9 @@
     transition: opacity 0.15s;
   }
 
-  .btn-add:hover { opacity: 0.85; }
+  .btn-add:hover {
+    opacity: 0.85;
+  }
 
   .calendar-content {
     flex: 1;
@@ -351,7 +419,11 @@
     border-bottom: 1px solid var(--border-color);
   }
 
-  .batch-count { font-size: 0.8rem; font-weight: 600; color: var(--interactive-accent); }
+  .batch-count {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--interactive-accent);
+  }
 
   .batch-btn {
     display: flex;
@@ -366,8 +438,13 @@
     cursor: pointer;
   }
 
-  .batch-btn:hover { background: var(--background-modifier-hover); }
-  .batch-btn.danger { color: var(--color-error, #dc2626); border-color: var(--color-error, #dc2626); }
+  .batch-btn:hover {
+    background: var(--background-modifier-hover);
+  }
+  .batch-btn.danger {
+    color: var(--color-error, #dc2626);
+    border-color: var(--color-error, #dc2626);
+  }
 
   .capacity-bar {
     display: flex;
@@ -379,7 +456,10 @@
     font-size: 0.75rem;
   }
 
-  .capacity-label { color: var(--text-muted); font-weight: 500; }
+  .capacity-label {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
 
   .capacity-track {
     flex: 1;
@@ -389,6 +469,13 @@
     overflow: hidden;
   }
 
-  .capacity-fill { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
-  .capacity-text { color: var(--text-muted); white-space: nowrap; }
+  .capacity-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  .capacity-text {
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
 </style>

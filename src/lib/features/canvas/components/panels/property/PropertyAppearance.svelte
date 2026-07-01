@@ -8,8 +8,8 @@
   // T037: Resolve linked style names for display
   $: fillStyleId = element.properties.fillStyleId as string | undefined;
   $: strokeStyleId = element.properties.strokeStyleId as string | undefined;
-  $: fillStyle = fillStyleId ? $sharedStyles.find(s => s.id === fillStyleId) : null;
-  $: strokeStyle = strokeStyleId ? $sharedStyles.find(s => s.id === strokeStyleId) : null;
+  $: fillStyle = fillStyleId ? $sharedStyles.find((s) => s.id === fillStyleId) : null;
+  $: strokeStyle = strokeStyleId ? $sharedStyles.find((s) => s.id === strokeStyleId) : null;
 </script>
 
 <div class="property-section">
@@ -100,7 +100,7 @@
     font-weight: var(--font-medium);
   }
 
-  .property-field input[type="number"] {
+  .property-field input[type='number'] {
     width: 100%;
     padding: var(--spacing-xs) var(--spacing-s);
     border: 1px solid var(--border-color);
@@ -111,12 +111,12 @@
     font-family: var(--font-monospace);
   }
 
-  .property-field input[type="number"]:focus {
+  .property-field input[type='number']:focus {
     outline: none;
     border-color: var(--interactive-accent);
   }
 
-  .property-field input[type="range"] {
+  .property-field input[type='range'] {
     width: 100%;
     accent-color: var(--interactive-accent);
   }
@@ -127,7 +127,7 @@
     gap: var(--spacing-s);
   }
 
-  .color-input-wrapper input[type="color"] {
+  .color-input-wrapper input[type='color'] {
     width: 28px;
     height: 28px;
     border: 1px solid var(--border-color);

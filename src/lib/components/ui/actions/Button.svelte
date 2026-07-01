@@ -13,7 +13,13 @@
   export let title: string | undefined = undefined;
 
   function handleClick(event: MouseEvent) {
-    log.debug('Button clicked', { variant, disabled, loading, ariaLabel, target: (event.target as HTMLElement)?.textContent?.trim() });
+    log.debug('Button clicked', {
+      variant,
+      disabled,
+      loading,
+      ariaLabel,
+      target: (event.target as HTMLElement)?.textContent?.trim(),
+    });
   }
 </script>
 
@@ -55,7 +61,9 @@
     outline-offset: 2px;
   }
 
-  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
 
   .btn-xs {
     min-height: 32px;
@@ -85,8 +93,12 @@
     font-size: var(--font-ui-medium);
   }
 
-  .btn-full { width: 100%; }
-  .btn-loading { pointer-events: none; }
+  .btn-full {
+    width: 100%;
+  }
+  .btn-loading {
+    pointer-events: none;
+  }
 
   .btn:disabled {
     opacity: 0.5;

@@ -9,8 +9,23 @@ import type { SimNode } from '../utils/simulation';
 import { tickForces } from '../utils/simulation';
 
 type IncomingMessage =
-  | { type: 'tick'; nodes: SimNode[]; edges: GraphEdge[]; settings: GraphSettings; width: number; height: number }
-  | { type: 'warmup'; nodes: SimNode[]; edges: GraphEdge[]; settings: GraphSettings; width: number; height: number; ticks: number };
+  | {
+      type: 'tick';
+      nodes: SimNode[];
+      edges: GraphEdge[];
+      settings: GraphSettings;
+      width: number;
+      height: number;
+    }
+  | {
+      type: 'warmup';
+      nodes: SimNode[];
+      edges: GraphEdge[];
+      settings: GraphSettings;
+      width: number;
+      height: number;
+      ticks: number;
+    };
 
 self.onmessage = (e: MessageEvent<IncomingMessage>) => {
   const { type } = e.data;

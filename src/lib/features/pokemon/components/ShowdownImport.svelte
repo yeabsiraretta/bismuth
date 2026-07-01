@@ -1,6 +1,13 @@
 <script lang="ts">
   import { log } from '@/utils/logger';
-  import { isDataLoaded, loadPokemonData, getPokedex, getMovesDb, getItemsDb, loadTeam } from '../stores/pokemonStore';
+  import {
+    isDataLoaded,
+    loadPokemonData,
+    getPokedex,
+    getMovesDb,
+    getItemsDb,
+    loadTeam,
+  } from '../stores/pokemonStore';
   import { parseShowdownPaste } from '../services/showdownParser';
   import { onMount } from 'svelte';
 
@@ -40,7 +47,9 @@
     log.info('Showdown team imported', { warnings: result.warnings.length });
   }
 
-  onMount(async () => { await loadPokemonData(); });
+  onMount(async () => {
+    await loadPokemonData();
+  });
 </script>
 
 <div class="showdown-import">
@@ -91,15 +100,77 @@
 </div>
 
 <style>
-  .showdown-import { display: flex; flex-direction: column; gap: var(--spacing-s); padding: var(--spacing-s); }
-  .title { font-size: var(--font-ui-small); font-weight: 600; color: var(--text-normal); margin: 0; }
-  .paste-area { width: 100%; box-sizing: border-box; padding: var(--spacing-s); background: var(--background-secondary); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); color: var(--text-normal); font-family: var(--font-monospace); font-size: var(--font-ui-smaller); resize: vertical; min-height: 120px; }
-  .paste-area:focus { outline: 2px solid var(--interactive-accent); }
-  .parse-btn { padding: 6px 16px; background: var(--interactive-accent); color: var(--text-on-accent); border: none; border-radius: var(--radius-s); font-size: var(--font-ui-small); cursor: pointer; align-self: flex-start; min-height: 40px; min-width: 120px; }
-  .parse-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .parse-btn:not(:disabled):hover { background: var(--interactive-accent-hover); }
-  .success-msg { color: #22c55e; font-size: var(--font-ui-small); font-weight: 500; }
-  .error-list { color: var(--text-error); font-size: var(--font-ui-smaller); background: var(--background-secondary); padding: var(--spacing-s); border-radius: var(--radius-s); border: 1px solid var(--text-error); }
-  .error-list ul, .warning-list ul { margin: 4px 0 0; padding-left: var(--spacing-m); }
-  .warning-list { color: var(--text-warning, #f59e0b); font-size: var(--font-ui-smaller); background: var(--background-secondary); padding: var(--spacing-s); border-radius: var(--radius-s); border: 1px solid var(--text-warning, #f59e0b); }
+  .showdown-import {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
+  }
+  .title {
+    font-size: var(--font-ui-small);
+    font-weight: 600;
+    color: var(--text-normal);
+    margin: 0;
+  }
+  .paste-area {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-s);
+    background: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    color: var(--text-normal);
+    font-family: var(--font-monospace);
+    font-size: var(--font-ui-smaller);
+    resize: vertical;
+    min-height: 120px;
+  }
+  .paste-area:focus {
+    outline: 2px solid var(--interactive-accent);
+  }
+  .parse-btn {
+    padding: 6px 16px;
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
+    border: none;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-small);
+    cursor: pointer;
+    align-self: flex-start;
+    min-height: 40px;
+    min-width: 120px;
+  }
+  .parse-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .parse-btn:not(:disabled):hover {
+    background: var(--interactive-accent-hover);
+  }
+  .success-msg {
+    color: #22c55e;
+    font-size: var(--font-ui-small);
+    font-weight: 500;
+  }
+  .error-list {
+    color: var(--text-error);
+    font-size: var(--font-ui-smaller);
+    background: var(--background-secondary);
+    padding: var(--spacing-s);
+    border-radius: var(--radius-s);
+    border: 1px solid var(--text-error);
+  }
+  .error-list ul,
+  .warning-list ul {
+    margin: 4px 0 0;
+    padding-left: var(--spacing-m);
+  }
+  .warning-list {
+    color: var(--text-warning, #f59e0b);
+    font-size: var(--font-ui-smaller);
+    background: var(--background-secondary);
+    padding: var(--spacing-s);
+    border-radius: var(--radius-s);
+    border: 1px solid var(--text-warning, #f59e0b);
+  }
 </style>

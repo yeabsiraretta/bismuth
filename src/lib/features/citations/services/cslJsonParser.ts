@@ -40,12 +40,29 @@ function normalizeEntry(raw: Record<string, unknown>): CslEntry | null {
 
   // Copy standard CSL fields
   const stringFields = [
-    'title', 'title-short', 'container-title', 'collection-title',
-    'publisher', 'publisher-place', 'event-place',
-    'volume', 'issue', 'page', 'edition', 'language',
-    'DOI', 'ISBN', 'ISSN', 'PMID', 'PMCID', 'URL',
-    'eprint', 'eprinttype',
-    'abstract', 'keyword', 'note',
+    'title',
+    'title-short',
+    'container-title',
+    'collection-title',
+    'publisher',
+    'publisher-place',
+    'event-place',
+    'volume',
+    'issue',
+    'page',
+    'edition',
+    'language',
+    'DOI',
+    'ISBN',
+    'ISSN',
+    'PMID',
+    'PMCID',
+    'URL',
+    'eprint',
+    'eprinttype',
+    'abstract',
+    'keyword',
+    'note',
   ];
 
   for (const field of stringFields) {

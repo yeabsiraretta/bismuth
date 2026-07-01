@@ -55,7 +55,11 @@
   </PanelHeader>
 
   {#if $recentFiles.length === 0}
-    <EmptyState icon="clock" title="No recent files" description="Files you open will appear here" />
+    <EmptyState
+      icon="clock"
+      title="No recent files"
+      description="Files you open will appear here"
+    />
   {:else}
     <ul class="recent-list" role="list">
       {#each $recentFiles as entry (entry.path)}
@@ -129,5 +133,4 @@
     color: var(--text-muted);
     flex-shrink: 0;
   }
-
 </style>

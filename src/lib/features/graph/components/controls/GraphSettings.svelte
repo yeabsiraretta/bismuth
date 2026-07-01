@@ -27,85 +27,87 @@
 <div class="graph-settings">
   <div class="settings-panel">
     <div class="settings-header">
-      <button class="reset-btn" on:click={resetDefaults} title="Reset all settings to defaults">Restore defaults</button>
+      <button class="reset-btn" on:click={resetDefaults} title="Reset all settings to defaults"
+        >Restore defaults</button
+      >
     </div>
 
-      <div class="settings-section">
-        <h4>Filters</h4>
-        <label>
-          <input type="checkbox" bind:checked={settings.showTags} />
-          <span>Tags</span>
-        </label>
-        <label>
-          <input type="checkbox" bind:checked={settings.showAttachments} />
-          <span>Attachments</span>
-        </label>
-        <label>
-          <input type="checkbox" bind:checked={settings.showOrphans} />
-          <span>Orphans</span>
-        </label>
-      </div>
+    <div class="settings-section">
+      <h4>Filters</h4>
+      <label>
+        <input type="checkbox" bind:checked={settings.showTags} />
+        <span>Tags</span>
+      </label>
+      <label>
+        <input type="checkbox" bind:checked={settings.showAttachments} />
+        <span>Attachments</span>
+      </label>
+      <label>
+        <input type="checkbox" bind:checked={settings.showOrphans} />
+        <span>Orphans</span>
+      </label>
+    </div>
 
-      <div class="settings-section">
-        <h4>Display</h4>
-        <label>
-          <input type="checkbox" bind:checked={settings.showLabels} />
-          <span>Labels</span>
-        </label>
-        <label>
-          <input type="checkbox" bind:checked={settings.showArrows} />
-          <span>Arrows</span>
-        </label>
-        <label>
-          <span>Text fade threshold</span>
-          <input type="range" min="0" max="1" step="0.1" bind:value={settings.textFadeThreshold} />
-          <span class="value">{settings.textFadeThreshold.toFixed(1)}</span>
-        </label>
-        <label>
-          <span>Node size</span>
-          <input type="range" min="0.5" max="2" step="0.1" bind:value={settings.nodeSize} />
-          <span class="value">{settings.nodeSize.toFixed(1)}</span>
-        </label>
-        <label>
-          <span>Link thickness</span>
-          <input type="range" min="0.5" max="3" step="0.1" bind:value={settings.linkThickness} />
-          <span class="value">{settings.linkThickness.toFixed(1)}</span>
-        </label>
-      </div>
+    <div class="settings-section">
+      <h4>Display</h4>
+      <label>
+        <input type="checkbox" bind:checked={settings.showLabels} />
+        <span>Labels</span>
+      </label>
+      <label>
+        <input type="checkbox" bind:checked={settings.showArrows} />
+        <span>Arrows</span>
+      </label>
+      <label>
+        <span>Text fade threshold</span>
+        <input type="range" min="0" max="1" step="0.1" bind:value={settings.textFadeThreshold} />
+        <span class="value">{settings.textFadeThreshold.toFixed(1)}</span>
+      </label>
+      <label>
+        <span>Node size</span>
+        <input type="range" min="0.5" max="2" step="0.1" bind:value={settings.nodeSize} />
+        <span class="value">{settings.nodeSize.toFixed(1)}</span>
+      </label>
+      <label>
+        <span>Link thickness</span>
+        <input type="range" min="0.5" max="3" step="0.1" bind:value={settings.linkThickness} />
+        <span class="value">{settings.linkThickness.toFixed(1)}</span>
+      </label>
+    </div>
 
-      <div class="settings-section">
-        <h4>Forces</h4>
-        <label>
-          <span>Center force</span>
-          <input type="range" min="0" max="1" step="0.05" bind:value={settings.centerForce} />
-          <span class="value">{settings.centerForce.toFixed(2)}</span>
-        </label>
-        <label>
-          <span>Repel force</span>
-          <input type="range" min="50" max="1000" step="25" bind:value={settings.repelForce} />
-          <span class="value">{settings.repelForce}</span>
-        </label>
-        <label>
-          <span>Link force</span>
-          <input type="range" min="0" max="1" step="0.05" bind:value={settings.linkForce} />
-          <span class="value">{settings.linkForce.toFixed(2)}</span>
-        </label>
-        <label>
-          <span>Link distance</span>
-          <input type="range" min="30" max="300" step="10" bind:value={settings.linkDistance} />
-          <span class="value">{settings.linkDistance}</span>
-        </label>
-        <label>
-          <span>Damping</span>
-          <input type="range" min="0.5" max="0.98" step="0.01" bind:value={settings.damping} />
-          <span class="value">{settings.damping.toFixed(2)}</span>
-        </label>
-        <label>
-          <span>Collision radius</span>
-          <input type="range" min="0" max="60" step="2" bind:value={settings.collisionRadius} />
-          <span class="value">{settings.collisionRadius}</span>
-        </label>
-      </div>
+    <div class="settings-section">
+      <h4>Forces</h4>
+      <label>
+        <span>Center force</span>
+        <input type="range" min="0" max="1" step="0.05" bind:value={settings.centerForce} />
+        <span class="value">{settings.centerForce.toFixed(2)}</span>
+      </label>
+      <label>
+        <span>Repel force</span>
+        <input type="range" min="50" max="1000" step="25" bind:value={settings.repelForce} />
+        <span class="value">{settings.repelForce}</span>
+      </label>
+      <label>
+        <span>Link force</span>
+        <input type="range" min="0" max="1" step="0.05" bind:value={settings.linkForce} />
+        <span class="value">{settings.linkForce.toFixed(2)}</span>
+      </label>
+      <label>
+        <span>Link distance</span>
+        <input type="range" min="30" max="300" step="10" bind:value={settings.linkDistance} />
+        <span class="value">{settings.linkDistance}</span>
+      </label>
+      <label>
+        <span>Damping</span>
+        <input type="range" min="0.5" max="0.98" step="0.01" bind:value={settings.damping} />
+        <span class="value">{settings.damping.toFixed(2)}</span>
+      </label>
+      <label>
+        <span>Collision radius</span>
+        <input type="range" min="0" max="60" step="2" bind:value={settings.collisionRadius} />
+        <span class="value">{settings.collisionRadius}</span>
+      </label>
+    </div>
   </div>
 </div>
 

@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  flattenOutline, findOutlineForPage, outlineToLink,
-} from '../services/pdfOutlineService';
+import { flattenOutline, findOutlineForPage, outlineToLink } from '../services/pdfOutlineService';
 import type { PDFOutlineItem } from '../types';
 
 const OUTLINE: PDFOutlineItem[] = [
@@ -18,9 +16,7 @@ const OUTLINE: PDFOutlineItem[] = [
     title: 'Chapter 2',
     page: 15,
     level: 0,
-    children: [
-      { title: 'Section 2.1', page: 16, level: 1, children: [] },
-    ],
+    children: [{ title: 'Section 2.1', page: 16, level: 1, children: [] }],
   },
   {
     title: 'Appendix',

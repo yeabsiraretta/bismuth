@@ -12,7 +12,10 @@ import {
 } from '../services/extractorService';
 
 const note = (path: string, content: string, frontmatter: Record<string, unknown> = {}) => ({
-  path, title: path.split('/').pop()?.replace('.md', '') || '', content, frontmatter,
+  path,
+  title: path.split('/').pop()?.replace('.md', '') || '',
+  content,
+  frontmatter,
 });
 
 // ─── extractTags ───────────────────────────────────────────────────────────────
@@ -150,22 +153,18 @@ describe('buildTagExport', () => {
     ];
     const result = buildTagExport(notes);
 
-    const testTag = result.find(t => t.tag === 'test');
+    const testTag = result.find((t) => t.tag === 'test');
     expect(testTag).toBeDefined();
     expect(testTag!.tagCount).toBe(2);
     expect(testTag!.relativePaths).toContain('a.md');
     expect(testTag!.relativePaths).toContain('b.md');
 
-    const alphaTag = result.find(t => t.tag === 'alpha');
+    const alphaTag = result.find((t) => t.tag === 'alpha');
     expect(alphaTag!.tagCount).toBe(2);
   });
 
   it('sorts by tagCount descending', () => {
-    const notes = [
-      note('a.md', '#common #rare'),
-      note('b.md', '#common'),
-      note('c.md', '#common'),
-    ];
+    const notes = [note('a.md', '#common #rare'), note('b.md', '#common'), note('c.md', '#common')];
     const result = buildTagExport(notes);
     expect(result[0].tag).toBe('common');
   });
@@ -180,14 +179,16 @@ describe('buildTagExport', () => {
 describe('buildMetadataExport', () => {
   it('builds metadata for each note', () => {
     const notes = [
-      note('folder/Note A.md', '# Title\n\nContent with #tag and [[Note B]]', { aliases: ['Alias'] }),
+      note('folder/Note A.md', '# Title\n\nContent with #tag and [[Note B]]', {
+        aliases: ['Alias'],
+      }),
       note('Note B.md', 'Backlink target'),
     ];
     const result = buildMetadataExport(notes);
 
     expect(result).toHaveLength(2);
 
-    const noteA = result.find(r => r.fileName === 'Note A');
+    const noteA = result.find((r) => r.fileName === 'Note A');
     expect(noteA).toBeDefined();
     expect(noteA!.relativePath).toBe('folder/Note A.md');
     expect(noteA!.tags).toContain('tag');
@@ -196,7 +197,7 @@ describe('buildMetadataExport', () => {
     expect(noteA!.links).toHaveLength(1);
     expect(noteA!.links![0].link).toBe('Note B');
 
-    const noteB = result.find(r => r.fileName === 'Note B');
+    const noteB = result.find((r) => r.fileName === 'Note B');
     expect(noteB!.backlinks).toHaveLength(1);
     expect(noteB!.backlinks![0].fileName).toBe('Note A');
   });
@@ -211,9 +212,7 @@ describe('buildMetadataExport', () => {
   });
 
   it('includes frontmatter when present', () => {
-    const result = buildMetadataExport([
-      note('fm.md', 'text', { publish: true, tags: ['test'] }),
-    ]);
+    const result = buildMetadataExport([note('fm.md', 'text', { publish: true, tags: ['test'] })]);
     expect(result[0].frontmatter).toBeDefined();
     expect(result[0].frontmatter!['publish']).toBe(true);
   });
@@ -224,9 +223,7 @@ describe('buildMetadataExport', () => {
 describe('buildBacklinksMap', () => {
   it('maps backlinks correctly', () => {
     const allPaths = new Map([['note b', 'Note B.md']]);
-    const notes = [
-      { path: 'Note A.md', title: 'Note A', content: '[[Note B]]', frontmatter: {} },
-    ];
+    const notes = [{ path: 'Note A.md', title: 'Note A', content: '[[Note B]]', frontmatter: {} }];
     const map = buildBacklinksMap(notes, allPaths);
     expect(map.has('Note B.md')).toBe(true);
     expect(map.get('Note B.md')![0].fileName).toBe('Note A');
@@ -234,9 +231,7 @@ describe('buildBacklinksMap', () => {
 
   it('skips unresolved links', () => {
     const allPaths = new Map<string, string>();
-    const notes = [
-      { path: 'A.md', title: 'A', content: '[[NonExistent]]', frontmatter: {} },
-    ];
+    const notes = [{ path: 'A.md', title: 'A', content: '[[NonExistent]]', frontmatter: {} }];
     const map = buildBacklinksMap(notes, allPaths);
     expect(map.size).toBe(0);
   });
@@ -248,7 +243,7 @@ describe('buildNonMdExport', () => {
   it('builds folders and files', () => {
     const result = buildNonMdExport(
       ['assets', 'images/photos'],
-      [{ name: 'logo.png', relativePath: 'assets/logo.png' }],
+      [{ name: 'logo.png', relativePath: 'assets/logo.png' }]
     );
     expect(result.folders).toHaveLength(2);
     expect(result.folders[0]).toEqual({ name: 'assets', relativePath: 'assets' });
@@ -269,11 +264,13 @@ describe('buildCanvasExport', () => {
     const result = buildCanvasExport([
       { name: 'my-canvas.canvas', relativePath: 'Inbox/my-canvas.canvas' },
     ]);
-    expect(result).toEqual([{
-      name: 'my-canvas.canvas',
-      basename: 'my-canvas',
-      relativePath: 'Inbox/my-canvas.canvas',
-    }]);
+    expect(result).toEqual([
+      {
+        name: 'my-canvas.canvas',
+        basename: 'my-canvas',
+        relativePath: 'Inbox/my-canvas.canvas',
+      },
+    ]);
   });
 
   it('handles empty array', () => {

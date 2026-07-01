@@ -16,13 +16,18 @@ function loadPresets(): EventPreset[] {
   try {
     const s = localStorage.getItem(STORAGE_KEY);
     return s ? JSON.parse(s) : defaultPresets();
-  } catch { return defaultPresets(); }
+  } catch {
+    return defaultPresets();
+  }
 }
 
 export const eventPresets = writable<EventPreset[]>(loadPresets());
-eventPresets.subscribe(p => {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
-  catch (e) { log.warn('Failed to persist presets', { error: String(e) }); }
+eventPresets.subscribe((p) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  } catch (e) {
+    log.warn('Failed to persist presets', { error: String(e) });
+  }
 });
 
 // ─── Default presets ─────────────────────────────────────────────────────────
@@ -70,7 +75,7 @@ export function createEventFromPreset(
   preset: EventPreset,
   date: string,
   startMinute: number | null = null,
-  title: string = '',
+  title: string = ''
 ): CalendarEvent {
   return {
     id: generatePrefixedId('ev'),
@@ -90,7 +95,7 @@ export function presetToFrontmatter(
   preset: EventPreset,
   date: string,
   startMinute: number | null,
-  title: string,
+  title: string
 ): string {
   const fm: Record<string, unknown> = { ...preset.frontmatter };
   fm['title'] = title || preset.name;
@@ -113,19 +118,19 @@ export function presetToFrontmatter(
 /** Add a custom preset */
 export function addPreset(preset: Omit<EventPreset, 'id'>): string {
   const id = generatePrefixedId('preset');
-  eventPresets.update(p => [...p, { ...preset, id }]);
+  eventPresets.update((p) => [...p, { ...preset, id }]);
   log.info('Event preset added', { id, name: preset.name });
   return id;
 }
 
 /** Remove a preset */
 export function removePreset(id: string): void {
-  eventPresets.update(p => p.filter(pr => pr.id !== id));
+  eventPresets.update((p) => p.filter((pr) => pr.id !== id));
 }
 
 /** Update a preset */
 export function updatePreset(id: string, updates: Partial<EventPreset>): void {
-  eventPresets.update(p => p.map(pr => pr.id === id ? { ...pr, ...updates } : pr));
+  eventPresets.update((p) => p.map((pr) => (pr.id === id ? { ...pr, ...updates } : pr)));
 }
 
 /** Reset to default presets */
@@ -135,5 +140,5 @@ export function resetPresets(): void {
 
 /** Get a preset by ID */
 export function getPreset(id: string): EventPreset | undefined {
-  return get(eventPresets).find(p => p.id === id);
+  return get(eventPresets).find((p) => p.id === id);
 }

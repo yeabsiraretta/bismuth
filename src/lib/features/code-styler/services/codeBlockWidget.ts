@@ -15,8 +15,10 @@ export class CodeBlockWidget extends WidgetType {
     private codeLines: string[],
     private highlights: HighlightGroup[],
     private theme: CodeStylerTheme,
-    private collapsed: boolean,
-  ) { super(); }
+    private collapsed: boolean
+  ) {
+    super();
+  }
 
   toDOM(): HTMLElement {
     const wrap = document.createElement('div');
@@ -100,21 +102,29 @@ export class CodeBlockWidget extends WidgetType {
   }
 
   eq(other: CodeBlockWidget): boolean {
-    return this.params.language === other.params.language
-      && this.params.title === other.params.title
-      && this.codeLines.join('\n') === other.codeLines.join('\n')
-      && this.collapsed === other.collapsed;
+    return (
+      this.params.language === other.params.language &&
+      this.params.title === other.params.title &&
+      this.codeLines.join('\n') === other.codeLines.join('\n') &&
+      this.collapsed === other.collapsed
+    );
   }
 
-  ignoreEvent(): boolean { return false; }
+  ignoreEvent(): boolean {
+    return false;
+  }
 
   private shouldShowHeader(): boolean {
     const cb = this.theme.codeblock;
     if (cb.showHeader === 'never') return false;
     if (cb.showHeader === 'always') return true;
     // 'ifTitle': show if title, fold, or language icon/tag forced to always
-    return !!this.params.title || this.params.fold
-      || cb.showLanguageIcon === 'always' || cb.showLanguageTag === 'always';
+    return (
+      !!this.params.title ||
+      this.params.fold ||
+      cb.showLanguageIcon === 'always' ||
+      cb.showLanguageTag === 'always'
+    );
   }
 
   private buildHeader(langColor: string): HTMLElement {
@@ -126,8 +136,9 @@ export class CodeBlockWidget extends WidgetType {
     header.style.cursor = 'pointer';
 
     // Language icon placeholder (coloured dot)
-    const showIcon = cb.showLanguageIcon === 'always'
-      || (cb.showLanguageIcon === 'ifHeader' && this.params.language);
+    const showIcon =
+      cb.showLanguageIcon === 'always' ||
+      (cb.showLanguageIcon === 'ifHeader' && this.params.language);
     if (showIcon && this.params.language) {
       const dot = document.createElement('span');
       dot.className = 'cm-code-styled-lang-dot';
@@ -136,8 +147,9 @@ export class CodeBlockWidget extends WidgetType {
     }
 
     // Language tag
-    const showTag = cb.showLanguageTag === 'always'
-      || (cb.showLanguageTag === 'ifHeader' && this.params.language);
+    const showTag =
+      cb.showLanguageTag === 'always' ||
+      (cb.showLanguageTag === 'ifHeader' && this.params.language);
     if (showTag && this.params.language) {
       const tag = document.createElement('span');
       tag.className = 'cm-code-styled-lang-tag';
@@ -179,7 +191,9 @@ export class CodeBlockWidget extends WidgetType {
         e.stopPropagation();
         navigator.clipboard.writeText(this.codeLines.join('\n')).then(() => {
           btn.textContent = 'Copied!';
-          setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+          }, 1500);
         });
       });
       header.appendChild(btn);

@@ -20,10 +20,7 @@
   {:else}
     <div class="list-items" role="listbox">
       {#each items as item (item.id)}
-        <ListItem
-          active={activeId === item.id}
-          on:click={() => onSelect?.(item)}
-        >
+        <ListItem active={activeId === item.id} on:click={() => onSelect?.(item)}>
           {item.title}
           <svelte:fragment slot="subtitle">
             {#if item.subtitle}{item.subtitle}{/if}

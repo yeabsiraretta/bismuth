@@ -3,8 +3,16 @@
  */
 
 import type { CanvasElement } from '@/features/canvas/types';
-import type { ComponentDefinition, ComponentProp as CanvasComponentProp } from '@/features/canvas/types/components';
-import type { ComponentPayload, ComponentProp, ComponentSlot, ComponentVariant } from '@/types/design-documents/component';
+import type {
+  ComponentDefinition,
+  ComponentProp as CanvasComponentProp,
+} from '@/features/canvas/types/components';
+import type {
+  ComponentPayload,
+  ComponentProp,
+  ComponentSlot,
+  ComponentVariant,
+} from '@/types/design-documents/component';
 import { getDesignSourceTag } from '@/features/canvas/services/documentGenerator/tagging';
 
 /** Map canvas component prop type to design document prop type. */

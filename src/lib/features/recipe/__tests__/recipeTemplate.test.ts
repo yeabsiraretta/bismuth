@@ -158,7 +158,10 @@ describe('applyRecipeTemplate', () => {
   });
 
   it('handles magicTime helper with custom mask', () => {
-    const result = applyRecipeTemplate('Published: {{magicTime datePublished "dd-mm-yyyy"}}', sampleData);
+    const result = applyRecipeTemplate(
+      'Published: {{magicTime datePublished "dd-mm-yyyy"}}',
+      sampleData
+    );
     expect(result).toMatch(/Published: 1[45]-01-2024/);
   });
 

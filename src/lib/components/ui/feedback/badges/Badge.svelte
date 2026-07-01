@@ -8,10 +8,7 @@
 </script>
 
 {#if count > 0}
-  <span
-    class="badge badge-{variant} badge-{size}"
-    aria-label="{count} items"
-  >
+  <span class="badge badge-{variant} badge-{size}" aria-label="{count} items">
     {count > 99 ? '99+' : count}
   </span>
 {/if}

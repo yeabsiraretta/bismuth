@@ -165,10 +165,13 @@ function createThemeStore() {
 
     saveToLocalStorage: () => {
       update((state: ThemeState) => {
-        localStorage.setItem('bismuth-theme-service', JSON.stringify({
-          themeName: state.currentTheme,
-          mode: state.mode,
-        }));
+        localStorage.setItem(
+          'bismuth-theme-service',
+          JSON.stringify({
+            themeName: state.currentTheme,
+            mode: state.mode,
+          })
+        );
         return state;
       });
     },
@@ -181,7 +184,10 @@ function createThemeStore() {
       try {
         await invoke('initialize_theme_service', { vaultRoot });
         // Inline theme loading to avoid self-reference
-        const themes = await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>('get_available_themes');
+        const themes =
+          await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>(
+            'get_available_themes'
+          );
         for (const info of themes) {
           const css = await invoke<string>('load_theme', { name: info.name });
           const cssVars = extractCssVariables(css);
@@ -201,7 +207,10 @@ function createThemeStore() {
 
     loadVaultThemes: async () => {
       try {
-        const themes = await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>('get_available_themes');
+        const themes =
+          await invoke<Array<{ name: string; filename: string; has_style_settings: boolean }>>(
+            'get_available_themes'
+          );
         for (const themeInfo of themes) {
           const css = await invoke<string>('load_theme', { name: themeInfo.name });
           const cssVars = extractCssVariables(css);
@@ -254,10 +263,13 @@ if (typeof window !== 'undefined') {
   let currentState: ThemeState = initialState;
   themeStore.subscribe((state: ThemeState) => {
     currentState = state;
-    localStorage.setItem('bismuth-theme-service', JSON.stringify({
-      themeName: state.currentTheme,
-      mode: state.mode,
-    }));
+    localStorage.setItem(
+      'bismuth-theme-service',
+      JSON.stringify({
+        themeName: state.currentTheme,
+        mode: state.mode,
+      })
+    );
   });
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {

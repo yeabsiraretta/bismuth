@@ -4,5 +4,11 @@
  * Edge elements (lines, arrows, paths): elementFactory.edge.ts
  */
 export { generateId } from '@/utils/id';
-export { createRectangle, createCircle, createText, createFrame, createScreen } from './elementFactory.node';
+export {
+  createRectangle,
+  createCircle,
+  createText,
+  createFrame,
+  createScreen,
+} from './elementFactory.node';
 export { createLine, createArrow, createPenPath } from './elementFactory.edge';

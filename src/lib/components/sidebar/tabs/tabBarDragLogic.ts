@@ -4,10 +4,22 @@ import type { SidebarTab } from '@/types/layout';
 
 /** Computes the next tab index given a keydown event on a vertical tab list. Returns -1 if the key is not a navigation key. */
 export function getNextTabIndex(e: KeyboardEvent, currentIndex: number, total: number): number {
-  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); return (currentIndex + 1) % total; }
-  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); return (currentIndex - 1 + total) % total; }
-  if (e.key === 'Home') { e.preventDefault(); return 0; }
-  if (e.key === 'End') { e.preventDefault(); return total - 1; }
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+    e.preventDefault();
+    return (currentIndex + 1) % total;
+  }
+  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    return (currentIndex - 1 + total) % total;
+  }
+  if (e.key === 'Home') {
+    e.preventDefault();
+    return 0;
+  }
+  if (e.key === 'End') {
+    e.preventDefault();
+    return total - 1;
+  }
   return -1;
 }
 
@@ -47,7 +59,9 @@ export function resetDragState(state: DragState): DragState {
 }
 
 export function startHoldTimer(state: DragState, tabId: string): DragState {
-  const holdTimer = setTimeout(() => { state.draggableId = tabId; }, 200);
+  const holdTimer = setTimeout(() => {
+    state.draggableId = tabId;
+  }, 200);
   return { ...state, holdTimer };
 }
 
@@ -69,8 +83,11 @@ export function handleDragStartLogic(
   lowerTabs: SidebarTab[]
 ): DragStartResult | null {
   if (!e.dataTransfer) return null;
-  const tab = (source === 'upper' ? tabs : lowerTabs).find(t => t.id === tabId);
-  if (tab?.pinned) { e.preventDefault(); return null; }
+  const tab = (source === 'upper' ? tabs : lowerTabs).find((t) => t.id === tabId);
+  if (tab?.pinned) {
+    e.preventDefault();
+    return null;
+  }
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', tabId);
   return { draggedTabId: tabId, dragSource: source };
@@ -98,8 +115,8 @@ export function handleDropLogic(
   }
 
   const list = targetSection === 'upper' ? tabs : lowerTabs;
-  const fromIdx = list.findIndex(t => t.id === draggedTabId);
-  const toIdx = list.findIndex(t => t.id === targetTabId);
+  const fromIdx = list.findIndex((t) => t.id === draggedTabId);
+  const toIdx = list.findIndex((t) => t.id === targetTabId);
 
   if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
     const reordered = [...list];

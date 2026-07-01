@@ -195,14 +195,16 @@ export const BUILTIN_SLASH_COMMANDS: SlashCommand[] = [
     trigger: '/fix',
     label: 'Fix Writing',
     description: 'Fix grammar, spelling, and style',
-    promptTemplate: 'Fix grammar, spelling, and improve the writing style of the following text. Return only the corrected text:\n\n{{selection}}',
+    promptTemplate:
+      'Fix grammar, spelling, and improve the writing style of the following text. Return only the corrected text:\n\n{{selection}}',
     scope: 'builtin',
   },
   {
     trigger: '/translate',
     label: 'Translate',
     description: 'Translate text to another language',
-    promptTemplate: 'Translate the following text to English. If it is already in English, translate to the language specified by the user:\n\n{{selection}}',
+    promptTemplate:
+      'Translate the following text to English. If it is already in English, translate to the language specified by the user:\n\n{{selection}}',
     scope: 'builtin',
   },
   {
@@ -216,21 +218,24 @@ export const BUILTIN_SLASH_COMMANDS: SlashCommand[] = [
     trigger: '/flashcards',
     label: 'Generate Flashcards',
     description: 'Create flashcards from content',
-    promptTemplate: 'Generate study flashcards in Q: / A: format from the following content:\n\n{{selection}}',
+    promptTemplate:
+      'Generate study flashcards in Q: / A: format from the following content:\n\n{{selection}}',
     scope: 'builtin',
   },
   {
     trigger: '/tags',
     label: 'Suggest Tags',
     description: 'Suggest relevant tags for a note',
-    promptTemplate: 'Suggest 3-5 relevant tags (as #tag format) for the following note content:\n\n{{selection}}',
+    promptTemplate:
+      'Suggest 3-5 relevant tags (as #tag format) for the following note content:\n\n{{selection}}',
     scope: 'builtin',
   },
   {
     trigger: '/links',
     label: 'Suggest Links',
     description: 'Suggest wikilinks to other notes',
-    promptTemplate: 'Based on the following content, suggest potential [[wikilinks]] to related concepts that could be separate notes:\n\n{{selection}}',
+    promptTemplate:
+      'Based on the following content, suggest potential [[wikilinks]] to related concepts that could be separate notes:\n\n{{selection}}',
     scope: 'builtin',
   },
 ];

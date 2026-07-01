@@ -12,7 +12,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { duplicateNote } = await import('@/services/vault/vault');
         const { refreshNotes } = await import('@/stores/vault/vault');
         const dup = await duplicateNote(note.path);
@@ -27,7 +30,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { deleteNote } = await import('@/services/vault/vault');
         const { refreshNotes } = await import('@/stores/vault/vault');
         await deleteNote(note.path);
@@ -42,7 +48,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { openInFileManager } = await import('@/services/vault/vault');
         await openInFileManager(note.path);
       },
@@ -54,7 +63,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const allNotes = get(notes);
-        if (allNotes.length === 0) { showToast('No notes in vault', 'warning'); return; }
+        if (allNotes.length === 0) {
+          showToast('No notes in vault', 'warning');
+          return;
+        }
         const idx = Math.floor(Math.random() * allNotes.length);
         const { openNote } = await import('@/appNavigation');
         await openNote(allNotes[idx].path);
@@ -67,7 +79,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         await navigator.clipboard.writeText(note.path);
         showToast('Path copied to clipboard', 'info');
       },
@@ -79,7 +94,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note) { showToast('No note open', 'warning'); return; }
+        if (!note) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const title = note.title || 'Untitled';
         await navigator.clipboard.writeText(title);
         showToast('Title copied to clipboard', 'info');
@@ -92,7 +110,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note) { showToast('No note open', 'warning'); return; }
+        if (!note) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const title = note.title || 'Untitled';
         await navigator.clipboard.writeText(`[[${title}]]`);
         showToast('Wiki link copied', 'info');
@@ -156,7 +177,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Editor',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { setActiveTab } = await import('@/stores/layout/layout');
         setActiveTab('right', 'writing');
         showToast('Writing panel opened — lint results shown', 'info');
@@ -169,7 +193,10 @@ export function buildEditorCommands(): Command[] {
       category: 'Notes',
       action: async () => {
         const note = get(activeNote);
-        if (!note?.path) { showToast('No note open', 'warning'); return; }
+        if (!note?.path) {
+          showToast('No note open', 'warning');
+          return;
+        }
         const { invoke } = await import('@tauri-apps/api/core');
         await invoke('archive_note', { path: note.path });
         const { refreshNotes } = await import('@/stores/vault/vault');
@@ -211,7 +238,10 @@ export function buildEditorCommands(): Command[] {
       action: async () => {
         const { currentVault } = await import('@/stores/vault/vault');
         const vault = get(currentVault);
-        if (!vault?.root_path) { showToast('No vault open', 'warning'); return; }
+        if (!vault?.root_path) {
+          showToast('No vault open', 'warning');
+          return;
+        }
         const { openInFileManager } = await import('@/services/vault/vault');
         await openInFileManager(vault.root_path);
       },
@@ -219,14 +249,22 @@ export function buildEditorCommands(): Command[] {
     {
       id: 'editor:paste-url-into-selection',
       name: 'Paste URL into Selection',
-      description: 'Wrap selected text with a pasted URL as a markdown link, or insert text into a selected URL',
+      description:
+        'Wrap selected text with a pasted URL as a markdown link, or insert text into a selected URL',
       category: 'Editor',
       action: async () => {
         const editorEl = document.querySelector('.cm-editor') as HTMLElement | null;
-        if (!editorEl) { showToast('No editor focused', 'warning'); return; }
+        if (!editorEl) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
         const view = (editorEl as unknown as { cmView?: { view: unknown } }).cmView?.view;
-        if (!view) { showToast('No editor focused', 'warning'); return; }
-        const { pasteTextIntoSelectedUrl } = await import('@/components/editor/extensions/pasteUrlIntoSelection');
+        if (!view) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
+        const { pasteTextIntoSelectedUrl } =
+          await import('@/components/editor/extensions/pasteUrlIntoSelection');
         const { EditorView } = await import('@codemirror/view');
         if (view instanceof EditorView) {
           const ok = await pasteTextIntoSelectedUrl(view);
@@ -242,9 +280,15 @@ export function buildEditorCommands(): Command[] {
       shortcut: 'Alt+0',
       action: async () => {
         const editorEl = document.querySelector('.cm-editor') as HTMLElement | null;
-        if (!editorEl) { showToast('No editor focused', 'warning'); return; }
+        if (!editorEl) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
         const view = (editorEl as unknown as { cmView?: { view: unknown } }).cmView?.view;
-        if (!view) { showToast('No editor focused', 'warning'); return; }
+        if (!view) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
         const { insertNumberedFootnote } = await import('@/features/footnotes');
         const { EditorView } = await import('@codemirror/view');
         if (view instanceof EditorView) insertNumberedFootnote(view);
@@ -258,9 +302,15 @@ export function buildEditorCommands(): Command[] {
       shortcut: 'Alt+-',
       action: async () => {
         const editorEl = document.querySelector('.cm-editor') as HTMLElement | null;
-        if (!editorEl) { showToast('No editor focused', 'warning'); return; }
+        if (!editorEl) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
         const view = (editorEl as unknown as { cmView?: { view: unknown } }).cmView?.view;
-        if (!view) { showToast('No editor focused', 'warning'); return; }
+        if (!view) {
+          showToast('No editor focused', 'warning');
+          return;
+        }
         const { insertNamedFootnote } = await import('@/features/footnotes');
         const { EditorView } = await import('@codemirror/view');
         if (view instanceof EditorView) insertNamedFootnote(view);

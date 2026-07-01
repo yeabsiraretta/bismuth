@@ -9,12 +9,7 @@ import { log } from '@/utils/logger';
 import { currentVault } from '@/stores/vault/vault';
 import type { JournalConfig, TemplateContext } from '../types';
 import { resolveTemplateVars, formatDate } from './templateVars';
-import {
-  getPeriodBounds,
-  computeIndex,
-  resolveNotePath,
-  buildFrontmatter,
-} from './journalService';
+import { getPeriodBounds, computeIndex, resolveNotePath, buildFrontmatter } from './journalService';
 
 interface CreateNoteResult {
   path: string;
@@ -25,7 +20,7 @@ interface CreateNoteResult {
 export async function createJournalNote(
   date: Date,
   journal: JournalConfig,
-  templateContent?: string,
+  templateContent?: string
 ): Promise<CreateNoteResult> {
   const vault = get(currentVault);
   if (!vault) throw new Error('No vault open');
@@ -80,7 +75,7 @@ export async function createJournalNote(
 export function navigatePeriod(
   date: Date,
   journal: JournalConfig,
-  direction: 'next' | 'prev',
+  direction: 'next' | 'prev'
 ): Date {
   const sign = direction === 'next' ? 1 : -1;
   const result = new Date(date);
@@ -91,11 +86,21 @@ export function navigatePeriod(
   }
 
   switch (journal.type) {
-    case 'daily': result.setDate(result.getDate() + sign); break;
-    case 'weekly': result.setDate(result.getDate() + 7 * sign); break;
-    case 'monthly': result.setMonth(result.getMonth() + sign); break;
-    case 'quarterly': result.setMonth(result.getMonth() + 3 * sign); break;
-    case 'yearly': result.setFullYear(result.getFullYear() + sign); break;
+    case 'daily':
+      result.setDate(result.getDate() + sign);
+      break;
+    case 'weekly':
+      result.setDate(result.getDate() + 7 * sign);
+      break;
+    case 'monthly':
+      result.setMonth(result.getMonth() + sign);
+      break;
+    case 'quarterly':
+      result.setMonth(result.getMonth() + 3 * sign);
+      break;
+    case 'yearly':
+      result.setFullYear(result.getFullYear() + sign);
+      break;
   }
 
   return result;
@@ -104,9 +109,15 @@ export function navigatePeriod(
 function advanceDate(date: Date, amount: number, unit: string): Date {
   const result = new Date(date);
   switch (unit) {
-    case 'day': result.setDate(result.getDate() + amount); break;
-    case 'week': result.setDate(result.getDate() + amount * 7); break;
-    case 'month': result.setMonth(result.getMonth() + amount); break;
+    case 'day':
+      result.setDate(result.getDate() + amount);
+      break;
+    case 'week':
+      result.setDate(result.getDate() + amount * 7);
+      break;
+    case 'month':
+      result.setMonth(result.getMonth() + amount);
+      break;
   }
   return result;
 }

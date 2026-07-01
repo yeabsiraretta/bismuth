@@ -8,15 +8,27 @@ import { NOTE_TO_INDEX, NOTE_NAMES_SHARP, NOTE_NAMES_FLAT } from '../../types/ch
 // ─── Note transposition ─────────────────────────────────────────────────────
 
 /** Keys that conventionally use flats */
-const FLAT_KEYS = new Set(['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb',
-  'Dm', 'Gm', 'Cm', 'Fm', 'Bbm', 'Ebm']);
+const FLAT_KEYS = new Set([
+  'F',
+  'Bb',
+  'Eb',
+  'Ab',
+  'Db',
+  'Gb',
+  'Dm',
+  'Gm',
+  'Cm',
+  'Fm',
+  'Bbm',
+  'Ebm',
+]);
 
 /** Transpose a single note name by `semitones` half steps */
 export function transposeNote(note: string, semitones: number, useFlats: boolean = false): string {
   const idx = NOTE_TO_INDEX[note];
   if (idx === undefined) return note;
 
-  const newIdx = ((idx + semitones) % 12 + 12) % 12;
+  const newIdx = (((idx + semitones) % 12) + 12) % 12;
   return useFlats ? NOTE_NAMES_FLAT[newIdx] : NOTE_NAMES_SHARP[newIdx];
 }
 
@@ -24,7 +36,7 @@ export function transposeNote(note: string, semitones: number, useFlats: boolean
 export function shouldUseFlats(rootNote: string, semitones: number): boolean {
   const idx = NOTE_TO_INDEX[rootNote];
   if (idx === undefined) return false;
-  const newIdx = ((idx + semitones) % 12 + 12) % 12;
+  const newIdx = (((idx + semitones) % 12) + 12) % 12;
   const newNote = NOTE_NAMES_SHARP[newIdx];
   const newNoteFlat = NOTE_NAMES_FLAT[newIdx];
   return FLAT_KEYS.has(newNote) || FLAT_KEYS.has(newNoteFlat);
@@ -33,7 +45,11 @@ export function shouldUseFlats(rootNote: string, semitones: number): boolean {
 // ─── Chord transposition ─────────────────────────────────────────────────────
 
 /** Transpose a chord token by `semitones` half steps */
-export function transposeChord(chord: ChordToken, semitones: number, useFlats?: boolean): ChordToken {
+export function transposeChord(
+  chord: ChordToken,
+  semitones: number,
+  useFlats?: boolean
+): ChordToken {
   if (semitones === 0) return chord;
 
   const flats = useFlats ?? shouldUseFlats(chord.root, semitones);
@@ -61,7 +77,7 @@ export function transposeChordLine(line: string, semitones: number, useFlats?: b
         result = `${newRoot}${qualityWithoutBass}/${newBass}`;
       }
       return result;
-    },
+    }
   );
 }
 
@@ -69,11 +85,11 @@ export function transposeChordLine(line: string, semitones: number, useFlats?: b
 export function transposeLines(lines: ChordLine[], semitones: number): ChordLine[] {
   if (semitones === 0) return lines;
 
-  return lines.map(line => {
+  return lines.map((line) => {
     if (line.type !== 'chord' || !line.chords?.length) return line;
 
     const transposedText = transposeChordLine(line.text, semitones);
-    const transposedChords = line.chords.map(c => transposeChord(c, semitones));
+    const transposedChords = line.chords.map((c) => transposeChord(c, semitones));
 
     return { ...line, text: transposedText, chords: transposedChords };
   });

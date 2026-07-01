@@ -43,13 +43,16 @@ Do not load all durable memory files during normal planning when the optimizer i
 ## Semantic Modeling
 
 Before planning, build internal representations:
+
 1. **Constraint Map**: Identify MUST/SHOULD rules from small principles files and selected architecture entries.
 2. **Pattern Inventory**: Identify preferred implementation patterns from selected active decisions.
 3. **Anti-Pattern Guard**: Identify selected recurring bug patterns that apply to this scope.
 4. **Deviation Log**: Identify any `accepted-deviations` that relax standard rules.
 
 ## Retrieval Selection & Budget
+
 Do not dump the entire repository memory into the synthesis. Use configured retrieval limits, defaulting to:
+
 - Max 20 index entries considered
 - Max 5 active decisions
 - Max 5 architecture constraints
@@ -63,57 +66,73 @@ Do not dump the entire repository memory into the synthesis. Use configured retr
 If the budget is exceeded, summarize and prioritize the highest-impact entries instead of loading more memory.
 
 ### Phase-Aware Retrieval
+
 Adapt synthesis based on the Spec Kit phase:
+
 - **Specify/Plan**: Prioritize boundary definitions, module ownership, and architectural drift risks.
 - **Tasks/Implement**: Prioritize migration patterns, security constraints, and known implementation risks.
 
 ### Decision State & Conflict Resolution
+
 Treat memory as stateful.
+
 - Supported states: `active`, `deprecated`, `superseded`, `experimental`, `accepted-deviation`.
 - Prefer newer accepted decisions.
 - Explicitly exclude `deprecated` or `superseded` memory.
 - If an unresolved conflict exists, explicitly surface it in the "Conflict Warnings" section, preferring the current active standard.
 
 ### Required Synthesis Structure
+
 Create or refresh `{specs_root}/<feature>/{memory_synthesis_filename}` matching exactly this structure and keep it within `retrieval.max_synthesis_words`:
 
 ```markdown
 # Memory Synthesis
 
 ## Current Scope
+
 [Brief description of feature scope and affected modules]
 
 ## Relevant Decisions
+
 - [Decision] (Reason Included: [X], Status: [Y], Source: [Z])
 
 ## Active Architecture Constraints
+
 - [Constraint] (Reason Included: [X], Source: [Z])
 
 ## Accepted Deviations
+
 - [Deviation] (Reason Included: [X], Status: Accepted-Deviation)
 
 ## Relevant Security Constraints
+
 - [Constraint] (Reason Included: [X], Source: security-constraints.md)
 
 ## Related Historical Lessons
+
 - [Lesson] (Reason Included: [X])
 
 ## Conflict Warnings
+
 - [Explicit conflicts between old and new memory]
 
 ## Retrieval Notes
+
 - [Index entries considered, source sections read, budget status]
 ```
 
 Conflict rules:
+
 - Hard conflict: block progress when the spec or plan violates constitution rules, an explicit architecture boundary, a still-valid decision, or a known safety / data integrity bug prevention rule.
 - Soft conflict: warn when memory suggests a preferred approach but the spec can still proceed with a justified alternative.
 - Ask for clarification when the spec cannot satisfy memory without changing scope, requirements, or an existing durable decision.
 
 ### Orchestration Note
+
 This command (and its optimizer-aware `prepare-context` equivalent) is **automatically executed** by `spec-kit-architecture-guard` as part of its `governed-*` workflows. Manual execution is optional and typically only necessary for manual context refreshes outside of a formal governed turn.
 
 Output:
+
 - a concise planning synthesis
 - Include only selected summaries in the plan.
 - Do not continue to task breakdown or implementation with unresolved hard conflicts.

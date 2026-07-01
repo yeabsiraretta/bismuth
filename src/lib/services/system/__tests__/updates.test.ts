@@ -22,7 +22,9 @@ vi.mock('svelte/store', async (importOriginal) => {
     ...actual,
     get: vi.fn((store) => {
       let val: unknown;
-      store.subscribe((v: unknown) => { val = v; })();
+      store.subscribe((v: unknown) => {
+        val = v;
+      })();
       return val;
     }),
   };
@@ -56,7 +58,9 @@ describe('buildUpdateEndpoint (T17)', () => {
 });
 
 describe('updates service', () => {
-  beforeEach(() => { mockInvoke.mockReset(); });
+  beforeEach(() => {
+    mockInvoke.mockReset();
+  });
 
   it('returns current version, checked_at and channel from IPC', async () => {
     mockInvoke.mockResolvedValue({ current_version: '0.3.0', checked_at: 1700000000 });

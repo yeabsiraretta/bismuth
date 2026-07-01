@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { createDesignSystemPages, getDesignPageId, isDesignSystemPage, DESIGN_SYSTEM_PAGES } from './pageTemplates';
+import {
+  createDesignSystemPages,
+  getDesignPageId,
+  isDesignSystemPage,
+  DESIGN_SYSTEM_PAGES,
+} from './pageTemplates';
 
 describe('pageTemplates', () => {
   describe('createDesignSystemPages', () => {

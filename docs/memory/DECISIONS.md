@@ -77,6 +77,7 @@ Active → Needs Review → Superseded → (pruned)
 **Decision**: `flowLinks: FlowLink[]` is a top-level field on `CanvasDocument`, not a property on individual frame elements. Each `FlowLink` stores `fromFrameId` and `toFrameId` as string references. This was a deliberate research-first decision documented in `specs/004-canvas-component-system/research.md`.
 
 **Tradeoffs**:
+
 - Gained: Cascade deletion is a single array filter on the document — no element tree walk needed.
 - Gained: Links survive element property resets and component instance override changes.
 - Made harder: Querying "which links touch this frame" requires a document-level scan. Use `buildFlowGraph()` to pre-index before any query that needs per-frame link access.
@@ -96,6 +97,7 @@ Active → Needs Review → Superseded → (pruned)
 **Decision**: When multiple `Compartment` values need reconfiguring on a settings change, batch them in a single `view.dispatch({ effects: [...all effects...] })` call inside one consolidated `$:` block with a `mounted` guard. Do NOT use separate `$:` blocks each dispatching one effect.
 
 **Tradeoffs**:
+
 - Gained: Single CodeMirror state transaction — no intermediate renders between compartment updates.
 - Gained: Prevents order-dependent side effects if two compartments interact (e.g. theme + spellcheck both touching content attributes).
 - Made harder: All relevant compartments must be declared in the same scope. Requires planning compartment placement at component initialization time.
@@ -117,6 +119,7 @@ Active → Needs Review → Superseded → (pruned)
 **Decision**: When a feature is blocked on external verification (e.g., COOP/COEP headers for ffmpeg.wasm), implement a stub component that: (1) explains the block clearly to the user, (2) links to verification documentation, (3) includes an actionable inline check button that calls the blocking check function and shows the result, (4) shows a "ready" state when the check passes.
 
 **Tradeoffs**:
+
 - Gained: Developers and users can self-diagnose readiness without opening a terminal.
 - Gained: The stub satisfies the tasks.md entry, avoids a broken tab, and documents the unblock path in the UI itself.
 - Made harder: Slightly more implementation work than a placeholder div.

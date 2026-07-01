@@ -15,6 +15,6 @@ declare module 'abcjs' {
   export function renderAbc(
     target: string | HTMLElement,
     abcString: string,
-    params?: AbcVisualParams,
+    params?: AbcVisualParams
   ): object[];
 }

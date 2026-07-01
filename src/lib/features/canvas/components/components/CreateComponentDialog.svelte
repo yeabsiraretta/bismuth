@@ -1,6 +1,7 @@
 <script lang="ts">
   export let show = false;
-  export let onConfirm: ((detail: { name: string; category: string }) => void) | undefined = undefined;
+  export let onConfirm: ((detail: { name: string; category: string }) => void) | undefined =
+    undefined;
   export let onCancel: (() => void) | undefined = undefined;
 
   let componentName = '';
@@ -30,8 +31,19 @@
 </script>
 
 {#if show}
-  <div class="dialog-overlay" on:click={handleCancel} on:keydown={handleKeydown} role="presentation">
-    <div class="dialog" on:click|stopPropagation role="dialog" aria-labelledby="create-comp-title" tabindex="-1">
+  <div
+    class="dialog-overlay"
+    on:click={handleCancel}
+    on:keydown={handleKeydown}
+    role="presentation"
+  >
+    <div
+      class="dialog"
+      on:click|stopPropagation
+      role="dialog"
+      aria-labelledby="create-comp-title"
+      tabindex="-1"
+    >
       <h3 id="create-comp-title" class="dialog-title">Create Component</h3>
 
       <div class="dialog-body">

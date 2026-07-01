@@ -1,6 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import { log } from '@/utils/logger';
-import type { LongformProject, Scene, Draft, SceneStatus, CompilePreset, CompileOptions } from '../types';
+import type {
+  LongformProject,
+  Scene,
+  Draft,
+  SceneStatus,
+  CompilePreset,
+  CompileOptions,
+} from '../types';
 
 /** Discover all longform projects in the vault. */
 export async function discoverProjects(): Promise<LongformProject[]> {
@@ -60,10 +67,7 @@ export async function listDrafts(scenePath: string): Promise<Draft[]> {
 }
 
 /** Update a scene's status. */
-export async function updateSceneStatus(
-  scenePath: string,
-  status: SceneStatus
-): Promise<void> {
+export async function updateSceneStatus(scenePath: string, status: SceneStatus): Promise<void> {
   return invoke<void>('update_scene_status', { scenePath, status });
 }
 

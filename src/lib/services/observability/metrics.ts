@@ -61,22 +61,50 @@ export interface MetricSnapshot {
 // ─── Handles ──────────────────────────────────────────────────────────────────
 
 class CounterHandle {
-  constructor(private metric: CounterMetric, private onUpdate: () => void) {}
-  inc(amount = 1): void { this.metric.value += amount; this.onUpdate(); }
-  get(): number { return this.metric.value; }
-  reset(): void { this.metric.value = 0; this.onUpdate(); }
+  constructor(
+    private metric: CounterMetric,
+    private onUpdate: () => void
+  ) {}
+  inc(amount = 1): void {
+    this.metric.value += amount;
+    this.onUpdate();
+  }
+  get(): number {
+    return this.metric.value;
+  }
+  reset(): void {
+    this.metric.value = 0;
+    this.onUpdate();
+  }
 }
 
 class GaugeHandle {
-  constructor(private metric: GaugeMetric, private onUpdate: () => void) {}
-  set(value: number): void { this.metric.value = value; this.onUpdate(); }
-  inc(amount = 1): void { this.metric.value += amount; this.onUpdate(); }
-  dec(amount = 1): void { this.metric.value -= amount; this.onUpdate(); }
-  get(): number { return this.metric.value; }
+  constructor(
+    private metric: GaugeMetric,
+    private onUpdate: () => void
+  ) {}
+  set(value: number): void {
+    this.metric.value = value;
+    this.onUpdate();
+  }
+  inc(amount = 1): void {
+    this.metric.value += amount;
+    this.onUpdate();
+  }
+  dec(amount = 1): void {
+    this.metric.value -= amount;
+    this.onUpdate();
+  }
+  get(): number {
+    return this.metric.value;
+  }
 }
 
 class HistogramHandle {
-  constructor(private metric: HistogramMetric, private onUpdate: () => void) {}
+  constructor(
+    private metric: HistogramMetric,
+    private onUpdate: () => void
+  ) {}
   observe(value: number): void {
     this.metric.samples.push(value);
     this.metric.count++;
@@ -86,7 +114,16 @@ class HistogramHandle {
     }
     this.onUpdate();
   }
-  getSnapshot(): { count: number; sum: number; avg: number; min: number; max: number; p50: number; p95: number; p99: number } {
+  getSnapshot(): {
+    count: number;
+    sum: number;
+    avg: number;
+    min: number;
+    max: number;
+    p50: number;
+    p95: number;
+    p99: number;
+  } {
     const s = [...this.metric.samples].sort((a, b) => a - b);
     const count = this.metric.count;
     const sum = this.metric.sum;
@@ -102,7 +139,12 @@ class HistogramHandle {
       p99: s[Math.floor(s.length * 0.99)],
     };
   }
-  reset(): void { this.metric.samples = []; this.metric.count = 0; this.metric.sum = 0; this.onUpdate(); }
+  reset(): void {
+    this.metric.samples = [];
+    this.metric.count = 0;
+    this.metric.sum = 0;
+    this.onUpdate();
+  }
 }
 
 // ─── Collector ────────────────────────────────────────────────────────────────
@@ -171,9 +213,17 @@ class MetricsCollector {
       const h = new HistogramHandle(m, () => {});
       const s = h.getSnapshot();
       snapshots.push({
-        name: m.name, type: 'histogram', labels: m.labels,
-        count: s.count, sum: s.sum, avg: s.avg, min: s.min, max: s.max,
-        p50: s.p50, p95: s.p95, p99: s.p99,
+        name: m.name,
+        type: 'histogram',
+        labels: m.labels,
+        count: s.count,
+        sum: s.sum,
+        avg: s.avg,
+        min: s.min,
+        max: s.max,
+        p50: s.p50,
+        p95: s.p95,
+        p99: s.p99,
       });
     }
 
@@ -185,15 +235,23 @@ class MetricsCollector {
     this.counters.clear();
     this.gauges.clear();
     this.histograms.clear();
-    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { log.warn('Failed to remove metrics from localStorage', { error: String(e) }); }
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+      log.warn('Failed to remove metrics from localStorage', { error: String(e) });
+    }
   }
 
   /** Export metrics as JSON. */
   export(): string {
-    return JSON.stringify({
-      timestamp: new Date().toISOString(),
-      metrics: this.getAll(),
-    }, null, 2);
+    return JSON.stringify(
+      {
+        timestamp: new Date().toISOString(),
+        metrics: this.getAll(),
+      },
+      null,
+      2
+    );
   }
 
   // ─── Internal ───────────────────────────────────────────────────────────────
@@ -218,13 +276,19 @@ class MetricsCollector {
         counters: Object.fromEntries(this.counters),
         gauges: Object.fromEntries(this.gauges),
         histograms: Object.fromEntries(
-          Array.from(this.histograms.entries()).map(([k, v]) => [k, {
-            ...v, samples: v.samples.slice(-50),
-          }]),
+          Array.from(this.histograms.entries()).map(([k, v]) => [
+            k,
+            {
+              ...v,
+              samples: v.samples.slice(-50),
+            },
+          ])
         ),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) { log.warn('Failed to persist metrics to localStorage', { error: String(e) }); }
+    } catch (e) {
+      log.warn('Failed to persist metrics to localStorage', { error: String(e) });
+    }
   }
 
   private loadFromStorage(): void {
@@ -247,7 +311,9 @@ class MetricsCollector {
           this.histograms.set(key, val as HistogramMetric);
         }
       }
-    } catch (e) { log.warn('Failed to load metrics from localStorage, starting fresh', { error: String(e) }); }
+    } catch (e) {
+      log.warn('Failed to load metrics from localStorage, starting fresh', { error: String(e) });
+    }
   }
 }
 

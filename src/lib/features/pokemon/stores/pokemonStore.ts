@@ -5,7 +5,16 @@
  */
 import { writable, derived, get } from 'svelte/store';
 import { log } from '@/utils/logger';
-import type { Team, TeamSlot, Move, DamageResult, FieldConditions, PokemonSpecies, Item, Nature } from '../types/pokemon';
+import type {
+  Team,
+  TeamSlot,
+  Move,
+  DamageResult,
+  FieldConditions,
+  PokemonSpecies,
+  Item,
+  Nature,
+} from '../types/pokemon';
 import { calculateDamage, defaultEvs, defaultIvs } from '../services/damageCalc';
 import typeChartJson from '@/config/pokemon/gen9-types.json';
 import pokedexJson from '@/config/pokemon/gen9-pokedex.json';
@@ -24,16 +33,26 @@ let dataLoading = false;
 
 function makeEmptySlot(): TeamSlot {
   return {
-    species: null, item: null, ability: '', nature: 'Hardy' as Nature,
-    evs: defaultEvs(), ivs: defaultIvs(), moves: [null, null, null, null], level: 50,
+    species: null,
+    item: null,
+    ability: '',
+    nature: 'Hardy' as Nature,
+    evs: defaultEvs(),
+    ivs: defaultIvs(),
+    moves: [null, null, null, null],
+    level: 50,
   };
 }
 
 function makeEmptyTeam(): Team {
   return {
     slots: [
-      makeEmptySlot(), makeEmptySlot(), makeEmptySlot(),
-      makeEmptySlot(), makeEmptySlot(), makeEmptySlot(),
+      makeEmptySlot(),
+      makeEmptySlot(),
+      makeEmptySlot(),
+      makeEmptySlot(),
+      makeEmptySlot(),
+      makeEmptySlot(),
     ],
     generation: 'gen9',
   };
@@ -92,9 +111,15 @@ export async function loadPokemonData(): Promise<void> {
   }
 }
 
-export function getPokedex(): Record<string, PokemonSpecies> | null { return pokedexData; }
-export function getMovesDb(): Record<string, Move> | null { return movesData; }
-export function getItemsDb(): Record<string, Item> | null { return itemsData; }
+export function getPokedex(): Record<string, PokemonSpecies> | null {
+  return pokedexData;
+}
+export function getMovesDb(): Record<string, Move> | null {
+  return movesData;
+}
+export function getItemsDb(): Record<string, Item> | null {
+  return itemsData;
+}
 
 // ---------------------------------------------------------------------------
 // Team actions
@@ -124,10 +149,20 @@ export function updateSlot(index: number, patch: Partial<TeamSlot>): void {
 
 export function loadTeam(team: Team): void {
   activeTeam.set(team);
-  log.info('Team loaded from paste', { slotCount: team.slots.filter((s) => s.species !== null).length });
+  log.info('Team loaded from paste', {
+    slotCount: team.slots.filter((s) => s.species !== null).length,
+  });
 }
 
-export function setCalcAttacker(slot: TeamSlot | null): void { calcAttacker.set(slot); }
-export function setCalcDefender(slot: TeamSlot | null): void { calcDefender.set(slot); }
-export function setCalcMove(move: Move | null): void { calcMove.set(move); }
-export function setCalcField(field: FieldConditions): void { calcField.set(field); }
+export function setCalcAttacker(slot: TeamSlot | null): void {
+  calcAttacker.set(slot);
+}
+export function setCalcDefender(slot: TeamSlot | null): void {
+  calcDefender.set(slot);
+}
+export function setCalcMove(move: Move | null): void {
+  calcMove.set(move);
+}
+export function setCalcField(field: FieldConditions): void {
+  calcField.set(field);
+}

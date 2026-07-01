@@ -15,11 +15,11 @@ export const statsRange = writable<7 | 30 | 90 | 365>(30);
 export const goalProgress = derived(writingGoals, ($goals) => svc.getGoalProgress($goals));
 
 export const rangedSessions = derived([writingSessions, statsRange], ([$sessions, $range]) =>
-  svc.getSessionsByRange($range),
+  svc.getSessionsByRange($range)
 );
 
 export const totalWordsInRange = derived(rangedSessions, ($sessions) =>
-  $sessions.reduce((sum, s) => sum + s.wordsWritten, 0),
+  $sessions.reduce((sum, s) => sum + s.wordsWritten, 0)
 );
 
 // ─── Goal actions ───────────────────────────────────────────────────────────
@@ -33,16 +33,18 @@ export function updateGoals(goals: WritingGoals): void {
 
 export function startSprint(durationMinutes: number, currentWordCount: number): void {
   const sprint: WritingSprint = {
-    isRunning: true, durationMinutes,
+    isRunning: true,
+    durationMinutes,
     startedAt: new Date().toISOString(),
-    wordsAtStart: currentWordCount, wordsWritten: 0,
+    wordsAtStart: currentWordCount,
+    wordsWritten: 0,
   };
   svc.saveSprint(sprint);
   writingSprint.set(sprint);
 }
 
 export function endSprint(currentWordCount: number): void {
-  writingSprint.update(s => {
+  writingSprint.update((s) => {
     const wordsWritten = Math.max(0, currentWordCount - s.wordsAtStart);
     const updated: WritingSprint = { ...s, isRunning: false, wordsWritten };
     svc.saveSprint(updated);
@@ -58,7 +60,13 @@ export function endSprint(currentWordCount: number): void {
 }
 
 export function cancelSprint(): void {
-  const reset: WritingSprint = { isRunning: false, durationMinutes: 25, startedAt: null, wordsAtStart: 0, wordsWritten: 0 };
+  const reset: WritingSprint = {
+    isRunning: false,
+    durationMinutes: 25,
+    startedAt: null,
+    wordsAtStart: 0,
+    wordsWritten: 0,
+  };
   svc.saveSprint(reset);
   writingSprint.set(reset);
 }

@@ -3,38 +3,47 @@
  * Formula reference: https://bulbapedia.bulbagarden.net/wiki/Damage
  */
 import { log } from '@/utils/logger';
-import type { TeamSlot, Move, DamageResult, FieldConditions, Nature, PokemonType, Stats, PokemonSpecies } from '../types/pokemon';
+import type {
+  TeamSlot,
+  Move,
+  DamageResult,
+  FieldConditions,
+  Nature,
+  PokemonType,
+  Stats,
+  PokemonSpecies,
+} from '../types/pokemon';
 import defaultTypeChart from '@/config/pokemon/gen9-types.json';
 
 const LEVEL = 50;
 
 /** Nature modifiers: [boosted stat, reduced stat] — null means neutral */
 const NATURE_MODIFIERS: Record<Nature, [keyof Stats | null, keyof Stats | null]> = {
-  Hardy:   [null,  null],
-  Lonely:  ['atk', 'def'],
-  Brave:   ['atk', 'spe'],
+  Hardy: [null, null],
+  Lonely: ['atk', 'def'],
+  Brave: ['atk', 'spe'],
   Adamant: ['atk', 'spa'],
   Naughty: ['atk', 'spd'],
-  Bold:    ['def', 'atk'],
-  Docile:  [null,  null],
+  Bold: ['def', 'atk'],
+  Docile: [null, null],
   Relaxed: ['def', 'spe'],
-  Impish:  ['def', 'spa'],
-  Lax:     ['def', 'spd'],
-  Timid:   ['spe', 'atk'],
-  Hasty:   ['spe', 'def'],
-  Serious: [null,  null],
-  Jolly:   ['spe', 'spa'],
-  Naive:   ['spe', 'spd'],
-  Modest:  ['spa', 'atk'],
-  Mild:    ['spa', 'def'],
-  Quiet:   ['spa', 'spe'],
-  Bashful: [null,  null],
-  Rash:    ['spa', 'spd'],
-  Calm:    ['spd', 'atk'],
-  Gentle:  ['spd', 'def'],
-  Sassy:   ['spd', 'spe'],
+  Impish: ['def', 'spa'],
+  Lax: ['def', 'spd'],
+  Timid: ['spe', 'atk'],
+  Hasty: ['spe', 'def'],
+  Serious: [null, null],
+  Jolly: ['spe', 'spa'],
+  Naive: ['spe', 'spd'],
+  Modest: ['spa', 'atk'],
+  Mild: ['spa', 'def'],
+  Quiet: ['spa', 'spe'],
+  Bashful: [null, null],
+  Rash: ['spa', 'spd'],
+  Calm: ['spd', 'atk'],
+  Gentle: ['spd', 'def'],
+  Sassy: ['spd', 'spe'],
   Careful: ['spd', 'spa'],
-  Quirky:  [null,  null],
+  Quirky: [null, null],
 };
 
 function natureMultiplier(nature: Nature, stat: keyof Stats): number {
@@ -70,9 +79,12 @@ function hasStab(moveType: PokemonType, attackerTypes: [PokemonType, PokemonType
 }
 
 /** Minimal stub type chart — all matchups neutral. */
-const _STUB_CHART: Record<string, Record<string, number>> = new Proxy({}, {
-  get: () => new Proxy({}, { get: () => 1 }),
-});
+const _STUB_CHART: Record<string, Record<string, number>> = new Proxy(
+  {},
+  {
+    get: () => new Proxy({}, { get: () => 1 }),
+  }
+);
 void _STUB_CHART; // retained for potential use in future
 
 // Use the static import as the real default chart
@@ -111,8 +123,12 @@ export function calculateDamage(
   const resolvedField = field ?? {};
   const chart = typeChart ?? DEFAULT_CHART;
   const zero = (): DamageResult => ({
-    min: 0, max: 0, rolls: new Array(16).fill(0),
-    percentages: new Array(16).fill('0.0'), ohkoChance: 0, effectiveness: 0,
+    min: 0,
+    max: 0,
+    rolls: new Array(16).fill(0),
+    percentages: new Array(16).fill('0.0'),
+    ohkoChance: 0,
+    effectiveness: 0,
   });
 
   const atkSpecies = resolveSpecies(attacker as LooseSlot);
@@ -146,20 +162,20 @@ export function calculateDamage(
 
   const atkStat = calcStat(atkBase, atkEv, attacker.ivs[atkStatKey], attacker.nature, atkStatKey);
   const defStat = calcStat(defBase, defEv, defender.ivs[defStatKey], defender.nature, defStatKey);
-  const defHp   = calcStat(defHpBase, defHpEv, defender.ivs.hp, defender.nature, 'hp');
+  const defHp = calcStat(defHpBase, defHpEv, defender.ivs.hp, defender.nature, 'hp');
 
   // Gen 9 base damage: floor(floor(floor(2*50/5+2) * power * atk/def) / 50) + 2
-  const inner = Math.floor(Math.floor(22 * move.power * atkStat / defStat) / 50) + 2;
+  const inner = Math.floor(Math.floor((22 * move.power * atkStat) / defStat) / 50) + 2;
 
   const stab = hasStab(move.type as PokemonType, attackerTypes) ? 1.5 : 1.0;
   const crit = resolvedField.isCritical ? 1.5 : 1.0;
-  const burn = (resolvedField.attackerBurned && isPhysical) ? 0.5 : 1.0;
+  const burn = resolvedField.attackerBurned && isPhysical ? 0.5 : 1.0;
 
   const baseModifiedDamage = inner * stab * crit * burn;
 
   const rolls: number[] = [];
   for (let r = 85; r <= 100; r++) {
-    const dmg = Math.floor(Math.floor(baseModifiedDamage * r / 100) * effectiveness);
+    const dmg = Math.floor(Math.floor((baseModifiedDamage * r) / 100) * effectiveness);
     rolls.push(Math.max(1, dmg));
   }
 

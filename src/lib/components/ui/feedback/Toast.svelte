@@ -40,7 +40,12 @@
   >
     <div class="toast-content">
       <span class="toast-message">{message}</span>
-      <button class="toast-close" on:click={handleClose} title="Dismiss" aria-label="Dismiss notification">
+      <button
+        class="toast-close"
+        on:click={handleClose}
+        title="Dismiss"
+        aria-label="Dismiss notification"
+      >
         <svg width="16" height="16" viewBox="0 0 16 16">
           <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" />
         </svg>

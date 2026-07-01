@@ -23,7 +23,7 @@ describe('hotkeyStore', () => {
   beforeEach(() => {
     hotkeyStore.reset();
     // Re-register defaults to match initialization state
-    defaultHotkeys.forEach(h => hotkeyStore.register(h));
+    defaultHotkeys.forEach((h) => hotkeyStore.register(h));
   });
 
   it('has default hotkeys registered', () => {

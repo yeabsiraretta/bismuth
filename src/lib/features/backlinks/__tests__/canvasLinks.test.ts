@@ -30,9 +30,7 @@ describe('extractCanvasLinks', () => {
 
   it('extracts wikilinks from text cards', () => {
     const json = JSON.stringify({
-      nodes: [
-        { id: 't1', type: 'text', text: 'See [[Note A]] and [[Note B]]' },
-      ],
+      nodes: [{ id: 't1', type: 'text', text: 'See [[Note A]] and [[Note B]]' }],
     });
     const links = extractCanvasLinks('board.canvas', json);
     expect(links).toHaveLength(2);

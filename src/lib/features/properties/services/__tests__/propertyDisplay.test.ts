@@ -167,7 +167,7 @@ describe('calculateProgress', () => {
   it('uses maxProperty when specified', () => {
     const result = calculateProgress(
       { score: 3, maxScore: 10 },
-      { property: 'score', max: 100, maxProperty: 'maxScore' },
+      { property: 'score', max: 100, maxProperty: 'maxScore' }
     );
     expect(result.percent).toBe(30);
     expect(result.max).toBe(10);
@@ -223,7 +223,10 @@ describe('property colors', () => {
 // ─── Tag colors ─────────────────────────────────────────────────────────────
 
 describe('getTagColor', () => {
-  const tags = [{ tag: 'important', color: '#ff0000' }, { tag: 'idea', color: '#0000ff' }];
+  const tags = [
+    { tag: 'important', color: '#ff0000' },
+    { tag: 'idea', color: '#0000ff' },
+  ];
 
   it('finds tag color', () => {
     expect(getTagColor(tags, 'important')).toBe('#ff0000');
@@ -246,7 +249,9 @@ describe('renderPropertyTemplate', () => {
   });
 
   it('substitutes propertyName', () => {
-    expect(renderPropertyTemplate('{{propertyName}}: {{propertyValue}}', 'status', 'active')).toBe('status: active');
+    expect(renderPropertyTemplate('{{propertyName}}: {{propertyValue}}', 'status', 'active')).toBe(
+      'status: active'
+    );
   });
 
   it('applies reverse helper', () => {
@@ -270,12 +275,20 @@ describe('renderPropertyTemplate', () => {
   });
 
   it('formats duration humanized', () => {
-    const result = renderPropertyTemplate('{{durationHumanized propertyValue "s" true}}', 'dur', 829);
+    const result = renderPropertyTemplate(
+      '{{durationHumanized propertyValue "s" true}}',
+      'dur',
+      829
+    );
     expect(result).toBe('in 14 minutes');
   });
 
   it('formats duration formatted', () => {
-    const result = renderPropertyTemplate('{{durationFormatted propertyValue "seconds" "HH:mm:ss"}}', 'dur', 829);
+    const result = renderPropertyTemplate(
+      '{{durationFormatted propertyValue "seconds" "HH:mm:ss"}}',
+      'dur',
+      829
+    );
     expect(result).toBe('00:13:49');
   });
 

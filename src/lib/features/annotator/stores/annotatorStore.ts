@@ -40,13 +40,10 @@ export const activeAnnotationFile = writable<AnnotationFile | null>(null);
 
 export const annotations = derived(
   activeAnnotationFile,
-  ($file: AnnotationFile | null) => $file?.annotations ?? [],
+  ($file: AnnotationFile | null) => $file?.annotations ?? []
 );
 
-export const annotationCount = derived(
-  annotations,
-  ($anns: DocumentAnnotation[]) => $anns.length,
-);
+export const annotationCount = derived(annotations, ($anns: DocumentAnnotation[]) => $anns.length);
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
@@ -84,10 +81,14 @@ export async function openAnnotationNote(notePath: string): Promise<void> {
  */
 export async function createAnnotationNote(
   target: string,
-  targetType?: AnnotationTargetType,
+  targetType?: AnnotationTargetType
 ): Promise<string> {
   const resolved = resolveTargetType(target, targetType);
-  const baseName = target.split('/').pop()?.replace(/\.[^.]+$/, '') ?? 'annotation';
+  const baseName =
+    target
+      .split('/')
+      .pop()
+      ?.replace(/\.[^.]+$/, '') ?? 'annotation';
   const notePath = `${baseName} — Annotations.md`;
 
   const content = serializeAnnotations(target, resolved, []);
@@ -121,7 +122,7 @@ export async function addAnnotation(
   quotePrefix: string,
   quoteSuffix: string,
   page?: number,
-  chapter?: string,
+  chapter?: string
 ): Promise<DocumentAnnotation | null> {
   const file = get(activeAnnotationFile);
   if (!file) return null;
@@ -156,13 +157,13 @@ export async function addAnnotation(
  */
 export async function updateAnnotation(
   id: string,
-  changes: Partial<Pick<DocumentAnnotation, 'comment' | 'tags' | 'color'>>,
+  changes: Partial<Pick<DocumentAnnotation, 'comment' | 'tags' | 'color'>>
 ): Promise<void> {
   const file = get(activeAnnotationFile);
   if (!file) return;
 
   const updated = file.annotations.map((a) =>
-    a.id === id ? { ...a, ...changes, updatedAt: new Date().toISOString() } : a,
+    a.id === id ? { ...a, ...changes, updatedAt: new Date().toISOString() } : a
   );
   activeAnnotationFile.set({ ...file, annotations: updated });
   await persistAnnotations();
@@ -194,7 +195,10 @@ export function closeAnnotator(): void {
  * Sets the current page (PDF navigation).
  */
 export function setPage(page: number): void {
-  annotatorView.update((v) => ({ ...v, currentPage: Math.max(1, Math.min(page, v.totalPages || page)) }));
+  annotatorView.update((v) => ({
+    ...v,
+    currentPage: Math.max(1, Math.min(page, v.totalPages || page)),
+  }));
 }
 
 /**

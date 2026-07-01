@@ -20,7 +20,11 @@
   let stems: StemPaths | null = null;
 
   function getVaultRoot(): string {
-    try { return localStorage.getItem('bismuth-vault-root') ?? ''; } catch { return ''; }
+    try {
+      return localStorage.getItem('bismuth-vault-root') ?? '';
+    } catch {
+      return '';
+    }
   }
 
   // ─── File picker ──────────────────────────────────────────────────────────
@@ -43,7 +47,10 @@
   async function handleSplit() {
     if (!audioFilePath) return;
     const vaultRoot = getVaultRoot();
-    if (!vaultRoot) { errorMessage = 'No vault open.'; return; }
+    if (!vaultRoot) {
+      errorMessage = 'No vault open.';
+      return;
+    }
     splitting = true;
     errorMessage = null;
     stems = null;
@@ -53,7 +60,8 @@
     } catch (err) {
       const msg = String(err);
       if (msg.includes('demucs_not_installed')) {
-        errorMessage = 'Demucs is not installed. See docs/guides/music-demucs-setup.md for installation instructions.';
+        errorMessage =
+          'Demucs is not installed. See docs/guides/music-demucs-setup.md for installation instructions.';
       } else {
         errorMessage = `Stem splitting failed: ${msg}`;
       }
@@ -87,9 +95,7 @@
 
 <div class="stem-panel">
   <h3 class="panel-title">Stem Splitter</h3>
-  <p class="panel-hint">
-    Separate audio into vocals, drums, bass, and other stems using Demucs.
-  </p>
+  <p class="panel-hint">Separate audio into vocals, drums, bass, and other stems using Demucs.</p>
 
   <!-- File picker row -->
   <div class="row">
@@ -195,8 +201,13 @@
     transition: filter 0.1s;
   }
 
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn:not(:disabled):hover { filter: brightness(1.1); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn:not(:disabled):hover {
+    filter: brightness(1.1);
+  }
 
   .btn--primary {
     background: var(--interactive-accent, #6366f1);
@@ -220,13 +231,17 @@
     display: inline-block;
     width: 10px;
     height: 10px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
   .alert {
     font-size: var(--font-ui-small, 11px);
@@ -240,7 +255,11 @@
     border: 1px solid var(--border-error, #f38ba8);
   }
 
-  .stems-result { display: flex; flex-direction: column; gap: var(--spacing-s, 8px); }
+  .stems-result {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s, 8px);
+  }
 
   .result-title {
     font-size: var(--font-ui-small, 11px);
@@ -251,7 +270,14 @@
     margin: 0;
   }
 
-  .stem-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .stem-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
   .stem-item {
     display: flex;

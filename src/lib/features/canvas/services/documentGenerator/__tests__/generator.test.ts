@@ -41,9 +41,30 @@ function mockCanvasDoc(overrides: Partial<CanvasDocument> = {}): CanvasDocument 
 }
 
 const sampleVariables: CanvasVariable[] = [
-  { id: 'v1', name: 'primary', type: 'color', collection: 'Colors', values: { Light: '#3b82f6', Dark: '#60a5fa' }, scopes: ['fill'] },
-  { id: 'v2', name: 'background', type: 'color', collection: 'Colors', values: { Light: '#ffffff', Dark: '#1f2937' }, scopes: ['fill'] },
-  { id: 'v3', name: 'base', type: 'number', collection: 'Spacing', values: { default: 16 }, scopes: ['spacing'] },
+  {
+    id: 'v1',
+    name: 'primary',
+    type: 'color',
+    collection: 'Colors',
+    values: { Light: '#3b82f6', Dark: '#60a5fa' },
+    scopes: ['fill'],
+  },
+  {
+    id: 'v2',
+    name: 'background',
+    type: 'color',
+    collection: 'Colors',
+    values: { Light: '#ffffff', Dark: '#1f2937' },
+    scopes: ['fill'],
+  },
+  {
+    id: 'v3',
+    name: 'base',
+    type: 'number',
+    collection: 'Spacing',
+    values: { default: 16 },
+    scopes: ['spacing'],
+  },
 ];
 
 const sampleComponent: ComponentDefinition = {

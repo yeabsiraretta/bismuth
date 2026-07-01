@@ -24,7 +24,7 @@ Closes #
 
 <!-- If applicable, reference the user story (e.g., US1, US15) -->
 
-User Story: 
+User Story:
 
 ## Testing
 
@@ -42,9 +42,9 @@ User Story:
 
 ### Manual Testing Steps
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Screenshots/Videos
 
@@ -59,6 +59,7 @@ User Story:
 - [ ] Performance degraded (explain why acceptable)
 
 **Metrics**:
+
 - Editor latency: __ms
 - Search time (1k docs): __ms
 - Memory usage: __MB
@@ -70,9 +71,7 @@ User Story:
 - [ ] No breaking changes
 - [ ] Breaking changes (describe below)
 
-**Migration steps**:
-1. 
-2. 
+**Migration steps**: 1. 2.
 
 ## Checklist
 

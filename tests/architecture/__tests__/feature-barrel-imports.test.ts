@@ -90,15 +90,24 @@ describe('T-04: Feature Barrel Import Rule (PICT)', () => {
       scanDir(dirPath, violations, ROOT, null);
     }
 
-    expect(violations, `Cross-feature internal imports found:\n${violations.join('\n')}`).toEqual([]);
+    expect(violations, `Cross-feature internal imports found:\n${violations.join('\n')}`).toEqual(
+      []
+    );
   });
 });
 
-function scanDir(dir: string, violations: string[], root: string, selfFeature: string | null): void {
+function scanDir(
+  dir: string,
+  violations: string[],
+  root: string,
+  selfFeature: string | null
+): void {
   let entries: ReturnType<typeof readdirSync>;
   try {
     entries = readdirSync(dir, { withFileTypes: true });
-  } catch { return; }
+  } catch {
+    return;
+  }
 
   for (const entry of entries) {
     if (['node_modules', '__tests__', '__mocks__'].includes((entry as any).name)) continue;
@@ -112,7 +121,9 @@ function scanDir(dir: string, violations: string[], root: string, selfFeature: s
         if (!isInternalFeaturePath(imp)) continue;
         const targetFeature = getFeatureName(imp);
         if (targetFeature === selfFeature) continue; // same-feature OK
-        violations.push(`${relative(root, fullPath)}: imports "${imp}" (use barrel: @/features/${targetFeature})`);
+        violations.push(
+          `${relative(root, fullPath)}: imports "${imp}" (use barrel: @/features/${targetFeature})`
+        );
       }
     }
   }

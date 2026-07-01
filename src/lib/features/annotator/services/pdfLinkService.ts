@@ -6,8 +6,12 @@
  */
 
 import type {
-  PDFLink, PDFTextSelection, PDFBacklinkHighlight,
-  HighlightColor, PdfPlusConfig, PDFRect,
+  PDFLink,
+  PDFTextSelection,
+  PDFBacklinkHighlight,
+  HighlightColor,
+  PdfPlusConfig,
+  PDFRect,
 } from '../types';
 import { DEFAULT_PDF_PLUS_CONFIG, HIGHLIGHT_COLORS } from '../types';
 import { log } from '@/utils/logger';
@@ -20,7 +24,9 @@ export function loadPdfPlusConfig(): PdfPlusConfig {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
     if (raw) return { ...DEFAULT_PDF_PLUS_CONFIG, ...JSON.parse(raw) };
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return { ...DEFAULT_PDF_PLUS_CONFIG };
 }
 
@@ -56,8 +62,13 @@ export function parsePdfLink(linkText: string): PDFLink | null {
   const selStr = params.get('selection');
   if (selStr) {
     const parts = selStr.split(',').map(Number);
-    if (parts.length === 4 && parts.every(n => !isNaN(n))) {
-      selection = { startLine: parts[0], startChar: parts[1], endLine: parts[2], endChar: parts[3] };
+    if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
+      selection = {
+        startLine: parts[0],
+        startChar: parts[1],
+        endLine: parts[2],
+        endChar: parts[3],
+      };
     }
   }
 
@@ -65,14 +76,13 @@ export function parsePdfLink(linkText: string): PDFLink | null {
   const rectStr = params.get('rect');
   if (rectStr) {
     const parts = rectStr.split(',').map(Number);
-    if (parts.length === 4 && parts.every(n => !isNaN(n))) {
+    if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
       rect = { x: parts[0], y: parts[1], width: parts[2], height: parts[3] };
     }
   }
 
   const colorRaw = params.get('color')?.toLowerCase();
-  const color = (colorRaw && colorRaw in HIGHLIGHT_COLORS)
-    ? colorRaw as HighlightColor : undefined;
+  const color = colorRaw && colorRaw in HIGHLIGHT_COLORS ? (colorRaw as HighlightColor) : undefined;
 
   return { filePath, page, selection, color, rect, displayText };
 }
@@ -123,22 +133,36 @@ export function generatePdfLink(
   selectedText: string,
   selection: PDFTextSelection | null,
   color: HighlightColor,
-  config: PdfPlusConfig,
+  config: PdfPlusConfig
 ): string {
-  const fileName = filePath.split('/').pop()?.replace(/\.pdf$/i, '') ?? filePath;
+  const fileName =
+    filePath
+      .split('/')
+      .pop()
+      ?.replace(/\.pdf$/i, '') ?? filePath;
   const selStr = selection
     ? `${selection.startLine},${selection.startChar},${selection.endLine},${selection.endChar}`
     : '';
 
   const displayTextVars: LinkTemplateVars = {
-    filePath, fileName, page, selection: selStr, color,
-    text: selectedText, displayText: '',
+    filePath,
+    fileName,
+    page,
+    selection: selStr,
+    color,
+    text: selectedText,
+    displayText: '',
   };
   const displayText = renderCopyTemplate(config.displayTextTemplate, displayTextVars);
 
   const vars: LinkTemplateVars = {
-    filePath, fileName, page, selection: selStr, color,
-    text: selectedText, displayText,
+    filePath,
+    fileName,
+    page,
+    selection: selStr,
+    color,
+    text: selectedText,
+    displayText,
   };
 
   return renderCopyTemplate(config.copyTemplate, vars);
@@ -154,7 +178,7 @@ export function generatePdfLink(
 export async function resolvePdfBacklinks(
   pdfPath: string,
   currentPage?: number,
-  filterByPage: boolean = true,
+  filterByPage: boolean = true
 ): Promise<PDFBacklinkHighlight[]> {
   try {
     const { getCachedBacklinks } = await import('@/features/backlinks');
@@ -179,7 +203,9 @@ export async function resolvePdfBacklinks(
     }
 
     log.debug('pdfLinkService: resolved backlink highlights', {
-      pdf: pdfPath, count: highlights.length, page: currentPage,
+      pdf: pdfPath,
+      count: highlights.length,
+      page: currentPage,
     });
 
     return highlights;

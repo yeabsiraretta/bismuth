@@ -23,7 +23,10 @@ function extractRustCommands(dir: string): Set<string> {
   const walk = (d: string) => {
     for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
       const full = path.join(d, entry.name);
-      if (entry.isDirectory()) { walk(full); continue; }
+      if (entry.isDirectory()) {
+        walk(full);
+        continue;
+      }
       if (!entry.name.endsWith('.rs')) continue;
       const content = fs.readFileSync(full, 'utf-8');
       const lines = content.split('\n');
@@ -79,7 +82,7 @@ describe('IPC Contract Parity', () => {
   ]);
 
   it('every TS contract maps to a Rust command', () => {
-    const stale = [...tsContracts].filter(c => !rustCommands.has(c));
+    const stale = [...tsContracts].filter((c) => !rustCommands.has(c));
     if (stale.length > 0) {
       console.warn('Stale TS contracts (no matching Rust command):', stale);
     }
@@ -88,7 +91,9 @@ describe('IPC Contract Parity', () => {
   });
 
   it('tracks Rust commands missing from TS contracts', () => {
-    const missing = [...rustCommands].filter(c => !tsContracts.has(c) && !KNOWN_UNCONTRACTED.has(c));
+    const missing = [...rustCommands].filter(
+      (c) => !tsContracts.has(c) && !KNOWN_UNCONTRACTED.has(c)
+    );
     if (missing.length > 0) {
       console.warn(`${missing.length} Rust commands lack TS contracts:`, missing.slice(0, 20));
     }

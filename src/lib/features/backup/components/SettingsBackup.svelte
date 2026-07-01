@@ -20,7 +20,7 @@
   let customBackupName = '';
   let dirty = false;
 
-  $: localConfig, (dirty = JSON.stringify(localConfig) !== JSON.stringify($backupConfig));
+  $: (localConfig, (dirty = JSON.stringify(localConfig) !== JSON.stringify($backupConfig)));
 
   onMount(() => {
     loadBackupState().then(() => {
@@ -43,7 +43,7 @@
   async function handleDelete(filePath: string, fileName: string) {
     try {
       await deleteBackup(filePath);
-      backupList.update(list => list.filter(b => b.file_path !== filePath));
+      backupList.update((list) => list.filter((b) => b.file_path !== filePath));
       showToast(`Deleted ${fileName}`, 'info');
     } catch {
       showToast('Failed to delete backup', 'error');
@@ -57,7 +57,11 @@
   }
 
   function formatDate(iso: string): string {
-    try { return new Date(iso).toLocaleString(); } catch { return iso; }
+    try {
+      return new Date(iso).toLocaleString();
+    } catch {
+      return iso;
+    }
   }
 </script>
 
@@ -75,19 +79,35 @@
     </div>
     {#if localConfig.enabled}
       <div class="setting-item">
-        <label><input type="checkbox" bind:checked={localConfig.backup_on_startup} /> Backup on startup</label>
+        <label
+          ><input type="checkbox" bind:checked={localConfig.backup_on_startup} /> Backup on startup</label
+        >
       </div>
       <div class="setting-item">
-        <label><input type="checkbox" bind:checked={localConfig.backup_on_quit} /> Backup on quit</label>
+        <label
+          ><input type="checkbox" bind:checked={localConfig.backup_on_quit} /> Backup on quit</label
+        >
       </div>
       <div class="setting-item">
         <label for="backup-interval">Interval (minutes, 0 = off)</label>
-        <input id="backup-interval" type="number" min="0" max="1440" bind:value={localConfig.interval_minutes} />
+        <input
+          id="backup-interval"
+          type="number"
+          min="0"
+          max="1440"
+          bind:value={localConfig.interval_minutes}
+        />
         <span class="setting-hint">Recommended: 10 min or more to avoid performance impact</span>
       </div>
       <div class="setting-item">
         <label for="backup-max">Max backups to keep (0 = unlimited)</label>
-        <input id="backup-max" type="number" min="0" max="999" bind:value={localConfig.max_backups} />
+        <input
+          id="backup-max"
+          type="number"
+          min="0"
+          max="999"
+          bind:value={localConfig.max_backups}
+        />
       </div>
     {/if}
   </div>
@@ -97,11 +117,21 @@
       <h4>Output</h4>
       <div class="setting-item">
         <label for="backup-path">Output path (empty = vault/.backups)</label>
-        <input id="backup-path" type="text" bind:value={localConfig.output_path} placeholder=".backups" />
+        <input
+          id="backup-path"
+          type="text"
+          bind:value={localConfig.output_path}
+          placeholder=".backups"
+        />
       </div>
       <div class="setting-item">
         <label for="backup-template">File name template</label>
-        <input id="backup-template" type="text" bind:value={localConfig.file_name_template} placeholder="Backup-%Y_%m_%d-%H_%M_%S" />
+        <input
+          id="backup-template"
+          type="text"
+          bind:value={localConfig.file_name_template}
+          placeholder="Backup-%Y_%m_%d-%H_%M_%S"
+        />
         <span class="setting-hint">Uses strftime tokens: %Y, %m, %d, %H, %M, %S</span>
       </div>
     </div>
@@ -110,12 +140,22 @@
       <h4>Filters</h4>
       <div class="setting-item">
         <label for="backup-include">Included directories/files (comma-separated)</label>
-        <input id="backup-include" type="text" bind:value={localConfig.included_patterns} placeholder="Empty = entire vault" />
+        <input
+          id="backup-include"
+          type="text"
+          bind:value={localConfig.included_patterns}
+          placeholder="Empty = entire vault"
+        />
         <span class="setting-hint">e.g. .obsidian, Templates, *.canvas</span>
       </div>
       <div class="setting-item">
         <label for="backup-exclude">Excluded directories/files (comma-separated)</label>
-        <input id="backup-exclude" type="text" bind:value={localConfig.excluded_patterns} placeholder=".git, .trash, node_modules" />
+        <input
+          id="backup-exclude"
+          type="text"
+          bind:value={localConfig.excluded_patterns}
+          placeholder=".git, .trash, node_modules"
+        />
         <span class="setting-hint">e.g. .git, .trash, node_modules, *.mp4</span>
       </div>
     </div>
@@ -124,32 +164,50 @@
       <h4>Reliability</h4>
       <div class="setting-item">
         <label for="backup-retry">Retry attempts</label>
-        <input id="backup-retry" type="number" min="1" max="5" bind:value={localConfig.retry_count} />
+        <input
+          id="backup-retry"
+          type="number"
+          min="1"
+          max="5"
+          bind:value={localConfig.retry_count}
+        />
       </div>
       <div class="setting-item">
         <label for="backup-delay">Retry delay (ms)</label>
-        <input id="backup-delay" type="number" min="500" max="30000" step="500" bind:value={localConfig.retry_delay_ms} />
+        <input
+          id="backup-delay"
+          type="number"
+          min="500"
+          max="30000"
+          step="500"
+          bind:value={localConfig.retry_delay_ms}
+        />
       </div>
     </div>
   {/if}
 
   <div class="setting-group button-row">
-    <button class="btn btn-primary" on:click={handleSave} disabled={!dirty}>
-      Save Settings
-    </button>
+    <button class="btn btn-primary" on:click={handleSave} disabled={!dirty}> Save Settings </button>
   </div>
 
   <div class="setting-group">
     <h4>Manual Backup</h4>
     <div class="setting-item inline-row">
-      <input type="text" bind:value={customBackupName} placeholder="Custom name (optional)" class="backup-name-input" />
+      <input
+        type="text"
+        bind:value={customBackupName}
+        placeholder="Custom name (optional)"
+        class="backup-name-input"
+      />
       <button class="btn btn-secondary" on:click={handleBackupNow} disabled={$isBackingUp}>
         {#if $isBackingUp}<Spinner size="sm" />{:else}<Icon name="archive" size={14} />{/if}
         Backup Now
       </button>
     </div>
     {#if $lastBackup}
-      <span class="setting-hint">Last: {$lastBackup.file_name} ({formatSize($lastBackup.size_bytes)})</span>
+      <span class="setting-hint"
+        >Last: {$lastBackup.file_name} ({formatSize($lastBackup.size_bytes)})</span
+      >
     {/if}
   </div>
 
@@ -161,9 +219,15 @@
           <div class="backup-item">
             <div class="backup-meta">
               <span class="backup-name">{backup.file_name}</span>
-              <span class="backup-detail">{formatSize(backup.size_bytes)} &middot; {formatDate(backup.created_at)}</span>
+              <span class="backup-detail"
+                >{formatSize(backup.size_bytes)} &middot; {formatDate(backup.created_at)}</span
+              >
             </div>
-            <button class="btn-icon-sm" title="Delete" on:click={() => handleDelete(backup.file_path, backup.file_name)}>
+            <button
+              class="btn-icon-sm"
+              title="Delete"
+              on:click={() => handleDelete(backup.file_path, backup.file_name)}
+            >
               <Icon name="trash-2" size={14} />
             </button>
           </div>
