@@ -1,10 +1,20 @@
 <script lang="ts">
-  import { invoke } from '@tauri-apps/api/core';
   import Icon from '@/components/icons/Icon.svelte';
   import { refreshNotes, removeNoteFromStore, setActiveNote } from '@/stores/vault/vault';
   import { currentVault } from '@/stores/vault/vault';
+  import {
+    duplicateNote as duplicateNoteService,
+    deleteNote as deleteNoteService,
+    renameNote as renameNoteService,
+    updateLinksOnRename,
+    listFolders,
+    moveNote as moveNoteService,
+    writeNote,
+    openInFileManager,
+  } from '@/services/vault/vault';
+  import { archiveNoteCmd, organizeNoteCmd } from '@/features/capture';
   import { log } from '@/utils/logger';
-  import type { Note } from '@/types/vault';
+  import type { Note } from '@/types/data/vault';
 
   export let note: Note;
   export let x: number = 0;
@@ -22,7 +32,7 @@
   async function handleDuplicate() {
     try {
       log.info('Duplicating note', { path: note.path });
-      await invoke<Note>('duplicate_note', { path: note.path });
+      await duplicateNoteService(note.path);
       await refreshNotes();
       onClose();
     } catch (error) {
@@ -33,7 +43,7 @@
   async function handleDelete() {
     try {
       log.info('Deleting note', { path: note.path });
-      await invoke('delete_note', { path: note.path });
+      await deleteNoteService(note.path);
       removeNoteFromStore(note.path);
       setActiveNote(null);
       onClose();
@@ -66,8 +76,8 @@
       }
 
       log.info('Renaming note', { oldPath: note.path, newPath });
-      await invoke('rename_note', { oldPath: note.path, newPath });
-      await invoke('update_links_on_rename', { oldPath: note.path, newPath });
+      await renameNoteService(note.path, newPath);
+      await updateLinksOnRename(note.path, newPath);
       await refreshNotes();
       isRenaming = false;
       onClose();
@@ -80,12 +90,11 @@
   async function handleMoveToFolder() {
     if (!$currentVault) return;
     try {
-      const folders = await invoke<string[]>('list_folders', {});
-      // For now, move to root if only option; full folder picker is a UI enhancement
+      const folders = await listFolders($currentVault.root_path);
       if (folders.length > 0) {
         const targetFolder = folders[0];
         log.info('Moving note', { path: note.path, target: targetFolder });
-        await invoke<Note>('move_note', { oldPath: note.path, newFolder: targetFolder });
+        await moveNoteService(note.path, targetFolder);
         await refreshNotes();
       }
       onClose();
@@ -100,7 +109,7 @@
       const dir = note.path.substring(0, note.path.lastIndexOf('/'));
       const newPath = `${dir}/Untitled.md`;
       const content = '# Untitled\n\n';
-      await invoke('write_note', { path: newPath, content });
+      await writeNote(newPath, content);
       await refreshNotes();
       onClose();
     } catch (error) {
@@ -110,10 +119,32 @@
 
   async function handleOpenInFileManager() {
     try {
-      await invoke('open_in_file_manager', { path: note.path });
+      await openInFileManager(note.path);
       onClose();
     } catch (error) {
       log.error('Failed to open in file manager', error as Error);
+    }
+  }
+
+  async function handleArchive() {
+    try {
+      await archiveNoteCmd(note.path);
+      await refreshNotes();
+      onClose();
+    } catch (error) {
+      log.error('Failed to archive note', error as Error, { path: note.path });
+    }
+  }
+
+  async function handleOrganize() {
+    const folder = prompt('Move to folder (path relative to vault root):');
+    if (!folder || !folder.trim()) return;
+    try {
+      await organizeNoteCmd(note.path, folder.trim());
+      await refreshNotes();
+      onClose();
+    } catch (error) {
+      log.error('Failed to organize note', error as Error, { path: note.path });
     }
   }
 
@@ -174,6 +205,15 @@
         <span>Move to...</span>
       </button>
       <div class="menu-divider"></div>
+      <button class="menu-item" on:click={handleArchive} role="menuitem">
+        <Icon name="archive" size={14} />
+        <span>Archive</span>
+      </button>
+      <button class="menu-item" on:click={handleOrganize} role="menuitem">
+        <Icon name="folder-input" size={14} />
+        <span>Organize...</span>
+      </button>
+      <div class="menu-divider"></div>
       <button class="menu-item" on:click={handleOpenInFileManager} role="menuitem">
         <Icon name="external-link" size={14} />
         <span>Reveal in Finder</span>
@@ -194,7 +234,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: var(--layer-popover, 200);
+    z-index: var(--layer-popover);
   }
 
   .context-menu {
@@ -202,26 +242,26 @@
     min-width: 180px;
     background: var(--background-primary);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-m, 8px);
+    border-radius: var(--radius-m);
     box-shadow: var(--shadow-l);
-    padding: 4px;
-    z-index: var(--layer-popover, 200);
+    padding: var(--spacing-xs);
+    z-index: var(--layer-popover);
   }
 
   .menu-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-s);
     width: 100%;
-    padding: 6px 10px;
+    padding: var(--menu-item-padding-y) var(--menu-item-padding-x);
     border: none;
     background: transparent;
     color: var(--text-normal);
-    font-size: 0.8125rem;
+    font-size: var(--sidebar-item-font);
     text-align: left;
-    border-radius: 4px;
+    border-radius: var(--radius-s);
     cursor: pointer;
-    transition: background-color 0.1s ease;
+    transition: background-color var(--transition-fast);
   }
 
   .menu-item:hover {
@@ -229,29 +269,29 @@
   }
 
   .menu-item.danger {
-    color: var(--text-error, #ef4444);
+    color: var(--text-error);
   }
 
   .menu-item.danger:hover {
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--background-modifier-error-hover, rgba(239, 68, 68, 0.1));
   }
 
   .menu-divider {
     height: 1px;
     background: var(--border-color);
-    margin: 4px 0;
+    margin: var(--spacing-xs) 0;
   }
 
   .rename-input-container {
-    padding: 6px;
+    padding: var(--spacing-xs);
   }
 
   .rename-input {
     width: 100%;
-    padding: 4px 8px;
-    font-size: 0.8125rem;
+    padding: var(--spacing-xs) var(--spacing-s);
+    font-size: var(--sidebar-item-font);
     border: 1px solid var(--interactive-accent);
-    border-radius: 4px;
+    border-radius: var(--radius-s);
     background: var(--background-primary);
     color: var(--text-normal);
     outline: none;

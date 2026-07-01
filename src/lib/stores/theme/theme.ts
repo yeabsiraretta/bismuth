@@ -1,7 +1,12 @@
 import { writable, derived } from 'svelte/store';
-import type { Theme } from '@/types/theme';
+import type { Theme } from '@/types/layout';
+import { createPersistedStore } from '@/utils/storage';
 
 const THEME_STORAGE_KEY = 'bismuth-theme';
+
+function isValidTheme(v: unknown): v is Theme {
+  return v === 'light' || v === 'dark' || v === 'auto';
+}
 
 function getSystemTheme(): 'light' | 'dark' {
   if (typeof window !== 'undefined' && window.matchMedia) {
@@ -10,68 +15,44 @@ function getSystemTheme(): 'light' | 'dark' {
   return 'light';
 }
 
-function getStoredTheme(): Theme {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    if (stored === 'light' || stored === 'dark' || stored === 'auto') {
-      return stored;
-    }
-  }
-  return 'auto';
-}
-
 function createThemeStore() {
   const systemPreference = writable<'light' | 'dark'>(getSystemTheme());
-  const selectedTheme = writable<Theme>(getStoredTheme());
+
+  const selectedTheme = createPersistedStore<Theme>(THEME_STORAGE_KEY, 'auto', {
+    serialize: (v) => v,
+    deserialize: (raw) => (isValidTheme(raw) ? raw : 'auto'),
+  });
 
   const activeTheme = derived(
     [selectedTheme, systemPreference],
-    ([$selectedTheme, $systemPreference]) => {
-      if ($selectedTheme === 'auto') {
-        return $systemPreference;
-      }
-      return $selectedTheme;
-    }
+    ([$selectedTheme, $systemPreference]) =>
+      $selectedTheme === 'auto' ? $systemPreference : $selectedTheme
   );
 
   if (typeof window !== 'undefined' && window.matchMedia) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
+    mediaQuery.addEventListener('change', (e: MediaQueryListEvent) => {
       systemPreference.set(e.matches ? 'dark' : 'light');
-    };
-    mediaQuery.addEventListener('change', handleChange);
+    });
   }
 
   return {
     subscribe: activeTheme.subscribe,
     selectedTheme: {
       subscribe: selectedTheme.subscribe,
-      set: (theme: Theme) => {
-        selectedTheme.set(theme);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(THEME_STORAGE_KEY, theme);
-        }
-      },
+      set: (t: Theme) => selectedTheme.set(t),
     },
-    systemPreference: {
-      subscribe: systemPreference.subscribe,
-    },
-    setTheme: (theme: Theme) => {
-      selectedTheme.set(theme);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(THEME_STORAGE_KEY, theme);
-      }
-    },
+    systemPreference: { subscribe: systemPreference.subscribe },
+    setTheme: (t: Theme) => selectedTheme.set(t),
     toggleTheme: () => {
       selectedTheme.update((current) => {
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-        }
-        return newTheme;
+        const cycle: Theme[] = ['light', 'auto', 'dark'];
+        const idx = cycle.indexOf(current);
+        return cycle[(idx + 1) % cycle.length];
       });
     },
   };
 }
 
 export const theme = createThemeStore();
+

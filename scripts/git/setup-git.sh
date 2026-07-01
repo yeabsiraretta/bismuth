@@ -31,8 +31,8 @@ echo -e "${GREEN}✅ Node.js $(node --version)${NC}"
 
 # Check pnpm
 if ! command -v pnpm &> /dev/null; then
-    echo -e "${YELLOW}⚠️  pnpm not found. Installing...${NC}"
-    npm install -g pnpm
+    echo -e "${YELLOW}⚠️  pnpm not found. Installing via corepack...${NC}"
+    corepack enable && corepack prepare pnpm@9 --activate
 fi
 echo -e "${GREEN}✅ pnpm $(pnpm --version)${NC}"
 

@@ -90,7 +90,7 @@ pub async fn index_all_embeddings(
 ) -> Result<usize, String> {
     // Read all notes first, then drop vault lock
     let notes = {
-        let vault_service = app_state.vault_service.lock().unwrap();
+        let mut vault_service = app_state.vault_service.lock().unwrap();
         vault_service
             .scan()
             .map_err(|e| format!("Scan error: {}", e))?

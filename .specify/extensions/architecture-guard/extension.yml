@@ -3,8 +3,8 @@ schema_version: "1.0"
 extension:
   id: "architecture-guard"
   name: "Architecture Guard"
-  version: "1.8.9"
-  description: "Framework-agnostic architecture review extension for validating implementation against governance and architecture constitutions, detecting architectural drift, and generating non-blocking refactor tasks."
+  version: "1.9.0"
+  description: "Framework-agnostic architecture review extension with cross-skill integration. Validates implementation against governance and architecture constitutions, detects architectural drift, generates non-blocking refactor tasks, and orchestrates quality skills (code-review, ux-review, component-gen, pict-test-designer) during governed workflows."
   author: "DyanGalih"
   repository: "https://github.com/DyanGalih/spec-kit-architecture-guard"
   license: "MIT"
@@ -21,6 +21,29 @@ recommends:
   extensions:
     - "memory-md"
     - "security-review"
+
+integrates_with:
+  skills:
+    - id: "code-review"
+      path: ".claude/skills/code-review/SKILL.md"
+      gates: ["governed-plan:feasibility", "governed-tasks:ownership", "governed-implement:review"]
+    - id: "ux-review"
+      path: ".claude/skills/ux-review/SKILL.md"
+      gates: ["governed-plan:ui-surfaces", "governed-tasks:acceptance-criteria", "governed-implement:review"]
+    - id: "component-gen"
+      path: ".claude/skills/component-gen/SKILL.md"
+      gates: ["governed-plan:ux-mapping", "governed-tasks:ui-guardrails", "governed-implement:coding"]
+    - id: "pict-test-designer"
+      path: ".claude/skills/pict-test-designer/SKILL.md"
+      gates: ["governed-plan:test-boundaries", "governed-tasks:combinatorial-tests", "governed-implement:testing"]
+  constitutions:
+    - ".specify/memory/constitution.md"
+    - ".specify/memory/architecture_constitution.md"
+    - ".specify/memory/security_constitution.md"
+  rules:
+    - ".claude/agent-rules.md"
+    - ".claude/coding-principles.md"
+    - ".claude/component-guide.md"
 
 hooks:
   after_plan:

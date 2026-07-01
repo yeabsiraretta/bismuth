@@ -1,367 +1,217 @@
+<!-- Root app layout shell. @see src/lib/components/layout/AppLayout.slots.ts for zone contract rules -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import WelcomeScreen from '@/components/vault/WelcomeScreen.svelte';
-  import FileTree from '@/components/vault/FileTree.svelte';
+  import WelcomeScreen from '@/components/vault/welcome/WelcomeScreen.svelte';
   import NoteEditor from '@/components/note/NoteEditor.svelte';
+  import EditorTabs from '@/components/editor/EditorTabs.svelte';
+  import { tabOrientation, setTabOrientation } from '@/stores/editor/tabs';
   import Toolbar from '@/components/vault/Toolbar.svelte';
   import SidebarShell from '@/components/sidebar/SidebarShell.svelte';
-  import TabbedPanel from '@/components/sidebar/TabbedPanel.svelte';
-  import SearchPanel from '@/components/sidebar/SearchPanel.svelte';
-  import SettingsModal from '@/components/overlays/settings/SettingsModal.svelte';
-  import TagPanel from '@/components/sidebar/TagPanel.svelte';
-  import EntityBrowser from '@/components/sidebar/EntityBrowser.svelte';
-  import CanvasApp from '@/components/canvas/CanvasApp.svelte';
-  import GraphView from '@/components/graph/GraphView.svelte';
-  import CaptureDashboard from '@/components/capture/CaptureDashboard.svelte';
+  import LeftSidebarContent from '@/components/sidebar/LeftSidebarContent.svelte';
+  import RightSidebarContent from '@/components/sidebar/RightSidebarContent.svelte';
+  import AsyncFeature from '@/components/ui/layout/AsyncLoader.svelte';
+  import ConfirmProvider from '@/components/overlays/ConfirmProvider.svelte';
   import StatusBar from '@/components/layout/StatusBar.svelte';
   import ToastContainer from '@/components/layout/ToastContainer.svelte';
-  import Icon from '@/components/icons/Icon.svelte';
-  import CommandPalette from '@/components/overlays/command-palette/CommandPalette.svelte';
-  import AutoLinker from '@/components/overlays/auto-linker/AutoLinker.svelte';
-  import { initializeVault, isVaultOpen, isLoadingVault, currentVault, notes } from '@/stores/vault/vault';
-  import { layoutStore, loadLayout, enableAutoSave } from '@/stores/layout/layout';
+  import Spinner from '@/components/ui/feedback/Spinner.svelte';
+  import { isVaultOpen, isLoadingVault, notes, currentVault, activeNote } from '@/stores/vault/vault';
+  import { layoutStore, reorderTabs, reorderLowerTabs, moveTabToSection, setLeftSidebarWidth, setRightSidebarWidth, toggleLeftSidebar, toggleRightSidebar } from '@/stores/layout/layout';
+  import type { SidebarTab } from '@/types/layout';
+  import { viewportMode, setViewportMode } from '@/stores/layout/presets';
+  import { handleGlobalKeydown as onKeydown, openNote, changeTab } from '@/appNavigation';
+  import { initializeApp, handleDailyNote, handlePublishMark, cleanupApp } from '@/app/appBootstrap';
   import { log } from '@/utils/logger';
   import { theme } from '@/stores/theme/theme';
-  import { registerStatusItem } from '@/stores/status';
-  import {
-    registerAppCommands,
-    handleGlobalKeydown as onKeydown,
-    openNote,
-    doRefresh,
-    changeTab,
-  } from '@/appNavigation';
+  import { settings } from '@/features/settings';
+  import { isTabEnabled, featureFlags } from '@/stores/settings/features';
+  import { registerStatusItem } from '@/stores/status/status';
 
-  let currentView: 'notes' | 'canvas' = 'notes';
   let commandPaletteOpen = false;
+  let commandPaletteMode: 'notes' | 'commands' = 'notes';
   let autoLinkerOpen = false;
   let settingsOpen = false;
+  let layoutManagerOpen = false;
+  let settingsInitialTab: 'general' | 'editor' | 'appearance' | 'features' | 'vault' | 'hotkeys' | 'about' | undefined = undefined;
 
   $: leftTab = $layoutStore.leftActiveTab;
   $: rightTab = $layoutStore.rightActiveTab;
 
-  $: if ($currentVault) {
-    registerStatusItem({ id: 'vault-name', position: 'left', icon: 'hard-drive', label: $currentVault.name, tooltip: 'Current vault', priority: 10 });
-  }
+  $: visibleLeftTabs = $layoutStore.leftTabs.filter(t => $isTabEnabled(t.id));
+  $: visibleLeftLowerTabs = $layoutStore.leftLowerTabs.filter(t => $isTabEnabled(t.id));
+  $: visibleRightTabs = $layoutStore.rightTabs.filter(t => $isTabEnabled(t.id));
+  $: visibleRightLowerTabs = $layoutStore.rightLowerTabs.filter(t => $isTabEnabled(t.id));
+
+  $: activeNotePath = $activeNote?.path ?? null;
+
+  $: { const all = [...visibleLeftTabs, ...visibleLeftLowerTabs]; if (all.length > 0 && !all.find(t => t.id === leftTab)) changeTab('left', all[0].id); }
+  $: { const all = [...visibleRightTabs, ...visibleRightLowerTabs]; if (all.length > 0 && !all.find(t => t.id === rightTab)) changeTab('right', all[0].id); }
+
+  $: if ($currentVault) registerStatusItem({ id: 'vault-name', position: 'left', icon: 'hard-drive', label: $currentVault.name, tooltip: 'Current vault', priority: 10 });
   $: registerStatusItem({ id: 'note-count', position: 'left', icon: 'file-text', label: `${$notes.length} notes`, tooltip: 'Total notes in vault', priority: 20 });
 
   onMount(async () => {
-    log.info('App component mounted');
-    loadLayout();
-    enableAutoSave();
-    await initializeVault();
-    log.info('Vault initialization complete');
-
-    registerAppCommands({
-      openCommandPalette: () => { commandPaletteOpen = true; },
-      openAutoLinker: () => { autoLinkerOpen = true; },
-      setLeftTab: (tab) => { leftTab = tab; },
-    });
-
+    try {
+      await initializeApp({
+        openCommandPalette: () => { commandPaletteOpen = true; },
+        openAutoLinker: () => { autoLinkerOpen = true; },
+        openSettings: () => { settingsOpen = true; },
+        openCommandsMode: () => { commandPaletteMode = 'commands'; commandPaletteOpen = true; },
+        setLeftTab: (tab) => { leftTab = tab; },
+      });
+    } catch (e) {
+      log.error('App initialization error', e);
+    }
     window.addEventListener('keydown', handleGlobalKeydown);
+    window.addEventListener('open-command-palette', () => { commandPaletteOpen = true; });
+
+    try {
+      const { emit } = await import('@tauri-apps/api/event');
+      await emit('app-ready');
+    } catch { /* running in browser dev — no Tauri */ }
   });
 
   onDestroy(() => {
     if (typeof window !== 'undefined') window.removeEventListener('keydown', handleGlobalKeydown);
+    cleanupApp();
   });
 
-  function handleGlobalKeydown(e: KeyboardEvent) {
-    onKeydown(e, () => { commandPaletteOpen = true; });
+  function handleGlobalKeydown(e: KeyboardEvent) { onKeydown(e, () => { commandPaletteOpen = true; }); }
+  function handleOpenSettings() { settingsInitialTab = undefined; settingsOpen = true; }
+  function handleOpenAbout() { settingsInitialTab = 'about'; settingsOpen = true; }
+
+  function handleLeftTabChange(tabId: string): void {
+    if (tabId === '__toggle__') { toggleLeftSidebar(); return; }
+    if (tabId === 'canvas') { setViewportMode('canvas'); return; }
+    if (tabId === 'graph') { setViewportMode('graph'); return; }
+    if (tabId === 'open-tabs') { setTabOrientation('vertical'); changeTab('left', 'open-tabs'); return; }
+    if ($viewportMode === 'canvas' || $viewportMode === 'graph') { setViewportMode('note'); }
+    changeTab('left', tabId);
   }
 
-  async function handleOpenNote(path: string) { await openNote(path); }
-  async function handleRefresh() { await doRefresh(); }
-  function handleLeftTabChange(detail: { tabId: string }) { changeTab('left', detail.tabId); }
-  function handleRightTabChange(detail: { tabId: string }) { changeTab('right', detail.tabId); }
-  function handleOpenSettings() { settingsOpen = true; }
-
-  $: if (typeof document !== 'undefined') {
-    document.documentElement.setAttribute('data-theme', $theme);
+  function handleRightTabChange(tabId: string): void {
+    if (tabId === '__toggle__') { toggleRightSidebar(); return; }
+    if (tabId === 'calendar') { setViewportMode('calendar'); return; }
+    if ($viewportMode === 'calendar') { setViewportMode('note'); }
+    changeTab('right', tabId);
   }
+
+  $: if (typeof document !== 'undefined') document.documentElement.setAttribute('data-theme', $theme);
 </script>
 
 <a href="#editor-main" class="skip-to-content">Skip to content</a>
 
-<main class="app">
+<main class="app" class:compact-mode={$settings.compactMode}>
   {#if $isLoadingVault}
     <div class="loading">
-      <div class="spinner"></div>
+      <Spinner size="lg" label="Loading vault..." />
       <p>Loading vault...</p>
     </div>
   {:else if !$isVaultOpen}
     <WelcomeScreen />
-  {:else if currentView === 'canvas'}
-    <!-- Canvas view - full screen -->
-    <div class="canvas-container">
-      <div class="canvas-nav">
-        <button class="btn-nav" on:click={() => (currentView = 'notes')}>
-          <Icon name="arrow-left" size={16} />
-          Back to Notes
-        </button>
-      </div>
-      <CanvasApp />
-    </div>
   {:else}
-    <!-- Main layout: 3-column content + bottom status bar -->
     <div class="app-columns">
-      <!-- Left sidebar -->
       <SidebarShell
-        position="left"
-        tabs={$layoutStore.leftTabs}
-        bottomTabs={$layoutStore.bottomTabs}
-        activeTab={leftTab}
-        width={$layoutStore.leftSidebarWidth}
+        position="left" tabs={visibleLeftTabs} lowerTabs={visibleLeftLowerTabs}
+        bottomTabs={$layoutStore.bottomTabs.filter(t => t.id !== 'help')}
+        activeTab={leftTab} width={$layoutStore.leftSidebarWidth}
         collapsed={!$layoutStore.leftSidebarVisible}
-        onTabChange={handleLeftTabChange}
+        onTabChange={(d) => handleLeftTabChange(d.tabId)}
         onSettingsClick={handleOpenSettings}
+        onCommandsClick={() => { commandPaletteMode = 'commands'; commandPaletteOpen = true; }}
+        onDailyNoteClick={handleDailyNote}
+        onLayoutsClick={() => { layoutManagerOpen = true; }}
+        onPublishMarkClick={handlePublishMark}
+        onReorder={(tabs: SidebarTab[]) => reorderTabs('left', tabs)}
+        onLowerReorder={(tabs: SidebarTab[]) => reorderLowerTabs('left', tabs)}
+        onSectionChange={(tabId: string, target: 'upper' | 'lower') => moveTabToSection('left', tabId, target)}
+        onWidthChange={(w: number) => setLeftSidebarWidth(w)}
       >
-        {#if leftTab === 'files'}
-          <FileTree />
-        {:else if leftTab === 'search'}
-          <SearchPanel />
-        {:else if leftTab === 'inbox'}
-          <CaptureDashboard />
-        {:else if leftTab === 'graph'}
-          <GraphView />
-        {:else if leftTab === 'tags'}
-          <TagPanel />
-        {:else if leftTab === 'entities'}
-          <EntityBrowser onOpenNote={handleOpenNote} />
-        {/if}
+        <LeftSidebarContent activeTab={leftTab} onOpenNote={(path) => openNote(path)} />
       </SidebarShell>
 
-      <!-- Center editor pane -->
       <main id="editor-main" class="editor-pane panel">
-        <div class="panel-header">
-          <Toolbar onRefresh={handleRefresh} />
-          <button
-            class="btn-canvas"
-            on:click={() => (currentView = 'canvas')}
-            title="Open Canvas"
-            aria-label="Open canvas workspace"
-          >
-            <Icon name="layout" size={16} />
-            <span class="label">Canvas</span>
-          </button>
-        </div>
-        <div class="panel-body">
-          <NoteEditor />
-        </div>
+        {#if $viewportMode === 'rss'}
+          <AsyncFeature featureId="rss" loader={() => import('@/features/rss').then(m => ({ default: m.RssViewport }))} />
+        {:else if $viewportMode === 'canvas'}
+          <AsyncFeature featureId="canvas" loader={() => import('@/features/canvas/components/CanvasApp.svelte')} />
+        {:else if $viewportMode === 'graph'}
+          <AsyncFeature featureId="graph" loader={() => import('@/features/graph').then(m => ({ default: m.GraphView }))} />
+        {:else if $viewportMode === 'calendar'}
+          <AsyncFeature featureId="calendar" loader={() => import('@/features/calendar').then(m => ({ default: m.CalendarView }))} />
+        {:else if $viewportMode === 'home'}
+          <AsyncFeature featureId="hometab" loader={() => import('@/features/hometab').then(m => ({ default: m.HomeTab }))} />
+        {:else}
+          <div class="panel-header">
+            <Toolbar onRefresh={() => log.info('refresh')} onNavigate={(path) => openNote(path)} />
+          </div>
+          <div class="panel-body">
+            {#if $tabOrientation === 'horizontal'}<EditorTabs />{/if}
+            <div class="editor-area"><NoteEditor /></div>
+          </div>
+        {/if}
       </main>
 
-      <!-- Right sidebar -->
       <SidebarShell
-        position="right"
-        tabs={$layoutStore.rightTabs}
-        bottomTabs={$layoutStore.bottomTabs}
-        activeTab={rightTab}
-        width={$layoutStore.rightSidebarWidth}
+        position="right" tabs={visibleRightTabs} lowerTabs={visibleRightLowerTabs}
+        bottomTabs={[{ id: 'help', icon: 'info', label: 'About', tooltip: 'About Bismuth' }]}
+        activeTab={rightTab} width={$layoutStore.rightSidebarWidth}
         collapsed={!$layoutStore.rightSidebarVisible}
-        onTabChange={handleRightTabChange}
-        onSettingsClick={handleOpenSettings}
+        onTabChange={(d) => handleRightTabChange(d.tabId)}
+        onAboutClick={handleOpenAbout}
+        onQuickAction={() => { commandPaletteMode = 'commands'; commandPaletteOpen = true; }}
+        onReorder={(tabs: SidebarTab[]) => reorderTabs('right', tabs)}
+        onLowerReorder={(tabs: SidebarTab[]) => reorderLowerTabs('right', tabs)}
+        onSectionChange={(tabId: string, target: 'upper' | 'lower') => moveTabToSection('right', tabId, target)}
+        onWidthChange={(w: number) => setRightSidebarWidth(w)}
       >
-        <TabbedPanel />
+        <RightSidebarContent activeTab={rightTab} {activeNotePath} />
       </SidebarShell>
     </div>
 
-    <!-- Status bar -->
-    <StatusBar />
+    {#if $settings.showStatusBar}<StatusBar />{/if}
   {/if}
 </main>
 
 <ToastContainer />
+<ConfirmProvider />
+{#if commandPaletteOpen}
+  {#await import('@/features/search').then(m => m.CommandPalette) then CommandPalette}
+    <svelte:component this={CommandPalette} isOpen={true} initialMode={commandPaletteMode} onClose={() => { commandPaletteOpen = false; commandPaletteMode = 'notes'; }} />
+  {/await}
+{/if}
 
-<CommandPalette
-  isOpen={commandPaletteOpen}
-  onClose={() => {
-    commandPaletteOpen = false;
-  }}
-/>
+{#if autoLinkerOpen}
+  {#await import('@/features/wikilink').then(m => m.AutoLinker) then AutoLinker}
+    <svelte:component this={AutoLinker} isOpen={true} onClose={() => { autoLinkerOpen = false; }} />
+  {/await}
+{/if}
 
-<AutoLinker
-  isOpen={autoLinkerOpen}
-  onClose={() => {
-    autoLinkerOpen = false;
-  }}
-/>
+{#if $featureFlags['speed-reader']}
+  <AsyncFeature featureId="speedreader" loader={() => import('@/features/speedreader').then(m => ({ default: m.SpeedReader }))} />
+{/if}
 
-<SettingsModal
-  isOpen={settingsOpen}
-  onClose={() => {
-    settingsOpen = false;
-  }}
-/>
+{#if layoutManagerOpen}
+  {#await import('@/components/overlays/layouts/LayoutManager.svelte') then LayoutManager}
+    <svelte:component this={LayoutManager.default} visible={true} onClose={() => { layoutManagerOpen = false; }} />
+  {/await}
+{/if}
+
+{#if settingsOpen}
+  {#await import('@/components/overlays/settings/SettingsModal.svelte') then SettingsModal}
+    <svelte:component this={SettingsModal.default} isOpen={true} initialTab={settingsInitialTab} onClose={() => { settingsOpen = false; settingsInitialTab = undefined; }} />
+  {/await}
+{/if}
 
 <style>
-  .app {
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    height: 100vh;
-    min-width: 320px;
-    min-height: 480px;
-    overflow: hidden;
-    background-color: var(--background-primary);
-  }
-
-  :global(.skip-to-content) {
-    position: absolute;
-    left: -9999px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    z-index: 9999;
-    padding: 8px 16px;
-    background: var(--interactive-accent);
-    color: var(--text-on-accent);
-    font-size: var(--font-ui-small);
-    border-radius: var(--radius-s);
-    text-decoration: none;
-  }
-
-  :global(.skip-to-content:focus) {
-    position: fixed;
-    top: 8px;
-    left: 8px;
-    width: auto;
-    height: auto;
-    overflow: visible;
-  }
-
-  .app-columns {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  @media (max-width: 640px) {
-    .app {
-      flex-direction: column;
-    }
-  }
-
-  .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    gap: 1rem;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--color-surface);
-    border-top-color: var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .editor-pane {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: var(--background-primary);
-    overflow: hidden;
-  }
-
-  .editor-pane .panel-header {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 0;
-    background: var(--background-secondary);
-  }
-
-  .editor-pane .panel-body {
-    flex: 1;
-    overflow: hidden;
-    padding: 0;
-  }
-
-  .sidebar-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    gap: 0.75rem;
-    color: var(--text-muted);
-    text-align: center;
-    padding: 2rem 1rem;
-  }
-
-  .sidebar-placeholder p {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .sidebar-placeholder .hint {
-    font-size: 0.75rem;
-    color: var(--text-faint);
-  }
-
-  .canvas-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-  }
-
-  .canvas-nav {
-    padding: 1rem;
-    background: var(--background-secondary);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .btn-nav {
-    padding: 0.5rem 1rem;
-    background: var(--background-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-s);
-    color: var(--text-normal);
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .btn-nav:hover {
-    background: var(--interactive-hover);
-  }
-
-  .btn-canvas {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 36px;
-    padding: 0.5rem 1rem;
-    background: var(--interactive-accent, #6366f1);
-    color: var(--text-on-accent, #ffffff);
-    border: none;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    margin-right: var(--space-2, 0.5rem);
-  }
-
-  .btn-canvas:hover {
-    opacity: 0.9;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .btn-canvas:active {
-    transform: translateY(1px);
-  }
+  .app { display: flex; flex-direction: column; width: 100%; height: 100%; min-width: 320px; min-height: 480px; overflow: hidden; background-color: var(--background-primary); }
+  :global(.skip-to-content) { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 9999; padding: 8px 16px; background: var(--interactive-accent); color: var(--text-on-accent); font-size: var(--font-ui-small); border-radius: var(--radius-s); text-decoration: none; }
+  :global(.skip-to-content:focus) { position: fixed; top: 8px; left: 8px; width: auto; height: auto; overflow: visible; }
+  .app-columns { display: flex; flex: 1; overflow: hidden; }
+  @media (max-width: 640px) { .app { flex-direction: column; } }
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; gap: var(--spacing-m); }
+  .editor-pane { flex: 1; height: 100%; display: flex; flex-direction: column; background: var(--background-primary); overflow: hidden; }
+  .editor-pane .panel-header { display: flex; align-items: center; gap: 0; padding: 0; background: var(--background-secondary); height: var(--panel-header-height); min-height: var(--panel-header-height); }
+  .editor-pane .panel-body { flex: 1; overflow: hidden; padding: 0; display: flex; flex-direction: column; }
+  .editor-area { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+  :global(.compact-mode) { --spacing-xs: 2px; --spacing-s: 4px; --spacing-m: 8px; --spacing-l: 12px; --spacing-xl: 16px; }
 </style>

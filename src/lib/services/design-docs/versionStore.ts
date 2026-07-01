@@ -3,6 +3,7 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
+import { log } from '@/utils/logger';
 import type { DocumentType, DesignDocumentAny } from '@/types/design-documents';
 
 /** Version history entry. */
@@ -47,7 +48,7 @@ export async function saveVersion(doc: DesignDocumentAny): Promise<void> {
     const content = JSON.stringify(history, null, 2);
     await invoke('design_doc_write', { path, content });
   } catch (error) {
-    console.error('Failed to save version:', error);
+    log.error('Failed to save version', error);
   }
 }
 

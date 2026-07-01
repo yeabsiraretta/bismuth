@@ -17,9 +17,15 @@ Use these slash commands for governed development workflows:
 - `/speckit.architecture-guard.governed-implement` - Implement with architecture review
 - `/speckit.wireframe.generate` - Generate SVG wireframes from spec
 
+### Spec Kit
+
+You MUST follow the memory-first workflow defined in `.specify/memory/workflow.md` and proactively execute `/speckit.memory-md.plan-with-memory` before planning.
+
 ## Key Files
 
 - Constitution: `.specify/memory/constitution.md`
+- Workflow: `.specify/memory/workflow.md`
+- Memory Index: `docs/memory/INDEX.md`
 - Extension config: `.specify/extensions.yml`
 - Integration guide: `docs/development/extension-integration.md`
 <!-- SPECKIT END -->

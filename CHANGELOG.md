@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-30
+
+### Added
+
+- **Bismuth PKM Editor** (spec 001): Core personal knowledge management editor with markdown-first storage
+- **Canvas Component Design** (spec 002): Canvas-based component design tool with drag-and-drop
+- **Canvas Component System** (spec 004): Full component system with templates, presets, and library
+- **Canvas Self-Design System** (spec 007): Canvas self-design with extractors, reflectors, diff engine, and MCP tools
+- **Deferred Features** (spec 009): Deferred feature implementations (graph view, backlinks, flashcards, etc.)
+- **Data Portability** (spec 010): Markdown-first storage with vault portability, frontmatter schema, canvas files
+- **Feature Expansion** (spec 012): Homepage selection, feature toggles, editor toolbar, tag management, task parser, navigator
+- **Design System Upgrade** (spec 013): Design tokens, CSS custom properties, theme system overhaul
+- **Visual Integration** (spec 014): Visual integration and revitalization of UI components
+- **Tasks Query Engine** (spec 019): Task query engine with parser, filters, and sidebar panel
+- **Sidebar Panels** (spec 022): Sidebar panels and integrated systems (backlinks, outline, tags, properties)
+- **Canvas Component Library** (spec 023): Shared component library with categories and search
+- **Publishing Upgrade** (spec 025): Publishing service with canvas renderer and static site generation
+- **Settings Overhaul** (spec 037): Settings system restructure with feature registry and categorized panels
+- **Expansion Roadmap** (spec 038): Feature expansion modules (music, LLM, calendar, spreadsheets, slides, gym, media, pokemon, NAS, OCR)
+- **Music Production** (spec 039): Music production workspace module
+- **LLM Agent Access** (spec 040): LLM agent integration for knowledge management
+- **Calendar Enhancements** (spec 041): Calendar system with daily notes and task integration
+- **Spreadsheets** (spec 042): Spreadsheet module with formula engine
+- **Slides** (spec 043): Presentation/slides module
+- **Gym Tracking** (spec 044): Gym and health tracking module
+- **Release Channels** (spec 045): Release channel management (stable, beta, nightly)
+- **Roadmap Management** (spec 046): Feature roadmap management and tracking
+- **Media Editing** (spec 047): Media editing capabilities
+- **Pokemon Calculator** (spec 048): Pokemon damage calculator module
+- **Integration Docs** (spec 049): Integration documentation for all modules
+- **NAS Access** (spec 050): Network-attached storage access module
+- **Knowledge Versioning** (spec 051): Deterministic knowledge versioning system
+- **OCR/Handwriting** (spec 053): Handwritten content recognition via OCR
+- **Flashcards** (spec 054): Spaced-repetition flashcard system
+- **Constitution Compliance Checker**: Vitest-based architecture constitution checker (`pnpm check:constitution`)
+- **Obsidian Vault Detection**: Automatic `.obsidian` directory detection with `is_obsidian_vault` flag and coexistence logging
+
+### Changed
+
+- **Architecture Review** (spec 008): 9 phantom IPC commands, dead code removal, file-size splits, layer violations fixed
+- **UI/UX Overhaul** (spec 003): Consistency pass across all components
+- **Codebase Restructure** (spec 005): Modular infrastructure with clear service/store/component boundaries
+- **Component Reusability** (spec 015): Component extraction and folder cohesion
+- **Rust Restructure** (spec 016): Rust backend restructure with domain cohesion
+- **UX Polish** (spec 017): UX polish and feature completeness pass
+- **Style Settings Plugin** (spec 018): CSS variable-based style settings with vault sync
+- **.bismuth Cleanup** (spec 020): .bismuth directory cleanup and self-design canvas integration
+- **Feature Module Consolidation** (spec 026): Feature module consolidation into `features/` directory
+- **Feature Extraction Wave 2** (spec 027): Second wave of feature extraction to `features/`
+- **Feature Quality Remediation** (spec 028): Quality remediation across all feature modules
+- **Rust Domain Cohesion** (spec 029): Rust domain cohesion with facade modules
+- **Library Extraction** (spec 030): Library extraction and dead code maintenance
+- **Standardization** (spec 034): Production readiness standardization
+- **MVP Completion** (spec 035): MVP completion roadmap finalization
+- **Bundle Size** (spec 036): Bundle size optimization and feature loading
+- **Infrastructure Improvement** (spec 052): Infrastructure improvement pass
+- **Highlight Click**: Clicking highlights now directly removes them (mousedown) instead of showing popup
+- **Import Style**: All non-feature relative imports converted to `@/` aliases
+
+### Fixed
+
+- **Service Bugfixes** (spec 006): Service layer bug fixes across vault, search, and canvas services
+- **Documentation** (spec 011): Rust and TypeScript documentation standardization
+- **Test Infrastructure** (spec 021): Test infrastructure improvement with mocks, fixtures, and architecture tests
+- **Combined Test Suite** (spec 024): Unified test suite with coverage reporting
+- **Sidebar Bugfixes** (spec 032): Sidebar panel deep-dive bug fixes
+- **Developer Tooling** (spec 033): Developer tooling infrastructure (IPC contracts, code map, component templates)
+- **Full Codebase Audit** (spec 031): P0 security fixes (DOMPurify, escapeHtml), type errors, layer violations, file-size splits
+
 ## [0.2.0] - 2026-06-04
 
 ## [0.1.0] - 2026-05-28

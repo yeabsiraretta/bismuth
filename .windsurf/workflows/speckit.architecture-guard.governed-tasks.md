@@ -158,6 +158,25 @@ The command MUST return:
 - **Durable Memory Preservation**: (Proactively triggered) Review the proposed memory entries below.
 ```
 
+## Cross-Skill Integration
+
+During task generation, automatically apply these complementary skills:
+
+- **pict-test-designer**: For tasks with combinatorial inputs (multiple parameters, states, or configurations), generate PICT model annotations. Include parameters, values, and constraints so test tasks cover pairwise combinations without explosion. Reference `.claude/skills/pict-test-designer/SKILL.md`.
+- **code-review (Fix Quality Bar)**: Each implementation task should respect ownership boundaries. Tasks that cross module boundaries must be flagged and split. Reference `.claude/skills/code-review/SKILL.md`.
+- **component-gen**: UI implementation tasks must include UX guardrails inline (cognitive load limits, min button sizes, accessibility). Reference `.claude/component-guide.md`.
+- **ux-review**: Tasks touching user-facing surfaces must include a "UX acceptance criteria" note referencing the relevant principle IDs from `.claude/ux-evaluator.md`.
+
+These skills are NOT separate steps — they inform task quality and completeness inline.
+
+## Bismuth-Specific Task Rules
+
+- Each task must produce files under 300 lines (split into sub-tasks if needed)
+- Tasks creating new directories must respect 8-file density limit
+- Test tasks must target 90%+ coverage for touched surfaces
+- UI tasks must reference which component-guide type applies
+- All tasks must use unified logger (never raw console.log or println!)
+
 ## Output Rules
 
 - **Separation**: Clearly separate implementation tasks, security tasks, and architecture refactor tasks.

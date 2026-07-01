@@ -162,9 +162,21 @@ The command MUST return:
 - **Durable Memory Preservation**: (Proactively triggered) Review the proposed memory entries below.
 ```
 
+## Cross-Skill Integration
+
+During planning, automatically apply these complementary skills:
+
+- **code-review principles**: When evaluating plan feasibility, assess against the Fix Quality Bar (`.claude/skills/code-review/SKILL.md`) — ownership boundaries, backward compatibility, test seams.
+- **component-gen requirements**: If the plan includes UI work, reference `.claude/component-guide.md` to ensure component types map to correct UX guardrails (cognitive load limits, accessibility, sizing).
+- **pict-test-designer**: When the plan defines testable boundaries, note where PICT combinatorial testing would reduce test case explosion.
+- **ux-review**: Flag any plan decisions that affect user interaction surfaces for UX evaluation during implementation.
+
+These skills are NOT separate steps — they inform the quality of `plan.md` generation inline.
+
 ## Guardrails
 
 - **Framework-Agnostic**: Do not assume specific framework conventions unless provided via a preset.
 - **Non-Blocking**: Findings should be advisory by default unless they violate a P0 rule in the Constitution.
 - **Incremental**: Prefer suggestions for incremental migration over full rewrites.
 - **Decoupled**: Do not tightly couple the logic to the internals of other extensions; rely on documented artifact names (`memory-synthesis.md`, `security-constraints.md`).
+- **Bismuth-Specific**: Apply `.claude/agent-rules.md` (300-line limit, unified logger, no emojis) and `.claude/coding-principles.md` when planning file structure.

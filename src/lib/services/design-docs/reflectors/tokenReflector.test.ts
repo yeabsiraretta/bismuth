@@ -55,7 +55,7 @@ describe('reflectTokensFromCSS', () => {
   it('stores value in default mode', () => {
     const result = reflectTokensFromCSS(sampleCSS);
     const colors = result.collections.find((c) => c.name === 'colors')!;
-    expect(colors.tokens[0].values.default).toBe('#3b82f6');
+    expect(colors.tokens[0].values['default']).toBe('#3b82f6');
   });
 
   it('returns empty collections for empty CSS', () => {

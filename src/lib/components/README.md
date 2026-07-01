@@ -2,21 +2,48 @@
 
 ## Structure
 
+This directory contains **shared, cross-cutting UI components** that are not owned by any
+single feature. Feature-specific components live in `src/lib/features/<name>/components/`.
+
 ```text
 components/
-├── canvas/         # Canvas/whiteboard components
-├── capture/        # Capture inbox and note card components
-├── dialogs/        # Simple dialog prompts (NewNoteDialog, etc.)
-├── graph/          # Knowledge graph visualization
+├── dialogs/        # Simple dialog prompts (DeleteConfirmDialog, etc.)
+├── editor/         # CodeMirror editor wrapper, extensions, and plugins
 ├── icons/          # Icon component and SVG assets
-├── layout/         # App shell components (StatusBar, ResizablePanel, EditorToolbar)
-├── modals/         # Full overlay modals (Settings, CommandPalette, SearchPanel, AutoLinker)
+├── layout/         # App shell (StatusBar, ResizablePanel, EditorToolbar)
 ├── note/           # Note editor and inline suggestions
-├── settings/       # Settings panel sub-components (one per tab)
-├── sidebar/        # Sidebar panels, tab bars, and shell
+├── overlays/       # Full overlays (Settings, LayoutManager)
+├── sidebar/        # Sidebar shell, tab bars, panels (Outline, Properties, Recent)
 ├── ui/             # Shared UI primitives (Button, Modal, Toast, ThemeToggle)
-└── vault/          # Vault management (FileTree, VaultPicker, WelcomeScreen)
+└── vault/          # Vault management (FileTree, VaultPicker, Toolbar)
 ```
+
+### Feature-Owned Components (in `src/lib/features/`)
+
+The following features own their own components via feature module barrels:
+
+- `@/features/backlinks` — BacklinksPanel, Backlinks, OutgoingLinks
+- `@/features/calendar` — CalendarView, CalendarPanel, WeekView, MonthView, YearView
+- `@/features/canvas` — CanvasApp, workspace, panels, flow, design, library, kanban
+- `@/features/capture` — CaptureDashboard, CaptureNoteCard, CaptureBatchBar
+- `@/features/changelog` — ChangelogPanel
+- `@/features/entity` — EntityPanel, EntityBrowser
+- `@/features/gamify` — TaskPanelUnified, GamifiedTaskPanel, QuestPanel, StatsView, TodayView
+- `@/features/git` — GitPanel
+- `@/features/graph` — GraphView, GraphSidebarPanel
+- `@/features/linting` — WritingLintPanel
+- `@/features/longform` — ManuscriptPanel
+- `@/features/navigator` — Navigator, ListPane, NavigationPane
+- `@/features/periodic` — PeriodicPanel
+- `@/features/publishing` — PublishingPanel, PublicationDashboard, DeploySettings
+- `@/features/rss` — RssFeedList, RssViewport
+- `@/features/search` — SearchPanel, CommandPalette
+- `@/features/speedreader` — SpeedReader, SpeedReaderPanel
+- `@/features/tag` — TagPanel
+- `@/features/tasks` — TaskPanel, KanbanPanel
+- `@/features/template` — TemplatePanel
+- `@/features/voice` — VoicePanel
+- `@/features/wikilink` — AutoLinker, findUnlinkedReferences
 
 ## Naming Rules
 
@@ -28,8 +55,9 @@ components/
 ## Import Conventions
 
 - Use `@/` path alias for `src/lib/` imports (e.g., `@/components/icons/Icon.svelte`)
-- Prefer barrel imports for directories that have them: `import { FileTree } from '@/components/vault'`
-- Types go in `src/lib/types/` and are imported with `import type { ... }`
+- **Feature components**: Import from barrel — `import { GraphView } from '@/features/graph'`
+- **Shared components**: Import directly — `import Icon from '@/components/icons/Icon.svelte'`
+- Types go in `src/lib/types/` or feature-scoped `features/<name>/types/`
 
 ## Styling
 

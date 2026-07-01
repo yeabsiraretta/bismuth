@@ -1,16 +1,14 @@
 <script lang="ts">
   import { activeNote, currentVault } from '@/stores/vault/vault';
-  import { filteredNotes } from '@/stores/tag/tag';
-  import type { Note } from '@/types/vault';
+  import { filteredNotes } from '@/features/tag';
+  import type { Note } from '@/types/data/vault';
   import Icon from '@/components/icons/Icon.svelte';
   import FileContextMenu from './FileContextMenu.svelte';
+  import { MergeNotesModal } from '@/features/capture';
   import { log } from '@/utils/logger';
-  import { onMount } from 'svelte';
   import {
     type TreeNode,
     type SortKey,
-    loadExpandedFolders,
-    persistExpanded,
     buildTree,
     createFolder,
     moveNoteToFolder,
@@ -20,18 +18,40 @@
 
   let sortBy: SortKey = 'name';
   let showSortMenu = false;
-  let expandedFolders: Set<string> = new Set();
+  let currentFolderPath: string | null = null;
+  let selectedNotes: Set<string> = new Set();
+  let mergeModalOpen = false;
+  $: mergeSourcePaths = Array.from(selectedNotes);
 
-  onMount(() => { expandedFolders = loadExpandedFolders(); });
-
-  function toggleFolder(path: string) {
-    if (expandedFolders.has(path)) expandedFolders.delete(path);
-    else expandedFolders.add(path);
-    expandedFolders = expandedFolders;
-    persistExpanded(expandedFolders);
+  // Auto-navigate to the parent folder of the active note
+  $: if ($activeNote && $currentVault) {
+    const parentPath = $activeNote.path.substring(0, $activeNote.path.lastIndexOf('/'));
+    currentFolderPath = parentPath.length > $currentVault.root_path.length ? parentPath : null;
   }
 
   $: tree = buildTree($filteredNotes, $currentVault?.root_path || '', sortBy);
+
+  function findFolderNode(nodes: TreeNode[], path: string): TreeNode | null {
+    for (const node of nodes) {
+      if (node.type === 'folder' && node.path === path) return node;
+      if (node.type === 'folder') {
+        const found = findFolderNode(node.children, path);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  $: visibleNodes = currentFolderPath ? (findFolderNode(tree, currentFolderPath)?.children ?? tree) : tree;
+  $: currentFolderName = currentFolderPath?.split('/').pop() || 'Notes';
+
+  function navigateToFolder(path: string) { currentFolderPath = path; }
+
+  function navigateUp() {
+    if (!currentFolderPath || !$currentVault) { currentFolderPath = null; return; }
+    const parent = currentFolderPath.substring(0, currentFolderPath.lastIndexOf('/'));
+    currentFolderPath = parent.length > $currentVault.root_path.length ? parent : null;
+  }
 
   // --- Inline folder creation ---
   let isCreatingFolder = false;
@@ -42,7 +62,9 @@
   async function handleCreateFolder() {
     if (!newFolderName.trim() || !$currentVault) { isCreatingFolder = false; return; }
     try {
-      expandedFolders = await createFolder(newFolderName, $currentVault.root_path, expandedFolders);
+      await createFolder(newFolderName, $currentVault.root_path, new Set());
+      const folderPath = `${$currentVault.root_path}/${newFolderName.trim()}`;
+      navigateToFolder(folderPath);
     } catch (error) { log.error('Failed to create folder', error as Error); }
     isCreatingFolder = false;
   }
@@ -65,6 +87,14 @@
   }
 
   function closeContextMenu() { contextMenuNote = null; }
+
+  function toggleNoteSelection(path: string) {
+    if (selectedNotes.has(path)) selectedNotes.delete(path);
+    else selectedNotes.add(path);
+    selectedNotes = selectedNotes;
+  }
+
+  function clearNoteSelection() { selectedNotes = new Set(); }
 
   // --- Drag and drop ---
   let draggedNote: Note | null = null;
@@ -98,22 +128,27 @@
   async function handleDropOnHeader(event: DragEvent) {
     event.preventDefault();
     if (!draggedNote || !$currentVault) { handleDragEnd(); return; }
-    try { await moveNoteToFolder(draggedNote, $currentVault.root_path); }
-    catch (error) { log.error('Failed to move note to root', error as Error); }
+    const target = currentFolderPath || $currentVault.root_path;
+    try { await moveNoteToFolder(draggedNote, target); }
+    catch (error) { log.error('Failed to move note', error as Error); }
     handleDragEnd();
   }
 
-  async function handleNoteClick(note: Note) {
+  async function handleNoteClick(note: Note, event?: MouseEvent) {
+    if (event && (event.metaKey || event.ctrlKey)) {
+      toggleNoteSelection(note.path);
+      return;
+    }
     try { await openNote(note); }
-    catch (error) { console.error('Failed to read note:', error); }
+    catch (error) { log.error('Failed to read note:', error as Error); }
   }
 
   function handleTreeKeydown(e: KeyboardEvent, node: TreeNode) {
-    if (node.type === 'folder') {
-      if (e.key === 'ArrowRight') { e.preventDefault(); if (!expandedFolders.has(node.path)) toggleFolder(node.path); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); if (expandedFolders.has(node.path)) toggleFolder(node.path); }
+    if (e.key === 'Enter' || e.key === 'ArrowRight') {
+      if (node.type === 'folder') { e.preventDefault(); navigateToFolder(node.path); }
+      else if (node.note) handleNoteClick(node.note);
     }
-    if (e.key === 'Enter' && node.type === 'file' && node.note) handleNoteClick(node.note);
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); navigateUp(); }
   }
 </script>
 
@@ -121,16 +156,28 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="header"
-    class:drop-target={dropTargetPath === ($currentVault?.root_path || '')}
-    on:dragover|preventDefault={(e) => handleDragOverFolder(e, $currentVault?.root_path || '')}
+    class:drop-target={dropTargetPath === (currentFolderPath || $currentVault?.root_path || '')}
+    on:dragover|preventDefault={(e) => handleDragOverFolder(e, currentFolderPath || $currentVault?.root_path || '')}
     on:dragleave={handleDragLeave}
     on:drop={handleDropOnHeader}
   >
     <div class="header-title">
-      <Icon name="folder-open" size={18} />
-      <h2>Notes</h2>
+      {#if currentFolderPath}
+        <button class="icon-btn" on:click={navigateUp} aria-label="Go back" title="Go to parent folder">
+          <Icon name="arrow-left" size={16} />
+        </button>
+      {/if}
+      <h2>{currentFolderName}</h2>
     </div>
     <div class="header-actions">
+      {#if selectedNotes.size >= 2}
+        <button class="icon-btn" on:click={() => { mergeModalOpen = true; }} aria-label="Merge selected notes" title="Merge {selectedNotes.size} notes">
+          <Icon name="git-merge" size={16} />
+        </button>
+        <button class="icon-btn" on:click={clearNoteSelection} aria-label="Clear selection" title="Clear selection">
+          <Icon name="x" size={16} />
+        </button>
+      {/if}
       <button class="icon-btn" on:click={startCreateFolder} aria-label="New folder">
         <Icon name="folder-plus" size={16} />
       </button>
@@ -173,13 +220,13 @@
       </div>
     {:else}
       <ul class="node-list" role="group">
-        {#each tree as node (node.path)}
+        {#each visibleNodes as node (node.path)}
           <FileTreeNode
             {node}
-            {expandedFolders}
             {dropTargetPath}
             activeNotePath={$activeNote?.path}
-            onToggleFolder={toggleFolder}
+            {selectedNotes}
+            onToggleFolder={navigateToFolder}
             onNoteClick={handleNoteClick}
             onContextMenu={handleContextMenu}
             onDragStart={handleDragStart}
@@ -203,6 +250,13 @@
     onClose={closeContextMenu}
   />
 {/if}
+
+<MergeNotesModal
+  isOpen={mergeModalOpen}
+  sources={mergeSourcePaths}
+  onClose={() => { mergeModalOpen = false; }}
+  onMerged={() => { mergeModalOpen = false; clearNoteSelection(); }}
+/>
 
 <style>
   .file-tree { display: flex; flex-direction: column; height: 100%; background: var(--background-secondary); color: var(--text-normal); }

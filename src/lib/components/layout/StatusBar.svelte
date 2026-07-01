@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { statusItemsLeft, statusItemsCenter, statusItemsRight, reorderStatusItems } from '@/stores/status';
+  import { statusItemsLeft, statusItemsCenter, statusItemsRight, reorderStatusItems } from '@/stores/status/status';
   import type { StatusItem } from '@/types/layout';
 
   let draggedId: string | null = null;
@@ -48,72 +48,97 @@
 <footer class="status-bar">
   <div class="status-left">
     {#each $statusItemsLeft as item (item.id)}
-      <span
-        class="status-item"
-        class:clickable={!!item.onClick}
-        class:drag-over={dropTargetId === item.id}
-        title={item.tooltip || ''}
-        draggable="true"
-        on:dragstart={(e) => handleDragStart(e, item.id)}
-        on:dragover={(e) => handleDragOver(e, item.id)}
-        on:dragleave={handleDragLeave}
-        on:drop={(e) => handleDrop(e, $statusItemsLeft, 'left')}
-        on:dragend={handleDragEnd}
-        on:click={item.onClick}
-        on:keydown={(e) => { if (e.key === 'Enter') item.onClick?.(); }}
-        role={item.onClick ? 'button' : undefined}
-        tabindex={item.onClick ? 0 : undefined}
-      >
-        {#if item.icon}
-          <Icon name={item.icon} size={12} />
-        {/if}
-        {item.label}
-      </span>
+      {#if item.onClick}
+        <button
+          class="status-item clickable"
+          class:drag-over={dropTargetId === item.id}
+          title={item.tooltip || ''}
+          draggable="true"
+          on:dragstart={(e) => handleDragStart(e, item.id)}
+          on:dragover={(e) => handleDragOver(e, item.id)}
+          on:dragleave={handleDragLeave}
+          on:drop={(e) => handleDrop(e, $statusItemsLeft, 'left')}
+          on:dragend={handleDragEnd}
+          on:click={item.onClick}
+        >
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </button>
+      {:else}
+        <span
+          class="status-item"
+          class:drag-over={dropTargetId === item.id}
+          title={item.tooltip || ''}
+          draggable="true"
+          on:dragstart={(e) => handleDragStart(e, item.id)}
+          on:dragover={(e) => handleDragOver(e, item.id)}
+          on:dragleave={handleDragLeave}
+          on:drop={(e) => handleDrop(e, $statusItemsLeft, 'left')}
+          on:dragend={handleDragEnd}
+          role="none"
+        >
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </span>
+      {/if}
     {/each}
   </div>
 
   <div class="status-center">
     {#each $statusItemsCenter as item (item.id)}
-      <span
-        class="status-item"
-        class:clickable={!!item.onClick}
-        title={item.tooltip || ''}
-        on:click={item.onClick}
-        on:keydown={(e) => { if (e.key === 'Enter') item.onClick?.(); }}
-        role={item.onClick ? 'button' : undefined}
-        tabindex={item.onClick ? 0 : undefined}
-      >
-        {#if item.icon}
-          <Icon name={item.icon} size={12} />
-        {/if}
-        {item.label}
-      </span>
+      {#if item.onClick}
+        <button
+          class="status-item clickable"
+          title={item.tooltip || ''}
+          on:click={item.onClick}
+        >
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </button>
+      {:else}
+        <span class="status-item" title={item.tooltip || ''}>
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </span>
+      {/if}
     {/each}
   </div>
 
   <div class="status-right">
     {#each $statusItemsRight as item (item.id)}
-      <span
-        class="status-item"
-        class:clickable={!!item.onClick}
-        class:drag-over={dropTargetId === item.id}
-        title={item.tooltip || ''}
-        draggable="true"
-        on:dragstart={(e) => handleDragStart(e, item.id)}
-        on:dragover={(e) => handleDragOver(e, item.id)}
-        on:dragleave={handleDragLeave}
-        on:drop={(e) => handleDrop(e, $statusItemsRight, 'right')}
-        on:dragend={handleDragEnd}
-        on:click={item.onClick}
-        on:keydown={(e) => { if (e.key === 'Enter') item.onClick?.(); }}
-        role={item.onClick ? 'button' : undefined}
-        tabindex={item.onClick ? 0 : undefined}
-      >
-        {#if item.icon}
-          <Icon name={item.icon} size={12} />
-        {/if}
-        {item.label}
-      </span>
+      {#if item.onClick}
+        <button
+          class="status-item clickable"
+          class:drag-over={dropTargetId === item.id}
+          title={item.tooltip || ''}
+          draggable="true"
+          on:dragstart={(e) => handleDragStart(e, item.id)}
+          on:dragover={(e) => handleDragOver(e, item.id)}
+          on:dragleave={handleDragLeave}
+          on:drop={(e) => handleDrop(e, $statusItemsRight, 'right')}
+          on:dragend={handleDragEnd}
+          on:click={item.onClick}
+        >
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </button>
+      {:else}
+        <span
+          class="status-item"
+          class:drag-over={dropTargetId === item.id}
+          title={item.tooltip || ''}
+          draggable="true"
+          on:dragstart={(e) => handleDragStart(e, item.id)}
+          on:dragover={(e) => handleDragOver(e, item.id)}
+          on:dragleave={handleDragLeave}
+          on:drop={(e) => handleDrop(e, $statusItemsRight, 'right')}
+          on:dragend={handleDragEnd}
+          role="none"
+        >
+          {#if item.icon}<Icon name={item.icon} size={12} />{/if}
+          {item.label}
+        </span>
+      {/if}
     {/each}
   </div>
 </footer>
@@ -127,7 +152,7 @@
     padding: 0 12px;
     background-color: var(--background-secondary);
     border-top: 1px solid var(--border-color);
-    font-size: 11px;
+    font-size: var(--status-bar-font);
     color: var(--text-muted);
     flex-shrink: 0;
     user-select: none;
@@ -152,6 +177,15 @@
     align-items: center;
     gap: 4px;
     white-space: nowrap;
+  }
+
+  button.status-item {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
   }
 
   .status-item.clickable {

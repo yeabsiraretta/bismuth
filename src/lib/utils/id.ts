@@ -1,14 +1,14 @@
 /**
  * Centralized ID generation utility.
- * Provides deterministic-friendly unique IDs for canvas elements and other entities.
+ * Uses native crypto.randomUUID() for proper collision resistance.
  */
 
 /**
- * Generate a unique ID using timestamp + random suffix.
- * Format: `{timestamp}-{random9}` — collision-resistant for UI operations.
+ * Generate a unique ID using crypto.randomUUID().
+ * Format: UUID v4 (e.g., `3b241101-e2bb-4d7b-8b44-21bf3c6fae60`).
  */
 export function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  return crypto.randomUUID();
 }
 
 /**
@@ -16,5 +16,5 @@ export function generateId(): string {
  * @param prefix - Short prefix (e.g., 'grp', 'layer', 'page')
  */
 export function generatePrefixedId(prefix: string): string {
-  return `${prefix}_${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  return `${prefix}_${crypto.randomUUID()}`;
 }

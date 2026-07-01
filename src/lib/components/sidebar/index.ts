@@ -1,15 +1,9 @@
-export { default as BacklinkMentionItem } from './BacklinkMentionItem.svelte';
-export { default as Backlinks } from './Backlinks.svelte';
-export { default as BacklinksPanel } from './BacklinksPanel.svelte';
-export { default as CalendarPanel } from './CalendarPanel.svelte';
-export { default as ConnectionsView } from './ConnectionsView.svelte';
-export { default as EntityBrowser } from './EntityBrowser.svelte';
-export { default as EntityPanel } from './EntityPanel.svelte';
-export { default as GitPanel } from './GitPanel.svelte';
-export { default as OutgoingLinks } from './OutgoingLinks.svelte';
-export { default as SearchPanel } from './SearchPanel.svelte';
+// Panels
+export { default as PropertiesPanel } from './panels/PropertiesPanel.svelte';
+export { default as OutlinePanel } from './panels/OutlinePanel.svelte';
+export { default as RecentPanel } from './panels/RecentPanel.svelte';
+
+// Root components
 export { default as ShortcutBar } from './ShortcutBar.svelte';
 export { default as SidebarShell } from './SidebarShell.svelte';
-export { default as TabbedPanel } from './TabbedPanel.svelte';
-export { default as TagPanel } from './TagPanel.svelte';
-export { default as VerticalTabBar } from './VerticalTabBar.svelte';
+export { default as VerticalTabBar } from './tabs/VerticalTabBar.svelte';

@@ -18,8 +18,24 @@ pub mod filesystem {
     /// Default vault directory name
     pub const VAULT_DIR_NAME: &str = ".bismuth";
 
-    /// Subdirectories created in vault
-    pub const VAULT_SUBDIRS: &[&str] = &["notes", "templates", "themes", "plugins"];
+    /// Subdirectories created in a new vault's `.bismuth/` directory.
+    /// Sorted alphabetically. Each service owns its subdirectory.
+    pub const VAULT_SUBDIRS: &[&str] = &[
+        "canvas",
+        "components",
+        "design-docs",
+        "history",
+        "index",
+        "plugins",
+        "recovery",
+        "styles",
+        "templates",
+        "themes",
+        "tokens",
+    ];
+
+    /// Top-level files stored directly in `.bismuth/`.
+    pub const VAULT_FILES: &[&str] = &["config.json", "style.json", "navigator.json"];
 }
 
 /// Recovery system configuration

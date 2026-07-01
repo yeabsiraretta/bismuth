@@ -3,7 +3,9 @@
 //! Provides theme loading, style settings extraction, and theme-folder
 //! watching so new themes are detected at runtime.
 
-use crate::services::theme_service::{StyleSetting, ThemeInfo, ThemeService};
+use crate::services::theme_service::{SettingsBlock, StyleSetting, ThemeInfo, ThemeService};
+use crate::services::theme_service::custom_tokens::{self, CustomTokens};
+use std::collections::HashMap;
 use std::sync::Mutex;
 use tauri::State;
 
@@ -91,4 +93,41 @@ pub async fn initialize_theme_service(
     let mut guard = state.theme_service.lock().unwrap();
     *guard = Some(service);
     Ok(())
+}
+
+/// Loads custom style token overrides from `.bismuth/style.json`.
+#[tauri::command]
+pub async fn load_custom_tokens(vault_root: String) -> Result<HashMap<String, String>, String> {
+    let path = std::path::PathBuf::from(&vault_root);
+    let tokens = custom_tokens::load_custom_tokens(&path)
+        .map_err(|e| format!("Failed to load custom tokens: {}", e))?;
+    Ok(tokens.tokens)
+}
+
+/// Saves custom style token overrides to `.bismuth/style.json`.
+#[tauri::command]
+pub async fn save_custom_tokens(
+    vault_root: String,
+    tokens: HashMap<String, String>,
+) -> Result<(), String> {
+    let path = std::path::PathBuf::from(&vault_root);
+    let data = CustomTokens { tokens };
+    custom_tokens::save_custom_tokens(&path, &data)
+        .map_err(|e| format!("Failed to save custom tokens: {}", e))
+}
+
+/// Scans all CSS files in themes and snippets directories for @settings blocks.
+/// Returns structured SettingsBlock list with source tracking.
+#[tauri::command]
+pub async fn scan_style_settings(
+    state: State<'_, ThemeState>,
+) -> Result<Vec<SettingsBlock>, String> {
+    let guard = state.theme_service.lock().unwrap();
+    let service = guard
+        .as_ref()
+        .ok_or_else(|| "Theme service not initialized".to_string())?;
+
+    service
+        .scan_all_settings_blocks()
+        .map_err(|e| format!("Failed to scan style settings: {}", e))
 }

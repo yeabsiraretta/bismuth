@@ -11,9 +11,15 @@
 - [MCP Protocol](architecture/canvas-mcp-protocol.md)
 - [Modular Design](architecture/modular-architecture.md)
 
+## Development
+
+- [Extension Integration](development/extension-integration.md)
+- [Governed Pipeline](development/extension-integration.md#governed-workflow-pipeline-preferred)
+
 ## Guides
 
 - [Getting Started](guides/getting-started.md)
+- [Contributing](guides/contributing.md)
 - [Feature Development](guides/feature-development-guide.md)
 - [Configuration](guides/configuration.md)
 - [Logging](guides/logging.md)
@@ -31,6 +37,7 @@
 
 ## Reference
 
+- [API Spec](reference/api-spec.md)
 - [Folder Structure](reference/folder-structure.md)
 - [Git Workflow](reference/git-workflow.md)
 - [Versioning](reference/versioning.md)
@@ -48,4 +55,4 @@
 
 ---
 
-[Archive](archive/) | [Contributing](../CONTRIBUTING.md) | [Changelog](../CHANGELOG.md)
+[Archive](archive/) | [Contributing](../CONTRIBUTING.md) | [Changelog](../CHANGELOG.md) | [CLAUDE.md](../CLAUDE.md)

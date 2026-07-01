@@ -3,6 +3,7 @@
  * Phase 13: T104 (Command Palette)
  */
 import { writable, derived } from 'svelte/store';
+import { buildDefaultCommands, type DefaultCommandActions } from './defaultCommands';
 
 export interface Command {
   id: string;
@@ -71,97 +72,6 @@ export function searchCommands(query: string): Command[] {
 }
 
 /** Register default Bismuth commands */
-export function registerDefaultCommands(actions: {
-  newNote?: () => void;
-  openSearch?: () => void;
-  openCommandPalette?: () => void;
-  openSettings?: () => void;
-  toggleLeftSidebar?: () => void;
-  toggleRightSidebar?: () => void;
-  quickCapture?: () => void;
-  openGraph?: () => void;
-  openCaptureDashboard?: () => void;
-  openAutoLinker?: () => void;
-}) {
-  const defaults: Command[] = [
-    {
-      id: 'note:new',
-      name: 'New Note',
-      description: 'Create a new note',
-      category: 'Notes',
-      shortcut: 'Cmd+N',
-      action: actions.newNote ?? (() => {}),
-    },
-    {
-      id: 'search:open',
-      name: 'Search',
-      description: 'Open search panel',
-      category: 'Navigation',
-      shortcut: 'Cmd+P',
-      action: actions.openSearch ?? (() => {}),
-    },
-    {
-      id: 'palette:open',
-      name: 'Command Palette',
-      description: 'Open command palette',
-      category: 'Navigation',
-      shortcut: 'Cmd+Shift+P',
-      action: actions.openCommandPalette ?? (() => {}),
-    },
-    {
-      id: 'settings:open',
-      name: 'Settings',
-      description: 'Open settings modal',
-      category: 'General',
-      shortcut: 'Cmd+,',
-      action: actions.openSettings ?? (() => {}),
-    },
-    {
-      id: 'layout:toggle-left',
-      name: 'Toggle Left Sidebar',
-      description: 'Show or hide the left sidebar',
-      category: 'Layout',
-      shortcut: 'Cmd+\\',
-      action: actions.toggleLeftSidebar ?? (() => {}),
-    },
-    {
-      id: 'layout:toggle-right',
-      name: 'Toggle Right Sidebar',
-      description: 'Show or hide the right sidebar',
-      category: 'Layout',
-      shortcut: 'Cmd+Shift+\\',
-      action: actions.toggleRightSidebar ?? (() => {}),
-    },
-    {
-      id: 'capture:quick',
-      name: 'Quick Capture',
-      description: 'Create a quick capture note',
-      category: 'Capture',
-      shortcut: 'Cmd+Shift+N',
-      action: actions.quickCapture ?? (() => {}),
-    },
-    {
-      id: 'view:graph',
-      name: 'Open Graph View',
-      description: 'Open the graph visualization',
-      category: 'Views',
-      action: actions.openGraph ?? (() => {}),
-    },
-    {
-      id: 'view:capture-dashboard',
-      name: 'Open Capture Dashboard',
-      description: 'Open the capture/inbox dashboard',
-      category: 'Views',
-      action: actions.openCaptureDashboard ?? (() => {}),
-    },
-    {
-      id: 'links:find-unlinked',
-      name: 'Find Unlinked References',
-      description: 'Scan current note for text matching other note titles that are not yet linked',
-      category: 'Links',
-      action: actions.openAutoLinker ?? (() => {}),
-    },
-  ];
-
-  defaults.forEach(registerCommand);
+export function registerDefaultCommands(actions: DefaultCommandActions) {
+  buildDefaultCommands(actions).forEach(registerCommand);
 }

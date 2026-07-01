@@ -227,5 +227,34 @@ interface FormProps {
 
 ---
 
+## Typography Rules
+
+**Golden rule**: Choose typography by semantic intent, not pixel size.
+
+**Zero redundancy rule**: Buttons, inputs, tabs, and badges manage their own
+typography via design tokens. Never apply `.bismuth-heading-*` or `.bismuth-body-*`
+to these components.
+
+**Semantic map** (use these classes for human-readable content):
+
+| Class | Intended use |
+| --- | --- |
+| `.bismuth-heading-xl` | Page empty states, major system alerts |
+| `.bismuth-heading-lg` | Page H1 — one per screen |
+| `.bismuth-heading-md` | Section title inside a panel or workspace |
+| `.bismuth-heading-sm` | Card header, sidebar heading, sub-section label |
+| `.bismuth-body` | Standard paragraphs, user content, AI output |
+| `.bismuth-body-sm` | Captions, helper text, metadata labels |
+| `.bismuth-body-code` | Entity IDs, exact-match strings, inline code |
+| `.bismuth-caption` | Fine print, timestamps, supplemental notes |
+
+**Overflow utilities** — apply only when text breaks its bounding box:
+
+- `.bismuth-truncate` — single-line ellipsis
+- `.bismuth-clamp-2` / `.bismuth-clamp-3` — multi-line clamp
+- `.bismuth-nowrap` — prevent line break
+
+All classes are defined in `src/lib/styles/typography.css`.
+
 **Last Updated**: 2026-05-26  
 **Source**: docs/standards/ux-principles.md

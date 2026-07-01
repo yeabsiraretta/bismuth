@@ -1,7 +1,7 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { toasts, dismissToast } from '@/stores/toast';
-  import type { ToastType } from '@/stores/toast';
+  import { toasts, dismissToast } from '@/stores/toast/toast';
+  import type { ToastType } from '@/stores/toast/toast';
 
   function iconForType(type: ToastType): string {
     switch (type) {
@@ -46,7 +46,7 @@
     gap: 10px;
     padding: 10px 14px;
     border-radius: var(--radius-m, 8px);
-    font-size: 13px;
+    font-size: var(--toast-font);
     color: var(--text-normal);
     background-color: var(--background-secondary);
     border: 1px solid var(--border-color);
@@ -56,16 +56,16 @@
   }
 
   .toast-info {
-    border-left: 3px solid var(--interactive-accent, #6366f1);
+    border-left: 3px solid var(--interactive-accent, #dc2626);
   }
   .toast-success {
-    border-left: 3px solid #10b981;
+    border-left: 3px solid var(--color-success, #10b981);
   }
   .toast-warning {
-    border-left: 3px solid #f59e0b;
+    border-left: 3px solid var(--color-warning, #f59e0b);
   }
   .toast-error {
-    border-left: 3px solid #ef4444;
+    border-left: 3px solid var(--color-error, #ef4444);
   }
 
   .toast-message {

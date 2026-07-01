@@ -1,13 +1,15 @@
 ---
-summary: How Spec Kit extensions integrate into Bismuth's AI-assisted development workflows
-read_when: Setting up development environment, understanding speckit extensions, configuring AI workflows
+summary: How Spec Kit extensions and the governed workflow pipeline integrate into Bismuth's AI-assisted development
+read_when: Setting up development environment, understanding speckit extensions, configuring AI workflows, running governed workflows
 ---
 
 # Spec Kit Extension Integration Guide
 
 ## Overview
 
-Bismuth uses [Spec Kit](https://speckit.dev) as its specification-driven development engine. Extensions add capabilities to the lifecycle (specify → plan → tasks → implement) and integrate with AI assistants (Windsurf/Cascade, Devin, Claude).
+Bismuth uses [Spec Kit](https://speckit.dev) as its specification-driven development engine. Extensions add capabilities to the lifecycle (specify → plan → tasks → implement) and integrate with AI assistants (Windsurf/Cascade, Claude).
+
+The **governed workflow pipeline** extends the basic lifecycle with architecture validation, security review, memory synthesis, and cross-skill quality gates.
 
 ## Installed Extensions
 
@@ -15,8 +17,39 @@ Bismuth uses [Spec Kit](https://speckit.dev) as its specification-driven develop
 |-----------|---------|---------|
 | `git` | built-in | Branch management, auto-commits at lifecycle boundaries |
 | `memory-loader` | 1.0.0 | Loads `.specify/memory/` files (constitution) before every lifecycle command |
-| `architecture-guard` | 1.8.9 | Architecture drift detection, violation scanning, refactor task generation |
+| `memory-md` | latest | Markdown-based durable memory, synthesis, and capture |
+| `architecture-guard` | 1.9.0 | Architecture drift detection, governed workflows, cross-skill orchestration |
+| `security-review` | latest | Security review at plan, task, branch, and audit levels |
 | `wireframe` | latest | SVG wireframe generation, review, and regression screenshots |
+| `changelog` | latest | Changelog generation and release notes |
+
+## Governed Workflow Pipeline (Preferred)
+
+The governed pipeline integrates ALL extensions and quality skills into a single sequential flow:
+
+```
+/speckit.architecture-guard.governed-plan    → plan.md
+/speckit.architecture-guard.governed-tasks   → tasks.md
+/speckit.architecture-guard.governed-implement → code + review
+```
+
+Each governed command automatically handles:
+- Memory synthesis (reads `.specify/memory/` + `docs/memory/`)
+- Plan/task generation (calls core spec-kit)
+- Security review (trust boundaries, authorization)
+- Architecture validation (drift detection, constitution compliance)
+- Cross-skill quality gates (code-review, ux-review, component-gen, pict-test-designer)
+- Memory capture (proposes durable lessons after implementation)
+
+### Cross-Skill Quality Gates
+
+| Phase | Gate | Skills Applied |
+|-------|------|----------------|
+| Plan | Feasibility | code-review (quality bar), component-gen (UX mapping), pict-test-designer (test boundaries), ux-review (interaction surfaces) |
+| Tasks | Generation | pict-test-designer (combinatorial tests), code-review (ownership), component-gen (UI guardrails), ux-review (acceptance criteria) |
+| Implement | Coding | coding-principles, component-gen, agent-rules |
+| Implement | Review | code-review (Fix Quality Bar), ux-review (smell detection) |
+| Implement | Testing | pict-test-designer (pairwise coverage) |
 
 ## How Extensions Work
 
@@ -38,21 +71,33 @@ Each hook can be:
 ```
 /speckit.specify
   ├─ BEFORE: git.feature (create branch), memory-loader.load
-  └─ AFTER:  git.commit, wireframe.generate (optional)
+  └─ AFTER:  git.commit, changelog.generate, wireframe.generate (optional)
 
 /speckit.plan
-  ├─ BEFORE: git.commit, memory-loader.load, wireframe.review (optional)
-  └─ AFTER:  git.commit, architecture-guard.violation-detection (optional)
+  ├─ BEFORE: git.commit, memory-loader.load, wireframe.review, memory-md.plan-with-memory
+  └─ AFTER:  git.commit, architecture-guard.violation-detection, security-review.plan
 
 /speckit.tasks
   ├─ BEFORE: git.commit, memory-loader.load
-  └─ AFTER:  git.commit, architecture-guard.refactor-generator (optional)
+  └─ AFTER:  git.commit, architecture-guard.refactor-generator, security-review.tasks
 
 /speckit.implement
   ├─ BEFORE: git.commit, memory-loader.load
-  └─ AFTER:  git.commit, architecture-guard.architecture-review (optional),
-             wireframe.screenshots (optional)
+  └─ AFTER:  git.commit, changelog.release, architecture-guard.architecture-review,
+             wireframe.screenshots, memory-md.capture-from-diff, security-review.branch
 ```
+
+## Three-Layer Skill Architecture
+
+The skill system is mirrored across three locations for full agent compatibility:
+
+| Layer | Location | Purpose |
+|-------|----------|----------|
+| Agent Config | `.claude/skills/*/SKILL.md` | Claude/Windsurf skill definitions |
+| Windsurf Workflows | `.windsurf/workflows/*.md` | Windsurf slash-command definitions |
+| Extension Commands | `.specify/extensions/architecture-guard/commands/*.md` | Spec-Kit extension commands |
+
+Canonical source of truth: `CLAUDE.md` at repo root.
 
 ## Windsurf/Cascade Integration
 
@@ -62,18 +107,21 @@ Spec Kit generates `.windsurf/workflows/` files — one per command. These becom
 
 | Slash Command | Action |
 |---------------|--------|
+| `/speckit.architecture-guard.governed-plan` | Plan with full governance (preferred) |
+| `/speckit.architecture-guard.governed-tasks` | Tasks with quality gates (preferred) |
+| `/speckit.architecture-guard.governed-implement` | Implement with review gates (preferred) |
 | `/speckit.specify` | Create or update feature spec |
-| `/speckit.plan` | Generate implementation plan |
-| `/speckit.tasks` | Generate dependency-ordered task list |
-| `/speckit.implement` | Execute all tasks from tasks.md |
+| `/speckit.plan` | Generate implementation plan (basic) |
+| `/speckit.tasks` | Generate dependency-ordered task list (basic) |
+| `/speckit.implement` | Execute all tasks from tasks.md (basic) |
 | `/speckit.clarify` | Ask clarification questions about spec |
 | `/speckit.analyze` | Cross-artifact consistency check |
-| `/speckit.checklist` | Generate custom checklist |
-| `/speckit.constitution` | Update project constitution |
-| `/speckit.architecture-guard.*` | Architecture review commands |
+| `/speckit.architecture-guard.architecture-review` | Post-implementation review |
+| `/speckit.architecture-guard.architecture-verify` | Verification gate |
+| `/speckit.security-review.*` | Security review commands |
+| `/speckit.memory-md.*` | Memory management commands |
 | `/speckit.wireframe.*` | Wireframe generation/review |
 | `/speckit.git.*` | Git workflow commands |
-| `/speckit.memory-loader.load` | Load memory context |
 
 ### Rules File
 
@@ -81,30 +129,11 @@ Spec Kit generates `.windsurf/workflows/` files — one per command. These becom
 
 ### Skills (via `.claude/`)
 
-Three skills are available in Cascade's skill system:
-- **ux-review**: 168-principle UX evaluation
-- **code-review**: Deep code/PR review with root cause analysis
-- **component-gen**: Generate components with UX principles baked in
-
-## Devin Integration
-
-### Configuration
-
-`.devin/cascade.json` defines Devin's project awareness:
-- Rules files to load
-- Context documents (constitution, project-context, UX principles)
-- Skills to activate
-- Constraints (300-line limit, 90% coverage, etc.)
-- Tech stack reference
-- Performance targets
-
-### Devin Workflow
-
-Devin reads `.devin/cascade.json` at session start and gets:
-1. Project rules from `.windsurf/rules/`
-2. Context from `.claude/` and `.specify/memory/`
-3. Available skills and constraints
-4. Command shortcuts
+Four quality skills are available in Cascade's skill system:
+- **code-review**: Deep code/PR review with Fix Quality Bar
+- **ux-review**: 168-principle UX evaluation with smell detection
+- **component-gen**: Generate components with UX guardrails baked in
+- **pict-test-designer**: Combinatorial test case generation
 
 ## Architecture Guard Deep Dive
 
@@ -112,37 +141,69 @@ Devin reads `.devin/cascade.json` at session start and gets:
 
 | Command | When to Use |
 |---------|-------------|
+| `governed-plan` | **Primary** — Plan with memory + security + architecture + quality skills |
+| `governed-tasks` | **Primary** — Tasks with all constraints + PICT + ownership |
+| `governed-implement` | **Primary** — Implement with inline review gates |
 | `init` | Set up governance + architecture constitutions |
 | `violation-detection` | After planning — scan for drift |
 | `refactor-generator` | After task gen — convert violations to tasks |
 | `architecture-review` | After implementation — full review |
 | `architecture-verify` | Verification gate before merge |
 | `architecture-apply` | Apply approved refactors to plan/tasks |
-| `governed-plan` | Plan with memory + security + architecture |
-| `governed-tasks` | Tasks with all constraints |
-| `governed-implement` | Implement with post-review |
 | `architecture-workflow` | Single workflow combining all |
 
-### Typical Usage
+### Typical Usage (Governed Pipeline)
 
 ```bash
-# After writing a plan:
-/speckit.architecture-guard.violation-detection
+# Full feature development cycle:
+/speckit.specify               # Write the spec
+/speckit.architecture-guard.governed-plan      # Plan with all governance
+/speckit.architecture-guard.governed-tasks     # Generate quality tasks
+/speckit.architecture-guard.governed-implement # Implement with review gates
 
-# Before implementation:
-/speckit.architecture-guard.governed-implement
-
-# After implementation:
-/speckit.architecture-guard.architecture-verify
+# Standalone commands (when not using full pipeline):
+/speckit.architecture-guard.violation-detection  # Scan plan for drift
+/speckit.architecture-guard.architecture-verify  # Verification gate
 ```
 
-## Memory Loader
+### Governed Workflow Internals
 
-Automatically loads `.specify/memory/constitution.md` before every lifecycle command. This ensures the AI always has governance context (300-line limit, testing standards, UX requirements) without manual prompting.
+Each governed command follows this pattern:
+1. Detect available extensions (memory-md, security-review)
+2. Synthesize memory context
+3. Execute core spec-kit command (plan/tasks/implement)
+4. Run security review
+5. Run architecture validation
+6. Apply cross-skill quality gates
+7. Capture durable memory lessons
+
+## Memory System
+
+### memory-loader
+Automatically loads `.specify/memory/constitution.md` before every lifecycle command. Ensures governance context is always available.
+
+### memory-md
+Provides durable knowledge management:
+- `/speckit.memory-md.plan-with-memory` — Synthesize constraints before planning
+- `/speckit.memory-md.capture` — Propose durable lessons after implementation
+- `/speckit.memory-md.capture-from-diff` — Capture from git diff
+- `/speckit.memory-md.audit` — Check memory quality and freshness
+
+Config: `.specify/extensions/memory-md/config.yml` (markdown-only mode)
+
+## Security Review
+
+| Command | When |
+|---------|------|
+| `security-review.plan` | After plan generation |
+| `security-review.tasks` | After task generation |
+| `security-review.branch` | After implementation (branch changes) |
+| `security-review.audit` | Full-system security audit |
+| `security-review.staged` | Review staged git changes |
 
 ## Extension Catalog
 
-Catalog config at `.specify/extension-catalogs.yml`. Extensions are installed locally in `.specify/extensions/`. The catalog is only needed for `specify extension add` — already-installed extensions work regardless of catalog availability.
+Catalog config at `.specify/extension-catalogs.yml`. Extensions are installed locally in `.specify/extensions/`. The catalog is only needed for `specify extension add`.
 
 ## Adding New Extensions
 
@@ -158,9 +219,29 @@ specify extension add <extension-name>
 
 After adding, run `specify integration sync windsurf` to regenerate workflow files.
 
+## Key Configuration Files
+
+| File | Purpose |
+|------|----------|
+| `CLAUDE.md` | Root AI config, skill integration map |
+| `.specify/extensions.yml` | Extension registry + hook definitions |
+| `.specify/memory/workflow.md` | Memory-first workflow rules |
+| `.specify/memory/constitution.md` | Governance constitution (v1.4.0) |
+| `.specify/memory/architecture_constitution.md` | Architecture rules (v1.1.0) |
+| `.specify/memory/security_constitution.md` | Security standards (v1.0.0) |
+| `.specify/workflows/workflow-registry.json` | Registered workflows |
+| `.claude/agent-rules.md` | AI assistant workflow rules |
+| `.claude/skills/README.md` | Skill documentation |
+
 ## Troubleshooting
 
 - **Catalog fetch fails**: Extensions still work if already in `.specify/extensions/`. Catalog only needed for discovery/install.
 - **Hook not firing**: Check `.specify/extensions.yml` — ensure `enabled: true` and extension is in `installed` list.
 - **Workflow missing**: Run `specify integration sync windsurf` to regenerate `.windsurf/workflows/`.
 - **Memory not loaded**: Ensure `.specify/memory/` directory has files and memory-loader is in `installed` list.
+- **Governed workflow not running skills**: Verify `.claude/skills/*/SKILL.md` files exist.
+- **Security review skipped**: Ensure `security-review` is in `.specify/extensions.yml` installed list.
+
+---
+
+*Last Updated: 2026-06-13*

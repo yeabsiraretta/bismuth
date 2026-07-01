@@ -17,13 +17,13 @@ export function isValidEnvelope(doc: unknown): doc is DesignDocument<unknown> {
   if (!doc || typeof doc !== 'object') return false;
   const d = doc as Record<string, unknown>;
   return (
-    typeof d.schema_version === 'string' &&
-    VALID_TYPES.includes(d.document_type as DocumentType) &&
-    typeof d.document_id === 'string' &&
-    typeof d.name === 'string' &&
-    typeof d.version === 'number' &&
-    d.payload !== undefined &&
-    d.canvas_source !== undefined
+    typeof d['schema_version'] === 'string' &&
+    VALID_TYPES.includes(d['document_type'] as DocumentType) &&
+    typeof d['document_id'] === 'string' &&
+    typeof d['name'] === 'string' &&
+    typeof d['version'] === 'number' &&
+    d['payload'] !== undefined &&
+    d['canvas_source'] !== undefined
   );
 }
 
@@ -31,10 +31,10 @@ export function isValidEnvelope(doc: unknown): doc is DesignDocument<unknown> {
 export function isValidTokenPayload(payload: unknown): payload is TokenPayload {
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
-  return Array.isArray(p.collections) && p.collections.every((c: unknown) => {
+  return Array.isArray(p['collections']) && (p['collections'] as unknown[]).every((c: unknown) => {
     if (!c || typeof c !== 'object') return false;
     const col = c as Record<string, unknown>;
-    return typeof col.name === 'string' && Array.isArray(col.tokens);
+    return typeof col['name'] === 'string' && Array.isArray(col['tokens']);
   });
 }
 
@@ -43,11 +43,11 @@ export function isValidComponentPayload(payload: unknown): payload is ComponentP
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
   return (
-    typeof p.component_name === 'string' &&
-    typeof p.file_path === 'string' &&
-    Array.isArray(p.props) &&
-    Array.isArray(p.slots) &&
-    Array.isArray(p.states)
+    typeof p['component_name'] === 'string' &&
+    typeof p['file_path'] === 'string' &&
+    Array.isArray(p['props']) &&
+    Array.isArray(p['slots']) &&
+    Array.isArray(p['states'])
   );
 }
 
@@ -56,10 +56,10 @@ export function isValidLayoutPayload(payload: unknown): payload is LayoutPayload
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
   return (
-    typeof p.layout_name === 'string' &&
-    (p.type === 'grid' || p.type === 'flex') &&
-    typeof p.breakpoints === 'object' &&
-    Array.isArray(p.regions)
+    typeof p['layout_name'] === 'string' &&
+    (p['type'] === 'grid' || p['type'] === 'flex') &&
+    typeof p['breakpoints'] === 'object' &&
+    Array.isArray(p['regions'])
   );
 }
 
@@ -68,10 +68,10 @@ export function isValidFlowPayload(payload: unknown): payload is FlowPayload {
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
   return (
-    typeof p.flow_name === 'string' &&
-    Array.isArray(p.steps) &&
-    Array.isArray(p.error_paths) &&
-    Array.isArray(p.components_used)
+    typeof p['flow_name'] === 'string' &&
+    Array.isArray(p['steps']) &&
+    Array.isArray(p['error_paths']) &&
+    Array.isArray(p['components_used'])
   );
 }
 
@@ -80,10 +80,10 @@ export function isValidThemePayload(payload: unknown): payload is ThemePayload {
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
   return (
-    typeof p.theme_name === 'string' &&
-    typeof p.extends === 'string' &&
-    typeof p.attribute === 'string' &&
-    typeof p.overrides === 'object'
+    typeof p['theme_name'] === 'string' &&
+    typeof p['extends'] === 'string' &&
+    typeof p['attribute'] === 'string' &&
+    typeof p['overrides'] === 'object'
   );
 }
 
@@ -92,10 +92,10 @@ export function isValidPagePayload(payload: unknown): payload is PagePayload {
   if (!payload || typeof payload !== 'object') return false;
   const p = payload as Record<string, unknown>;
   return (
-    typeof p.page_name === 'string' &&
-    typeof p.route === 'string' &&
-    typeof p.layout === 'string' &&
-    Array.isArray(p.components)
+    typeof p['page_name'] === 'string' &&
+    typeof p['route'] === 'string' &&
+    typeof p['layout'] === 'string' &&
+    Array.isArray(p['components'])
   );
 }
 

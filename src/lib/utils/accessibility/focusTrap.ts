@@ -4,17 +4,12 @@
  * Traps keyboard focus within a container element.
  * Used for modals, dialogs, and other overlays to prevent
  * focus from escaping to background content.
+ *
+ * Delegates to the `focus-trap` library for robust handling of
+ * edge cases (iframes, shadow DOM, dynamic content mutations).
  */
 
-const FOCUSABLE_SELECTOR = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'textarea:not([disabled])',
-  'select:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-  '[contenteditable]',
-].join(', ');
+import { createFocusTrap as createFocusTrapLib, type FocusTrap } from 'focus-trap';
 
 export interface FocusTrapOptions {
   /** Element to receive initial focus (defaults to first focusable) */
@@ -44,66 +39,39 @@ export function createFocusTrap(
   options: FocusTrapOptions = {}
 ): FocusTrapInstance {
   const { initialFocus, returnFocus = true, onEscape } = options;
-  let previouslyFocused: HTMLElement | null = null;
 
-  function getFocusableElements(): HTMLElement[] {
-    return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-      el => el.offsetParent !== null
-    );
+  let trap: FocusTrap | null = null;
+
+  function activate() {
+    trap = createFocusTrapLib(container, {
+      initialFocus: initialFocus || undefined,
+      returnFocusOnDeactivate: returnFocus,
+      escapeDeactivates: !!onEscape,
+      allowOutsideClick: true,
+    });
+
+    if (onEscape) {
+      container.addEventListener('keydown', handleEscape);
+    }
+
+    trap.activate();
   }
 
-  function handleKeydown(e: KeyboardEvent) {
+  function handleEscape(e: KeyboardEvent) {
     if (e.key === 'Escape' && onEscape) {
       e.preventDefault();
       onEscape();
-      return;
     }
-
-    if (e.key !== 'Tab') return;
-
-    const focusable = getFocusableElements();
-    if (focusable.length === 0) return;
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (e.shiftKey) {
-      if (document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      }
-    } else {
-      if (document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-  }
-
-  function activate() {
-    previouslyFocused = document.activeElement as HTMLElement;
-    container.addEventListener('keydown', handleKeydown);
-
-    // Focus initial element or first focusable
-    requestAnimationFrame(() => {
-      if (initialFocus) {
-        initialFocus.focus();
-      } else {
-        const focusable = getFocusableElements();
-        if (focusable.length > 0) {
-          focusable[0].focus();
-        }
-      }
-    });
   }
 
   function deactivate() {
-    container.removeEventListener('keydown', handleKeydown);
-
-    if (returnFocus && previouslyFocused && previouslyFocused.focus) {
-      previouslyFocused.focus();
+    if (onEscape) {
+      container.removeEventListener('keydown', handleEscape);
     }
-    previouslyFocused = null;
+    if (trap) {
+      trap.deactivate();
+      trap = null;
+    }
   }
 
   return { activate, deactivate };

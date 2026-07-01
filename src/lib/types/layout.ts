@@ -45,6 +45,8 @@ export interface SidebarConfig {
   position: 'left' | 'right';
   /** Ordered list of tab IDs for the main section */
   tabs: SidebarTab[];
+  /** Ordered list of tab IDs for the user-defined lower section */
+  lowerTabs: SidebarTab[];
   /** Ordered list of tab IDs for the bottom section */
   bottomTabs: SidebarTab[];
   /** Current active tab ID */
@@ -59,26 +61,50 @@ export interface SidebarConfig {
   maxWidth?: number;
 }
 
-/** Default left sidebar tabs */
-export const DEFAULT_LEFT_TABS: SidebarTab[] = [
-  { id: 'files', icon: 'folder', label: 'Files', tooltip: 'File Explorer', pinned: true },
-  { id: 'search', icon: 'search', label: 'Search', tooltip: 'Search in vault' },
-  { id: 'inbox', icon: 'inbox', label: 'Inbox', tooltip: 'Capture Dashboard' },
-  { id: 'graph', icon: 'share-2', label: 'Graph', tooltip: 'Graph view' },
-  { id: 'tags', icon: 'tag', label: 'Tags', tooltip: 'Tag management' },
-  { id: 'entities', icon: 'layers', label: 'Entities', tooltip: 'Entity browser' },
-];
+/** The active viewport content mode */
+export type ViewportMode = 'note' | 'rss' | 'canvas' | 'graph' | 'calendar' | 'home';
 
-/** Default right sidebar tabs */
-export const DEFAULT_RIGHT_TABS: SidebarTab[] = [
-  { id: 'backlinks', icon: 'link-2', label: 'Backlinks', tooltip: 'Backlinks' },
-  { id: 'outline', icon: 'list', label: 'Outline', tooltip: 'Document outline' },
-  { id: 'properties', icon: 'sliders', label: 'Properties', tooltip: 'Note properties' },
-  { id: 'calendar', icon: 'calendar', label: 'Calendar', tooltip: 'Daily notes calendar' },
-];
+/** A saved layout preset (named snapshot of sidebar/panel state) */
+export interface LayoutPreset {
+  id: string;
+  name: string;
+  leftSidebarVisible: boolean;
+  rightSidebarVisible: boolean;
+  leftSidebarWidth: number;
+  rightSidebarWidth: number;
+  leftActiveTab: string;
+  rightActiveTab: string;
+  viewportMode: ViewportMode;
+  isDefault?: boolean;
+}
 
-/** Default bottom tabs (shared between both sidebars) */
-export const DEFAULT_BOTTOM_TABS: SidebarTab[] = [
-  { id: 'settings', icon: 'settings', label: 'Settings', tooltip: 'Settings' },
-  { id: 'help', icon: 'help-circle', label: 'Help', tooltip: 'Help & support' },
-];
+
+// ─── Theme ───────────────────────────────────────────────────────────────────
+
+export type Theme = 'light' | 'dark' | 'auto';
+
+export interface ThemeConfig {
+  current: Theme;
+  systemPreference: 'light' | 'dark';
+}
+
+// ─── Slot Contracts ───────────────────────────────────────────────────────────
+
+/** A named zone in a layout shell with documented responsibilities and constraints */
+export interface SlotZone {
+  name: string;
+  description: string;
+  /** Content categories that MUST NOT be placed in this zone */
+  mustNotContain: string[];
+  required: boolean;
+}
+
+/**
+ * Documents the named slot zones for a layout shell component.
+ * Co-locate a *.slots.ts beside the layout .svelte file using this type.
+ *
+ * @example
+ * // AppLayout.slots.ts
+ * export const AppLayoutSlots: SlotContract = { header: { ... } };
+ */
+export type SlotContract = Record<string, SlotZone>;

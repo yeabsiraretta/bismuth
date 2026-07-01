@@ -43,6 +43,12 @@ jobs:
         working-directory: src-tauri
         run: cargo clippy --all-targets --all-features -- -D warnings
 
+      - name: Run cargo-deny
+        working-directory: src-tauri
+        run: |
+          cargo install --locked cargo-deny 2>/dev/null || true
+          cargo deny check
+
       - name: Run tests
         working-directory: src-tauri
         run: cargo test --all-features
@@ -60,16 +66,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -78,16 +83,31 @@ jobs:
         run: pnpm prettier --check .
 
       - name: Run ESLint
-        run: pnpm eslint .
+        run: pnpm lint
+
+      - name: Lint CSS tokens
+        run: pnpm lint:css
 
       - name: Type check
-        run: pnpm svelte-check
+        run: pnpm type-check
 
       - name: Run unit tests
-        run: pnpm test
+        run: pnpm test:ci
+
+      - name: Run architecture tests
+        run: pnpm test:arch
+
+      - name: Check constitution compliance
+        run: pnpm check:constitution
 
       - name: Build
         run: pnpm build
+
+      - name: Check bundle size
+        run: bash scripts/quality/check-bundle-size.sh
+
+      - name: Bundle size report
+        run: bash scripts/quality/bundle-size-report.sh --ci || true
 
   # E2E tests
   e2e-tests:
@@ -102,16 +122,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -133,6 +152,32 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+  # Benchmark regression (criterion)
+  benchmarks:
+    name: Benchmarks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Run benchmarks
+        working-directory: src-tauri
+        run: |
+          cargo bench --bench search_bench -- --output-format bencher 2>&1 | tee bench-output.txt || true
+          echo "## Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat bench-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
   # Security audit
   security-audit:
     name: Security Audit
@@ -142,13 +187,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Audit Rust dependencies
         working-directory: src-tauri
         run: |
           cargo install cargo-audit
           cargo audit
 
-      - name: Audit npm dependencies
+      - name: Audit pnpm dependencies
         run: |
           pnpm audit --audit-level=moderate
 
@@ -164,18 +221,20 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
 
-      - name: Install tarpaulin
-        run: cargo install cargo-tarpaulin
+      - name: Install cargo-llvm-cov
+        run: cargo install cargo-llvm-cov
 
-      - name: Generate coverage
+      - name: Generate Rust coverage
         working-directory: src-tauri
-        run: cargo tarpaulin --out Xml --output-dir ../coverage
+        run: cargo llvm-cov --all-features --lcov --output-path ../coverage/rust-lcov.info
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/cobertura.xml
+          files: ./coverage/rust-lcov.info
           fail_ci_if_error: false
 
   # Validate commit messages
@@ -195,10 +254,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install commitlint
-        run: |
-          npm install -g @commitlint/cli @commitlint/config-conventional
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - name: Validate commits
         run: |
-          npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+          pnpm dlx @commitlint/cli --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose

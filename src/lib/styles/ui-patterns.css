@@ -30,17 +30,17 @@
 
 .badge-success {
   background: var(--background-modifier-success);
-  color: #ffffff;
+  color: var(--text-on-accent);
 }
 
 .badge-warning {
-  background: #f59e0b;
-  color: #ffffff;
+  background: var(--status-warning);
+  color: var(--text-on-accent);
 }
 
 .badge-error {
   background: var(--background-modifier-error);
-  color: #ffffff;
+  color: var(--text-on-accent);
 }
 
 .badge-outline {
@@ -204,7 +204,7 @@
 
 .action-btn-danger:hover {
   background: var(--background-modifier-error);
-  color: #ffffff;
+  color: var(--text-on-accent);
 }
 
 /* ========== Empty State ========== */

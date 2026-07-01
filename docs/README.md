@@ -20,13 +20,24 @@ docs/
 │   ├── canvas-mcp-protocol.md
 │   └── modular-architecture.md
 │
+├── development/         # AI workflows & extension integration
+│   └── extension-integration.md
+│
 ├── guides/              # Developer how-to guides
 │   ├── getting-started.md
+│   ├── contributing.md
 │   ├── feature-development-guide.md
 │   ├── configuration.md
 │   ├── logging.md
 │   ├── tailwind-integration.md
 │   └── development-scripts.md
+│
+├── memory/              # Durable knowledge (cross-feature)
+│   ├── INDEX.md
+│   ├── ARCHITECTURE.md
+│   ├── DECISIONS.md
+│   ├── BUGS.md
+│   └── WORKLOG.md
 │
 ├── standards/           # Active coding & design standards
 │   ├── design-system.md
@@ -97,15 +108,19 @@ Or automate with a GitHub Action that syncs on push to `main`.
 | Need | Document |
 |------|----------|
 | Architecture overview | [overview.md](architecture/overview.md) |
+| AI workflows & extensions | [extension-integration.md](development/extension-integration.md) |
+| IPC API reference | [api-spec.md](reference/api-spec.md) |
 | Canvas system | [bismuth-canvas-system.md](architecture/bismuth-canvas-system.md) |
 | Start developing | [getting-started.md](guides/getting-started.md) |
+| Contributing | [contributing.md](guides/contributing.md) |
 | Build a feature | [feature-development-guide.md](guides/feature-development-guide.md) |
 | Design tokens | [design-system.md](standards/design-system.md) |
 | Naming rules | [naming-conventions.md](standards/naming-conventions.md) |
 | Git branching | [git-workflow.md](reference/git-workflow.md) |
 | Project layout | [folder-structure.md](reference/folder-structure.md) |
+| Governed pipeline | [CLAUDE.md](../CLAUDE.md) |
 
 ---
 
-**Last Updated**: 2026-06-05
+**Last Updated**: 2026-06-13
 **Maintainer**: Yeabsira Moges

@@ -13,29 +13,51 @@
 //! - [`PluginService`] — Plugin manifest discovery and lifecycle management
 //! - [`EmbeddingService`] — Local semantic embedding and similarity search
 
+pub mod backup_service;
 pub mod canvas_service;
-pub mod concept_service;
+pub mod nas_service;
+pub mod changelog_service;
+pub mod gym_service;
+pub mod llm_service;
+pub mod study_service;
+pub mod ocr_service;
+pub mod spreadsheet_service;
+pub mod version_service;
 pub mod embedding_service;
-pub mod entity_service;
-pub mod entity_types;
-pub mod frontmatter_service;
-pub mod index_service;
+pub mod frontmatter;
+pub mod git_service;
+pub mod knowledge;
 pub mod lifecycle_service;
+pub mod linting_service;
+pub mod longform_service;
 pub mod plugin_service;
-pub mod search_query;
-pub mod search_server;
+pub mod publishing_service;
+pub mod search;
+pub mod task_service;
+pub mod template_service;
 pub mod theme_service;
 pub mod vault_service;
 pub mod watcher_service;
-pub mod wikilink_service;
 
+// Module aliases for backward-compatible import paths
+pub use knowledge::concept_service;
+pub use knowledge::entity_service;
+pub use knowledge::entity_types;
+pub use knowledge::wikilink_service;
+pub use search::index_service;
+pub use search::search_query;
+pub use search::search_server;
+pub use frontmatter as frontmatter_service;
+pub use frontmatter::migration as frontmatter_migration;
+
+// Top-level type re-exports
 pub use canvas_service::CanvasService;
 pub use embedding_service::EmbeddingService;
-pub use entity_service::EntityService;
-pub use frontmatter_service::FrontmatterService;
-pub use index_service::IndexService;
+pub use knowledge::EntityService;
+pub use frontmatter::FrontmatterService;
+pub use search::IndexService;
 pub use plugin_service::PluginService;
 pub use theme_service::ThemeService;
 pub use vault_service::VaultService;
 pub use watcher_service::WatcherService;
-pub use wikilink_service::WikilinkService;
+pub use knowledge::WikilinkService;

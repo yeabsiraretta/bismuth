@@ -8,6 +8,7 @@ pub mod app;
 pub mod commands;
 pub mod config;
 pub mod db;
+pub mod domains;
 pub mod error;
 pub mod logger;
 pub mod models;

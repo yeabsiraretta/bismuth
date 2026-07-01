@@ -2,9 +2,14 @@ schema_version: "1.0"
 workflow:
   id: "speckit"
   name: "Full SDD Cycle"
-  version: "1.0.0"
+  version: "1.1.0"
   author: "GitHub"
-  description: "Runs specify → plan → tasks → implement with review gates"
+  description: "Runs specify → plan → tasks → implement with review gates. For governed execution with cross-skill quality gates, use: governed-plan → governed-tasks → governed-implement."
+
+# Governed Alternative (preferred for architecture-guard users):
+# /speckit.architecture-guard.governed-plan    → plan.md + architecture + security + memory
+# /speckit.architecture-guard.governed-tasks   → tasks.md + pict + code-review + component-gen
+# /speckit.architecture-guard.governed-implement → code + review + ux-review + pict-testing
 
 requires:
   # 0.8.5 is the first release with engine-side resolution of the

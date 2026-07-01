@@ -3,6 +3,29 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
+/// Lightweight note metadata without content — used for vault scanning,
+/// file tree listing, and sidebar display where full content is not needed.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NoteMeta {
+    pub path: PathBuf,
+    pub title: String,
+    pub frontmatter: HashMap<String, serde_json::Value>,
+    pub created_at: DateTime<Utc>,
+    pub modified_at: DateTime<Utc>,
+}
+
+impl From<&Note> for NoteMeta {
+    fn from(note: &Note) -> Self {
+        Self {
+            path: note.path.clone(),
+            title: note.title.clone(),
+            frontmatter: note.frontmatter.clone(),
+            created_at: note.created_at,
+            modified_at: note.modified_at,
+        }
+    }
+}
+
 /// Represents a markdown note in the vault
 ///
 /// A Note contains the file path, parsed frontmatter metadata,

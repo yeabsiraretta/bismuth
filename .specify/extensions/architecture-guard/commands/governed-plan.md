@@ -158,6 +158,26 @@ The command MUST return:
 - **Durable Memory Preservation**: (Proactively triggered) Review the proposed memory entries below.
 ```
 
+## Cross-Skill Integration
+
+During planning, automatically apply these complementary skills:
+
+- **code-review principles**: When evaluating plan feasibility, assess against the Fix Quality Bar (`.claude/skills/code-review/SKILL.md`) — ownership boundaries, backward compatibility, test seams.
+- **component-gen requirements**: If the plan includes UI work, reference `.claude/component-guide.md` to ensure component types map to correct UX guardrails (cognitive load limits, accessibility, sizing).
+- **pict-test-designer**: When the plan defines testable boundaries, note where PICT combinatorial testing would reduce test case explosion.
+- **ux-review**: Flag any plan decisions that affect user interaction surfaces for UX evaluation during implementation.
+
+These skills are NOT separate steps — they inform the quality of `plan.md` generation inline.
+
+## Bismuth-Specific Planning Rules
+
+- All planned files must stay under 300 lines (Constitution Principle VI)
+- New directories must respect 8-file density limit before mandatory subfolder split
+- Layer separation enforced: services/, stores/, types/, constants/, components/, utils/
+- All logging must use unified logger (`log.*` in TS, `tracing::*` in Rust)
+- UI plans must reference component-guide type and include UX acceptance criteria
+- Test plans must target 90%+ coverage for new surfaces
+
 ## Guardrails
 
 - **Framework-Agnostic**: Do not assume specific framework conventions unless provided via a preset.

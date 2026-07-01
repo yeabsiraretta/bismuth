@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "text",
+      "text": "# Knowledge Hub\n\nThis canvas maps the connections between key concepts in the vault.",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 120
+    },
+    {
+      "id": "node-2",
+      "type": "file",
+      "file": "11.01-welcome-to-bismuth.md",
+      "x": -400,
+      "y": -200,
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "node-3",
+      "type": "file",
+      "file": "11.03-zettelkasten-method.md",
+      "x": 400,
+      "y": -200,
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "node-4",
+      "type": "file",
+      "file": "20-29-projects/21.01-bismuth-architecture.md",
+      "x": -400,
+      "y": 200,
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "node-5",
+      "type": "file",
+      "file": "50-59-aws-saa/51.01-aws-iam.md",
+      "x": 400,
+      "y": 200,
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "node-6",
+      "type": "text",
+      "text": "## Study Flow\n\n1. Start with IAM fundamentals\n2. Move to S3 storage\n3. Connect security concepts",
+      "x": 700,
+      "y": 200,
+      "width": 250,
+      "height": 140
+    },
+    {
+      "id": "node-7",
+      "type": "file",
+      "file": "50-59-aws-saa/51.08-aws-s3.md",
+      "x": 700,
+      "y": 400,
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "node-8",
+      "type": "file",
+      "file": "20-29-projects/22.01-longform-project.md",
+      "x": -400,
+      "y": 450,
+      "width": 250,
+      "height": 150
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "fromNode": "node-1",
+      "toNode": "node-2",
+      "label": "home"
+    },
+    {
+      "id": "edge-2",
+      "fromNode": "node-1",
+      "toNode": "node-3",
+      "label": "methodology"
+    },
+    {
+      "id": "edge-3",
+      "fromNode": "node-1",
+      "toNode": "node-4",
+      "label": "architecture"
+    },
+    {
+      "id": "edge-4",
+      "fromNode": "node-1",
+      "toNode": "node-5",
+      "label": "study"
+    },
+    {
+      "id": "edge-5",
+      "fromNode": "node-5",
+      "toNode": "node-7",
+      "label": "security links"
+    },
+    {
+      "id": "edge-6",
+      "fromNode": "node-3",
+      "toNode": "node-8",
+      "label": "inspires"
+    },
+    {
+      "id": "edge-7",
+      "fromNode": "node-2",
+      "toNode": "node-4",
+      "label": "built with"
+    }
+  ]
+}

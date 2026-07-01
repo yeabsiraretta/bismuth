@@ -3,11 +3,30 @@
   "workflows": {
     "speckit": {
       "name": "Full SDD Cycle",
-      "version": "1.0.0",
-      "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement with review gates",
+      "version": "1.1.0",
+      "description": "Runs specify \u2192 plan \u2192 tasks \u2192 implement with review gates. Governed alternative integrates cross-skill quality gates.",
       "source": "bundled",
       "installed_at": "2026-05-25T20:43:55.411207+00:00",
-      "updated_at": "2026-05-25T20:43:55.411211+00:00"
+      "updated_at": "2026-06-13T03:30:00.000000+00:00"
+    },
+    "governed-pipeline": {
+      "name": "Governed SDD Cycle",
+      "version": "1.0.0",
+      "description": "governed-plan \u2192 governed-tasks \u2192 governed-implement with architecture-guard, security-review, memory-md, and quality skill integration",
+      "source": "architecture-guard",
+      "installed_at": "2026-06-13T03:30:00.000000+00:00",
+      "updated_at": "2026-06-13T03:30:00.000000+00:00",
+      "commands": [
+        "speckit.architecture-guard.governed-plan",
+        "speckit.architecture-guard.governed-tasks",
+        "speckit.architecture-guard.governed-implement"
+      ],
+      "integrates_skills": [
+        "code-review",
+        "ux-review",
+        "component-gen",
+        "pict-test-designer"
+      ]
     }
   }
 }

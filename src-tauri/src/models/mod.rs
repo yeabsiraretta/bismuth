@@ -11,7 +11,7 @@ pub use canvas::{
     CanvasDocument, CanvasElement, ComponentDefinition, ElementType, Layer, Page, Viewport,
 };
 pub use link::Link;
-pub use note::Note;
+pub use note::{Note, NoteMeta};
 pub use vault::Vault;
 
 use serde::{Deserialize, Serialize};

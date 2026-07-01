@@ -6,7 +6,7 @@
 /// 
 /// # Usage
 /// 
-/// ```rust
+/// ```rust,no_run,ignore
 /// use crate::config::constants;
 /// use crate::config::settings::AppSettings;
 /// 
@@ -22,6 +22,9 @@
 
 pub mod constants;
 pub mod settings;
+pub(crate) mod settings_defaults;
+pub mod vault_dirs;
 
 pub use constants::*;
 pub use settings::AppSettings;
+pub use vault_dirs::*;

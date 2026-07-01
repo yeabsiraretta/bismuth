@@ -1,5 +1,7 @@
 # Claude/Windsurf AI Assistant Configuration
 
+> **Canonical root config**: `CLAUDE.md` at repo root defines the skill integration map and governed workflow pipeline.
+
 This folder contains project-specific context and skills for AI assistants (Claude, Windsurf/Cascade, etc.).
 
 ## Files
@@ -70,19 +72,20 @@ This folder contains project-specific context and skills for AI assistants (Clau
 - Code review standards
 
 ### `skills/` Folder
-**Purpose**: Reusable workflow skills for specific tasks
+**Purpose**: Reusable workflow skills organized in two tiers
 
-**Available Skills**:
-- **ux-review**: Review UI components against 168 UX principles
-- **code-review**: Deep code review with evidence-first analysis
-- **component-gen**: Generate components with UX principles baked in
+**Quality Skills** (standalone):
+- **code-review**: Deep code review with Fix Quality Bar
+- **ux-review**: Review UI against 168 UX principles
+- **component-gen**: Generate components with UX guardrails
+- **pict-test-designer**: Combinatorial test case generation
 
-**When to use**:
-- Skills auto-activate based on user request
-- Explicit skill invocation by name
-- Task context alignment
+**Governed Workflows** (orchestration pipelines that integrate ALL quality skills):
+- **governed-plan**: Plan generation with architecture + security + memory
+- **governed-tasks**: Task generation with quality gates
+- **governed-implement**: Implementation with inline review gates
 
-**See**: `skills/README.md` for full documentation
+**Integration**: Quality skills are automatically activated at specific gates within governed workflows. See `skills/README.md` for the full integration map.
 
 ## How It Works
 
@@ -152,5 +155,5 @@ When you make significant project changes:
 
 ---
 
-**Last Updated**: 2026-05-26  
+**Last Updated**: 2026-06-13  
 **Maintainer**: Development Team

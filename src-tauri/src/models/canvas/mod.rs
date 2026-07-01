@@ -5,9 +5,11 @@
 
 pub mod document;
 pub mod elements;
+pub mod portable;
 
 pub use document::*;
 pub use elements::*;
+pub use portable::*;
 
 #[cfg(test)]
 mod tests {

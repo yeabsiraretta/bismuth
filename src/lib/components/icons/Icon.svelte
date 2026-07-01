@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { iconPaths, type IconName } from '@/assets/icons';
+	import { log } from '@/utils/logger';
 
 	export let name: IconName;
 	export let size: number = 20;
@@ -8,6 +9,9 @@
 	export let ariaLabel: string | undefined = undefined;
 
 	$: path = iconPaths[name] || '';
+	$: if (!path && name) {
+		log.warn(`[Icon] Missing icon path for "${name}". Add it to src/lib/assets/icons.ts`);
+	}
 </script>
 
 <svg

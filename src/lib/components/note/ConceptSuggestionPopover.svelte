@@ -1,48 +1,37 @@
 <script lang="ts">
-  import { invoke } from '@tauri-apps/api/core';
-  import { listen } from '@tauri-apps/api/event';
   import { onMount, onDestroy } from 'svelte';
   import Icon from '@/components/icons/Icon.svelte';
+  import { currentVault } from '@/stores/vault/vault';
+  import { getConceptSuggestions, type ConceptSuggestion } from '@/features/graph';
+  import { subscribeConceptSuggestions } from '@/features/wikilink';
+  import { log } from '@/utils/logger';
 
   export let content: string = '';
   export let notePath: string = '';
   export let onLink: (offset: number, length: number, title: string) => void = () => {};
 
-  interface ConceptSuggestion {
-    title: string;
-    path: string;
-    matched_text: string;
-    offset: number;
-    length: number;
-  }
-
   let suggestions: ConceptSuggestion[] = [];
   let visible = false;
   let selectedIndex = 0;
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let unlisten: (() => void) | null = null;
+  let unsubscribe: (() => Promise<void>) | null = null;
 
-  // Debounced concept suggestion fetch (800ms per T079 spec)
   $: if (content && notePath) {
     if (debounceTimer) clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => fetchSuggestions(), 800);
   }
 
   async function fetchSuggestions() {
-    if (!notePath || !content) {
+    if (!notePath || !content || !$currentVault) {
       suggestions = [];
       return;
     }
-
     try {
-      suggestions = await invoke<ConceptSuggestion[]>('get_concept_suggestions', {
-        notePath,
-        content,
-      });
+      suggestions = await getConceptSuggestions(notePath, content);
       visible = suggestions.length > 0;
       selectedIndex = 0;
     } catch (error) {
-      console.error('Concept suggestions failed:', error);
+      log.debug('Concept suggestions unavailable', { error: String(error) });
       suggestions = [];
       visible = false;
     }
@@ -50,7 +39,6 @@
 
   function handleLink(suggestion: ConceptSuggestion) {
     onLink(suggestion.offset, suggestion.length, suggestion.title);
-    // Remove the linked suggestion from the list
     suggestions = suggestions.filter((s) => s !== suggestion);
     if (suggestions.length === 0) visible = false;
   }
@@ -68,11 +56,9 @@
     }
   }
 
-  onMount(async () => {
-    // Listen for editor concept suggestion events
-    unlisten = await listen('editor://concept-suggestions', (event) => {
-      const payload = event.payload as ConceptSuggestion[];
-      if (payload && payload.length > 0) {
+  onMount(() => {
+    unsubscribe = subscribeConceptSuggestions((payload) => {
+      if (payload.length > 0) {
         suggestions = payload;
         visible = true;
         selectedIndex = 0;
@@ -81,7 +67,7 @@
   });
 
   onDestroy(() => {
-    if (unlisten) unlisten();
+    unsubscribe?.();
     if (debounceTimer) clearTimeout(debounceTimer);
   });
 </script>
@@ -93,7 +79,7 @@
     <div class="popover-header">
       <Icon name="lightbulb" size={14} />
       <span>Link suggestions ({suggestions.length})</span>
-      <button class="close-btn" on:click={() => (visible = false)} aria-label="Close suggestions">
+      <button class="close-btn" on:click={() => (visible = false)} title="Close suggestions" aria-label="Close suggestions">
         <Icon name="x" size={12} />
       </button>
     </div>
@@ -104,18 +90,10 @@
             "<strong>{suggestion.matched_text}</strong>" → [[{suggestion.title}]]
           </span>
           <div class="suggestion-actions">
-            <button
-              class="action-btn link-btn"
-              on:click={() => handleLink(suggestion)}
-              title="Wrap in [[...]] wikilink"
-            >
+            <button class="action-btn link-btn" on:click={() => handleLink(suggestion)} title="Wrap in [[...]] wikilink">
               Link
             </button>
-            <button
-              class="action-btn dismiss-btn"
-              on:click={() => handleDismiss(suggestion)}
-              title="Dismiss this suggestion"
-            >
+            <button class="action-btn dismiss-btn" on:click={() => handleDismiss(suggestion)} title="Dismiss this suggestion">
               Dismiss
             </button>
           </div>
@@ -128,15 +106,15 @@
 <style>
   .concept-popover {
     position: absolute;
-    bottom: 4rem;
-    right: 1rem;
-    width: 320px;
-    max-height: 240px;
-    background: var(--bg-secondary, #1e1e2e);
-    border: 1px solid var(--border-color, #45475a);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    z-index: 100;
+    bottom: var(--concept-popover-bottom, 4rem);
+    right: var(--spacing-m);
+    width: var(--concept-popover-width, 320px);
+    max-height: var(--concept-popover-max-height, 240px);
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-l);
+    z-index: var(--layer-popover, 100);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -145,25 +123,25 @@
   .popover-header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border-color, #45475a);
-    font-size: 0.75rem;
-    color: var(--text-muted, #a6adc8);
+    gap: var(--spacing-xs);
+    padding: var(--spacing-s) var(--spacing-m);
+    border-bottom: 1px solid var(--background-modifier-border);
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
   }
 
   .close-btn {
     margin-left: auto;
     background: none;
     border: none;
-    color: var(--text-muted, #a6adc8);
+    color: var(--text-muted);
     cursor: pointer;
-    padding: 2px;
-    border-radius: 4px;
+    padding: var(--spacing-xxs, 2px);
+    border-radius: var(--radius-s);
   }
 
   .close-btn:hover {
-    background: var(--bg-hover, #313244);
+    background: var(--background-modifier-hover);
   }
 
   .suggestion-list {
@@ -178,44 +156,44 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    border-bottom: 1px solid var(--border-subtle, #313244);
+    padding: var(--spacing-xs) var(--spacing-m);
+    font-size: var(--font-ui-small);
+    border-bottom: 1px solid var(--background-modifier-border);
   }
 
   .suggestion-item.selected {
-    background: var(--bg-hover, #313244);
+    background: var(--background-modifier-hover);
   }
 
   .suggestion-text {
     flex: 1;
-    color: var(--text-primary, #cdd6f4);
+    color: var(--text-normal);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .suggestion-text strong {
-    color: var(--accent-color, #89b4fa);
+    color: var(--interactive-accent);
   }
 
   .suggestion-actions {
     display: flex;
-    gap: 4px;
-    margin-left: 8px;
+    gap: var(--spacing-xs);
+    margin-left: var(--spacing-s);
   }
 
   .action-btn {
-    padding: 2px 8px;
-    border-radius: 4px;
+    padding: var(--spacing-xxs, 2px) var(--spacing-s);
+    border-radius: var(--radius-s);
     border: none;
-    font-size: 0.7rem;
+    font-size: var(--font-smallest);
     cursor: pointer;
   }
 
   .link-btn {
-    background: var(--accent-color, #89b4fa);
-    color: var(--bg-primary, #1e1e2e);
+    background: var(--interactive-accent);
+    color: var(--text-on-accent);
   }
 
   .link-btn:hover {
@@ -223,11 +201,11 @@
   }
 
   .dismiss-btn {
-    background: var(--bg-tertiary, #45475a);
-    color: var(--text-muted, #a6adc8);
+    background: var(--background-modifier-hover);
+    color: var(--text-muted);
   }
 
   .dismiss-btn:hover {
-    background: var(--bg-hover, #585b70);
+    background: var(--interactive-hover);
   }
 </style>

@@ -1,64 +1,51 @@
 /**
- * App navigation and command registration logic.
- * Extracted from App.svelte for 300-line compliance.
+ * Navigation primitives — note opening, tab switching, global keyboard shortcuts.
+ * Command registration lives in app/appCommands.ts.
  */
 
+import { get } from 'svelte/store';
 import { getNote } from '@/services/vault/vault';
-import { setActiveNote, refreshNotes } from '@/stores/vault/vault';
-import { quickCapture } from '@/stores/capture/capture';
-import {
-  toggleLeftSidebar,
-  toggleRightSidebar,
-  setActiveTab,
-} from '@/stores/layout/layout';
-import { registerDefaultCommands } from '@/stores/commands';
+import { log } from '@/utils/logger';
+import { refreshNotes, activeNote } from '@/stores/vault/vault';
+import { quickCapture } from '@/features/capture';
+import { toggleLeftSidebar, toggleRightSidebar, setActiveTab } from '@/stores/layout/layout';
+import { openNoteTab, closeActiveTab, nextTab, prevTab } from '@/stores/editor/tabs';
 
-export interface AppCallbacks {
-  openCommandPalette: () => void;
-  openAutoLinker: () => void;
-  setLeftTab: (tab: string) => void;
-}
-
-export function registerAppCommands(callbacks: AppCallbacks): void {
-  registerDefaultCommands({
-    openSearch: callbacks.openCommandPalette,
-    openCommandPalette: callbacks.openCommandPalette,
-    toggleLeftSidebar,
-    toggleRightSidebar,
-    quickCapture: () => quickCapture(),
-    openGraph: () => callbacks.setLeftTab('graph'),
-    openCaptureDashboard: () => callbacks.setLeftTab('inbox'),
-    openAutoLinker: callbacks.openAutoLinker,
-  });
-}
-
-export function handleGlobalKeydown(
-  e: KeyboardEvent,
-  openCommandPalette: () => void
-): void {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
-    e.preventDefault();
-    openCommandPalette();
-  }
-  if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'N') {
-    e.preventDefault();
-    quickCapture();
-  }
-}
-
+/** Opens a note by path, loading full content and opening it in a tab. */
 export async function openNote(path: string): Promise<void> {
+  const current = get(activeNote);
+  if (current && current.path === path) return;
   try {
     const note = await getNote(path);
-    setActiveNote(note);
+    openNoteTab(note);
   } catch (error) {
-    console.error('Failed to open note:', error);
+    log.error('Failed to open note', error);
   }
 }
 
+/** Refreshes the vault note list from the backend. */
 export async function doRefresh(): Promise<void> {
   await refreshNotes();
 }
 
+/** Switches the active tab on the specified sidebar side. */
 export function changeTab(side: 'left' | 'right', tabId: string): void {
   setActiveTab(side, tabId);
+}
+
+/**
+ * Global keyboard shortcut handler attached to the document.
+ */
+export function handleGlobalKeydown(e: KeyboardEvent, openCommandPalette: () => void): void {
+  const mod = e.metaKey || e.ctrlKey;
+
+  if (mod && e.key === 'p') { e.preventDefault(); openCommandPalette(); }
+  if (mod && e.shiftKey && e.key === 'N') { e.preventDefault(); quickCapture(); }
+  if (mod && e.key === 'w') { e.preventDefault(); closeActiveTab(); }
+  if (mod && !e.shiftKey && e.key === 'Tab') { e.preventDefault(); nextTab(); }
+  if (mod && e.shiftKey && e.key === 'Tab') { e.preventDefault(); prevTab(); }
+  if (mod && e.key === 'h' && !e.shiftKey) { e.preventDefault(); import('@/stores/layout/presets').then(m => m.setViewportMode('home')); }
+  if (mod && e.shiftKey && e.key === 'T') { e.preventDefault(); import('@/stores/editor/tabFeatures').then(m => m.reopenClosedTab()); }
+  if (mod && e.key === 'b' && !e.shiftKey) { e.preventDefault(); toggleLeftSidebar(); }
+  if (mod && e.shiftKey && e.key === 'B') { e.preventDefault(); toggleRightSidebar(); }
 }

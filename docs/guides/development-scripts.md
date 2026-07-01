@@ -283,6 +283,40 @@ pnpm run release:dry
 
 ---
 
+## AI Workflow Commands (Governed Pipeline)
+
+The governed pipeline is the preferred way to develop features with AI assistance:
+
+```bash
+# Full governed feature development cycle:
+/speckit.specify                              # Write the spec
+/speckit.architecture-guard.governed-plan      # Plan with all governance
+/speckit.architecture-guard.governed-tasks     # Generate quality tasks
+/speckit.architecture-guard.governed-implement # Implement with review gates
+
+# Standalone governance commands:
+/speckit.architecture-guard.violation-detection  # Scan for drift
+/speckit.architecture-guard.architecture-verify  # Verification gate
+/speckit.security-review.branch                  # Security review on branch
+/speckit.memory-md.capture                       # Capture durable lessons
+```
+
+The governed pipeline automatically integrates:
+- Memory synthesis (constitutions + durable decisions)
+- Security review (trust boundaries, authorization)
+- Architecture validation (drift detection, constitution compliance)
+- Quality skills (code-review, ux-review, component-gen, pict-test-designer)
+
+### Validation
+
+```bash
+# Validate all workflow files across three layers:
+pnpm validate:workflows
+# Validates: .specify/workflows/, .windsurf/workflows/, .claude/skills/
+```
+
+---
+
 ## Complete Workflow Examples
 
 ### Daily Development
@@ -301,6 +335,25 @@ pnpm run release:dry
 
 # 5. Commit with conventional format
 ./bismuth.sh commit
+```
+
+### Feature Development (AI-Assisted)
+
+```bash
+# 1. Write spec
+/speckit.specify
+
+# 2. Governed plan (memory + security + architecture + quality skills)
+/speckit.architecture-guard.governed-plan
+
+# 3. Generate tasks (PICT tests, ownership checks, UX criteria)
+/speckit.architecture-guard.governed-tasks
+
+# 4. Implement with inline review gates
+/speckit.architecture-guard.governed-implement
+
+# 5. Verify architecture before merge
+/speckit.architecture-guard.architecture-verify
 ```
 
 ### Pre-Release Checklist
@@ -405,5 +458,5 @@ pnpm run prepare
 
 ---
 
-**Last Updated**: 2026-05-26  
+**Last Updated**: 2026-06-13  
 **Maintainer**: Yeabsira Moges

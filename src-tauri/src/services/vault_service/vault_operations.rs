@@ -41,7 +41,7 @@ impl VaultOperations {
         validate_path(path, &vault.root_path)?;
 
         if content.len() > filesystem::MAX_FILE_SIZE_BYTES {
-            log::warn!(
+            tracing::warn!(
                 "File exceeds {}MB: {} ({} bytes)", 
                 filesystem::MAX_FILE_SIZE_BYTES / 1_000_000,
                 path.display(), 

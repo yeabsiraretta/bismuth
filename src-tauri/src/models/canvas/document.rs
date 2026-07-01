@@ -35,6 +35,9 @@ pub struct CanvasDocument {
     /// Reusable component definitions.
     #[serde(default)]
     pub components: Vec<ComponentDefinition>,
+    /// Navigational flow links between frames (spec 004).
+    #[serde(default, skip_serializing_if = "Vec::is_empty", rename = "flowLinks")]
+    pub flow_links: Vec<FlowLink>,
     /// Unix timestamp of creation.
     pub created_at: i64,
     /// Unix timestamp of last modification.
@@ -137,6 +140,37 @@ pub struct ComponentProp {
     pub default_value: serde_json::Value,
 }
 
+/// A navigational flow link between two frames (spec 004).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FlowLink {
+    /// Unique link ID.
+    pub id: String,
+    /// Source frame element ID.
+    #[serde(rename = "fromFrameId")]
+    pub from_frame_id: String,
+    /// Target frame element ID.
+    #[serde(rename = "toFrameId")]
+    pub to_frame_id: String,
+    /// Optional hotspot element within the source frame.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotspotElementId")]
+    pub hotspot_element_id: Option<String>,
+    /// Transition type.
+    pub transition: FlowTransition,
+    /// Optional edge label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub label: Option<String>,
+}
+
+/// Transition animation for flow link navigation.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FlowTransition {
+    /// Transition style discriminant.
+    #[serde(rename = "type")]
+    pub transition_type: String,
+    /// Duration in milliseconds.
+    pub duration: u32,
+}
+
 impl CanvasDocument {
     /// Creates a new blank canvas with a single default layer.
     pub fn new(name: String) -> Self {
@@ -171,6 +205,7 @@ impl CanvasDocument {
             pages: vec![default_page],
             active_page_id: page_id,
             components: Vec::new(),
+            flow_links: Vec::new(),
             created_at: now,
             modified_at: now,
         }

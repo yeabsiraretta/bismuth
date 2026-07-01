@@ -1,109 +1,67 @@
 # Bismuth AI Skills
 
-Reusable workflow skills for AI assistants working on Bismuth.
+Reusable workflow skills for AI assistants working on Bismuth. Skills are organized into two tiers:
 
-## Available Skills
+1. **Quality Skills** (standalone, reusable) — code-review, ux-review, component-gen, pict-test-designer
+2. **Governed Workflows** (orchestration, multi-skill) — governed-plan, governed-tasks, governed-implement
 
-### ux-review
-**Trigger**: User requests UX feedback, evaluation, or review
+## Governed Pipeline
 
-**Purpose**: Review UI components against 168 research-backed UX principles
+The three governed workflows form a sequential pipeline that automatically integrates all quality skills:
 
-**Process**:
-1. Classify interface type
-2. Select relevant principles
-3. Scan for violations (critical/warning/suggestion)
-4. Detect UX smells
-5. Score and report (0-100)
+```
+governed-plan → governed-tasks → governed-implement
+```
 
-**Output**: Structured evaluation with findings, strengths, priority fixes
+Each governed workflow activates quality skills at specific gates:
+
+| Workflow | Gate | Skills Applied |
+|---|---|---|
+| governed-plan | Plan feasibility | code-review (quality bar), component-gen (UX mapping), pict-test-designer (test boundaries), ux-review (interaction surfaces) |
+| governed-tasks | Task generation | pict-test-designer (combinatorial tests), code-review (ownership), component-gen (UI guardrails), ux-review (acceptance criteria) |
+| governed-implement | Coding | coding-principles, component-gen, agent-rules |
+| governed-implement | Review | code-review (full bar), ux-review (evaluation) |
+| governed-implement | Testing | pict-test-designer (pairwise coverage) |
+
+## Quality Skills
 
 ### code-review
-**Trigger**: User requests code review, PR review, or asks "is this the best fix"
+**Trigger**: Code review, PR review, "is this the best fix"
+**Key**: Fix Quality Bar, ownership boundaries, regression tests, backward compat
 
-**Purpose**: Deep code review with evidence-first analysis
-
-**Process**:
-1. Identify what's being fixed/changed
-2. Find root cause
-3. Evaluate if it's the best fix
-4. Check refactor opportunities
-5. Verify proof (tests, coverage, docs)
-6. Assess risk
-
-**Output**: Structured review with root cause, evaluation, findings, recommendation
+### ux-review
+**Trigger**: UX feedback, UI evaluation, component review
+**Key**: 168 principles, smell detection, scoring (0-100), priority fixes
 
 ### component-gen
-**Trigger**: User asks to create/build a new UI component
+**Trigger**: Create/build UI component
+**Key**: Type-specific requirements, UX guardrails, post-gen checklist
 
-**Purpose**: Generate components with UX principles baked in from the start
-
-**Process**:
-1. Identify component type
-2. Check component guide for requirements
-3. Apply UX guardrails
-4. Generate code with proper sizing, accessibility, feedback
-5. Verify post-generation checklist
-
-**Output**: Production-ready component code following Bismuth patterns
+### pict-test-designer
+**Trigger**: Test design for combinatorial inputs
+**Key**: Pairwise coverage, parameter models, constraint definitions
 
 ## Skill Format
 
-Each skill follows this structure:
-
-```
-skills/
-└── skill-name/
-    └── SKILL.md
-```
-
-### SKILL.md Format
+Each skill directory contains a single `SKILL.md` with YAML frontmatter:
 
 ```yaml
 ---
 name: skill-name
-description: "Short generic trigger phrase"
+description: "Short trigger phrase"
 ---
-
-# Skill Title
-
-[Skill content]
 ```
 
-## Using Skills
+## Integration Points
 
-Skills are automatically discovered by AI assistants when:
-- User request matches the skill description
-- Skill name is mentioned explicitly
-- Task context aligns with skill purpose
-
-## Adding New Skills
-
-1. Create folder: `.claude/skills/new-skill/`
-2. Create `SKILL.md` with YAML frontmatter
-3. Include:
-   - `name`: kebab-case skill name
-   - `description`: Short trigger phrase (quoted)
-4. Document: When to use, process, output format, references
-5. Keep terse and operational
-
-## Validation
-
-Run validation to check all skills:
-
-```bash
-# Validate skill frontmatter (if script exists)
-pnpm validate:workflows  # Also validates skills
-```
-
-## References
-
-- Agent rules: `.claude/agent-rules.md`
-- UX evaluator: `.claude/ux-evaluator.md`
-- Component guide: `.claude/component-guide.md`
-- Project context: `.claude/project-context.md`
+- Governed workflows reference skills via `.claude/skills/<name>/SKILL.md`
+- Windsurf workflows mirror skills at `.windsurf/workflows/<name>.md`
+- Root config: `CLAUDE.md` (maps skills to workflow gates)
+- Constitution files: `.specify/memory/` (architecture, security, governance)
+- Agent rules: `.claude/agent-rules.md` (300-line limit, logger, commits)
+- Component guide: `.claude/component-guide.md` (UX requirements per type)
+- UX evaluator: `.claude/ux-evaluator.md` (168-principle framework)
 
 ---
 
-**Source**: Adapted from steipete/agent-scripts skill pattern  
-**Last Updated**: 2026-05-26
+**Last Updated**: 2026-06-13

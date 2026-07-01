@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/ORG/bismuth/releases/download/beta-latest/latest.json"
+      ],
+      "pubkey": ""
+    }
+  }
+}

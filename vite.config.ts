@@ -2,12 +2,13 @@ import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import path from "path";
 
-// https://vitejs.dev/config/
-export default defineConfig(async () => ({
+const isDev = process.env.TAURI_ENV_DEBUG === "true" || process.env.NODE_ENV === "development";
+
+export default defineConfig(async (_env) => ({
   plugins: [
     svelte({
       compilerOptions: {
-        dev: true,
+        dev: isDev,
       },
     }),
   ],
@@ -19,11 +20,8 @@ export default defineConfig(async () => ({
     },
   },
 
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent vite from obscuring rust errors
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
+
   server: {
     port: 5173,
     strictPort: true,
@@ -34,18 +32,61 @@ export default defineConfig(async () => ({
       clientPort: 5183,
     },
     watch: {
-      // 3. tell vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
   },
-  // Enable fast refresh for Svelte
+
   optimizeDeps: {
-    include: ['svelte'],
+    include: [
+      'svelte',
+      'svelte/store',
+      'svelte/transition',
+      'svelte/animate',
+      'date-fns',
+      'colord',
+      'dompurify',
+      'fast-json-patch',
+      'focus-trap',
+    ],
     exclude: ['@tauri-apps/api', '@tauri-apps/plugin-dialog', '@tauri-apps/plugin-fs'],
   },
+
+  // Configure workers to use rolldown (Vite 8 default) instead of deprecated esbuild transform
+  worker: {
+    format: 'es',
+  },
+
   build: {
-    // Faster builds in dev
-    minify: false,
-    sourcemap: true,
+    minify: isDev ? false : 'oxc',
+    sourcemap: isDev,
+    chunkSizeWarningLimit: 600,
+    rolldownOptions: {
+      // Optional dependencies not installed by default; externalize so rolldown doesn't error
+      external: [
+        'hyperformula', 'standardized-audio-context', 'pdfjs-dist',
+        'abcjs', 'smiles-drawer', '@replit/codemirror-vim',
+        '@codemirror/lang-json', '@codemirror/lang-javascript', '@codemirror/lang-html',
+        '@codemirror/lang-css', '@codemirror/lang-python', '@codemirror/lang-rust',
+        '@codemirror/lang-cpp', '@codemirror/lang-java', '@codemirror/lang-php',
+        '@codemirror/lang-xml', '@codemirror/lang-sql', '@codemirror/lang-yaml',
+        '@codemirror/lang-go',
+      ],
+      output: {
+        // Short stable names aid debugging and Tauri's asset cache
+        chunkFileNames: '[name]-[hash:8].js',
+        entryFileNames: '[name]-[hash:8].js',
+        // Function form required by rolldown (Vite 8)
+        manualChunks(id: string) {
+          if (id.includes('@codemirror/')) return 'codemirror';
+          if (id.includes('konva')) return 'vendor-canvas';
+          if (id.includes('unified') || id.includes('remark') || id.includes('rehype') || id.includes('marked')) return 'vendor-markdown';
+          if (id.includes('date-fns')) return 'vendor-dates';
+          if (id.includes('chart.js')) return 'vendor-charts';
+          if (id.includes('tone')) return 'vendor-audio';
+          if (id.includes('dompurify')) return 'vendor-sanitize';
+          if (id.includes('svelte')) return 'svelte-runtime';
+        },
+      },
+    },
   },
 }));

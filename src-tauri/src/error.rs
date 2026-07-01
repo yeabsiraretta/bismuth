@@ -52,6 +52,22 @@ pub enum BismuthError {
     #[error("Vault error: {0}")]
     VaultError(String),
 
+    /// Git operation errors
+    #[error("Git error: {0}")]
+    Git(String),
+
+    /// Security violation errors (path traversal, sandbox escape)
+    #[error("Security: {0}")]
+    Security(String),
+
+    /// Validation errors (invalid input, constraint violation)
+    #[error("Validation: {0}")]
+    Validation(String),
+
+    /// IO errors (string-based, for cases where std::io::Error isn't available)
+    #[error("IO: {0}")]
+    Io(String),
+
     /// Generic errors (catch-all for service-specific errors)
     #[error("{0}")]
     Generic(String),

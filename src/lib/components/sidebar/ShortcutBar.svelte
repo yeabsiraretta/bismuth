@@ -1,6 +1,6 @@
 <script lang="ts">
   import Icon from '@/components/icons/Icon.svelte';
-  import { navigatorStore, removeShortcut } from '@/stores/navigator/navigator';
+  import { navigatorStore, removeShortcut } from '@/features/navigator';
 
   export let onActivate:
     | ((shortcut: { type: string; path: string; label: string }) => void)
@@ -89,23 +89,23 @@
   .shortcut-bar {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 8px;
-    border-bottom: 1px solid var(--border-color, #313244);
+    gap: var(--spacing-xxs);
+    padding: var(--spacing-s);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .shortcut-slot {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    gap: var(--sidebar-item-gap);
+    padding: var(--sidebar-item-padding-y) var(--sidebar-item-padding-x);
+    border-radius: var(--radius-s);
+    font-size: var(--font-size-xs);
     position: relative;
     border: none;
     background: none;
     text-align: left;
-    color: var(--text-primary, #cdd6f4);
+    color: var(--text-normal);
     width: 100%;
   }
 
@@ -114,7 +114,7 @@
   }
 
   .shortcut-slot.occupied:hover {
-    background: var(--bg-hover, #313244);
+    background: var(--background-modifier-hover);
   }
 
   .shortcut-slot.empty {
@@ -129,12 +129,12 @@
   }
 
   .shortcut-key {
-    font-size: 0.65rem;
-    padding: 1px 4px;
-    border-radius: 3px;
-    background: var(--bg-tertiary, #45475a);
-    color: var(--text-muted, #a6adc8);
-    font-family: var(--font-monospace);
+    font-size: var(--font-size-2xs);
+    padding: 1px var(--spacing-xs);
+    border-radius: var(--radius-xs);
+    background: var(--background-secondary);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
   }
 
   .remove-btn {
@@ -143,12 +143,12 @@
     right: 4px;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--bg-tertiary, #45475a);
+    background: var(--background-secondary);
     border: none;
     border-radius: 3px;
     padding: 2px;
     cursor: pointer;
-    color: var(--text-muted, #a6adc8);
+    color: var(--text-muted);
   }
 
   .shortcut-slot.occupied:hover .remove-btn {
@@ -156,7 +156,7 @@
   }
 
   .remove-btn:hover {
-    background: var(--error-color, #f38ba8);
-    color: var(--bg-primary, #1e1e2e);
+    background: var(--color-error);
+    color: var(--text-on-accent);
   }
 </style>

@@ -1,0 +1,220 @@
+{
+  "main": {
+    "id": "0bc7ec31727efcba",
+    "type": "split",
+    "children": [
+      {
+        "id": "834902a8ef839e1e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "12707f7be247a80f",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3918df4df4eedcd2",
+    "type": "split",
+    "children": [
+      {
+        "id": "c09000585c41e9a7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88089f10d921ba30",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "db44a79f996ffc8e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "f47ddc9af6aa8333",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "4a6dc5c054952883",
+    "type": "split",
+    "children": [
+      {
+        "id": "c6d45b634bb95c5f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bd9717e5a709aafb",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Untitled 1.base",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Untitled 1"
+            }
+          },
+          {
+            "id": "12c7968b6c4b947b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Untitled 1.base",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Untitled 1"
+            }
+          },
+          {
+            "id": "148ee1379e4aeda6",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "1caef417361d4746",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "f2f6831a97758d7d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Untitled 1.base",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Untitled 1"
+            }
+          },
+          {
+            "id": "618d8a027fcfabbb",
+            "type": "leaf",
+            "state": {
+              "type": "footnotes",
+              "state": {},
+              "icon": "lucide-file-signature",
+              "title": "Footnotes"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "workspaces:Manage workspace layouts": false
+    }
+  },
+  "active": "88089f10d921ba30",
+  "lastOpenFiles": [
+    "50-59-advanced/50.01-feature-index.md",
+    "50-59-advanced/55.01-experimental-features.md",
+    "50-59-advanced/54.03-advanced-uri.md",
+    "50-59-advanced/54.02-annotator.md",
+    "50-59-advanced/54.01-integrations.md",
+    "50-59-advanced/53.01-creative-tools.md",
+    "50-59-advanced/52.05-writing-lint-and-speed-reader.md",
+    "50-59-advanced/52.04-gamify.md",
+    "50-59-advanced/52.03-calendar-and-daily-planner.md",
+    "50-59-advanced/52.02-flashcards-and-study.md",
+    "50-59-advanced/52.01-tasks-and-kanban.md",
+    "50-59-advanced/51.03-navigator.md",
+    "50-59-advanced/51.02-backlinks-and-connections.md",
+    "50-59-advanced/51.01-tags-and-entities.md",
+    "40-49-canvas/41.01-self-design-workflow.md",
+    "Untitled.md",
+    "Untitled Folder",
+    "Untitled 1.base",
+    "Base Notes.md",
+    "wikilink.md",
+    "Untitled.canvas",
+    "Untitled.base",
+    "10-19-personal/11.01-welcome-to-bismuth.md",
+    "MANIFEST.md"
+  ]
+}

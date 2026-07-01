@@ -94,10 +94,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px var(--panel-padding);
+  padding: 0 var(--panel-padding);
   background: var(--panel-header-bg);
   border-bottom: 1px solid var(--panel-border);
-  min-height: 48px;
+  height: var(--panel-header-height, 35px);
+  min-height: var(--panel-header-height, 35px);
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .panel-title {
@@ -105,6 +108,9 @@
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .panel-actions {
@@ -117,6 +123,7 @@
   flex: 1;
   padding: var(--panel-padding);
   overflow: auto;
+  min-height: 0;
 }
 
 .panel-footer {
@@ -165,7 +172,7 @@
   grid-template-areas:
     "sidebar-left main sidebar-right";
   grid-template-columns: auto 1fr auto;
-  height: 100vh;
+  height: 100%;
   gap: 0;
 }
 
@@ -222,6 +229,26 @@
 /* Full height/width */
 .h-full { height: 100%; }
 .w-full { width: 100%; }
+
+/* Shared list-item pattern */
+.note-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  padding: var(--spacing-xs) var(--spacing-s);
+  min-height: var(--list-item-height);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  color: var(--text-normal);
+  transition: background 0.1s;
+}
+.note-list-item:hover {
+  background: var(--background-modifier-hover);
+}
+.note-list-item.active {
+  border-left: 2px solid var(--interactive-accent);
+  background: var(--background-secondary-alt);
+}
 
 /* Scrollable containers */
 .overflow-auto { overflow: auto; }

@@ -1,60 +1,18 @@
 <script lang="ts">
-  import Modal from '@/components/ui/Modal.svelte';
-  import Button from '@/components/ui/Button.svelte';
+  import ConfirmDialog from '@/components/ui/layout/ConfirmDialog.svelte';
 
   export let isOpen: boolean = false;
   export let noteTitle: string = '';
   export let onConfirm: (() => void) | undefined = undefined;
   export let onClose: (() => void) | undefined = undefined;
-
-  function handleConfirm() {
-    onConfirm?.();
-  }
-
-  function handleClose() {
-    onClose?.();
-  }
 </script>
 
-<Modal
+<ConfirmDialog
   {isOpen}
   title="Delete Note?"
-  ariaLabel="Delete note confirmation dialog"
-  onClose={handleClose}
->
-  <div class="dialog-content">
-    <p class="message">Are you sure you want to delete "{noteTitle}"?</p>
-    <p class="warning">This action cannot be undone.</p>
-    <div class="actions">
-      <Button variant="secondary" on:click={handleClose} ariaLabel="Cancel deletion">Cancel</Button>
-      <Button variant="danger" on:click={handleConfirm} ariaLabel="Confirm deletion">Delete</Button>
-    </div>
-  </div>
-</Modal>
-
-<style>
-  .dialog-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .message {
-    margin: 0;
-    color: var(--color-text);
-    font-size: 0.875rem;
-  }
-
-  .warning {
-    margin: 0;
-    color: var(--color-danger);
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .actions {
-    display: flex;
-    gap: var(--space-3);
-    justify-content: flex-end;
-  }
-</style>
+  message={`Are you sure you want to delete "${noteTitle}"? This action cannot be undone.`}
+  confirmLabel="Delete"
+  variant="danger"
+  {onConfirm}
+  {onClose}
+/>

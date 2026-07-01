@@ -1,11 +1,13 @@
 # Bismuth Project Context
 
+> **Canonical root config**: See `CLAUDE.md` at repo root for the complete skill integration map.
+
 ## Project Overview
 
 **Name**: Bismuth  
 **Type**: Personal Knowledge Management (PKM) Editor  
 **Tech Stack**: Tauri (Rust) + Svelte + TypeScript  
-**Status**: Phase 3 implementation (Core Vault & Editor)
+**Status**: Active development (20+ specs delivered)
 
 ## Architecture
 
@@ -23,19 +25,12 @@
 4. **Backlinks**: Bidirectional link tracking
 5. **Search**: Full-text with Tantivy
 
-## Current Phase: Phase 3 (US1 - Core Vault & Editor)
+## Recent Completed Specs
 
-**Completed**:
-- ✅ T035: Vault templates (4 types)
-- ✅ T036: CodeMirror 6 integration
-- ✅ T037: Wikilink extension
-- ✅ T038: Auto-save (500ms debounce)
-
-**In Progress**:
-- T039: Crash recovery
-- T040: Split-pane layout
-- T041: Edit history
-- T042: Size/depth warnings
+- Spec 019: Tasks Query Engine (Obsidian Tasks-compatible DSL)
+- Spec 020: .bismuth directory cleanup and self-design canvas
+- Canvas system, graph visualization, backlinks, entity extraction
+- Design tokens, style system, theme management
 
 ## Code Organization
 
@@ -64,39 +59,39 @@ bismuth/
 
 ## Constitution & Standards
 
-**Constitution**: `.specify/memory/constitution.md` v1.1.0
+**Constitution**: `.specify/memory/constitution.md` v1.4.0
+**Architecture**: `.specify/memory/architecture_constitution.md` v1.1.0
+**Security**: `.specify/memory/security_constitution.md` v1.0.0
 
 **Key Principles**:
-- **Principle VI**: No file >300 lines (enforced via ESLint, pre-commit hooks)
+- **Principle VI**: No file >300 lines; max 8 files/directory before mandatory subfolder split
 - **Principle I**: Maintainable, cohesive, consistent code
 - **Principle II**: 90%+ test coverage
 - **Principle III**: Consistent UX across platforms
+- **Layer Separation**: services/, stores/, types/, constants/, components/, utils/ physically separate
 
 **UX Standards**: `docs/standards/ux-principles.md`
 - 168 research-backed principles across 6 parts
 - Apply during design, code review, implementation
 - See `.claude/ux-evaluator.md` for evaluation workflow
 
-## File Size Compliance
+## Governed Workflow Pipeline
 
-**Current Violations** (5 files):
-- `src/lib/components/graph/GraphView.svelte` (617 lines) - Critical
-- `src-tauri/src/services/vault_service.rs` (608 lines) - Critical
-- `src/lib/components/backlinks/Backlinks.svelte` (448 lines) - High
-- `src-tauri/src/db.rs` (410 lines) - High
-- `src/lib/components/backlinks/OutgoingLinks.svelte` (348 lines) - Medium
+The governed workflow pipeline uses ALL skills together:
 
-**Refactored**:
-- ✅ `src/types/index.ts` (was 302, now 21 with 5 modules)
+```
+/speckit.architecture-guard.governed-plan    → plan.md (+ code-review, ux-review, pict, component-gen)
+/speckit.architecture-guard.governed-tasks   → tasks.md (+ pict, code-review, component-gen, ux-review)
+/speckit.architecture-guard.governed-implement → code (+ all skills at coding/review/test gates)
+```
 
 ## Development Workflow
 
-1. **Feature Spec**: Write in `specs/001-bismuth-pkm-editor/`
-2. **Tasks**: Break down in `tasks.md`
-3. **Implementation**: Follow TDD, respect file size limits
-4. **UX Review**: Apply principles from `docs/standards/ux-principles.md`
-5. **Code Review**: Check constitution compliance, UX checklist
-6. **Testing**: Maintain 90%+ coverage
+1. **Feature Spec**: Write in `specs/<NNN-feature>/spec.md`
+2. **Governed Plan**: `/speckit.architecture-guard.governed-plan`
+3. **Governed Tasks**: `/speckit.architecture-guard.governed-tasks`
+4. **Governed Implement**: `/speckit.architecture-guard.governed-implement`
+5. **Memory Capture**: Lessons captured via `/speckit.memory-md.capture`
 
 ## Common Patterns
 
@@ -195,5 +190,5 @@ pnpm tauri:build          # Build desktop app
 
 ---
 
-**Last Updated**: 2026-05-26  
-**Version**: 0.0.1 (pre-release)
+**Last Updated**: 2026-06-13  
+**Version**: 0.3.0

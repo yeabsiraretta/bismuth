@@ -1,5 +1,6 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 import type { StatusItem } from '@/types/layout';
+import { log } from '@/utils/logger';
 
 /**
  * Extensible Status Store
@@ -93,17 +94,16 @@ const STATUS_ORDER_KEY = 'bismuth-status-order';
 
 /** Save custom ordering to localStorage */
 function saveStatusOrder(): void {
-  statusItems.subscribe($items => {
-    const order: Record<string, number> = {};
-    for (const [id, item] of $items) {
-      if (item.priority !== undefined) {
-        order[id] = item.priority;
-      }
+  const $items = get(statusItems);
+  const order: Record<string, number> = {};
+  for (const [id, item] of $items) {
+    if (item.priority !== undefined) {
+      order[id] = item.priority;
     }
-    try {
-      localStorage.setItem(STATUS_ORDER_KEY, JSON.stringify(order));
-    } catch { /* ignore */ }
-  })();
+  }
+  try {
+    localStorage.setItem(STATUS_ORDER_KEY, JSON.stringify(order));
+  } catch (e) { log.warn('Failed to save status order to localStorage', { error: String(e) }); }
 }
 
 /** Load saved order from localStorage and apply to items */
@@ -122,5 +122,5 @@ export function loadStatusOrder(): void {
       }
       return next;
     });
-  } catch { /* ignore parse errors */ }
+  } catch (e) { log.warn('Failed to load status order from localStorage', { error: String(e) }); }
 }

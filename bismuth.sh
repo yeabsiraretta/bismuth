@@ -35,7 +35,8 @@ print_info() {
 check_pnpm() {
     if ! command -v pnpm &> /dev/null; then
         print_error "pnpm is not installed. Please install it first:"
-        echo "  npm install -g pnpm"
+        echo "  corepack enable && corepack prepare pnpm@9 --activate"
+        echo "  # or: npm install -g pnpm"
         exit 1
     fi
 }

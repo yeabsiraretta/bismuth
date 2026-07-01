@@ -5,7 +5,7 @@
 
 import { invoke } from '@tauri-apps/api/core';
 import type { DesignDocument, DocumentType, DesignDocumentMeta, DesignDocumentAny } from '@/types/design-documents';
-import { saveVersion } from './versionStore';
+import { saveVersion } from '@/services/design-docs/versionStore';
 import { log } from '@/utils/logger';
 
 const BASE_DIR = '.bismuth/design-docs';

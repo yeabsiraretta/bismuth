@@ -1,13 +1,11 @@
 # Dependencies
 node_modules/
 pnpm-lock.yaml
-package-lock.json
 
 # Build outputs
 dist/
 build/
 .output/
-target/
 
 # Tauri
 src-tauri/target/
@@ -17,7 +15,11 @@ src-tauri/Cargo.lock
 # Generated files
 CHANGELOG.md
 
-# Cache
+# Testing
+coverage/
+playwright-report/
+
+# Cache & Temp
 .cache/
 .temp/
 *.log

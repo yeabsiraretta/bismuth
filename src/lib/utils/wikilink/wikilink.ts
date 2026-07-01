@@ -3,7 +3,7 @@
  * @module lib/utils/wikilink
  */
 
-import type { Link } from '@/types/vault';
+import type { Link } from '@/types/data/vault';
 
 /**
  * Regular expression for matching wikilinks

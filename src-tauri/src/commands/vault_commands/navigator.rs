@@ -41,7 +41,8 @@ pub async fn read_navigator_state(
 ) -> std::result::Result<serde_json::Value, String> {
     let service = state.vault_service.lock().unwrap();
     let vault = service.get_vault().ok_or("No vault open")?;
-    let state_path = vault.root_path.join(".bismuth").join("navigator.json");
+    use crate::config::constants::filesystem::VAULT_DIR_NAME;
+    let state_path = vault.root_path.join(VAULT_DIR_NAME).join("navigator.json");
 
     if !state_path.exists() {
         return Ok(serde_json::Value::Null);
@@ -64,7 +65,8 @@ pub async fn write_navigator_state(
 ) -> std::result::Result<(), String> {
     let service = state.vault_service.lock().unwrap();
     let vault = service.get_vault().ok_or("No vault open")?;
-    let bismuth_dir = vault.root_path.join(".bismuth");
+    use crate::config::constants::filesystem::VAULT_DIR_NAME;
+    let bismuth_dir = vault.root_path.join(VAULT_DIR_NAME);
 
     if !bismuth_dir.exists() {
         std::fs::create_dir_all(&bismuth_dir)
@@ -97,7 +99,8 @@ pub async fn get_custom_entity_types(
 ) -> std::result::Result<Vec<TypeDefinition>, String> {
     let service = state.vault_service.lock().unwrap();
     let vault = service.get_vault().ok_or("No vault open")?;
-    let config_path = vault.root_path.join(".bismuth").join("entity-types.json");
+    use crate::config::constants::filesystem::VAULT_DIR_NAME;
+    let config_path = vault.root_path.join(VAULT_DIR_NAME).join("entity-types.json");
 
     if !config_path.exists() {
         return Ok(vec![]);

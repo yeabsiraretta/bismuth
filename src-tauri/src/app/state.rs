@@ -1,19 +1,22 @@
-//! Application state initialization.
-//!
-//! Creates all managed state objects that Tauri needs for IPC command handlers.
+//! Application state initialisation.
 
-use crate::commands::canvas_commands::CanvasState;
-use crate::commands::component_commands::ComponentState;
+use crate::commands::design::canvas::CanvasState;
+use crate::commands::design::component::ComponentState;
 use crate::commands::embedding_commands::EmbeddingState;
-use crate::commands::entity_commands::EntityState;
+use crate::commands::git_commands::GitState;
+use crate::commands::knowledge::entity::EntityState;
+use crate::commands::knowledge::graph::GraphState;
+use crate::commands::knowledge::wikilink::WikilinkState;
 use crate::commands::plugin_commands::PluginState;
+use crate::commands::search_commands::SearchState;
+use crate::commands::template_commands::TemplateState;
 use crate::commands::theme_commands::ThemeState;
-use crate::commands::wikilink_commands::WikilinkState;
-use crate::commands::{AppState, GraphState, SearchState};
+use crate::commands::vault_commands::AppState;
+use crate::logger::InteractionLog;
 use crate::{CanvasService, Database, VaultService, WikilinkService};
 use std::sync::{Arc, Mutex};
+use tokio::sync::Mutex as TokioMutex;
 
-/// All managed state objects for the Tauri application.
 pub struct ManagedState {
     pub app: AppState,
     pub search: SearchState,
@@ -25,20 +28,21 @@ pub struct ManagedState {
     pub plugin: PluginState,
     pub embedding: EmbeddingState,
     pub component: ComponentState,
+    pub git: GitState,
+    pub template: TemplateState,
+    /// Shared interaction log — read by HTTP server, written by IPC layer.
+    pub interaction_log: Arc<TokioMutex<InteractionLog>>,
 }
 
-/// Initializes all application state from the database connection.
 pub fn init(db: Arc<Database>) -> ManagedState {
     let vault_service = VaultService::new(db.clone());
 
     let app = AppState {
         vault_service: Mutex::new(vault_service),
     };
-
     let search = SearchState {
         index_service: Mutex::new(None),
     };
-
     let graph = GraphState { db: db.clone() };
 
     let wikilink_vault_service = VaultService::new(db.clone());
@@ -51,26 +55,28 @@ pub fn init(db: Arc<Database>) -> ManagedState {
     let canvas = CanvasState {
         canvas_service: Arc::new(Mutex::new(canvas_service)),
     };
-
     let entity = EntityState {
         entity_service: Mutex::new(None),
     };
-
     let theme = ThemeState {
         theme_service: Mutex::new(None),
     };
-
     let plugin = PluginState {
         plugin_service: Mutex::new(None),
     };
-
     let embedding = EmbeddingState {
         embedding_service: Mutex::new(None),
     };
-
     let component = ComponentState {
         vault_root: Mutex::new(None),
     };
+    let git = GitState {
+        git_service: Mutex::new(None),
+    };
+    let template = TemplateState {
+        template_service: Mutex::new(None),
+    };
+    let interaction_log = Arc::new(TokioMutex::new(InteractionLog::default()));
 
     ManagedState {
         app,
@@ -83,5 +89,8 @@ pub fn init(db: Arc<Database>) -> ManagedState {
         plugin,
         embedding,
         component,
+        git,
+        template,
+        interaction_log,
     }
 }

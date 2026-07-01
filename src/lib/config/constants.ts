@@ -193,6 +193,22 @@ export const validate = {
   },
 };
 
+/** Debounce delays (ms) */
+export const DEBOUNCE = {
+  /** Search input debounce */
+  SEARCH: 300,
+  /** Auto-save delay */
+  AUTO_SAVE: 500,
+  /** Resize handler debounce */
+  RESIZE: 100,
+} as const;
+
+/** MCP (Model Context Protocol) defaults */
+export const MCP = {
+  /** Default MCP server URL for canvas documents */
+  DEFAULT_SERVER_URL: 'http://localhost:3456',
+} as const;
+
 /** Type exports for strict typing */
 export type AllowedExtension = typeof FILE.ALLOWED_EXTENSIONS[number];
 export type Breakpoint = keyof typeof BREAKPOINTS;

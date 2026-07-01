@@ -1,0 +1,62 @@
+{
+  "choice-band": {
+    "id": "choice-band", "name": "Choice Band",
+    "effect": "Boosts the holder's Attack by 50%, but restricts it to using only the first move selected."
+  },
+  "choice-scarf": {
+    "id": "choice-scarf", "name": "Choice Scarf",
+    "effect": "Boosts the holder's Speed by 50%, but restricts it to using only the first move selected."
+  },
+  "choice-specs": {
+    "id": "choice-specs", "name": "Choice Specs",
+    "effect": "Boosts the holder's Sp. Atk by 50%, but restricts it to using only the first move selected."
+  },
+  "life-orb": {
+    "id": "life-orb", "name": "Life Orb",
+    "effect": "Boosts the power of the holder's moves by 30%. After each attack, the holder loses 1/10 of its max HP."
+  },
+  "leftovers": {
+    "id": "leftovers", "name": "Leftovers",
+    "effect": "The holder restores 1/16 of its max HP each turn."
+  },
+  "rocky-helmet": {
+    "id": "rocky-helmet", "name": "Rocky Helmet",
+    "effect": "If the holder is hit by a contact move, the attacker takes 1/6 of its max HP in damage."
+  },
+  "eviolite": {
+    "id": "eviolite", "name": "Eviolite",
+    "effect": "Boosts the Defense and Sp. Defense of a Pokémon that has not yet reached its final form by 50%."
+  },
+  "focus-sash": {
+    "id": "focus-sash", "name": "Focus Sash",
+    "effect": "If the holder has full HP, it will survive a hit that would KO it with 1 HP. Consumed after use."
+  },
+  "assault-vest": {
+    "id": "assault-vest", "name": "Assault Vest",
+    "effect": "Boosts the holder's Sp. Defense by 50%, but restricts it to using only attacking moves."
+  },
+  "expert-belt": {
+    "id": "expert-belt", "name": "Expert Belt",
+    "effect": "Boosts the power of supereffective moves by 20%."
+  },
+  "wide-lens": {
+    "id": "wide-lens", "name": "Wide Lens",
+    "effect": "Boosts the accuracy of the holder's moves by 10%."
+  },
+  "zoom-lens": {
+    "id": "zoom-lens", "name": "Zoom Lens",
+    "effect": "Boosts the accuracy of the holder's moves by 20% if the holder moves after the target."
+  },
+  "air-balloon": {
+    "id": "air-balloon", "name": "Air Balloon",
+    "effect": "The holder floats in the air and is immune to Ground-type moves. Popped if hit by any move."
+  },
+  "heavy-duty-boots": {
+    "id": "heavy-duty-boots", "name": "Heavy-Duty Boots",
+    "effect": "The holder is not affected by hazards on the field (Stealth Rock, Spikes, Toxic Spikes, etc.)."
+  },
+  "booster-energy": {
+    "id": "booster-energy", "name": "Booster Energy",
+    "effect": "Activates the Quark Drive or Protosynthesis Ability for the holder if neither sun nor electric terrain is active. Consumed after use."
+  }
+}

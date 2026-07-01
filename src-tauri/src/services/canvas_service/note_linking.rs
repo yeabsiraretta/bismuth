@@ -19,6 +19,26 @@ pub(super) fn link_to_note(
     Ok(())
 }
 
+/// Returns all (note_path, canvas_id) pairs for canvases linked to notes.
+pub(super) fn get_all_note_canvas_links(
+    db: &Arc<Database>,
+) -> Result<Vec<(String, String)>> {
+    let conn_arc = db.conn();
+    let conn = conn_arc.lock().unwrap();
+
+    let mut stmt = conn.prepare(
+        "SELECT note_id, id FROM canvas_documents WHERE note_id IS NOT NULL",
+    )?;
+
+    let links = stmt.query_map([], |row| {
+        let note_id: String = row.get(0)?;
+        let canvas_id: String = row.get(1)?;
+        Ok((note_id, canvas_id))
+    })?;
+
+    Ok(links.collect::<std::result::Result<Vec<_>, _>>()?)
+}
+
 pub(super) fn get_canvases_for_note(
     db: &Arc<Database>,
     note_path: &str,
@@ -50,6 +70,7 @@ pub(super) fn get_canvases_for_note(
             pages: Vec::new(),
             active_page_id: String::new(),
             components: Vec::new(),
+            flow_links: Vec::new(),
             created_at: row.get(8)?,
             modified_at: row.get(9)?,
         })

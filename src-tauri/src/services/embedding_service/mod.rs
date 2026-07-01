@@ -5,7 +5,10 @@
 //! for the Connections view. Vectors stored as `.vec` files in `.bismuth/embeddings/`.
 
 pub mod indexing;
+pub mod note_linker;
 pub mod search;
+pub mod similarity;
+pub(crate) mod embedding_pipeline;
 
 use crate::error::{BismuthError, Result};
 use serde::{Deserialize, Serialize};
@@ -40,8 +43,13 @@ pub struct EmbeddingService {
 }
 
 impl EmbeddingService {
+    /// Creates a new `EmbeddingService` for the given vault.
+    ///
+    /// Initializes the embeddings directory path at `.bismuth/embeddings/`
+    /// but does not load vectors from disk until [`initialize`](Self::initialize) is called.
     pub fn new(vault_root: &Path) -> Self {
-        let embeddings_dir = vault_root.join(".bismuth").join("embeddings");
+        use crate::config::constants::filesystem::VAULT_DIR_NAME;
+        let embeddings_dir = vault_root.join(VAULT_DIR_NAME).join("embeddings");
         Self {
             vault_root: vault_root.to_path_buf(),
             embeddings_dir,
@@ -51,6 +59,10 @@ impl EmbeddingService {
         }
     }
 
+    /// Initializes the embedding service by creating the storage directory,
+    /// loading configuration, and populating the in-memory vector cache from disk.
+    ///
+    /// Must be called before any embed/search operations.
     pub fn initialize(&mut self) -> Result<()> {
         fs::create_dir_all(&self.embeddings_dir)?;
         self.load_config();
@@ -60,79 +72,102 @@ impl EmbeddingService {
     }
 
     fn load_config(&mut self) {
-        let config_path = self.vault_root.join(".bismuth").join("embedding-config.json");
-        if let Ok(content) = fs::read_to_string(&config_path) {
-            if let Ok(config) = serde_json::from_str::<EmbeddingConfig>(&content) {
-                self.config = config;
-            }
-        }
+        self.config = embedding_pipeline::load_config(&self.vault_root);
     }
 
+    /// Persists the current embedding configuration to `.bismuth/embedding-config.json`.
     pub fn save_config(&self) -> Result<()> {
-        let config_path = self.vault_root.join(".bismuth").join("embedding-config.json");
-        let content = serde_json::to_string_pretty(&self.config)
-            .map_err(|e| BismuthError::Generic(e.to_string()))?;
-        fs::write(&config_path, content)?;
-        Ok(())
+        embedding_pipeline::save_config(&self.vault_root, &self.config)
     }
 
+    /// Replaces the embedding configuration and persists it to disk.
+    ///
+    /// # Arguments
+    ///
+    /// * `config` — New exclusion rules for paths and tags.
     pub fn set_config(&mut self, config: EmbeddingConfig) -> Result<()> {
         self.config = config;
         self.save_config()
     }
 
+    /// Returns a reference to the current embedding configuration.
     pub fn get_config(&self) -> &EmbeddingConfig {
         &self.config
     }
 
+    /// Checks whether a note should be excluded from embedding based on
+    /// configured path patterns and tag exclusions.
     pub fn is_excluded(&self, path: &str, tags: &[String]) -> bool {
-        for pattern in &self.config.excluded_paths {
-            if path.contains(pattern) || glob_match(pattern, path) {
-                return true;
-            }
-        }
-        for tag in tags {
-            if self.config.excluded_tags.contains(tag) {
-                return true;
-            }
-        }
-        false
+        embedding_pipeline::is_excluded(&self.config, path, tags)
     }
 
+    /// Generates a dense embedding vector for the given text.
+    ///
+    /// Uses character n-gram hashing (no neural model required).
+    /// The resulting vector has [`EMBEDDING_DIM`] dimensions.
     pub fn embed(&self, text: &str) -> Result<Vec<f32>> {
         indexing::embed(text)
     }
 
+    /// Generates embedding vectors for multiple texts in one call.
+    ///
+    /// Each text is independently embedded; no cross-document context is used.
     pub fn embed_batch(&self, texts: &[&str]) -> Result<Vec<Vec<f32>>> {
         indexing::embed_batch(texts)
     }
 
+    /// Stores an embedding vector to disk and updates the in-memory cache.
+    ///
+    /// The vector is written as a binary `.vec` file under the embeddings directory.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` — Relative note path (used as the cache key and file name).
+    /// * `vector` — The embedding vector to persist.
     pub fn store_embedding(&mut self, path: &str, vector: &[f32]) -> Result<()> {
         indexing::store_embedding(&self.embeddings_dir, &mut self.cache, path, vector)
     }
 
+    /// Removes a stored embedding from both disk and the in-memory cache.
+    ///
+    /// No-ops gracefully if the embedding does not exist.
     pub fn remove_embedding(&mut self, path: &str) -> Result<()> {
         indexing::remove_embedding(&self.embeddings_dir, &mut self.cache, path)
     }
 
+    /// Finds the top-K most similar notes to the given note path.
+    ///
+    /// Uses cosine similarity on the cached embedding vectors.
+    /// Returns an error if no embedding exists for the given path.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` — Relative note path whose embedding is the query.
+    /// * `top_k` — Maximum number of results to return.
     pub fn get_similar(&self, path: &str, top_k: usize) -> Result<Vec<SimilarNote>> {
         let query_vec = self.cache.get(path)
             .ok_or_else(|| BismuthError::Generic(format!("No embedding for: {}", path)))?;
         Ok(search::top_k_similar(&self.cache, query_vec, Some(path), top_k))
     }
 
+    /// Finds the top-K most similar notes to an arbitrary query vector.
+    ///
+    /// Useful for text-based lookups where the query is not an existing note.
     pub fn get_similar_to_vector(&self, query_vec: &[f32], top_k: usize) -> Vec<SimilarNote> {
         search::top_k_similar(&self.cache, query_vec, None, top_k)
     }
 
+    /// Returns `true` if an embedding vector is cached for the given note path.
     pub fn has_embedding(&self, path: &str) -> bool {
         self.cache.contains_key(path)
     }
 
+    /// Returns the total number of embeddings currently held in the cache.
     pub fn embedding_count(&self) -> usize {
         self.cache.len()
     }
 
+    /// Returns `true` once [`initialize`](Self::initialize) has completed successfully.
     pub fn is_ready(&self) -> bool {
         self.model_ready
     }
@@ -146,23 +181,6 @@ impl EmbeddingService {
     fn read_vec_file(&self, path: &Path) -> Result<Vec<f32>> {
         indexing::read_vec_file(path)
     }
-}
-
-/// Simple glob matching (supports * and ** patterns).
-fn glob_match(pattern: &str, path: &str) -> bool {
-    if pattern.contains("**") {
-        let parts: Vec<&str> = pattern.split("**").collect();
-        if parts.len() == 2 {
-            return path.starts_with(parts[0]) && path.ends_with(parts[1]);
-        }
-    }
-    if pattern.starts_with('*') {
-        return path.ends_with(&pattern[1..]);
-    }
-    if pattern.ends_with('*') {
-        return path.starts_with(&pattern[..pattern.len() - 1]);
-    }
-    path == pattern
 }
 
 #[cfg(test)]

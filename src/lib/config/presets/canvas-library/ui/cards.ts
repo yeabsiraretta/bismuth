@@ -1,0 +1,51 @@
+import type { ComponentDefinition } from '@/features/canvas/types';
+
+const now = 0;
+
+export const CARD_COMPONENTS: ComponentDefinition[] = [
+  {
+    id: 'builtin-card-basic', name: 'Card', category: 'Cards', icon: 'square',
+    width: 280, height: 160, tags: ['card', 'container', 'surface'], isBuiltin: true,
+    exposedProps: [
+      { key: 'title', label: 'Title', type: 'text', defaultValue: 'Card Title' },
+      { key: 'body', label: 'Body', type: 'text', defaultValue: 'Card content goes here.' },
+    ],
+    elements: [
+      { id: 'bg', element_type: 'rectangle', x: 0, y: 0, width: 280, height: 160, rotation: 0, properties: { fill: 'var(--background-primary)', stroke: 'var(--border-color)', strokeWidth: 1, radius: 8, shadow: { x: 0, y: 2, blur: 8, spread: 0, color: 'rgba(0,0,0,0.06)' } }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Background' },
+      { id: 'title', element_type: 'text', x: 16, y: 16, width: 248, height: 22, rotation: 0, properties: { text: 'Card Title', fontSize: 16, fontWeight: 600, fill: 'var(--text-primary)', textAlign: 'left' }, layer_id: 'default', z_index: 1, locked: false, visible: true, name: 'Title' },
+      { id: 'divider', element_type: 'line', x: 16, y: 48, width: 248, height: 0, rotation: 0, properties: { stroke: 'var(--border-color)', strokeWidth: 1 }, layer_id: 'default', z_index: 2, locked: false, visible: true, name: 'Divider' },
+      { id: 'body', element_type: 'text', x: 16, y: 58, width: 248, height: 80, rotation: 0, properties: { text: 'Card content goes here.', fontSize: 14, fill: 'var(--text-normal)', textAlign: 'left', verticalAlign: 'top' }, layer_id: 'default', z_index: 3, locked: false, visible: true, name: 'Body' },
+    ],
+    created_at: now, modified_at: now,
+  },
+  {
+    id: 'builtin-card-media', name: 'Media Card', category: 'Cards', icon: 'image',
+    width: 280, height: 240, tags: ['card', 'media', 'image'], isBuiltin: true,
+    exposedProps: [
+      { key: 'title', label: 'Title', type: 'text', defaultValue: 'Media Card' },
+      { key: 'description', label: 'Description', type: 'text', defaultValue: 'A short description here.' },
+    ],
+    elements: [
+      { id: 'bg', element_type: 'rectangle', x: 0, y: 0, width: 280, height: 240, rotation: 0, properties: { fill: 'var(--background-primary)', stroke: 'var(--border-color)', strokeWidth: 1, radius: 8 }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Background' },
+      { id: 'media', element_type: 'rectangle', x: 0, y: 0, width: 280, height: 140, rotation: 0, properties: { fill: 'var(--background-secondary)', borderRadius: { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } }, layer_id: 'default', z_index: 1, locked: false, visible: true, name: 'Media Area' },
+      { id: 'title', element_type: 'text', x: 16, y: 152, width: 248, height: 22, rotation: 0, properties: { text: 'Media Card', fontSize: 16, fontWeight: 600, fill: 'var(--text-primary)', textAlign: 'left' }, layer_id: 'default', z_index: 2, locked: false, visible: true, name: 'Title' },
+      { id: 'desc', element_type: 'text', x: 16, y: 180, width: 248, height: 44, rotation: 0, properties: { text: 'A short description here.', fontSize: 13, fill: 'var(--text-muted)', textAlign: 'left' }, layer_id: 'default', z_index: 3, locked: false, visible: true, name: 'Description' },
+    ],
+    created_at: now, modified_at: now,
+  },
+  {
+    id: 'builtin-card-list-item', name: 'List Item', category: 'Cards', icon: 'list',
+    width: 280, height: 56, tags: ['card', 'list', 'item'], isBuiltin: true,
+    exposedProps: [
+      { key: 'title', label: 'Title', type: 'text', defaultValue: 'List item' },
+      { key: 'subtitle', label: 'Subtitle', type: 'text', defaultValue: 'Secondary text' },
+    ],
+    elements: [
+      { id: 'bg', element_type: 'rectangle', x: 0, y: 0, width: 280, height: 56, rotation: 0, properties: { fill: 'var(--background-primary)' }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Background' },
+      { id: 'icon-area', element_type: 'circle', x: 12, y: 12, width: 32, height: 32, rotation: 0, properties: { fill: 'var(--background-secondary)' }, layer_id: 'default', z_index: 1, locked: false, visible: true, name: 'Avatar' },
+      { id: 'title', element_type: 'text', x: 52, y: 10, width: 200, height: 18, rotation: 0, properties: { text: 'List item', fontSize: 14, fontWeight: 500, fill: 'var(--text-normal)', textAlign: 'left' }, layer_id: 'default', z_index: 2, locked: false, visible: true, name: 'Title' },
+      { id: 'subtitle', element_type: 'text', x: 52, y: 30, width: 200, height: 16, rotation: 0, properties: { text: 'Secondary text', fontSize: 12, fill: 'var(--text-muted)', textAlign: 'left' }, layer_id: 'default', z_index: 3, locked: false, visible: true, name: 'Subtitle' },
+    ],
+    created_at: now, modified_at: now,
+  },
+];

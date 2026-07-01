@@ -1,3 +1,7 @@
+// Record init start time before any module loads
+(window as Window & { __bismuth_init_start?: number }).__bismuth_init_start = performance.now();
+
+import "@fontsource-variable/inter";
 import "./app.css";
 import App from "./App.svelte";
 

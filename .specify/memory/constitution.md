@@ -1,22 +1,17 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 → 1.2.0
+Version change: 1.3.0 → 1.4.0
 Modified principles:
-- I. Maintainable Code Quality → Added barrel re-export pattern requirement
-- VI. Code Organization → Expanded with modularization patterns and tolerance threshold
-Added sections:
-- VII. Specification-Driven Development
-- VIII. Design Token and Styling Architecture
-- IX. Multi-Agent Governance
-Removed sections:
-- None
+- VI. Code Organization → Expanded with strict folder density limits and layer separation rules
+Added:
+- Folder density limits (max 8 files per directory before mandating subfolders)
+- Explicit layer separation requirements (services, stores, logic, components, types, constants)
+- Feature-scoped vs global scope enforcement
+- Subfolder creation triggers
 Templates requiring updates:
-- ⚠ .specify/templates/plan-template.md (add extension hook awareness)
-- ⚠ .specify/templates/tasks-template.md (add spec-driven workflow reference)
-- ✅ docs/development/extension-integration.md (created)
-- ✅ scripts/ reorganized into quality/, git/, build/ subfolders
+- ⚠ architecture_constitution.md §File Organization (updated in sync)
 Follow-up TODOs:
-- None (all prior TODOs from v1.1.0 resolved: scripts created, hooks active)
+- None
 -->
 # Bismuth Constitution
 
@@ -28,13 +23,11 @@ patterns. Implementations MUST reuse established utilities, components, and abst
 before introducing new ones. Duplicate logic MUST be extracted or explicitly justified
 when extraction would reduce clarity. New architecture, dependencies, and abstractions
 MUST be planned against expected feature evolution to keep bloat low and maintainability
-high. **No single code or test file MUST exceed 300 lines** (files up to 350 lines are
-acceptable when further splitting would harm cohesion). Files approaching this limit
-MUST be refactored into smaller, focused modules. When splitting modules, the **barrel
-re-export pattern** MUST be used to maintain API compatibility — original import paths
-MUST continue to work via re-exports from the original file location. Rationale: code
-quality is preserved by minimizing unnecessary surface area, enforcing focused modules,
-maintaining backward-compatible imports, and making future changes predictable.
+high. **No single code or test file MUST exceed 300 lines** (tolerance to 350 when
+splitting harms cohesion). Splitting strategies and barrel re-export requirements are
+defined in `architecture_constitution.md`. Rationale: code quality is preserved by
+minimizing unnecessary surface area, enforcing focused modules, and making future
+changes predictable.
 
 ### II. Comprehensive Testing Standards
 Every change MUST include appropriate automated tests for the affected behavior unless
@@ -72,19 +65,27 @@ new dependencies, or divergent patterns MUST be justified by concrete requiremen
 documented alternatives. Rationale: deliberate research prevents accidental complexity
 and improves implementation quality.
 
-### VI. Code Organization and File Size Limits
-Code and test files MUST NOT exceed 300 lines (tolerance up to 350 when splitting would
-reduce cohesion). Files exceeding this limit MUST be refactored into smaller, focused
-modules with clear responsibilities. When splitting:
-- Extract logic into co-located `.ts` modules (e.g., `componentLogic.ts`)
-- Use recursive components to eliminate template duplication in Svelte
-- Apply barrel re-exports from the original path for API compatibility
-- Condense CSS rules to single-line format when styles push files over limit
-Templates, large text collections, and static assets MUST be extracted into dedicated
-directories. Large data collections MUST be externalized to JSON/YAML in `config/`.
-Scripts MUST be organized into categorical subfolders (`quality/`, `git/`, `build/`).
-Rationale: enforcing file size limits improves readability, reduces merge conflicts,
-enables better code review, and makes the codebase maintainable.
+### VI. Code Organization, Folder Density, and Layer Separation
+
+Code and test files MUST NOT exceed 300 lines (tolerance to 350). **No directory MUST
+contain more than 8 implementation files** before being split into purposeful subfolders.
+Each folder MUST have a clear, singular responsibility that is inferable from its name.
+Layers MUST be physically separated into distinct directories:
+
+- **services/** — external adapters (IPC wrappers, API clients); no UI logic
+- **stores/** — global reactive state; no orchestration or side effects
+- **types/** — TypeScript interfaces and type definitions; no runtime code
+- **constants/** — shared enums, config objects, route definitions; no logic
+- **components/** — UI components grouped by domain (`canvas/`, `sidebar/`, `editor/`)
+- **utils/** — pure helper functions; no store/service imports
+
+When a folder grows beyond 8 files, it MUST be split into domain-scoped subfolders
+(e.g., `utils/canvas/` not a flat `utils/` with 20 files). Feature-scoped logic (helpers,
+orchestration, complex derived state) MUST be co-located with the feature rather than
+placed in a global shared folder. Enforceable splitting strategies and module conventions
+are defined in `architecture_constitution.md` §File Organization Rules. Rationale:
+strict folder density prevents discovery friction, enforces separation of concerns, and
+ensures each directory is scannable at a glance.
 
 ### VII. Specification-Driven Development
 All features MUST follow the Spec Kit lifecycle: specify → plan → tasks → implement.
@@ -99,15 +100,13 @@ Rationale: specification-driven development ensures features are designed before
 reviewed against governance, and tracked through completion.
 
 ### VIII. Design Token and Styling Architecture
-All visual styling MUST use CSS custom properties (design tokens) defined in
-`src/lib/styles/tokens.css` as the single source of truth. Components MUST use scoped
-CSS with `var()` references to tokens — NOT inline Tailwind utility classes. The
-`@theme` block in `src/app.css` maps tokens into the Tailwind namespace for cases where
-utilities are needed. Dark mode MUST use `data-theme="dark"` attribute (NOT `.dark`
-class). New colors, spacing, or typography values MUST be added to tokens.css first,
-then referenced by components. CSS imports MUST be centralized in `src/app.css`.
-Rationale: a single token source prevents drift between themes, ensures consistent
-styling, and makes global design changes predictable.
+All visual styling MUST use CSS custom properties (design tokens) as the single source
+of truth. Components MUST use scoped CSS with `var()` token references — NOT inline
+utility classes for visual properties. Enforceable file paths, dark mode mechanism,
+import rules, and CodeMirror theme requirements are defined in
+`architecture_constitution.md` §Styling Architecture. Rationale: a single token source
+prevents drift between themes, ensures consistent styling, and makes global design
+changes predictable.
 
 ### IX. Multi-Agent Governance
 The project supports multiple AI development agents (Windsurf/Cascade, Devin, Claude).
@@ -119,6 +118,19 @@ constraint is updated here, all agent configs MUST be synchronized. The Windsurf
 integration is primary; other integrations MUST mirror its workflow files.
 Rationale: consistent governance across agents prevents conflicting implementations
 and ensures any agent can pick up work without violating project standards.
+
+### X. Production Release Standards
+Before any tagged release, the codebase MUST pass a production readiness gate. This
+includes: passing all test coverage thresholds, zero linting errors (ESLint + stylelint),
+zero file-size violations, zero Rust clippy warnings, a clean `cargo audit`, a successful
+production build with sourcemaps disabled, and verification of the Tauri CSP config.
+Dead code detection (`pnpm lint:unused`) MUST be run and reviewed — unexpected unused
+exports MUST either be removed or explained. Store mutation ownership MUST be enforced:
+components call store action functions, not raw `.set()`/`.update()`. Feature module
+barrels MUST use relative imports to preserve module boundaries. Full checklist in
+`architecture_constitution.md` §Production Release Checklist.
+Rationale: production releases that skip quality gates produce regressions that are hard
+to isolate; gate automation removes the human-error surface from release preparation.
 
 ## Engineering Constraints
 
@@ -133,14 +145,19 @@ and ensures any agent can pick up work without violating project standards.
   users.
 - Shared components and utilities MUST be preferred over one-off implementations when
   they preserve readability and reduce duplication.
-- **File size limits MUST be enforced automatically** via `scripts/quality/check-file-sizes.sh`
-  (pre-commit hook, CI pipeline). Files over 300 lines trigger warnings; over 400 lines
-  block commits (excluding generated code and dependencies).
-- **Styling MUST NOT bypass tokens**: Direct hex colors, hardcoded spacing, or inline
-  style attributes in components MUST be flagged in review. All values MUST reference
-  CSS custom properties from the token system.
+- **File size limits MUST be enforced automatically** (pre-commit + CI). Enforcement
+  details in `architecture_constitution.md` §Validation Hooks.
+- **Styling MUST NOT bypass tokens**: All visual values MUST reference CSS custom
+  properties. Enforcement details in `architecture_constitution.md` §Styling Architecture.
 - **Extensions MUST be used for governed workflows**: Manual lifecycle steps (planning
   without constitution load, implementing without architecture review) MUST be flagged.
+- **Store mutations MUST go through named action functions**: Components MUST NOT call
+  `.set()` or `.update()` on imported stores directly. Action functions in the store
+  file own all mutation logic.
+- **Feature barrel imports MUST use relative paths**: `index.ts` barrels MUST import
+  from `./stores/`, `./types/`, `./components/` — never from `@/features/<name>/stores/`.
+- **Dead code detection is a release gate**: `pnpm lint:unused` (knip) MUST pass
+  before every tagged release. Unused exports MUST be removed, not suppressed.
 
 ## Development Workflow and Quality Gates
 
@@ -175,4 +192,9 @@ implementation, and final validation. Plans and reviews MUST explicitly address 
 principles. Non-compliant work MUST either be corrected before completion or documented
 as an approved exception with owner, reason, and remediation plan.
 
-**Version**: 1.2.0 | **Ratified**: 2026-05-25 | **Last Amended**: 2026-06-05
+**Version**: 1.5.0 | **Ratified**: 2026-05-25 | **Last Amended**: 2026-06-23
+
+**Related Documents**:
+- Architecture enforcement: `.specify/memory/architecture_constitution.md`
+- Security standards: `.specify/memory/security_constitution.md`
+- Memory workflow: `.specify/memory/workflow.md`

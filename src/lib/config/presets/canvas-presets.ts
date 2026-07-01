@@ -108,38 +108,6 @@ export const KEYBOARD_SHORTCUTS = {
   })),
 };
 
-export const UI_CONSTANTS = {
-  // Debounce delays
-  debounce: {
-    search: 300,
-    autoSave: 500,
-    resize: 100,
-  },
-
-  // Animation durations
-  animation: {
-    fast: 150,
-    normal: 300,
-    slow: 500,
-  },
-
-  // Z-index layers
-  zIndex: {
-    modal: 1000,
-    dropdown: 900,
-    tooltip: 800,
-    sidebar: 100,
-  },
-
-  // Breakpoints
-  breakpoints: {
-    mobile: 640,
-    tablet: 768,
-    desktop: 1024,
-    wide: 1280,
-  },
-};
-
 export const VALIDATION_RULES = {
   // File name validation
   fileName: {

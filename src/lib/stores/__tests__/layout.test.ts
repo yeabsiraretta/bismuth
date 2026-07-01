@@ -20,6 +20,8 @@ describe('layout store', () => {
       rightSidebarWidth: LAYOUT_CONSTANTS.SIDEBAR_DEFAULT_WIDTH,
       leftTabs: [],
       rightTabs: [],
+      leftLowerTabs: [],
+      rightLowerTabs: [],
       bottomTabs: [],
       leftActiveTab: 'files',
       rightActiveTab: 'backlinks',

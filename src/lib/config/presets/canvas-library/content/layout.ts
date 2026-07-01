@@ -1,0 +1,42 @@
+import type { ComponentDefinition } from '@/features/canvas/types';
+
+const now = 0;
+
+export const LAYOUT_COMPONENTS: ComponentDefinition[] = [
+  {
+    id: 'builtin-layout-divider', name: 'Divider', category: 'Layout', icon: 'minus',
+    width: 280, height: 1, tags: ['layout', 'divider', 'separator'], isBuiltin: true,
+    exposedProps: [],
+    elements: [
+      { id: 'line', element_type: 'line', x: 0, y: 0, width: 280, height: 0, rotation: 0, properties: { stroke: 'var(--border-color)', strokeWidth: 1 }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Divider' },
+    ],
+    created_at: now, modified_at: now,
+  },
+  {
+    id: 'builtin-layout-spacer', name: 'Spacer', category: 'Layout', icon: 'maximize',
+    width: 280, height: 24, tags: ['layout', 'spacer', 'gap'], isBuiltin: true,
+    exposedProps: [{ key: 'height', label: 'Height', type: 'number', defaultValue: 24 }],
+    elements: [
+      { id: 'spacer', element_type: 'rectangle', x: 0, y: 0, width: 280, height: 24, rotation: 0, properties: { fill: 'transparent', stroke: 'var(--text-faint)', strokeWidth: 1, lineStyle: 'dashed', opacity: 0.4 }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Spacer' },
+    ],
+    created_at: now, modified_at: now,
+  },
+  {
+    id: 'builtin-layout-container', name: 'Container', category: 'Layout', icon: 'square',
+    width: 360, height: 240, tags: ['layout', 'container', 'frame'], isBuiltin: true,
+    exposedProps: [],
+    elements: [
+      { id: 'frame', element_type: 'frame', x: 0, y: 0, width: 360, height: 240, rotation: 0, properties: { fill: 'var(--background-primary)', stroke: 'var(--border-color)', strokeWidth: 1, radius: 8, padding: 16, clipContent: true }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Container' },
+    ],
+    created_at: now, modified_at: now,
+  },
+  {
+    id: 'builtin-layout-grid', name: 'Grid Frame', category: 'Layout', icon: 'grid',
+    width: 360, height: 240, tags: ['layout', 'grid', 'frame'], isBuiltin: true,
+    exposedProps: [],
+    elements: [
+      { id: 'frame', element_type: 'frame', x: 0, y: 0, width: 360, height: 240, rotation: 0, properties: { fill: 'var(--background-primary-alt)', stroke: 'var(--border-color)', strokeWidth: 1, radius: 8, padding: 16, clipContent: true, autoLayout: { direction: 'horizontal', gap: 12, padding: { top: 16, right: 16, bottom: 16, left: 16 }, alignItems: 'start', justifyContent: 'start', wrap: true } }, layer_id: 'default', z_index: 0, locked: false, visible: true, name: 'Grid Frame' },
+    ],
+    created_at: now, modified_at: now,
+  },
+];

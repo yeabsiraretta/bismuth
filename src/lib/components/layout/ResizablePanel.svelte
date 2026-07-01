@@ -1,3 +1,4 @@
+<!-- @see ResizablePanel.slots.ts for zone contract rules -->
 <script lang="ts">
   export let position: 'left' | 'right' = 'left';
   export let width: number = 300;
@@ -155,8 +156,8 @@
   }
 
   .panel-title {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-semibold);
     color: var(--color-text, #212529);
     margin: 0;
   }
@@ -177,8 +178,8 @@
     background: transparent;
     color: var(--color-text-muted, #6c757d);
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 1rem;
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-medium);
     transition: all 0.15s ease;
   }
 
@@ -252,7 +253,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
+    font-size: var(--font-ui-small);
     transition: all 0.15s ease;
     z-index: 20;
   }
@@ -283,7 +284,7 @@
   @media (max-width: 640px) {
     .resizable-panel {
       width: 100% !important;
-      max-height: 40vh;
+      max-height: calc(40vh / var(--ui-scale, 1));
       border-right: none !important;
       border-left: none !important;
       border-bottom: 1px solid var(--panel-border, #e5e7eb);

@@ -1,52 +1,47 @@
 <script lang="ts">
-  import { invoke } from '@tauri-apps/api/core';
   import { currentVault } from '@/stores/vault/vault';
   import {
     activeNote,
     removeNoteFromStore,
     setActiveNote,
-    refreshNotes,
   } from '@/stores/vault/vault';
   import { toggleLeftSidebar, toggleRightSidebar } from '@/stores/layout/layout';
+  import { settings } from '@/features/settings';
+  import { deleteNote } from '@/services/vault/vault';
+  import { createFolder, createInlineNote } from '@/components/vault/fileTreeLogic';
   import Icon from '@/components/icons/Icon.svelte';
   import ThemeToggle from '@/components/ui/ThemeToggle.svelte';
-  import NewNoteDialog from '@/components/dialogs/NewNoteDialog.svelte';
   import DeleteConfirmDialog from '@/components/dialogs/DeleteConfirmDialog.svelte';
-  import SettingsModal from '@/components/overlays/settings/SettingsModal.svelte';
+  import { BreadcrumbTrail } from '@/features/breadcrumbs';
   import { log } from '@/utils/logger';
 
-  // Callback prop for refresh event (Svelte 5 pattern)
+  // Callback props
   export let onRefresh: (() => void) | undefined = undefined;
+  export let onNavigate: ((path: string) => void) | undefined = undefined;
 
   let showDeleteConfirm = false;
-  let showNewNoteDialog = false;
-  let newNoteName = '';
-  let showSettingsMenu = false;
-  let showSettingsModal = false;
 
-  async function handleCreateNote(detail: { name: string }) {
+  async function handleCreateNote() {
     if (!$currentVault) return;
-
-    log.info('Creating new note', { name: detail.name });
     try {
-      const fileName = detail.name.endsWith('.md') ? detail.name : `${detail.name}.md`;
-      const notePath = `${$currentVault.root_path}/${fileName}`;
-      const content = `# ${detail.name}\n\n`;
-
-      await invoke('write_note', { path: notePath, content });
-      log.info('Note created successfully', { path: notePath });
-
-      // Call refresh callback if provided, otherwise refresh directly
-      if (onRefresh) {
-        onRefresh();
-      } else {
-        await refreshNotes();
-      }
-
-      showNewNoteDialog = false;
-      newNoteName = '';
+      const basePath = $settings.defaultNoteLocation
+        ? `${$currentVault.root_path}/${$settings.defaultNoteLocation}`.replace(/\/+$/, '')
+        : $currentVault.root_path;
+      await createInlineNote(basePath);
+      if (onRefresh) onRefresh();
     } catch (error) {
-      log.error('Failed to create note', error as Error, { name: detail.name });
+      log.error('Failed to create note', error as Error);
+    }
+  }
+
+  async function handleCreateFolder() {
+    if (!$currentVault) return;
+    try {
+      await createFolder('Untitled Folder', $currentVault.root_path, new Set());
+      log.info('Folder created inline');
+      if (onRefresh) onRefresh();
+    } catch (error) {
+      log.error('Failed to create folder', error as Error);
     }
   }
 
@@ -55,7 +50,7 @@
 
     log.info('Deleting note', { path: $activeNote.path, title: $activeNote.title });
     try {
-      await invoke('delete_note', { path: $activeNote.path });
+      await deleteNote($activeNote.path);
       removeNoteFromStore($activeNote.path);
       setActiveNote(null);
       showDeleteConfirm = false;
@@ -80,68 +75,40 @@
   <div class="toolbar-divider"></div>
 
   <button
-    class="toolbar-btn"
-    on:click={() => (showNewNoteDialog = true)}
+    class="toolbar-btn icon-only"
+    on:click={handleCreateNote}
     title="New Note (⌘N)"
     aria-label="Create new note"
   >
     <Icon name="file-plus" size={18} ariaLabel="New note icon" />
-    <span class="label">New Note</span>
+  </button>
+
+  <button
+    class="toolbar-btn icon-only"
+    on:click={handleCreateFolder}
+    title="New Folder"
+    aria-label="Create new folder"
+  >
+    <Icon name="folder-plus" size={18} ariaLabel="New folder icon" />
   </button>
 
   {#if $activeNote}
     <button
-      class="toolbar-btn danger"
-      on:click={() => (showDeleteConfirm = true)}
+      class="toolbar-btn icon-only danger"
+      on:click={() => { if ($settings.confirmBeforeDelete) { showDeleteConfirm = true; } else { handleDeleteNote(); } }}
       title="Delete Note"
       aria-label="Delete note"
     >
       <Icon name="trash" size={18} ariaLabel="Delete icon" />
-      <span class="label">Delete</span>
     </button>
   {/if}
 
-  <div class="spacer"></div>
+  <div class="toolbar-divider"></div>
+
+  <BreadcrumbTrail {onNavigate} />
 
   <!-- Theme Toggle -->
   <ThemeToggle />
-
-  <!-- Settings Menu -->
-  <div class="settings-menu-container">
-    <button
-      class="toolbar-btn icon-only"
-      on:click={() => (showSettingsMenu = !showSettingsMenu)}
-      title="Settings"
-      aria-label="Open settings menu"
-    >
-      <Icon name="settings" size={18} ariaLabel="Settings icon" />
-    </button>
-
-    {#if showSettingsMenu}
-      <div class="settings-dropdown">
-        <button
-          class="settings-item"
-          on:click={() => {
-            showSettingsMenu = false;
-            showSettingsModal = true;
-          }}
-        >
-          <Icon name="settings" size={16} />
-          <span>Settings</span>
-        </button>
-        <div class="settings-divider"></div>
-        <button
-          class="settings-item"
-          on:click={() => {
-            showSettingsMenu = false;
-          }}
-        >
-          <Icon name="info" size={16} />
-          <span>About</span>
-        </button>
-      </div>
-    {/if}
-  </div>
 
   <!-- Right sidebar toggle -->
   <button
@@ -154,13 +121,6 @@
   </button>
 </div>
 
-<NewNoteDialog
-  isOpen={showNewNoteDialog}
-  bind:noteName={newNoteName}
-  onCreate={handleCreateNote}
-  onClose={() => (showNewNoteDialog = false)}
-/>
-
 <DeleteConfirmDialog
   isOpen={showDeleteConfirm}
   noteTitle={$activeNote?.title || ''}
@@ -168,94 +128,45 @@
   onClose={() => (showDeleteConfirm = false)}
 />
 
-<SettingsModal isOpen={showSettingsModal} onClose={() => (showSettingsModal = false)} />
-
 <style>
   .toolbar {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-4);
+    gap: var(--grid-gap-xs, 4px);
+    padding: 0 var(--grid-gap-sm, 8px);
     background: var(--color-surface);
     flex: 1;
-    border-bottom: 1px solid var(--color-border);
+    height: var(--panel-header-height);
+    min-height: var(--panel-header-height);
   }
 
   .toolbar-divider {
     width: 1px;
-    height: 24px;
+    height: 20px;
     background: var(--color-border);
-    margin: 0 var(--space-2);
+    margin: 0 var(--grid-gap-xs, 4px);
   }
 
-  .settings-menu-container {
-    position: relative;
-  }
-
-  .settings-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    margin-top: 8px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 220px;
-    padding: 4px;
-    z-index: 1000;
-  }
-
-  .settings-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 8px 12px;
-    border: none;
-    background: transparent;
-    color: var(--color-text);
-    text-align: left;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background-color 0.15s;
-  }
-
-  .settings-item:hover {
-    background: var(--color-surface-hover);
-  }
-
-  .settings-divider {
-    height: 1px;
-    background: var(--color-border);
-    margin: 4px 0;
-  }
-
-  .spacer {
-    flex: 1;
-  }
 
   .toolbar-btn {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
-    min-height: 36px;
-    min-width: 36px;
-    padding: var(--space-2) var(--space-4);
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-s);
     cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--color-text);
+    color: var(--text-muted);
     transition: all 0.15s ease;
     user-select: none;
   }
 
   .toolbar-btn.icon-only {
-    padding: var(--space-2);
-    justify-content: center;
+    padding: 0;
+    width: 28px;
   }
 
   .toolbar-btn:focus-visible {
@@ -263,24 +174,16 @@
     outline-offset: 2px;
   }
 
-  .toolbar-btn:active {
-    transform: translateY(1px);
-  }
-
   .toolbar-btn:hover {
-    background: var(--color-surface);
-    border-color: var(--color-primary);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-color: var(--interactive-hover);
+    color: var(--text-normal);
   }
 
   .toolbar-btn.danger:hover {
-    background: #fee;
-    border-color: #fcc;
-    color: var(--color-danger);
-    box-shadow: 0 1px 3px rgba(220, 53, 69, 0.2);
+    background-color: var(--interactive-hover);
+    color: var(--text-error);
   }
 
-  .label {
-    font-weight: 500;
-  }
+
+
 </style>

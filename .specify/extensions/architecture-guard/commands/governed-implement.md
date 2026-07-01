@@ -206,6 +206,42 @@ Example:
 
 If implementation repeatedly violates a standard because the standard is outdated, generate a `Constitution Update Proposal` targeting `.specify/memory/architecture_constitution.md`.
 
+## Cross-Skill Integration
+
+During implementation, automatically apply these complementary skills at specific gates:
+
+### During Coding (Step 3)
+- **coding-principles**: Follow `.claude/coding-principles.md` for language-specific idioms (Rust Result types, Svelte reactivity, TypeScript strict mode).
+- **component-gen**: When implementing UI tasks, follow `.claude/component-guide.md` requirements. Apply UX guardrails: max 7 items, min 40px buttons, keyboard navigation, ARIA labels.
+- **agent-rules**: Enforce 300-line file limit, unified logger only (`log.*` in TS, `tracing::*` in Rust), no emojis.
+
+### During Review (Step 5)
+- **code-review**: Apply the full Fix Quality Bar from `.claude/skills/code-review/SKILL.md`:
+  - Verify fix lives at ownership boundary
+  - Check backward compatibility
+  - Confirm regression test at smallest seam
+  - Ensure no broad special cases or hidden migrations
+- **ux-review**: For any UI changes produced, run a mental UX evaluation using `.claude/skills/ux-review/SKILL.md`:
+  - Classify interface type
+  - Check cognitive load limits
+  - Verify interaction sizing
+  - Detect UX smells (overloaded screens, form graveyards, silent errors)
+
+### During Test Writing
+- **pict-test-designer**: When writing tests for functions with multiple parameters or state combinations, apply PICT methodology from `.claude/skills/pict-test-designer/SKILL.md` to generate efficient pairwise test cases instead of exhaustive enumeration.
+
+These skills are NOT separate orchestration steps — they are quality gates applied inline during their respective phases.
+
+## Bismuth-Specific Implementation Rules
+
+- All files must stay under 300 lines (Constitution Principle VI)
+- Max 8 files per directory before mandatory subfolder split
+- Unified logger only: `import { log } from '@/utils/logger'` (TS), `tracing::*!()` (Rust)
+- No emojis in code, commits, or responses
+- Feature-scoped logic co-located with feature, not in global utils/stores
+- Test coverage must remain at or above 90%
+- Layer separation: services/, stores/, types/, constants/, components/, utils/
+
 ## Guardrails
 
 - **Modular**: Do not mix security findings into a generic architecture list.

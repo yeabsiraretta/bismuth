@@ -1,14 +1,18 @@
 <script lang="ts">
-  import type { Note } from '@/types/vault';
+  import type { Note } from '@/types/data/vault';
   import Icon from '@/components/icons/Icon.svelte';
-  import type { TreeNode } from './fileTreeLogic';
+  import { deepFileCount, type TreeNode } from './fileTreeLogic';
+
+  function stripEmoji(text: string): string {
+    return text.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '').trim();
+  }
 
   export let node: TreeNode;
-  export let expandedFolders: Set<string>;
   export let dropTargetPath: string | null;
   export let activeNotePath: string | undefined;
   export let onToggleFolder: (path: string) => void;
-  export let onNoteClick: (note: Note) => void;
+  export let onNoteClick: (note: Note, event?: MouseEvent) => void;
+  export let selectedNotes: Set<string> = new Set();
   export let onContextMenu: (event: MouseEvent, note: Note) => void;
   export let onDragStart: (event: DragEvent, note: Note) => void;
   export let onDragEnd: () => void;
@@ -24,7 +28,6 @@
     class="folder-item"
     class:drop-target={dropTargetPath === node.path}
     role="treeitem"
-    aria-expanded={expandedFolders.has(node.path)}
     on:dragover|preventDefault={(e) => onDragOverFolder(e, node.path)}
     on:dragleave={onDragLeave}
     on:drop={(e) => onDropOnFolder(e, node.path)}
@@ -34,37 +37,16 @@
       on:click={() => onToggleFolder(node.path)}
       on:keydown={(e) => onKeydown(e, node)}
     >
-      <Icon name={expandedFolders.has(node.path) ? 'chevron-down' : 'chevron-right'} size={14} />
-      <Icon name={expandedFolders.has(node.path) ? 'folder-open' : 'folder'} size={16} />
-      <span class="node-name">{node.name}</span>
-      <span class="folder-count">{node.children.filter(c => c.type === 'file').length}</span>
+      <Icon name="chevron-right" size={14} />
+      <span class="node-name">{stripEmoji(node.name)}</span>
+      <span class="folder-count">{deepFileCount(node)}</span>
     </button>
-    {#if expandedFolders.has(node.path)}
-      <ul class="node-list nested" role="group">
-        {#each node.children as child (child.path)}
-          <svelte:self
-            node={child}
-            {expandedFolders}
-            {dropTargetPath}
-            {activeNotePath}
-            {onToggleFolder}
-            {onNoteClick}
-            {onContextMenu}
-            {onDragStart}
-            {onDragEnd}
-            {onDragOverFolder}
-            {onDragLeave}
-            {onDropOnFolder}
-            {onKeydown}
-          />
-        {/each}
-      </ul>
-    {/if}
   </li>
 {:else if node.note}
   <li
     class="note-item"
     class:active={activeNotePath === node.note.path}
+    class:selected={selectedNotes.has(node.note.path)}
     draggable="true"
     on:dragstart={(e) => onDragStart(e, node.note!)}
     on:dragend={onDragEnd}
@@ -72,18 +54,18 @@
   >
     <button
       class="note-button"
-      on:click={() => onNoteClick(node.note!)}
+      on:click={(e) => onNoteClick(node.note!, e)}
       on:contextmenu={(e) => onContextMenu(e, node.note!)}
       on:keydown={(e) => onKeydown(e, node)}
     >
-      <Icon name="file" size={16} />
-      <span class="note-title">{node.note.title || node.name}</span>
+      <span class="note-title">{stripEmoji(node.note.title || node.name)}</span>
     </button>
   </li>
 {/if}
 
 <style>
   .folder-item {
+    list-style: none;
     transition: background-color var(--transition-fast);
   }
 
@@ -96,15 +78,15 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    min-height: 32px;
-    padding: var(--spacing-xs) var(--spacing-s);
+    min-height: 26px;
+    padding: 2px var(--spacing-s) 2px var(--spacing-m);
     background: none;
     border: none;
     color: var(--text-normal);
     cursor: pointer;
     text-align: left;
     font-weight: var(--font-medium);
-    font-size: var(--font-ui-small);
+    font-size: var(--sidebar-item-font);
     transition: all var(--transition-fast);
     user-select: none;
   }
@@ -120,7 +102,7 @@
 
   .folder-count {
     margin-left: auto;
-    font-size: var(--font-smallest);
+    font-size: var(--sidebar-item-font-secondary);
     color: var(--text-faint);
     font-weight: var(--font-normal);
   }
@@ -132,17 +114,8 @@
     white-space: nowrap;
   }
 
-  .node-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .node-list.nested {
-    padding-left: var(--spacing-m);
-  }
-
   .note-item {
+    list-style: none;
     transition: background-color var(--transition-fast);
   }
 
@@ -155,8 +128,8 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-s);
-    min-height: 32px;
-    padding: var(--spacing-xs) var(--spacing-s);
+    min-height: 26px;
+    padding: 2px var(--spacing-s) 2px var(--spacing-m);
     background: none;
     border: none;
     color: var(--text-normal);
@@ -186,6 +159,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: var(--font-small);
+    font-size: var(--sidebar-item-font);
+  }
+
+  .note-item.selected .note-button {
+    background: var(--interactive-accent-hover, rgba(14, 165, 233, 0.15));
+    color: var(--interactive-accent);
   }
 </style>

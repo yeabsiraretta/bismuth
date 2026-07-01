@@ -1,25 +1,74 @@
 <script lang="ts">
   import { activeNote, updateNoteInStore, currentVault } from '@/stores/vault/vault';
-  import { writeNote } from '@/services/vault/vault';
+  import type { Note } from '@/types/data/vault';
+  import { writeNote, renameNote } from '@/services/vault/vault';
   import { onMount, onDestroy } from 'svelte';
   import Icon from '@/components/icons/Icon.svelte';
-  import ConceptSuggestionPopover from './ConceptSuggestionPopover.svelte';
+  import PanelHeader from '@/components/ui/layout/PanelHeader.svelte';
+  import NoteEditorToolbar from '@/components/note/NoteEditorToolbar.svelte';
+  import ConceptSuggestionPopover from '@/components/note/ConceptSuggestionPopover.svelte';
   import Editor from '@/components/editor/Editor.svelte';
-  import { registerStatusItem, removeStatusItem } from '@/stores/status';
+  import MarkdownPreview from '@/components/note/MarkdownPreview.svelte';
+  import { registerStatusItem, removeStatusItem } from '@/stores/status/status';
+  import { settings } from '@/features/settings';
+  import { log } from '@/utils/logger';
+  import { parseFrontmatter, computeStats, getFormatStrings, navigateToWikilink } from './noteEditorLogic';
+  import FloatingToolbar from '@/components/editor/FloatingToolbar.svelte';
+  import {
+    formatPainterActive,
+    toggleFormatPainter,
+    applyFormatPainter,
+    cancelFormatPainter,
+  } from '@/components/editor/formatPainter';
+  import { zoomRange, zoomReset } from '@/features/zoom';
+  import { ZoomBreadcrumbs } from '@/features/zoom';
+  import { shouldUseCodeEditor } from '@/features/code-editor';
+  import { codeBlockModalOpen, activeCodeBlock, closeCodeBlockModal, saveCodeBlock } from '@/features/code-editor';
+  import { graphBannerEnabled } from '@/features/graph-banner';
 
   let content = '';
   let isSaving = false;
   let saveTimeout: ReturnType<typeof setTimeout> | null = null;
-  let mode: 'edit' | 'preview' = 'edit';
+  let livePreview = $settings.livePreview;
+  let readingMode = $settings.livePreviewMode === 'reading';
   let editorRef: Editor;
+  let showFrontmatter = false;
+  let isRenaming = false;
+  let renameValue = '';
 
-  $: if ($activeNote) {
+  let frontmatter = '';
+  let body = '';
+  let editorContainerEl: HTMLDivElement;
+
+  let lastNoteRef: Note | null = null;
+  $: if ($activeNote && $activeNote !== lastNoteRef) {
+    lastNoteRef = $activeNote;
     content = $activeNote.content;
+    const parsed = parseFrontmatter(content);
+    frontmatter = parsed.fm;
+    body = parsed.body;
+    // Reset zoom when switching notes
+    zoomReset();
+    // Auto-scan for flashcards when note changes (if enabled)
+    if ($settings.flashcardsEnabled && $settings.flashcardsAutoScan) {
+      import('@/features/flashcards').then(m => m.scanActiveNote($activeNote.path, $activeNote.content)).catch(() => {});
+    }
   }
 
-  $: wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
-  $: charCount = content.length;
-  $: lineCount = content.split('\n').length;
+  // Sync zoom range to the CodeMirror editor
+  $: if (editorRef && $zoomRange) {
+    editorRef.applyZoomRange($zoomRange);
+  } else if (editorRef && !$zoomRange) {
+    editorRef.applyZoomRange(null);
+  }
+
+  $: isCodeFile = $activeNote ? shouldUseCodeEditor($activeNote.path) : false;
+  $: editorContent = showFrontmatter ? content : body;
+
+  $: stats = computeStats(content);
+  $: wordCount = stats.wordCount;
+  $: charCount = stats.charCount;
+  $: lineCount = stats.lineCount;
 
   // Push editor stats to status bar
   $: if ($activeNote) {
@@ -39,6 +88,7 @@
   // Auto-save with debouncing
   async function handleInput() {
     if (!$activeNote || !$currentVault) return;
+    if (!$settings.autoSave) return;
 
     if (saveTimeout) {
       clearTimeout(saveTimeout);
@@ -46,7 +96,7 @@
 
     saveTimeout = setTimeout(async () => {
       await saveNote();
-    }, 500); // 500ms debounce
+    }, $settings.autoSaveDelay);
   }
 
   async function saveNote() {
@@ -63,20 +113,70 @@
         modified_at: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Failed to save note:', error);
+      log.error('Failed to save note', error);
     } finally {
       isSaving = false;
     }
   }
 
   function handleContentChange(newContent: string) {
-    content = newContent;
+    if (showFrontmatter) {
+      content = newContent;
+      const parsed = parseFrontmatter(content);
+      frontmatter = parsed.fm;
+      body = parsed.body;
+    } else {
+      body = newContent;
+      content = frontmatter ? `${frontmatter}\n${newContent}` : newContent;
+    }
     handleInput();
   }
 
-  function handleWikilinkClick(title: string) {
-    // TODO: Navigate to the linked note
-    console.log('Navigate to wikilink:', title);
+  async function handleWikilinkClick(title: string) {
+    if (!$currentVault) return;
+    await navigateToWikilink(title, $currentVault.root_path);
+  }
+
+  function handleFormat(type: string) {
+    if (!editorRef) return;
+
+    // If format painter is active and user selects text, apply the captured format
+    if ($formatPainterActive && type === '__apply_painter__') {
+      const fmt = applyFormatPainter();
+      if (fmt) {
+        editorRef.insertAtCursor(fmt.prefix, fmt.suffix);
+      }
+      return;
+    }
+
+    const { prefix, suffix } = getFormatStrings(type);
+    editorRef.insertAtCursor(prefix, suffix);
+  }
+
+  function handleFormatPainterToggle() {
+    if (!editorRef) return;
+    const doc = editorRef.getContent();
+    // We need cursor position — use selection start/end from the content
+    // For simplicity, toggle with the full doc and 0,0 range
+    // The format painter detects format around current selection in the editor
+    toggleFormatPainter(doc, 0, 0);
+  }
+
+  function handleEditorClick() {
+    // If format painter is active and user clicks after selecting, apply it
+    if ($formatPainterActive && editorRef) {
+      const fmt = applyFormatPainter();
+      if (fmt) {
+        editorRef.insertAtCursor(fmt.prefix, fmt.suffix);
+      }
+    }
+  }
+
+  function handleContextMenu() {
+    // Right-click cancels format painter
+    if ($formatPainterActive) {
+      cancelFormatPainter();
+    }
   }
 
   // Handle concept link: wrap matched text in [[...]] syntax
@@ -87,13 +187,54 @@
     handleInput();
   }
 
+  function startRename() {
+    if (!$activeNote) return;
+    renameValue = $activeNote.title;
+    isRenaming = true;
+  }
+
+  async function commitRename() {
+    if (!$activeNote || !renameValue.trim()) {
+      isRenaming = false;
+      return;
+    }
+    const newTitle = renameValue.trim();
+    if (newTitle === $activeNote.title) {
+      isRenaming = false;
+      return;
+    }
+    const oldPath = $activeNote.path;
+    const dir = oldPath.substring(0, oldPath.lastIndexOf('/') + 1);
+    const newPath = `${dir}${newTitle}.md`;
+    try {
+      await renameNote(oldPath, newPath);
+      updateNoteInStore({ ...$activeNote, title: newTitle, path: newPath });
+    } catch (err) {
+      log.error('Rename failed', err);
+    }
+    isRenaming = false;
+  }
+
+  function handleRenameKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter') { e.preventDefault(); commitRename(); }
+    if (e.key === 'Escape') { isRenaming = false; }
+  }
+
+  function handleEditorInsertText(e: Event) {
+    const detail = (e as CustomEvent<{ text: string }>).detail;
+    if (!editorRef || !detail?.text) return;
+    editorRef.insertAtCursor(detail.text);
+  }
+
   onMount(() => {
-    if (editorRef && mode === 'edit') {
+    if (editorRef) {
       editorRef.focus();
     }
+    window.addEventListener('editor-insert-text', handleEditorInsertText);
   });
 
   onDestroy(() => {
+    window.removeEventListener('editor-insert-text', handleEditorInsertText);
     removeStatusItem('editor-words');
     removeStatusItem('editor-lines');
     removeStatusItem('editor-chars');
@@ -103,73 +244,98 @@
 
 <div class="note-editor">
   {#if $activeNote}
-    <div class="editor-header">
-      <h1 class="note-title">{$activeNote.title}</h1>
-      <div class="editor-actions">
-        <div class="mode-toggle">
-          <button
-            class="mode-btn"
-            class:active={mode === 'edit'}
-            on:click={() => (mode = 'edit')}
-            title="Edit"
-            aria-label="Edit mode"
-          >
-            <Icon name="edit-3" size={14} />
-          </button>
-          <button
-            class="mode-btn"
-            class:active={mode === 'preview'}
-            on:click={() => (mode = 'preview')}
-            title="Preview"
-            aria-label="Preview mode"
-          >
-            <Icon name="eye" size={14} />
-          </button>
-        </div>
-        {#if isSaving}
-          <span class="status saving">Saving...</span>
+    <PanelHeader icon="file-text">
+      <svelte:fragment slot="title">
+        {#if isRenaming}
+          <!-- svelte-ignore a11y_autofocus -->
+          <input
+            class="note-title-input"
+            type="text"
+            bind:value={renameValue}
+            on:blur={commitRename}
+            on:keydown={handleRenameKeydown}
+            autofocus
+          />
         {:else}
-          <span class="status saved">
-            <Icon name="check" size={12} />
-            Saved
-          </span>
+          <h3 class="panel-header-title note-title" on:dblclick={startRename}>{$activeNote.title}</h3>
         {/if}
-      </div>
-    </div>
+      </svelte:fragment>
+      <svelte:fragment slot="actions">
+        <NoteEditorToolbar
+          {livePreview}
+          {readingMode}
+          {showFrontmatter}
+          hasFrontmatter={!!frontmatter}
+          onFormat={handleFormat}
+          onViewModeChange={(mode) => {
+            if (mode === 'source') { livePreview = false; readingMode = false; settings.update(s => ({ ...s, livePreview: false, livePreviewMode: 'source' })); }
+            else if (mode === 'live') { livePreview = true; readingMode = false; settings.update(s => ({ ...s, livePreview: true, livePreviewMode: 'live' })); }
+            else { livePreview = true; readingMode = true; settings.update(s => ({ ...s, livePreview: true, livePreviewMode: 'reading' })); }
+          }}
+          onToggleFrontmatter={() => (showFrontmatter = !showFrontmatter)}
+        />
+      </svelte:fragment>
+    </PanelHeader>
 
-    <div class="editor-content">
-      {#if mode === 'edit'}
-        <Editor
-          bind:this={editorRef}
-          {content}
-          onContentChange={handleContentChange}
-          onWikilinkClick={handleWikilinkClick}
-        />
-        <ConceptSuggestionPopover
-          {content}
-          notePath={$activeNote.path}
-          onLink={handleConceptLink}
-        />
-      {:else}
-        <div class="preview-content">
-          {#each content.split('\n') as line}
-            {#if line.startsWith('# ')}
-              <h1>{line.slice(2)}</h1>
-            {:else if line.startsWith('## ')}
-              <h2>{line.slice(3)}</h2>
-            {:else if line.startsWith('### ')}
-              <h3>{line.slice(4)}</h3>
-            {:else if line.startsWith('- ')}
-              <li>{line.slice(2)}</li>
-            {:else if line.startsWith('> ')}
-              <blockquote>{line.slice(2)}</blockquote>
-            {:else if line.trim() === ''}
-              <br />
-            {:else}
-              <p>{line}</p>
-            {/if}
-          {/each}
-        </div>
+    {#if $graphBannerEnabled}
+      {#await import('@/features/graph-banner').then(m => m.GraphBanner) then GraphBanner}
+        <svelte:component this={GraphBanner} />
+      {/await}
+    {/if}
+
+    <ZoomBreadcrumbs />
+
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="editor-content"
+      class:painter-active={$formatPainterActive}
+      bind:this={editorContainerEl}
+      on:click={handleEditorClick}
+      on:contextmenu={handleContextMenu}
+    >
+      {#key $activeNote?.path}
+        {#if isCodeFile}
+          {#await import('@/features/code-editor/components/CodeEditor.svelte') then mod}
+            <svelte:component this={mod.default}
+              content={editorContent}
+              filePath={$activeNote?.path ?? ''}
+              onContentChange={handleContentChange}
+              on:save={saveNote}
+            />
+          {/await}
+        {:else if readingMode}
+          <MarkdownPreview
+            content={editorContent}
+            onWikilinkClick={handleWikilinkClick}
+          />
+        {:else}
+          <Editor
+            bind:this={editorRef}
+            content={editorContent}
+            {livePreview}
+            readonly={false}
+            onContentChange={handleContentChange}
+            onWikilinkClick={handleWikilinkClick}
+          />
+          <FloatingToolbar
+            editorElement={editorContainerEl}
+            onFormat={handleFormat}
+            formatPainterActive={$formatPainterActive}
+            onFormatPainterToggle={handleFormatPainterToggle}
+          />
+        {/if}
+      {/key}
+      <ConceptSuggestionPopover
+        {content}
+        notePath={$activeNote.path}
+        onLink={handleConceptLink}
+      />
+      {#if $settings.flashcardsEnabled}
+        {#await import('@/features/flashcards') then m}
+          <div class="flashcard-viewport-bar">
+            <svelte:component this={m.FlashcardIndicator} />
+          </div>
+        {/await}
       {/if}
     </div>
 
@@ -184,189 +350,28 @@
   {/if}
 </div>
 
+{#if $codeBlockModalOpen && $activeCodeBlock}
+  {#await import('@/features/code-editor/components/CodeBlockModal.svelte') then mod}
+    <svelte:component this={mod.default}
+      isOpen={$codeBlockModalOpen}
+      code={$activeCodeBlock.code}
+      language={$activeCodeBlock.language}
+      on:save={(e) => saveCodeBlock(e.detail)}
+      on:close={closeCodeBlockModal}
+    />
+  {/await}
+{/if}
+
 <style>
-  .note-editor {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: var(--background-primary, #ffffff);
-  }
-
-  .editor-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.5rem;
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
-    background: var(--background-primary, #ffffff);
-    min-height: 48px;
-  }
-
-  .note-title {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--text-normal, #1f2937);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .editor-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
-  }
-
-  .mode-toggle {
-    display: flex;
-    border: 1px solid var(--border-color, #e5e7eb);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .mode-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 26px;
-    padding: 0;
-    background: var(--background-primary, #ffffff);
-    border: none;
-    color: var(--text-muted, #9ca3af);
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .mode-btn:first-child {
-    border-right: 1px solid var(--border-color, #e5e7eb);
-  }
-
-  .mode-btn.active {
-    background: var(--interactive-accent, #6366f1);
-    color: var(--text-on-accent, #ffffff);
-  }
-
-  .mode-btn:hover:not(.active) {
-    background: var(--background-modifier-hover, #f3f4f6);
-  }
-
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-  }
-
-  .status.saving {
-    color: var(--text-accent, #6366f1);
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-
-  .status.saved {
-    color: var(--text-muted, #6b7280);
-  }
-
-  .editor-content {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .preview-content {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--text-normal, #1f2937);
-    max-width: 65ch;
-  }
-
-  .preview-content h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 1.5rem 0 0.75rem;
-    color: var(--text-normal, #111827);
-    border-bottom: 1px solid var(--border-color, #e5e7eb);
-    padding-bottom: 0.5rem;
-  }
-
-  .preview-content h2 {
-    font-size: 1.375rem;
-    font-weight: 600;
-    margin: 1.25rem 0 0.5rem;
-    color: var(--text-normal, #1f2937);
-  }
-
-  .preview-content h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 1rem 0 0.375rem;
-    color: var(--text-normal, #374151);
-  }
-
-  .preview-content p {
-    margin: 0.5rem 0;
-  }
-
-  .preview-content li {
-    margin-left: 1.5rem;
-    padding: 0.125rem 0;
-  }
-
-  .preview-content blockquote {
-    margin: 0.75rem 0;
-    padding: 0.5rem 1rem;
-    border-left: 3px solid var(--interactive-accent, #6366f1);
-    background: var(--background-secondary, #f9fafb);
-    border-radius: 0 4px 4px 0;
-    color: var(--text-muted, #6b7280);
-    font-style: italic;
-  }
-
-
-  .empty-editor {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    background: var(--background-primary-alt, #f9fafb);
-  }
-
-  .empty-content {
-    text-align: center;
-    color: var(--text-muted, #6b7280);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .empty-content h2 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-normal, #374151);
-  }
-
-  .empty-content p {
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--text-muted, #9ca3af);
-  }
+  .note-editor { display: flex; flex-direction: column; height: 100%; background: var(--background-primary); }
+  .flashcard-viewport-bar { display: flex; align-items: center; padding: 2px var(--spacing-m); border-top: 1px solid var(--border-color); background: var(--background-secondary); min-height: 24px; }
+  .note-title { cursor: default; margin: 0; font-size: var(--font-ui-menu); font-weight: var(--font-semibold); color: var(--text-normal); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .note-title-input { font-size: var(--font-ui-menu); font-weight: var(--font-semibold); color: var(--text-normal); background: var(--background-primary); border: 1px solid var(--interactive-accent); border-radius: var(--radius-s); padding: var(--spacing-xxs) var(--spacing-xs); outline: none; min-width: 0; max-width: 180px; }
+  .editor-content { flex: 1; overflow: hidden; position: relative; }
+  .editor-content.painter-active { cursor: crosshair; }
+  .editor-content.painter-active :global(.cm-content) { cursor: crosshair; }
+  .empty-editor { display: flex; align-items: center; justify-content: center; height: 100%; background: var(--background-primary-alt); }
+  .empty-content { text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: var(--spacing-s); }
+  .empty-content h2 { margin: 0; font-size: var(--font-ui-large); font-weight: var(--font-semibold); color: var(--text-normal); }
+  .empty-content p { margin: 0; font-size: var(--font-ui-small); color: var(--text-muted); }
 </style>

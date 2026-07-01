@@ -32,9 +32,27 @@ Built with **Tauri 2** (Rust backend) + **Svelte 4** (TypeScript frontend) for n
 
 ## Project Status
 
-**Version**: 0.2.0  
+**Version**: 0.3.0  
 **Architecture**: Tauri 2 + Svelte 4 + Rust  
-**Features Shipped**: Vault management, note editor, wikilinks, graph view, canvas system, sidebar navigation, settings, command palette, capture inbox, theming
+**Constitution**: v1.4.0 (9 principles, folder density, layer separation)  
+**Features Shipped**: Vault management, note editor, wikilinks, graph view, canvas system, sidebar navigation, settings, command palette, capture inbox, theming, design tokens, tasks query engine
+
+---
+
+## AI-Assisted Development
+
+Bismuth uses a **governed workflow pipeline** for feature development:
+
+```
+/speckit.specify                              # Write spec
+/speckit.architecture-guard.governed-plan      # Plan with governance
+/speckit.architecture-guard.governed-tasks     # Tasks with quality gates
+/speckit.architecture-guard.governed-implement # Implement with review
+```
+
+The pipeline integrates memory synthesis, security review, architecture validation, and four quality skills (code-review, ux-review, component-gen, pict-test-designer).
+
+See [Extension Integration](development/extension-integration.md) for full details.
 
 ---
 
@@ -44,10 +62,12 @@ Built with **Tauri 2** (Rust backend) + **Svelte 4** (TypeScript frontend) for n
 docs/
 ├── Home.md              ← You are here
 ├── _Sidebar.md          ← Wiki navigation
-├── architecture/        ← System design (4 docs)
-├── guides/              ← Developer guides (5 docs)
+├── architecture/        ← System design (7 docs)
+├── development/         ← Extension integration, AI workflows
+├── guides/              ← Developer guides (7 docs)
 ├── standards/           ← Active standards (7 docs)
-├── reference/           ← Technical reference (7 docs)
+├── reference/           ← Technical reference (8 docs)
+├── memory/              ← Durable knowledge (decisions, bugs, architecture)
 └── archive/             ← Historical records
 ```
 

@@ -26,7 +26,7 @@ Thank you for your interest in contributing to Bismuth! This document provides g
 
 - **Rust**: 1.95+ (`rustup install stable`)
 - **Node.js**: 20+ (`nvm install 20`)
-- **pnpm**: 8+ (`npm install -g pnpm`)
+- **pnpm**: 9+ (`corepack enable && corepack prepare pnpm@9 --activate`)
 - **Git**: 2.40+
 
 ### Initial Setup

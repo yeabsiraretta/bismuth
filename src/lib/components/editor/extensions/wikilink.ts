@@ -9,31 +9,11 @@ import {
   ViewPlugin,
   Decoration,
   EditorView,
-  WidgetType,
 } from '@codemirror/view';
 import type { DecorationSet, ViewUpdate } from '@codemirror/view';
 import { RangeSetBuilder } from '@codemirror/state';
 
 const WIKILINK_RE = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
-
-// Reserved for future inline widget rendering (e.g., unresolved link icons)
-// @ts-expect-error - kept for future use
-class _WikilinkWidget extends WidgetType {
-  constructor(
-    readonly title: string,
-    readonly alias: string | null
-  ) {
-    super();
-  }
-
-  toDOM(): HTMLElement {
-    const span = document.createElement('span');
-    span.className = 'cm-wikilink';
-    span.textContent = this.alias || this.title;
-    span.dataset.wikilinkTitle = this.title;
-    return span;
-  }
-}
 
 function buildDecorations(view: EditorView): DecorationSet {
   const builder = new RangeSetBuilder<Decoration>();
@@ -88,7 +68,7 @@ export function wikilinkExtension(onWikilinkClick: (title: string) => void) {
             const el = target.classList.contains('cm-wikilink')
               ? target
               : (target.closest('.cm-wikilink') as HTMLElement);
-            const title = el?.dataset.wikilinkTitle;
+            const title = el?.dataset['wikilinkTitle'];
             if (title) {
               event.preventDefault();
               onWikilinkClick(title);
