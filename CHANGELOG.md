@@ -5,7 +5,88 @@ All notable changes to Bismuth will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## 0.5.0 (2026-07-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgraded from Tauri 1.x to Tauri 2.x
+
+Changes:
+- Upgraded @tauri-apps/api: 1.6.0 → 2.11.0
+- Upgraded @tauri-apps/cli: 1.6.3 → 2.11.2
+- Added @tauri-apps/plugin-shell: 2.3.5
+- Updated Cargo.toml: tauri 1.x → 2.x
+- Updated tauri.conf.json to Tauri 2.x format
+  - Changed devPath → devUrl
+  - Changed distDir → frontendDist
+  - Removed allowlist (now uses plugins)
+  - Updated window configuration structure
+- Updated main.rs to use plugin system
+
+Icon Assets:
+- Created SVG icon with Bismuth branding (purple gradient)
+- Generated PNG icons using macOS sips tool:
+  - icon.png (512x512)
+  - 32x32.png
+  - 128x128.png
+  - 128x128@2x.png
+
+Result: ✅ APPLICATION RUNS SUCCESSFULLY
+- No more macOS event loop crash
+- Tauri window opens properly
+- Frontend renders correctly
+- Hot reload works
+
+Verified on macOS with Tauri 2.11.2
+
+### 📚 Documentation
+
+* add comprehensive MVP implementation checklist ([c8b0032](https://github.com/yeabsiraretta/bismuth/commit/c8b0032a65c081c11f32ad24f71cb7dceb399c98))
+* add functional UI completion report ([2047ebf](https://github.com/yeabsiraretta/bismuth/commit/2047ebf7e5f0e362816142675a8e34992cc8dbdd))
+* add Phase 2.1 completion milestone ([bde82b4](https://github.com/yeabsiraretta/bismuth/commit/bde82b443c08e5ab111f06c9169b08f3801725af))
+* **assets:** create comprehensive assets tracking document ([db9775d](https://github.com/yeabsiraretta/bismuth/commit/db9775d8731b197c2569c2a3311dca42d1f01357))
+* establish consistent kebab-case naming conventions ([64711d2](https://github.com/yeabsiraretta/bismuth/commit/64711d2bf5cef2822d9a2e7f526b94f5c9eb5a8d))
+* ratify constitution v1.0.0 with quality and testing principles ([e9330d1](https://github.com/yeabsiraretta/bismuth/commit/e9330d10b050c4d0b052db216c8cff1f7c1841eb))
+* **setup:** add implementation status tracking document ([42f9c97](https://github.com/yeabsiraretta/bismuth/commit/42f9c9755c97ea1dd542cd00f6072ab902cf9e86)), closes [#1](https://github.com/yeabsiraretta/bismuth/issues/1)
+
+
+### 🐛 Bug Fixes
+
+* attempt to resolve Tauri macOS event loop crash ([ce28f32](https://github.com/yeabsiraretta/bismuth/commit/ce28f32437e6fda9eb03e06a4ac1cad41d48fc5a))
+* remove unused imports and dead code ([669dc99](https://github.com/yeabsiraretta/bismuth/commit/669dc9907cfc7fb4bb2aed2e5099b20de7787eba))
+* upgrade to Tauri 2.x and resolve macOS crash ([4042900](https://github.com/yeabsiraretta/bismuth/commit/40429009f7c280b0ee3d6cf18a1f119eec874567)), closes [#1](https://github.com/yeabsiraretta/bismuth/issues/1)
+
+
+### ✨ Features
+
+* add comprehensive development workflow scripts ([68c406d](https://github.com/yeabsiraretta/bismuth/commit/68c406d8aa67f21200b3e7d8deec69223cf5eae0))
+* add specs, tasks, research, knowledge-frameworks, and speckit config ([749edb9](https://github.com/yeabsiraretta/bismuth/commit/749edb9367bd6ae380e7fabc22bbeedba31e68c1))
+* Complete Canvas Component Design Tool (Phases 1-4) ([0e8b4f0](https://github.com/yeabsiraretta/bismuth/commit/0e8b4f010191311edf907e579e29152eced01a8d))
+* **deps:** install frontend dependencies for T002 ([c455b05](https://github.com/yeabsiraretta/bismuth/commit/c455b05806d11ddfa6289867e00b11a7fa35d9f1)), closes [#2](https://github.com/yeabsiraretta/bismuth/issues/2)
+* **deps:** install Rust dependencies for T003 ([f72f0d7](https://github.com/yeabsiraretta/bismuth/commit/f72f0d7613a27df19349a98da7ff488c221c1b90)), closes [#3](https://github.com/yeabsiraretta/bismuth/issues/3)
+* **docs:** add comprehensive type definitions and JSDoc documentation ([3ed3922](https://github.com/yeabsiraretta/bismuth/commit/3ed39220191b11ad6c4fa6e195c7e848b6ce4ae0))
+* **phase-2.1:** implement Rust data models (T010-T013) ([f0fb4d1](https://github.com/yeabsiraretta/bismuth/commit/f0fb4d143c69dba591afabe0f99bad1619067eca))
+* **setup:** complete T004-T006 and fix pre-commit hook ([5bbb5f8](https://github.com/yeabsiraretta/bismuth/commit/5bbb5f8e25df83aa0557cec46b0b6039569052e0))
+* **setup:** complete T007-T009 - PHASE 1 COMPLETE! 🎉 ([d1a6d9d](https://github.com/yeabsiraretta/bismuth/commit/d1a6d9d5984b314401baf76116d0701b2169fe4f))
+* **setup:** initialize Tauri + Svelte + TypeScript project structure ([b4f17e2](https://github.com/yeabsiraretta/bismuth/commit/b4f17e2c167714c8d4bd86b00f1a82aa5080533f)), closes [#1](https://github.com/yeabsiraretta/bismuth/issues/1)
+* **setup:** install Rust toolchain and verify compilation ([c4bf189](https://github.com/yeabsiraretta/bismuth/commit/c4bf189030c1768150fe0af7bcd92c6fc1e5d698)), closes [#1](https://github.com/yeabsiraretta/bismuth/issues/1)
+* **ui:** implement functional Bismuth UI with basic interactivity ([45b19fc](https://github.com/yeabsiraretta/bismuth/commit/45b19fca6fab0ca434c5968a3419ab6a3c4f0de0))
+
+
+### 🔧 Chores
+
+* bump version on push ([29bd329](https://github.com/yeabsiraretta/bismuth/commit/29bd329b2e4ae72a6d639a994b0822d983239df8))
+* bump version on push ([af6efb0](https://github.com/yeabsiraretta/bismuth/commit/af6efb0b9231d72b9829df97a4e4312f20d11ad4))
+
+
+### ♻️ Code Refactoring
+
+* code haul ([cc87bef](https://github.com/yeabsiraretta/bismuth/commit/cc87befdc58e382315799b4101db1f91a986c89c))
+* prod ([c632480](https://github.com/yeabsiraretta/bismuth/commit/c6324806993921dbe87c2c2e55206b4d8db7d701))
+* prod 2 ([af31a72](https://github.com/yeabsiraretta/bismuth/commit/af31a72dfba6a2335ad8e9048f62446b4d918f57))
+* prod 3 ([09cfd01](https://github.com/yeabsiraretta/bismuth/commit/09cfd012b4a5ca1b8bf53b55ea6ba00af6b325d0))
+* updated docs ([5130e7b](https://github.com/yeabsiraretta/bismuth/commit/5130e7b0c84e72ceed5aa8ef01183d3875d7d021))
 
 ## [0.4.0] - 2026-06-30
 
