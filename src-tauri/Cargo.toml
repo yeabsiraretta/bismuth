@@ -39,7 +39,7 @@ gray_matter = "0.2"
 pulldown-cmark = "0.9"
 handlebars = "6"
 tantivy = "0.22"
-sha2 = "0.10"
+sha2 = "0.11"
 dirs = "5.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "ansi"] }
