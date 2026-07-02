@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/main.ts", "src/App.svelte", "src/lib/appInit.ts"],
+  "project": ["src/lib/**/*.{ts,svelte}"],
+  "ignore": ["src/__mocks__/**", "src/**/__tests__/**", "src/**/*.test.ts", "src/**/*.spec.ts"],
+  "ignoreDependencies": [
+    "hyperformula",
+    "@tauri-apps/api",
+    "@tauri-apps/plugin-dialog",
+    "@tauri-apps/plugin-shell"
+  ],
+  "svelte": {
+    "entry": ["src/App.svelte"]
+  }
+}

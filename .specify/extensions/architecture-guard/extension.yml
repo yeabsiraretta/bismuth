@@ -1,0 +1,113 @@
+schema_version: '1.0'
+
+extension:
+  id: 'architecture-guard'
+  name: 'Architecture Guard'
+  version: '1.9.0'
+  description: 'Framework-agnostic architecture review extension with cross-skill integration. Validates implementation against governance and architecture constitutions, detects architectural drift, generates non-blocking refactor tasks, and orchestrates quality skills (code-review, ux-review, component-gen, pict-test-designer) during governed workflows.'
+  author: 'DyanGalih'
+  repository: 'https://github.com/DyanGalih/spec-kit-architecture-guard'
+  license: 'MIT'
+  homepage: 'https://github.com/DyanGalih/spec-kit-architecture-guard'
+
+requires:
+  speckit_version: '>=0.1.0'
+  commands:
+    - 'speckit.plan'
+    - 'speckit.tasks'
+    - 'speckit.implement'
+
+recommends:
+  extensions:
+    - 'memory-md'
+    - 'security-review'
+
+integrates_with:
+  skills:
+    - id: 'code-review'
+      path: '.claude/skills/code-review/SKILL.md'
+      gates: ['governed-plan:feasibility', 'governed-tasks:ownership', 'governed-implement:review']
+    - id: 'ux-review'
+      path: '.claude/skills/ux-review/SKILL.md'
+      gates:
+        [
+          'governed-plan:ui-surfaces',
+          'governed-tasks:acceptance-criteria',
+          'governed-implement:review',
+        ]
+    - id: 'component-gen'
+      path: '.claude/skills/component-gen/SKILL.md'
+      gates:
+        ['governed-plan:ux-mapping', 'governed-tasks:ui-guardrails', 'governed-implement:coding']
+    - id: 'pict-test-designer'
+      path: '.claude/skills/pict-test-designer/SKILL.md'
+      gates:
+        [
+          'governed-plan:test-boundaries',
+          'governed-tasks:combinatorial-tests',
+          'governed-implement:testing',
+        ]
+  constitutions:
+    - '.specify/memory/constitution.md'
+    - '.specify/memory/architecture_constitution.md'
+    - '.specify/memory/security_constitution.md'
+  rules:
+    - '.claude/agent-rules.md'
+    - '.claude/coding-principles.md'
+    - '.claude/component-guide.md'
+
+hooks:
+  after_plan:
+    command: 'speckit.architecture-guard.violation-detection'
+    optional: true
+    prompt: 'Would you like to scan the technical plan for architectural drift and Constitution violations?'
+  after_tasks:
+    command: 'speckit.architecture-guard.refactor-generator'
+    optional: true
+    prompt: 'Would you like to generate architectural refactor tasks before implementation?'
+  after_implement:
+    command: 'speckit.architecture-guard.architecture-review'
+    optional: true
+    prompt: 'Would you like to run a post-implementation architecture review?'
+
+provides:
+  commands:
+    - name: 'speckit.architecture-guard.governed-plan'
+      file: 'commands/governed-plan.md'
+      description: 'Orchestrate governed planning across flash-mem, Security Review, and Architecture Guard.'
+    - name: 'speckit.architecture-guard.governed-tasks'
+      file: 'commands/governed-tasks.md'
+      description: 'Generate or validate implementation tasks with flash-mem context, security constraints, and architecture awareness.'
+    - name: 'speckit.architecture-guard.governed-implement'
+      file: 'commands/governed-implement.md'
+      description: 'Run implementation with flash-mem context, then review against security and architecture constraints.'
+    - name: 'speckit.architecture-guard.architecture-workflow'
+      file: 'commands/architecture-workflow.md'
+      description: 'Run a single architecture workflow with memory-first flash-mem context and optional Security Review handoff.'
+    - name: 'speckit.architecture-guard.architecture-review'
+      file: 'commands/architecture-review.md'
+      description: 'Review specs, plans, tasks, or implementation for architecture drift.'
+    - name: 'speckit.architecture-guard.violation-detection'
+      file: 'commands/violation-detection.md'
+      description: 'Detect architecture violations in plans, tasks, and implementation summaries.'
+    - name: 'speckit.architecture-guard.refactor-generator'
+      file: 'commands/refactor-generator.md'
+      description: 'Convert architecture violations into structured refactor tasks.'
+    - name: 'speckit.architecture-guard.architecture-apply'
+      file: 'commands/architecture-apply.md'
+      description: 'Apply approved architecture refactors to plan and task artifacts.'
+    - name: 'speckit.architecture-guard.init'
+      file: 'commands/init.md'
+      description: 'Initialize or update the Project Constitution for Architecture Guard.'
+    - name: 'speckit.architecture-guard.architecture-verify'
+      file: 'commands/architecture-verify.md'
+      description: 'Perform an architecture-aware verification gate validating implementation against spec, plan, tasks, and constitution.'
+
+tags:
+  - 'architecture'
+  - 'spec-kit'
+  - 'review'
+  - 'refactor'
+  - 'workflow'
+  - 'governance'
+  - 'guardrails'

@@ -1,0 +1,337 @@
+/**
+ * Design Tokens - Light & Dark Theme Support
+ * 
+ * Theme-aware CSS custom properties that adapt based on data-theme attribute.
+ * Shared tokens (typography, spacing, z-index, layout) are in :root.
+ * Color tokens are split between light and dark theme selectors.
+ */
+
+/* ========== Shared Tokens (both themes) ========== */
+:root {
+  /* Typography - Font families
+   * Canonical vars are --font-sans and --font-mono (defined in typography.css).
+   * These aliases ensure older component references still resolve. */
+  --font-text: var(--font-sans);
+  --font-monospace: var(--font-mono);
+  --font-interface: var(--font-sans);
+
+  /* Font sizes — aliases to typography.css scale */
+  --font-smallest: var(--font-size-xs, 0.75rem);
+  --font-smaller: var(--font-size-sm, 0.875rem);
+  --font-small: 0.9375rem;
+  --font-ui-xs: var(--font-size-2xs, 0.625rem);
+  --font-ui-badge: 0.6875rem;
+  --font-ui-smaller: var(--font-size-xs, 0.75rem);
+  --font-ui-menu: 0.8125rem;
+  --font-ui-small: var(--font-size-sm, 0.875rem);
+  --font-ui-medium: var(--font-size-md, 1rem);
+  --font-ui-large: var(--font-size-lg, 1.125rem);
+  --font-text-size: 1rem;
+
+  /* Font weights */
+  --font-thin: 100;
+  --font-extralight: 200;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* Line heights */
+  --line-height-normal: 1.5;
+  --line-height-tight: 1.3;
+
+  /* Spacing */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-s: 8px;
+  --spacing-m: 16px;
+  --spacing-l: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Size scale */
+  --size-2-1: 2px;
+  --size-2-2: 4px;
+  --size-2-3: 6px;
+  --size-4-1: 4px;
+  --size-4-2: 8px;
+  --size-4-3: 12px;
+  --size-4-4: 16px;
+  --size-4-5: 20px;
+  --size-4-6: 24px;
+  --size-4-8: 32px;
+  --size-4-9: 36px;
+  --size-4-12: 48px;
+  --size-4-16: 64px;
+
+  /* Border Radius */
+  --radius-xs: 2px;
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-m: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-l: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.2);
+
+  /* Z-Index Layers */
+  --layer-base: 0;
+  --layer-menu: 100;
+  --layer-popover: 200;
+  --layer-modal: 300;
+  --layer-notification: 400;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-medium: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* Layout */
+  --sidebar-width: 300px;
+  --sidebar-width-min: 200px;
+  --sidebar-width-max: 500px;
+  --ribbon-width: 44px;
+  --header-height: 40px;
+  --status-bar-height: 24px;
+
+  /* Panel system */
+  --panel-header-height: 35px;
+  --panel-header-bg: var(--background-secondary);
+  --panel-action-size: 28px;
+
+  /* List items */
+  --list-item-height: 32px;
+
+  /* Sidebar item system */
+  --sidebar-item-height: 28px;
+  --sidebar-item-padding-x: var(--spacing-s);
+  --sidebar-item-padding-y: var(--spacing-xs);
+  --sidebar-item-gap: var(--spacing-xs);
+  --sidebar-item-font: var(--font-ui-small);
+  --sidebar-item-font-secondary: var(--font-ui-smaller);
+
+  /* Menu item system */
+  --menu-item-font: var(--font-ui-menu);
+  --menu-item-padding-x: 10px;
+  --menu-item-padding-y: 6px;
+  --menu-item-gap: var(--spacing-s);
+
+  /* Tab system */
+  --tab-height: 32px;
+  --tab-active-indicator: var(--interactive-accent);
+  --tab-hover-bg: var(--background-modifier-hover);
+
+  /* Focus system */
+  --focus-ring: 2px solid var(--interactive-accent);
+  --focus-ring-offset: 2px;
+
+  /* Badge system */
+  --badge-bg: var(--interactive-accent);
+  --badge-text: var(--text-on-accent);
+  --badge-size: 16px;
+
+  /* Status indicator colors (semantic) */
+  --status-added: #10b981;
+  --status-modified: #3b82f6;
+  --status-deleted: #ef4444;
+  --status-warning: #f59e0b;
+  --status-info: #3b82f6;
+
+  /* Opacity scale */
+  --opacity-disabled: 0.5;
+  --opacity-muted: 0.7;
+  --opacity-overlay: 0.8;
+
+  /* Animation */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Graph view */
+  --graph-accent: #4a9eff;
+
+  /* Canvas inspect mode */
+  --inspect-measure: #f24822;
+  --inspect-highlight: #4a90d9;
+  --inspect-source: #f24822;
+  --inspect-target: #14ae5c;
+}
+
+/* ========== Light Theme (Default) ========== */
+:root,
+:root[data-theme='light'] {
+  /* Background colors */
+  --background-primary: #ffffff;
+  --background-primary-alt: #f8f9fa;
+  --background-secondary: #f3f4f6;
+  --background-secondary-alt: #e5e7eb;
+  --background-modifier-border: #d1d5db;
+  --background-modifier-form-field: #ffffff;
+  --background-modifier-form-field-highlighted: #f9fafb;
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.1);
+  --background-modifier-success: #10b981;
+  --background-modifier-error: #ef4444;
+  --background-modifier-error-hover: #dc2626;
+  --background-modifier-cover: rgba(0, 0, 0, 0.5);
+  --background-modifier-hover: #f3f4f6;
+
+  /* Text colors */
+  --text-normal: #1f2937;
+  --text-muted: #6b7280;
+  --text-faint: #737a85;
+  --text-error: #ef4444;
+  --text-accent: #dc2626;
+  --text-accent-hover: #b91c1c;
+  --text-on-accent: #ffffff;
+  --text-selection: rgba(220, 38, 38, 0.2);
+  --text-primary: #111827;
+
+  /* Interactive colors */
+  --interactive-normal: #f3f4f6;
+  --interactive-hover: #e5e7eb;
+  --interactive-accent: #dc2626;
+  --interactive-accent-hover: #b91c1c;
+  --interactive-success: #10b981;
+
+  /* Border colors */
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
+
+  /* Scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(0, 0, 0, 0.1);
+  --scrollbar-active-thumb-bg: rgba(0, 0, 0, 0.2);
+
+  /* Graph view */
+  --graph-bg: #f8f9fa;
+  --graph-surface: rgba(255, 255, 255, 0.9);
+  --graph-surface-hover: rgba(240, 240, 245, 0.95);
+  --graph-border: rgba(0, 0, 0, 0.1);
+  --graph-border-hover: rgba(0, 0, 0, 0.2);
+  --graph-text: rgba(50, 50, 60, 0.7);
+  --graph-text-active: rgba(30, 30, 40, 1);
+  --graph-node-label: rgba(50, 50, 60, 0.8);
+  --graph-edge: #b0b0c0;
+
+  /* Editor - Code colors */
+  --code-background: #f5f5f5;
+  --code-normal: #2e3338;
+  --code-comment: #6a9955;
+  --code-keyword: #0000ff;
+  --code-string: #a31515;
+  --code-function: #795e26;
+  --code-important: #af00db;
+  --code-operator: #2e3338;
+  --code-property: #001080;
+  --code-punctuation: #2e3338;
+  --code-tag: #0000ff;
+  --code-value: #a31515;
+}
+
+/* ========== Dark Theme ========== */
+:root[data-theme='dark'] {
+  /* Background colors */
+  --background-primary: #1e1e1e;
+  --background-primary-alt: #1a1a1a;
+  --background-secondary: #252525;
+  --background-secondary-alt: #2a2a2a;
+  --background-modifier-border: #333333;
+  --background-modifier-form-field: #1a1a1a;
+  --background-modifier-form-field-highlighted: #252525;
+  --background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+  --background-modifier-success: #197300;
+  --background-modifier-error: #990000;
+  --background-modifier-error-hover: #bb0000;
+  --background-modifier-cover: rgba(0, 0, 0, 0.8);
+  --background-modifier-hover: #2a2a2a;
+
+  /* Text colors */
+  --text-normal: #dcddde;
+  --text-muted: #999999;
+  --text-faint: #8a8a8a;
+  --text-error: #ff6b6b;
+  --text-accent: #ef4444;
+  --text-accent-hover: #f87171;
+  --text-on-accent: #ffffff;
+  --text-selection: rgba(239, 68, 68, 0.3);
+  --text-primary: #ffffff;
+
+  /* Interactive colors */
+  --interactive-normal: #2a2a2a;
+  --interactive-hover: #303030;
+  --interactive-accent: #ef4444;
+  --interactive-accent-hover: #f87171;
+  --interactive-success: #197300;
+
+  /* Border colors */
+  --border-color: #333333;
+  --border-hover: #444444;
+
+  /* Scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(255, 255, 255, 0.1);
+  --scrollbar-active-thumb-bg: rgba(255, 255, 255, 0.2);
+
+  /* Graph view */
+  --graph-bg: #1a1a2e;
+  --graph-surface: rgba(30, 30, 50, 0.8);
+  --graph-surface-hover: rgba(50, 50, 80, 0.9);
+  --graph-border: rgba(255, 255, 255, 0.1);
+  --graph-border-hover: rgba(255, 255, 255, 0.2);
+  --graph-text: rgba(200, 200, 220, 0.7);
+  --graph-text-active: rgba(200, 200, 220, 1);
+  --graph-node-label: rgba(200, 200, 220, 0.8);
+  --graph-edge: #5a5a7a;
+
+  /* Editor - Code colors */
+  --code-background: #1a1a1a;
+  --code-normal: #dcddde;
+  --code-comment: #6a9955;
+  --code-keyword: #569cd6;
+  --code-string: #ce9178;
+  --code-function: #dcdcaa;
+  --code-important: #c586c0;
+  --code-operator: #d4d4d4;
+  --code-property: #9cdcfe;
+  --code-punctuation: #d4d4d4;
+  --code-tag: #569cd6;
+  --code-value: #ce9178;
+}
+/* ========== Badge System ========== */
+:root {
+  --badge-size: 20px;
+  --badge-padding-inline: 6px;
+  --badge-border-radius: var(--radius-l);
+  --badge-font-size: var(--font-ui-badge);
+  --badge-font-size-sm: var(--font-ui-xs);
+
+  /* Status bar */
+  --status-bar-font: var(--font-ui-badge);
+
+  /* Toast system */
+  --toast-font: var(--font-ui-menu);
+}
+
+/* ========== Icon Button Sizes ========== */
+:root {
+  --icon-btn-size-sm: 26px;
+  --icon-btn-size-md: 28px;
+  --icon-btn-size-lg: 32px;
+}
+
+/* ========== Form Input System ========== */
+:root {
+  --form-input-padding-block: var(--spacing-s);
+  --form-input-padding-inline: var(--spacing-m);
+  --form-input-border-radius: var(--radius-s);
+  --form-input-focus-border: var(--interactive-accent);
+  --form-input-font-size: var(--font-ui-small);
+}

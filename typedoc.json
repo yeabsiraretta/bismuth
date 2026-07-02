@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/lib"],
+  "entryPointStrategy": "expand",
+  "out": "docs/api/ts",
+  "name": "Bismuth TypeScript API",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "tsconfig": "tsconfig.json"
+}

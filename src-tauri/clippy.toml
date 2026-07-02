@@ -1,0 +1,8 @@
+# Clippy configuration for Bismuth
+# Enforces constitution principle VI: 300-line file limit
+
+# Warn when functions exceed reasonable length
+too-many-lines-threshold = 100
+
+# This will be checked by our custom script since Clippy doesn't have a direct file-length lint
+# See scripts/check-file-sizes.sh

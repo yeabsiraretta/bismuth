@@ -1,0 +1,68 @@
+{
+  "name": "Bismuth PKM Editor",
+  "description": "Local-first personal knowledge management editor with Johnny.Decimal, Zettelkasten, and intelligent knowledge management",
+  "version": "0.0.1",
+  "rules": [".windsurf/rules/bismuth-rules.md", ".windsurf/rules/specify-rules.md"],
+  "context": {
+    "projectContext": ".claude/project-context.md",
+    "constitution": ".specify/memory/constitution.md",
+    "uxPrinciples": "docs/standards/ux-principles.md",
+    "agentRules": ".claude/agent-rules.md",
+    "uxEvaluator": ".claude/ux-evaluator.md",
+    "componentGuide": ".claude/component-guide.md"
+  },
+  "skills": {
+    "uxReview": ".claude/skills/ux-review/SKILL.md",
+    "codeReview": ".claude/skills/code-review/SKILL.md",
+    "componentGen": ".claude/skills/component-gen/SKILL.md"
+  },
+  "commands": {
+    "dev": "pnpm dev",
+    "tauriDev": "pnpm tauri dev",
+    "check": "pnpm check",
+    "checkFileSizes": "pnpm check:file-sizes",
+    "test": "pnpm test:ci",
+    "lint": "pnpm lint",
+    "format": "pnpm format",
+    "docsList": "pnpm docs:list",
+    "validateWorkflows": "pnpm validate:workflows",
+    "build": "pnpm build",
+    "tauriBuild": "pnpm tauri build"
+  },
+  "constraints": {
+    "maxFileLines": 300,
+    "minTestCoverage": 90,
+    "uxEvaluationRequired": true,
+    "minButtonSize": "40x40px",
+    "minPrimaryButtonSize": "44x44px",
+    "maxCognitiveLoad": 7
+  },
+  "techStack": {
+    "frontend": {
+      "framework": "Svelte 5.5",
+      "language": "TypeScript",
+      "editor": "CodeMirror 6",
+      "styling": "Tailwind CSS",
+      "icons": "Lucide",
+      "build": "Vite 5.4+"
+    },
+    "backend": {
+      "runtime": "Rust",
+      "framework": "Tauri 1.5+",
+      "database": "SQLite",
+      "search": "Tantivy"
+    },
+    "testing": {
+      "frontend": "Vitest + Testing Library",
+      "backend": "Rust built-in + tempfile",
+      "e2e": "Playwright (planned)"
+    }
+  },
+  "performanceTargets": {
+    "inputLatency": "16ms",
+    "pageLoad": "1s",
+    "searchResults": "200ms",
+    "graphRendering": "3s for 10k nodes",
+    "autoSaveDebounce": "500ms"
+  }
+}

@@ -1,0 +1,7 @@
+catalogs:
+  - name: community
+    url: https://raw.githubusercontent.com/speckit-community/catalog/main/catalog.json
+    install_allowed: true
+  - name: architecture-guard
+    url: https://raw.githubusercontent.com/DyanGalih/spec-kit-architecture-guard/main/catalog.json
+    install_allowed: true

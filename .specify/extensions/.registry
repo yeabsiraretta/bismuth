@@ -18,6 +18,166 @@
       },
       "registered_skills": [],
       "installed_at": "2026-05-25T20:43:55.392854+00:00"
+    },
+    "architecture-guard": {
+      "version": "1.8.9",
+      "source": "local",
+      "manifest_hash": "sha256:9e537d4fbcdb593b1679dda7d0bf44229ff7dc1d264d98ae5cabd5c5d425df85",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "windsurf": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:46:15.592760+00:00"
+    },
+    "memory-loader": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:d1caef45965accd4316d8aede0a4ac67f910017ea3c501814cfc7e2d8177ab0b",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.memory-loader.load"
+        ],
+        "windsurf": [
+          "speckit.memory-loader.load"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:47:12.198488+00:00"
+    },
+    "wireframe": {
+      "version": "0.1.1",
+      "source": "local",
+      "manifest_hash": "sha256:246ce4f535c9149c28fa28d38fb7642034b17c44a62d13a59474a2272b753172",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.wireframe.generate",
+          "speckit.wireframe.prep",
+          "speckit.wireframe.review",
+          "speckit.wireframe.inspect",
+          "speckit.wireframe.screenshots",
+          "speckit.wireframe.view"
+        ],
+        "windsurf": [
+          "speckit.wireframe.generate",
+          "speckit.wireframe.prep",
+          "speckit.wireframe.review",
+          "speckit.wireframe.inspect",
+          "speckit.wireframe.screenshots",
+          "speckit.wireframe.view"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-05T18:48:26.469314+00:00"
+    },
+    "memory-md": {
+      "version": "0.8.5",
+      "source": "local",
+      "manifest_hash": "sha256:b0368e6d1d4d3eb0e2662d68fed547210f0647466b0162ff1f78d6fa39d281af",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "windsurf": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-08T19:07:14.394028+00:00"
+    },
+    "security-review": {
+      "version": "1.5.0",
+      "source": "local",
+      "manifest_hash": "sha256:6845e1d761f2eeb49d395425f7bc1bb18dddc4bbc287a5de81c573ae6c215025",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.security-review.audit",
+          "speckit.security-review.staged",
+          "speckit.security-review.branch",
+          "speckit.security-review.plan",
+          "speckit.security-review.tasks",
+          "speckit.security-review.followup",
+          "speckit.security-review.apply",
+          "speckit.security-review.export",
+          "speckit.security-review.init"
+        ],
+        "windsurf": [
+          "speckit.security-review.audit",
+          "speckit.security-review.staged",
+          "speckit.security-review.branch",
+          "speckit.security-review.plan",
+          "speckit.security-review.tasks",
+          "speckit.security-review.followup",
+          "speckit.security-review.apply",
+          "speckit.security-review.export",
+          "speckit.security-review.init"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-08T19:08:02.070249+00:00"
+    },
+    "fix-findings": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:bc06144e0f8d1bb18b8920cd1a438b3ccf182f1166c42c5c20ba86858c4e4129",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.fix-findings.run",
+          "speckit.fix-findings"
+        ],
+        "windsurf": [
+          "speckit.fix-findings.run",
+          "speckit.fix-findings"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-06-21T20:28:24.436842+00:00"
     }
   }
 }

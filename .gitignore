@@ -1,0 +1,79 @@
+# Bismuth PKM Editor - Git Ignore
+# Tech Stack: Tauri v2 + Rust + Node.js/pnpm + Svelte
+
+# ── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+package-lock.json
+yarn.lock
+
+# ── Build outputs ────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+.output/
+.vercel/
+.netlify/
+.forecast/
+
+# ── Rust / Tauri ─────────────────────────────────────────────────────────────
+src-tauri/target/
+src-tauri/WixTools/
+*.rs.bk
+*.rlib
+
+# ── Environment & Secrets ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.local
+.envrc
+
+# ── IDE & Editors ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# AI Assistant Configuration (tracked)
+# .claude/ - Project-specific Claude/Windsurf context (DO NOT IGNORE)
+
+# ── Testing & Coverage ──────────────────────────────────────────────────────
+coverage/
+playwright-report/
+.bundle-baseline.json
+.nyc_output/
+*.lcov
+
+# ── Logs & Temp ──────────────────────────────────────────────────────────────
+*.log
+*.log.*
+logs/
+*.tmp
+*.temp
+.cache/
+.temp/
+.tmp/
+
+# ── OS-specific ──────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Bismuth-specific ─────────────────────────────────────────────────────────
+.bismuth/
+demo-vault/.bismuth/
+*.bismuth-backup
+
+# ── Generated documentation ──────────────────────────────────────────────────
+docs/api/
+
+# ── AI Tooling ──────────────────────────────────────────────────
+.claude/skills/pict-test-designer

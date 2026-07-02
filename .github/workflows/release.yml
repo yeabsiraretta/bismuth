@@ -1,0 +1,109 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.2.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Install system dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev \
+            libappindicator3-dev librsvg2-dev patchelf
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0" --locked
+
+      - run: pnpm tauri build --config src-tauri/tauri.conf.release.json
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}-${{ inputs.version }}
+          path: src-tauri/target/release/bundle/**/*
+
+  create-github-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const version = '${{ inputs.version }}';
+
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `v${version}`,
+              name: `Release — ${version}`,
+              body: `Bismuth v${version} — stable release.\n\nSee assets below to download and install.`,
+              draft: false,
+              prerelease: false,
+            });
+
+            const artifactsDir = 'artifacts';
+            if (fs.existsSync(artifactsDir)) {
+              const entries = fs.readdirSync(artifactsDir, { withFileTypes: true });
+              for (const entry of entries) {
+                if (!entry.isDirectory()) continue;
+                const subdir = path.join(artifactsDir, entry.name);
+                const files = fs.readdirSync(subdir, { recursive: true });
+                for (const file of files) {
+                  const fullPath = path.join(subdir, file);
+                  if (!fs.statSync(fullPath).isFile()) continue;
+                  const name = path.basename(fullPath);
+                  await github.rest.repos.uploadReleaseAsset({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    release_id: release.data.id,
+                    name,
+                    data: fs.readFileSync(fullPath),
+                  });
+                }
+              }
+            }

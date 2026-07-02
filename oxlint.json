@@ -1,0 +1,27 @@
+{
+  "rules": {
+    "no-debugger": "error",
+    "no-console": "warn",
+    "no-empty": "warn",
+    "no-duplicate-case": "error",
+    "no-fallthrough": "error",
+    "no-self-compare": "error",
+    "no-template-curly-in-string": "warn",
+    "no-unsafe-negation": "error",
+    "no-unused-private-class-members": "warn",
+    "eqeqeq": "warn",
+    "no-eval": "error",
+    "no-new-wrappers": "error",
+    "no-var": "error",
+    "prefer-const": "warn"
+  },
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    ".svelte-kit",
+    "build",
+    "src-tauri/target",
+    "coverage",
+    "**/*.config.*"
+  ]
+}

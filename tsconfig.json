@@ -1,0 +1,39 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "$lib/*": ["src/lib/*"],
+      "@/*": ["src/lib/*"]
+    },
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": false,
+    // Future: enable when codebase is ready (requires obj[key] guards everywhere)
+    // "noUncheckedIndexedAccess": true,
+    // "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
