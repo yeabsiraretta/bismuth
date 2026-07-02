@@ -232,7 +232,7 @@ jobs:
         run: cargo llvm-cov --all-features --lcov --output-path ../coverage/rust-lcov.info
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v7
         with:
           files: ./coverage/rust-lcov.info
           fail_ci_if_error: false
