@@ -95,7 +95,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.0",
-    "@commitlint/config-conventional": "^18.4.0",
+    "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^9.0.0",
     "@playwright/test": "^1.40.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
