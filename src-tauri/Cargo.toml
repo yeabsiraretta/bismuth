@@ -47,7 +47,7 @@ tracing-appender = "0.2"
 uuid = { version = "1.23.1", features = ["v4"] }
 url = "2.5"
 byteorder = "1.5"
-zip = { version = "0.6", features = ["deflate"] }
+zip = { version = "8.6", features = ["deflate"] }
 glob-match = "0.2"
 
 [dev-dependencies]
