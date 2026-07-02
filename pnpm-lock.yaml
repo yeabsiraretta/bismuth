@@ -60,8 +60,8 @@ importers:
         specifier: ^8.2.1
         version: 8.2.2
       konva:
-        specifier: ^9.0.0
-        version: 9.3.22
+        specifier: ^10.3.0
+        version: 10.3.0
       marked:
         specifier: ^18.0.4
         version: 18.0.5
@@ -2558,8 +2558,8 @@ packages:
   known-css-properties@0.35.0:
     resolution: {integrity: sha512-a/RAk2BfKk+WFGhhOCAYqSiFLc34k8Mt/6NWRI4joER0EYUzXIcFivjjnoD3+XU1DggLn/tZc3DOAgke7l8a4A==}
 
-  konva@9.3.22:
-    resolution: {integrity: sha512-yQI5d1bmELlD/fowuyfOp9ff+oamg26WOCkyqUyc+nczD/lhRa3EvD2MZOoc4c1293TAubW9n34fSQLgSeEgSw==}
+  konva@10.3.0:
+    resolution: {integrity: sha512-gt19K2gzY4lHbnkvsku7eSmB+A9PTS2jG4F9coBMsdjM1UKfJNxJbDbXVpeCW1wjEGRwBD3nBamcHnqJhAeKlg==}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -6405,7 +6405,7 @@ snapshots:
 
   known-css-properties@0.35.0: {}
 
-  konva@9.3.22: {}
+  konva@10.3.0: {}
 
   levn@0.4.1:
     dependencies:
