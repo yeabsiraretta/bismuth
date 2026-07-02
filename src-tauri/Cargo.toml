@@ -35,7 +35,7 @@ thiserror = "1.0"
 ureq = "2.12"
 quick-xml = { version = "0.39", features = ["serialize"] }
 percent-encoding = "2.3"
-gray_matter = "0.2"
+gray_matter = "0.3"
 pulldown-cmark = "0.9"
 handlebars = "6"
 tantivy = "0.22"
