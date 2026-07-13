@@ -1,0 +1,33 @@
+# Rust formatting configuration for Bismuth
+# See: https://rust-lang.github.io/rustfmt/
+
+edition = "2021"
+max_width = 100
+hard_tabs = false
+tab_spaces = 4
+
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+
+fn_single_line = false
+where_single_line = false
+control_brace_style = "AlwaysSameLine"
+
+comment_width = 80
+wrap_comments = true
+normalize_comments = true
+
+format_strings = true
+use_small_heuristics = "Default"
+reorder_imports = true
+reorder_modules = true
+
+trailing_comma = "Vertical"
+match_block_trailing_comma = true
+
+space_before_colon = false
+space_after_colon = true
+
+remove_nested_parens = true
+use_field_init_shorthand = true
+force_explicit_abi = true

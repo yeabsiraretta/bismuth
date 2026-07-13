@@ -1,0 +1,4 @@
+# Clippy configuration for Bismuth
+# Enforces constitution principle VI: 300-line file limit
+
+too-many-lines-threshold = 100

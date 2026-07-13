@@ -1,0 +1,53 @@
+.pk-page {
+  padding: 24px 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+}
+.pk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.pk-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pk-title-icon {
+  font-size: 1.2rem;
+}
+.pk-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 24px;
+}
+.pk-tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition-base);
+}
+.pk-tab:hover {
+  color: var(--color-text);
+}
+.pk-tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+.pk-content {
+  min-height: 0;
+}

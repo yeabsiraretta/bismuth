@@ -1,0 +1,85 @@
+{
+  // ── Editor ──────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "svelte.svelte-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  // ── File associations ───────────────────────────────────────────
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.svelte": "svelte"
+  },
+
+  // ── TypeScript ──────────────────────────────────────────────────
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+
+  // ── Svelte ──────────────────────────────────────────────────────
+  "svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.defaultScriptLanguage": "ts",
+
+  // ── Prettier ────────────────────────────────────────────────────
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+
+  // ── ESLint ──────────────────────────────────────────────────────
+  "eslint.validate": ["javascript", "typescript", "svelte"],
+  "eslint.useFlatConfig": true,
+
+  // ── Tailwind CSS ────────────────────────────────────────────────
+  "tailwindCSS.includeLanguages": {
+    "svelte": "html"
+  },
+  "tailwindCSS.emmetCompletions": true,
+
+  // ── CSS ─────────────────────────────────────────────────────────
+  "css.validate": false,
+  "css.lint.unknownAtRules": "ignore",
+
+  // ── Rust (src-tauri) ────────────────────────────────────────────
+  "rust-analyzer.linkedProjects": ["src-tauri/Cargo.toml"],
+  "rust-analyzer.check.command": "clippy",
+  "rust-analyzer.cargo.features": "all",
+
+  // ── Search exclusions ───────────────────────────────────────────
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.svelte-kit": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/src-tauri/target": true,
+    "**/src-tauri/gen": true,
+    "**/_bmad-output": true,
+    "**/playwright-report": true
+  },
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/src-tauri/target": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.svelte-kit/**": true,
+    "**/build/**": true,
+    "**/src-tauri/target/**": true,
+    "**/coverage/**": true
+  },
+
+  // ── Testing ─────────────────────────────────────────────────────
+  "vitest.commandLine": "npx vitest"
+}

@@ -1,0 +1,177 @@
+.canvas-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.canvas-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.canvas-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-right: 8px;
+}
+.canvas-btn {
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-family: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.canvas-btn:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+.canvas-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.canvas-btn.active {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+.canvas-btn-danger {
+  color: var(--color-error, #f38ba8);
+  border-color: oklch(from var(--color-error, #f38ba8) l c h / 0.3);
+}
+.canvas-btn-danger:hover:not(:disabled) {
+  background: oklch(from var(--color-error, #f38ba8) l c h / 0.1);
+}
+.canvas-zoom {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  min-width: 36px;
+  text-align: right;
+  margin-left: auto;
+}
+.canvas-viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-background);
+  cursor: grab;
+  touch-action: none;
+}
+.canvas-viewport:active {
+  cursor: grabbing;
+}
+.canvas-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.canvas-card {
+  position: absolute;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-m, 6px);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-m);
+  cursor: move;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.canvas-card.selected {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+.canvas-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  gap: 4px;
+  pointer-events: none;
+}
+.canvas-hint {
+  font-size: 0.7rem;
+  color: var(--color-text-subtle);
+}
+.svg-layer,
+.overlay-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100000px;
+  height: 100000px;
+  pointer-events: none;
+  overflow: visible;
+}
+.svg-el {
+  pointer-events: auto;
+  cursor: move;
+}
+.svg-el.selected {
+  filter: drop-shadow(0 0 3px var(--color-accent));
+}
+.canvas-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+  padding: 4px;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.canvas-text.selected {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+.canvas-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+  border-radius: var(--radius-s);
+}
+.canvas-img.selected {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+.canvas-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.canvas-frame.selected {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+.canvas-frame.component {
+  border-color: #7c3aed;
+}
+.canvas-frame.component .frame-label {
+  color: #7c3aed;
+}
+.canvas-frame.instance {
+  border-style: dashed;
+  border-color: #7c3aed;
+}
+.canvas-frame.instance .frame-label {
+  color: #7c3aed;
+}
+.frame-label {
+  position: absolute;
+  top: -18px;
+  left: 0;
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+  font-weight: 500;
+}

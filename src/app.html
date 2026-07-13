@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Bismuth</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Bismuth",
+        "description": "A local-first personal knowledge management app with Zettelkasten, knowledge graphs, and intelligent workflows.",
+        "url": "https://bismuth.app",
+        "applicationCategory": "Productivity",
+        "operatingSystem": "macOS, Windows, Linux",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <style>
+      /* ── Splash Screen ─── renders before any JS loads */
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1e1e2e;
+        transition:
+          opacity 0.4s ease,
+          visibility 0.4s ease;
+      }
+      #splash.fade-out {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .splash-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .splash-icon {
+        width: 64px;
+        height: 64px;
+        animation: splash-pulse 2.4s ease-in-out infinite;
+      }
+
+      .splash-title {
+        font-family:
+          'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', monospace;
+        font-size: 0.65rem;
+        font-weight: 400;
+        line-height: 1.2;
+        letter-spacing: 0.04em;
+        color: #f38ba8;
+        margin: 0;
+        white-space: pre;
+      }
+
+      .splash-loader {
+        width: 120px;
+        height: 2px;
+        background: #313244;
+        border-radius: 1px;
+        overflow: hidden;
+      }
+      .splash-loader-bar {
+        width: 40%;
+        height: 100%;
+        background: #f38ba8;
+        border-radius: 1px;
+        animation: splash-slide 1.2s ease-in-out infinite;
+      }
+
+      @keyframes splash-pulse {
+        0%,
+        100% {
+          opacity: 0.85;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.04);
+        }
+      }
+      @keyframes splash-slide {
+        0% {
+          transform: translateX(-100%);
+        }
+        50% {
+          transform: translateX(150%);
+        }
+        100% {
+          transform: translateX(350%);
+        }
+      }
+    </style>
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div id="splash" aria-live="polite" role="status">
+      <div class="splash-inner">
+        <img class="splash-icon" src="/favicon.svg" alt="" width="64" height="64" />
+        <pre class="splash-title" aria-label="Bismuth">
+__________.__                       __  .__
+&#x2572;______   &#x2572;__&#x2502; ______ _____  __ ___&#x2571;  &#x2502;_&#x2502;  &#x2502;__
+ &#x2502;    &#x2502;  _&#x2571;  &#x2502;&#x2571;  ___&#x2571;&#x2571;     &#x2572;&#x2502;  &#x2502;  &#x2572;   __&#x2572;  &#x2502;  &#x2572;
+ &#x2502;    &#x2502;   &#x2572;  &#x2502;&#x2572;___ &#x2572;&#x2502;  Y Y  &#x2572;  &#x2502;  &#x2571;&#x2502;  &#x2502; &#x2502;   Y  &#x2572;
+ &#x2502;______  &#x2571;__&#x2571;____  &gt;__&#x2502;_&#x2502;  &#x2571;____&#x2571; &#x2502;__&#x2502; &#x2502;___&#x2502;  &#x2571;
+        &#x2572;&#x2571;        &#x2572;&#x2571;      &#x2572;&#x2571;                 &#x2572;&#x2571;</pre>
+        <div class="splash-loader" aria-label="Loading">
+          <div class="splash-loader-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: contents">%sveltekit.body%</div>
+
+    <script>
+      // Fallback: remove splash after 3s even if Svelte fails to mount
+      (function () {
+        var splash = document.getElementById('splash');
+        if (!splash) return;
+        var timeout = setTimeout(function () {
+          splash.classList.add('fade-out');
+          setTimeout(function () {
+            splash.remove();
+          }, 500);
+        }, 3000);
+        // Let SplashScreen component clear this if it mounts first
+        window.__splashTimeout = timeout;
+      })();
+
+      // Pre-mount fallback: catches errors before SvelteKit's hooks.client.ts loads.
+      // Once the app mounts, hooks.client.ts handleError takes over.
+      window.addEventListener('error', function (e) {
+        var d = document.createElement('pre');
+        d.style.cssText =
+          'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#300;color:#f88;padding:12px;font-size:12px;max-height:40vh;overflow:auto;';
+        d.textContent = '[ERROR] ' + e.message + '\n' + (e.filename || '') + ':' + e.lineno;
+        document.body.appendChild(d);
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        var d = document.createElement('pre');
+        d.style.cssText =
+          'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#300;color:#f88;padding:12px;font-size:12px;max-height:40vh;overflow:auto;';
+        d.textContent =
+          '[REJECTION] ' + (e.reason && e.reason.stack ? e.reason.stack : String(e.reason));
+        document.body.appendChild(d);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,202 @@
+.creative-page {
+  padding: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+}
+.creative-header {
+  margin-bottom: 24px;
+}
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+.creative-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.card {
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-l);
+  background: var(--color-surface);
+}
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+.prompt-text {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0 0 12px;
+}
+.prompt-actions {
+  display: flex;
+  gap: 8px;
+}
+.action-btn {
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font-family: inherit;
+}
+.action-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.words-card {
+  display: flex;
+  flex-direction: column;
+}
+.word-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.word-pill {
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-background);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-full);
+}
+.word-hint {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+}
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+.techniques-section {
+  margin-bottom: 32px;
+}
+.techniques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.technique-card {
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  transition: all var(--transition-base);
+}
+.technique-card:hover {
+  border-color: var(--color-accent);
+}
+.technique-card.expanded {
+  border-color: var(--color-accent);
+  background: var(--color-background);
+}
+.tech-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: block;
+}
+.tech-desc {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+.ideas-section {
+  margin-bottom: 32px;
+}
+.idea-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.idea-input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+}
+.idea-input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+.ideas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.idea-card {
+  position: relative;
+  padding: 12px 28px 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+}
+.idea-card:hover {
+  border-color: var(--color-accent);
+}
+.idea-text {
+  font-size: 0.8rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  margin: 0;
+}
+.idea-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-subtle);
+  font-size: 0.9rem;
+  padding: 2px 4px;
+  opacity: 0;
+}
+.idea-card:hover .idea-remove {
+  opacity: 1;
+}
+.idea-remove:hover {
+  color: var(--color-error);
+}
+.empty-state {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+@media (max-width: 700px) {
+  .creative-grid {
+    grid-template-columns: 1fr;
+  }
+}

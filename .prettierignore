@@ -1,0 +1,28 @@
+# Build artifacts
+build/
+dist/
+.svelte-kit/
+coverage/
+playwright-report/
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Rust
+src-tauri/target/
+src-tauri/gen/
+src-tauri/Cargo.lock
+
+# BMAD agents and specs
+.agents/
+_bmad/
+_bmad-output/
+
+# IDE agent configs
+.claude/
+.windsurf/
+
+# Misc
+*.log
+.DS_Store

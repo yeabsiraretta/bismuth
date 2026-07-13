@@ -1,0 +1,99 @@
+.fc-page {
+  padding: 24px 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+}
+.fc-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.fc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+}
+.mode-tab {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font-family: inherit;
+}
+.mode-tab.active {
+  background: var(--color-accent);
+  color: var(--color-background);
+  border-color: var(--color-accent);
+}
+.fc-deck-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.deck-select {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-s);
+  font-family: inherit;
+}
+.fc-count {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+.rescan-btn {
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  font-family: inherit;
+}
+.rescan-btn:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.empty-state {
+  text-align: center;
+  padding: 64px 0;
+  color: var(--color-text-muted);
+}
+.cloze-blank {
+  display: inline-block;
+  min-width: 40px;
+  background: color-mix(in srgb, var(--color-info) 12%, transparent);
+  border-bottom: 2px dashed var(--color-info);
+  border-radius: 2px;
+  padding: 0 4px;
+  color: var(--color-info);
+  font-weight: 600;
+  text-align: center;
+}
+.cloze-answer {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  border-bottom: 2px solid var(--color-success);
+  border-radius: 2px;
+  padding: 0 4px;
+  color: var(--color-success);
+  font-weight: 600;
+}

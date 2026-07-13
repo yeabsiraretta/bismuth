@@ -1,0 +1,213 @@
+.wr-page {
+  padding: 24px 32px;
+  max-width: 860px;
+  margin: 0 auto;
+  height: 100%;
+  overflow-y: auto;
+}
+.wr-header {
+  margin-bottom: 20px;
+}
+.wr-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.wr-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+.wr-stats-bar {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.wr-stat {
+  display: flex;
+  flex-direction: column;
+}
+.wr-sv {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.wr-sl {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.wr-accent .wr-sv {
+  color: var(--color-warning);
+}
+.wr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.wr-btn:hover {
+  border-color: var(--color-accent);
+}
+.wr-btn-primary {
+  background: var(--color-accent);
+  color: var(--color-background);
+  border-color: var(--color-accent);
+}
+.wr-btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+.wr-btn-ghost:hover {
+  color: var(--color-text);
+}
+.wr-btn-danger {
+  background: transparent;
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+.wr-btn-danger:hover {
+  background: var(--color-error);
+  color: var(--color-background);
+}
+.wr-form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0;
+  padding: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius-s);
+}
+.wr-input {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.72rem;
+  font-family: inherit;
+}
+.wr-input-sm {
+  width: 80px;
+  flex: 0;
+  text-align: right;
+}
+.wr-select {
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-s);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.72rem;
+}
+.wr-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.wr-card {
+  padding: 14px;
+  background: var(--color-surface);
+  border-radius: var(--radius-l);
+  margin-bottom: 16px;
+}
+.wr-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.wr-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.wr-card-words {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+.wr-card-meta {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+.wr-bar {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.wr-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-s);
+  transition: width var(--transition-slow);
+}
+.wr-meta {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+.wr-target-lbl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+}
+.wr-status-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.wr-status-badge {
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  color: var(--color-background);
+  font-weight: 600;
+}
+.wr-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+.wr-tab {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.wr-tab:hover {
+  color: var(--color-text);
+}
+.wr-tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+.wr-empty-state {
+  text-align: center;
+  padding: 64px 0;
+  color: var(--color-text-muted);
+}
+.wr-empty-hint {
+  font-size: 0.75rem;
+}

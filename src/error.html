@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>%sveltekit.status% — Bismuth</title>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #1e1e2e;
+        color: #cdd6f4;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      .error {
+        text-align: center;
+        max-width: 400px;
+        padding: 32px;
+      }
+      .code {
+        font-size: 4rem;
+        font-weight: 800;
+        color: #f38ba8;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+      .title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+      .message {
+        font-size: 0.85rem;
+        color: #a6adc8;
+        line-height: 1.5;
+        margin: 0 0 24px;
+      }
+      a {
+        display: inline-block;
+        padding: 8px 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #1e1e2e;
+        background: #f38ba8;
+        transition: opacity 0.15s;
+      }
+      a:hover {
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error">
+      <div class="code">%sveltekit.status%</div>
+      <h1 class="title">Something went wrong</h1>
+      <p class="message">%sveltekit.error.message%</p>
+      <a href="/">Back to Home</a>
+    </div>
+  </body>
+</html>

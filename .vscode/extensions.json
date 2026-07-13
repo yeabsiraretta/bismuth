@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "svelte.svelte-vscode",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "rust-lang.rust-analyzer",
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    "tauri-apps.tauri-vscode"
+  ],
+  "unwantedRecommendations": []
+}
