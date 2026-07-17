@@ -1,6 +1,6 @@
 {
   "name": "bismuth",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A local-first PKM editor with Zettelkasten, knowledge management, and intelligent workflows",
   "private": true,
   "type": "module",

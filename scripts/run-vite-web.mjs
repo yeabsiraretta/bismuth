@@ -8,8 +8,18 @@ if (mode !== 'dev' && mode !== 'build') {
   process.exit(1);
 }
 
-const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
-const child = spawn(pnpmBin, ['exec', 'vite', mode, ...extraArgs], {
+const packageManagerExec = process.env.npm_execpath;
+const isJsExecpath = Boolean(packageManagerExec && /\.[mc]?js$/i.test(packageManagerExec));
+const command = isJsExecpath
+  ? process.execPath
+  : process.platform === 'win32'
+    ? 'pnpm.cmd'
+    : 'pnpm';
+const commandArgs = isJsExecpath
+  ? [packageManagerExec, 'exec', 'vite', mode, ...extraArgs]
+  : ['exec', 'vite', mode, ...extraArgs];
+
+const child = spawn(command, commandArgs, {
   stdio: 'inherit',
   env: {
     ...process.env,
@@ -19,7 +29,7 @@ const child = spawn(pnpmBin, ['exec', 'vite', mode, ...extraArgs], {
 
 child.on('exit', (code, signal) => {
   if (signal) {
-    process.kill(process.pid, signal);
+    process.exit(1);
     return;
   }
   process.exit(code ?? 1);
