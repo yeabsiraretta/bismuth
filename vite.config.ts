@@ -6,6 +6,7 @@ import { defineConfig, type Plugin } from 'vite';
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 const host = process.env.TAURI_DEV_HOST;
+const isTauriDesktopBuild = Boolean(process.env.TAURI_ENV_PLATFORM);
 
 function extractStyleBlock(source: string): string {
   const matches = [...source.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g)];
@@ -15,6 +16,7 @@ function extractStyleBlock(source: string): string {
 function sanitizeBrokenSvelteVirtualCss(): Plugin {
   return {
     name: 'bismuth-sanitize-svelte-virtual-css',
+    apply: 'serve',
     enforce: 'pre',
     transform(code, id) {
       if (!id.includes('?svelte&type=style&lang.css')) return null;
@@ -65,5 +67,6 @@ export default defineConfig({
     target: process.env.TAURI_ENV_PLATFORM === 'windows' ? 'chrome105' : 'safari13',
     minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' : false,
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
+    cssCodeSplit: !isTauriDesktopBuild,
   },
 });
