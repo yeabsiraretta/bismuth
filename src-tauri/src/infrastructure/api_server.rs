@@ -32,6 +32,7 @@ pub struct CreateNoteBody {
     pub title: String,
     pub folder: Option<String>,
     pub content: Option<String>,
+    pub extension: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -105,7 +106,12 @@ async fn create_note(
     State(state): State<Arc<AppState>>,
     Json(body): Json<CreateNoteBody>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ApiError>)> {
-    vault_service::create_note(&state, &body.title, body.folder.as_deref())
+    vault_service::create_note(
+        &state,
+        &body.title,
+        body.folder.as_deref(),
+        body.extension.as_deref(),
+    )
         .map(|n| (StatusCode::CREATED, Json(n)))
         .map_err(app_err)
 }

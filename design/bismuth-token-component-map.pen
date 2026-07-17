@@ -1,0 +1,35 @@
+# Bismuth Token + Component Source Map
+
+This PEN is the implementation bridge between design artifacts and code.
+
+## Token map
+
+- `color.surface` -> `src/lib/constants/colors.ts` (surface/background scale)
+- `color.accent` -> `src/lib/constants/colors.ts` (primary accent actions)
+- `space.2`, `space.3` -> `src/lib/constants/layout.ts` (spacing rhythm)
+- `radius.md` -> `src/lib/constants/layout.ts` (shared medium radius)
+
+## Component map
+
+- `Shell/Sidebar` -> `src/lib/ui/sidebar-shell.svelte`
+- `Navigation/Item` -> `src/lib/ui/sidebar-shell.svelte` (navigation row patterns)
+- `Editor/Toolbar` -> `src/lib/hubs/editor/components/EditorToolbar.svelte`
+- `Editor/Surface` -> `src/lib/hubs/editor/components/NoteEditor.svelte`
+
+## Property conventions
+
+- Component property names use lowerCamelCase.
+- Use typed domains:
+  - `boolean` for toggles
+  - `string` for freeform text
+  - `enum` with explicit `options` for controlled values
+  - `instance-swap` for cross-component reference ids
+
+## Constraint conventions
+
+- Prefer explicit presets via MCP:
+  - `fixed` for stable controls
+  - `pin-left-right` for top bars
+  - `fill` for primary content panes
+  - `stretch` for repeating list rows
+- Snapshot parity depends on `resizeResolution` metadata in resolved instance payloads.

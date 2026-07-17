@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "elements": [
+    {
+      "id": "cmp-editor-toolbar",
+      "kind": "component",
+      "name": "Editor/Toolbar",
+      "x": 120,
+      "y": 80,
+      "width": 980,
+      "height": 48,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 0,
+      "componentProperties": {
+        "showWordCount": { "type": "boolean", "default": true },
+        "showFocusMode": { "type": "boolean", "default": true }
+      },
+      "constraints": {
+        "preset": "pin-left-right",
+        "horizontal": "left-right",
+        "vertical": "top",
+        "widthMode": "stretch",
+        "heightMode": "fixed"
+      }
+    },
+    {
+      "id": "cmp-editor-surface",
+      "kind": "component",
+      "name": "Editor/Surface",
+      "x": 120,
+      "y": 148,
+      "width": 980,
+      "height": 640,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 1,
+      "componentProperties": {
+        "readonly": { "type": "boolean", "default": false },
+        "showLineNumbers": { "type": "boolean", "default": false },
+        "documentType": { "type": "enum", "options": ["md", "pen", "canvas-json"], "default": "md" }
+      },
+      "constraints": {
+        "preset": "fill",
+        "horizontal": "fill",
+        "vertical": "fill",
+        "widthMode": "fill",
+        "heightMode": "fill"
+      }
+    }
+  ],
+  "connections": [],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

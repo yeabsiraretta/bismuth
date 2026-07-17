@@ -16,6 +16,7 @@
   import { MetaTags } from 'svelte-meta-tags';
   import { openSettings } from '@/hubs/core/stores/settings-modal.svelte';
   import { togglePalette } from '@/hubs/core/stores/command-store.svelte';
+  import { requestTextPrompt } from '@/utils/text-prompt';
   import {
     getGamification,
     getTierForLevel,
@@ -96,7 +97,7 @@
   }
 
   async function newNote() {
-    const title = prompt('New note title:');
+    const title = await requestTextPrompt({ title: 'New note title:' });
     if (!title?.trim()) return;
     try {
       const note = await createNote(title.trim());
@@ -107,8 +108,21 @@
     }
   }
 
+  async function newPen() {
+    const title = await requestTextPrompt({ title: 'New pen file name:' });
+    if (!title?.trim()) return;
+    try {
+      const pen = await createNote(title.trim(), 'design', '', 'pen');
+      await rescanVault();
+      openNote(pen.path);
+    } catch {
+      /* browser dev */
+    }
+  }
+
   const QUICK_ACTIONS = [
     { label: 'New Note', hint: '⌘N', icon: 'plus', action: newNote },
+    { label: 'New Pen', hint: '', icon: 'highlightPen', action: newPen },
     { label: 'Search', hint: '⌘P', icon: 'search', action: togglePalette },
     {
       label: 'Graph',

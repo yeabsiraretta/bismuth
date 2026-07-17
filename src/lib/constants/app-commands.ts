@@ -12,6 +12,7 @@ import { openVaultDialog } from '@/sal/vault-service';
 export interface CommandHandlers {
   navigateTo: (route: string) => void;
   handleNewNote: () => void;
+  handleNewPen: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
   zoomReset: () => void;
@@ -36,6 +37,13 @@ export function buildCommands(h: CommandHandlers) {
       category: 'Notes',
       shortcut: 'Cmd+N',
       action: h.handleNewNote,
+    },
+    {
+      id: 'new-pen',
+      name: 'New Pen File',
+      description: 'Create a new .pen file in design/',
+      category: 'Notes',
+      action: h.handleNewPen,
     },
     {
       id: 'open-settings',

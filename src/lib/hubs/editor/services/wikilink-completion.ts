@@ -1,6 +1,7 @@
 import type { CompletionContext, CompletionResult } from '@codemirror/autocomplete';
 
 import { getNotes } from '@/hubs/core/stores/vault-store.svelte';
+import { stripTextNoteExtension } from '@/utils/file-kind';
 
 function wikilinkCompletions(context: CompletionContext): CompletionResult | null {
   const line = context.state.doc.lineAt(context.pos);
@@ -18,7 +19,7 @@ function wikilinkCompletions(context: CompletionContext): CompletionResult | nul
   const notes = getNotes();
   const options = notes
     .map((n) => {
-      const title = n.path.split('/').pop()?.replace('.md', '') ?? n.title;
+      const title = stripTextNoteExtension(n.path.split('/').pop() ?? '') || n.title;
       return { label: title, detail: n.path, type: 'text' as const };
     })
     .filter((o) => !query || o.label.toLowerCase().includes(query));

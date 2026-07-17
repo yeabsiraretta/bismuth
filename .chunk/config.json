@@ -1,0 +1,19 @@
+{
+  "commands": [
+    {
+      "name": "install",
+      "run": "npx -y node@22 /usr/local/lib/node_modules/pnpm/bin/pnpm.mjs install --frozen-lockfile"
+    },
+    {
+      "name": "test",
+      "run": "npx -y node@22 /usr/local/lib/node_modules/pnpm/bin/pnpm.mjs test",
+      "role": "gate",
+      "timeout": 300,
+      "limit": 3
+    }
+  ],
+  "vcs": {
+    "org": "yeabsiraretta",
+    "repo": "bismuth"
+  }
+}

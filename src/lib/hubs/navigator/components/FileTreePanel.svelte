@@ -9,6 +9,7 @@
     deleteCanvasFile,
     renameCanvasFile,
   } from '@/hubs/canvas/services/canvas-file-service';
+  import { requestTextPrompt } from '@/utils/text-prompt';
   import { BOOKMARKS_KEY } from '@/constants/storage-keys';
   import { getGeneral } from '@/hubs/core/stores/settings-store.svelte';
   import BIcon from '@/ui/b-icon.svelte';
@@ -102,7 +103,7 @@
 
   async function ctxNewFile() {
     const folder = ctxNode?.isFolder ? ctxNode.path : parentFolder(ctxNode?.path ?? '');
-    const name = prompt('New note title:');
+    const name = await requestTextPrompt({ title: 'New note title:' });
     if (!name?.trim()) {
       hideCtx();
       return;
@@ -118,7 +119,7 @@
 
   async function ctxNewCanvas() {
     const folder = ctxNode?.isFolder ? ctxNode.path : parentFolder(ctxNode?.path ?? '');
-    const name = prompt('New canvas name:');
+    const name = await requestTextPrompt({ title: 'New canvas name:' });
     if (!name?.trim()) {
       hideCtx();
       return;
@@ -139,7 +140,7 @@
       return;
     }
     const node = ctxNode;
-    const newTitle = prompt('Rename to:', node.name);
+    const newTitle = await requestTextPrompt({ title: 'Rename to:', defaultValue: node.name });
     if (!newTitle?.trim() || newTitle.trim() === node.name) {
       hideCtx();
       return;

@@ -12,12 +12,18 @@
 import { invokeCommand } from '@/ipc/invoke';
 import { isTauriAvailable } from '@/utils/platform';
 
-const API_BASE = 'http://127.0.0.1:21721';
+const LOCAL_API_BASE = 'http://127.0.0.1:21721';
+const CONFIGURED_API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').trim().replace(/\/$/, '');
+const API_BASE = CONFIGURED_API_BASE || (isTauriAvailable() ? LOCAL_API_BASE : '');
+
+function apiUrl(path: string): string {
+  return API_BASE ? `${API_BASE}${path}` : path;
+}
 
 // ── HTTP helpers ────────────────────────────────────────────────────────────
 
 async function httpGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`);
+  const res = await fetch(apiUrl(path));
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(body.error ?? `HTTP ${res.status}`);
@@ -26,7 +32,7 @@ async function httpGet<T>(path: string): Promise<T> {
 }
 
 async function httpPost<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(apiUrl(path), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
@@ -39,7 +45,7 @@ async function httpPost<T>(path: string, body?: unknown): Promise<T> {
 }
 
 async function httpPut(path: string, body: unknown): Promise<void> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(apiUrl(path), {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -51,7 +57,7 @@ async function httpPut(path: string, body: unknown): Promise<void> {
 }
 
 async function httpDelete(path: string): Promise<void> {
-  const res = await fetch(`${API_BASE}${path}`, { method: 'DELETE' });
+  const res = await fetch(apiUrl(path), { method: 'DELETE' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error ?? `HTTP ${res.status}`);
@@ -290,7 +296,7 @@ export async function mcpCallTool(
   name: string,
   args: Record<string, unknown> = {}
 ): Promise<McpToolResult> {
-  const res = await fetch(`${API_BASE}/mcp`, {
+  const res = await fetch(apiUrl('/mcp'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -306,7 +312,7 @@ export async function mcpCallTool(
 }
 
 export async function mcpListTools(): Promise<Array<{ name: string; description: string }>> {
-  const res = await fetch(`${API_BASE}/mcp`, {
+  const res = await fetch(apiUrl('/mcp'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

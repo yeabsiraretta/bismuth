@@ -1,7 +1,7 @@
 mod evernote;
 mod logseq;
 mod markdown;
-pub(crate) mod notion;
+mod notion;
 mod obsidian;
 mod roam;
 
@@ -17,7 +17,7 @@ use crate::infrastructure::state::{self, AppState};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ImportResult {
+pub(crate) struct ImportResult {
     pub success: u32,
     pub failed: u32,
     pub errors: Vec<String>,
@@ -25,7 +25,7 @@ pub struct ImportResult {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
-pub enum ImportSource {
+pub(crate) enum ImportSource {
     Markdown,
     Obsidian,
     Notion,
@@ -36,7 +36,7 @@ pub enum ImportSource {
 
 // ── Public API ──────────────────────────────────────────────────────────────
 
-pub fn import_notes(
+pub(crate) fn import_notes(
     state: &AppState,
     source: ImportSource,
     source_path: &str,

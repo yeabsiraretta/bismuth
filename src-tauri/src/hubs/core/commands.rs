@@ -16,7 +16,7 @@ use super::vault_service;
 use super::version_service::{self, NoteVersion};
 
 #[tauri::command]
-pub fn greet(name: &str, state: tauri::State<'_, AppState>) -> AppResult<String> {
+pub(crate) fn greet(name: &str, state: tauri::State<'_, AppState>) -> AppResult<String> {
     tracing::debug!(hub = "core", cmd = "greet", name, "IPC command invoked");
     let result = CoreService::greet(&state, name);
     if let Err(ref e) = result {
@@ -26,7 +26,7 @@ pub fn greet(name: &str, state: tauri::State<'_, AppState>) -> AppResult<String>
 }
 
 #[tauri::command]
-pub fn get_app_info(state: tauri::State<'_, AppState>) -> AppResult<AppInfo> {
+pub(crate) fn get_app_info(state: tauri::State<'_, AppState>) -> AppResult<AppInfo> {
     tracing::debug!(hub = "core", cmd = "get_app_info", "IPC command invoked");
     let result = CoreService::app_info(&state);
     if let Err(ref e) = result {
@@ -38,7 +38,7 @@ pub fn get_app_info(state: tauri::State<'_, AppState>) -> AppResult<AppInfo> {
 // ── Vault commands ───────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn open_vault(path: &str, state: tauri::State<'_, AppState>) -> AppResult<VaultResponse> {
+pub(crate) fn open_vault(path: &str, state: tauri::State<'_, AppState>) -> AppResult<VaultResponse> {
     tracing::debug!(hub = "core", cmd = "open_vault", path, "IPC command invoked");
     let result = vault_service::open_vault(&state, path);
     if let Err(ref e) = result {
@@ -48,7 +48,7 @@ pub fn open_vault(path: &str, state: tauri::State<'_, AppState>) -> AppResult<Va
 }
 
 #[tauri::command]
-pub fn create_vault(
+pub(crate) fn create_vault(
     path: &str,
     name: &str,
     state: tauri::State<'_, AppState>,
@@ -62,7 +62,7 @@ pub fn create_vault(
 }
 
 #[tauri::command]
-pub fn scan_vault(state: tauri::State<'_, AppState>) -> AppResult<Vec<NoteMeta>> {
+pub(crate) fn scan_vault(state: tauri::State<'_, AppState>) -> AppResult<Vec<NoteMeta>> {
     tracing::debug!(hub = "core", cmd = "scan_vault", "IPC command invoked");
     let result = vault_service::scan_vault(&state);
     if let Err(ref e) = result {
@@ -74,7 +74,7 @@ pub fn scan_vault(state: tauri::State<'_, AppState>) -> AppResult<Vec<NoteMeta>>
 // ── Note CRUD commands ───────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn read_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<NoteResponse> {
+pub(crate) fn read_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<NoteResponse> {
     tracing::debug!(hub = "core", cmd = "read_note", path, "IPC command invoked");
     let result = vault_service::read_note(&state, path);
     if let Err(ref e) = result {
@@ -84,7 +84,7 @@ pub fn read_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<Not
 }
 
 #[tauri::command]
-pub fn write_note(
+pub(crate) fn write_note(
     path: &str,
     content: &str,
     state: tauri::State<'_, AppState>,
@@ -98,13 +98,14 @@ pub fn write_note(
 }
 
 #[tauri::command]
-pub fn create_note(
+pub(crate) fn create_note(
     title: &str,
     folder: Option<&str>,
+    extension: Option<&str>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<NoteResponse> {
     tracing::debug!(hub = "core", cmd = "create_note", title, "IPC command invoked");
-    let result = vault_service::create_note(&state, title, folder);
+    let result = vault_service::create_note(&state, title, folder, extension);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "create_note", error = %e, "Command failed");
     }
@@ -112,7 +113,7 @@ pub fn create_note(
 }
 
 #[tauri::command]
-pub fn delete_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn delete_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "delete_note", path, "IPC command invoked");
     let result = vault_service::delete_note(&state, path);
     if let Err(ref e) = result {
@@ -122,7 +123,7 @@ pub fn delete_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<(
 }
 
 #[tauri::command]
-pub fn rename_note(
+pub(crate) fn rename_note(
     old_path: &str,
     new_title: &str,
     state: tauri::State<'_, AppState>,
@@ -138,7 +139,7 @@ pub fn rename_note(
 // ── Search commands ──────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn search_vault(
+pub(crate) fn search_vault(
     query: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<SearchResult>> {
@@ -153,7 +154,7 @@ pub fn search_vault(
 // ── Batch / performance commands ────────────────────────────────────────────
 
 #[tauri::command]
-pub fn batch_read_notes(
+pub(crate) fn batch_read_notes(
     paths: Vec<String>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<BatchNoteContent>> {
@@ -166,7 +167,7 @@ pub fn batch_read_notes(
 }
 
 #[tauri::command]
-pub fn build_graph_data(state: tauri::State<'_, AppState>) -> AppResult<GraphDataResult> {
+pub(crate) fn build_graph_data(state: tauri::State<'_, AppState>) -> AppResult<GraphDataResult> {
     tracing::debug!(hub = "core", cmd = "build_graph_data", "IPC command invoked");
     let result = vault_service::build_graph_data(&state);
     if let Err(ref e) = result {
@@ -176,7 +177,7 @@ pub fn build_graph_data(state: tauri::State<'_, AppState>) -> AppResult<GraphDat
 }
 
 #[tauri::command]
-pub fn extract_vault_tags(
+pub(crate) fn extract_vault_tags(
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<stats_service::TagCount>> {
     tracing::debug!(hub = "core", cmd = "extract_vault_tags", "IPC command invoked");
@@ -190,7 +191,7 @@ pub fn extract_vault_tags(
 // ── Version history commands ────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn list_versions(
+pub(crate) fn list_versions(
     note_path: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<NoteVersion>> {
@@ -203,7 +204,7 @@ pub fn list_versions(
 }
 
 #[tauri::command]
-pub fn create_version(
+pub(crate) fn create_version(
     note_path: &str,
     label: Option<&str>,
     state: tauri::State<'_, AppState>,
@@ -217,7 +218,7 @@ pub fn create_version(
 }
 
 #[tauri::command]
-pub fn read_version(
+pub(crate) fn read_version(
     note_path: &str,
     version_id: &str,
     state: tauri::State<'_, AppState>,
@@ -231,7 +232,7 @@ pub fn read_version(
 }
 
 #[tauri::command]
-pub fn delete_version(
+pub(crate) fn delete_version(
     note_path: &str,
     version_id: &str,
     state: tauri::State<'_, AppState>,
@@ -247,7 +248,7 @@ pub fn delete_version(
 // ── Git commands ────────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn git_status(state: tauri::State<'_, AppState>) -> AppResult<GitStatus> {
+pub(crate) fn git_status(state: tauri::State<'_, AppState>) -> AppResult<GitStatus> {
     tracing::debug!(hub = "core", cmd = "git_status", "IPC command invoked");
     let result = git_service::git_status(&state);
     if let Err(ref e) = result {
@@ -257,7 +258,7 @@ pub fn git_status(state: tauri::State<'_, AppState>) -> AppResult<GitStatus> {
 }
 
 #[tauri::command]
-pub fn git_stage_all(state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn git_stage_all(state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "git_stage_all", "IPC command invoked");
     let result = git_service::git_stage_all(&state);
     if let Err(ref e) = result {
@@ -267,7 +268,7 @@ pub fn git_stage_all(state: tauri::State<'_, AppState>) -> AppResult<()> {
 }
 
 #[tauri::command]
-pub fn git_commit(message: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn git_commit(message: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "git_commit", message, "IPC command invoked");
     let result = git_service::git_commit(&state, message);
     if let Err(ref e) = result {
@@ -277,7 +278,7 @@ pub fn git_commit(message: &str, state: tauri::State<'_, AppState>) -> AppResult
 }
 
 #[tauri::command]
-pub fn git_push(state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn git_push(state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "git_push", "IPC command invoked");
     let result = git_service::git_push(&state);
     if let Err(ref e) = result {
@@ -287,7 +288,7 @@ pub fn git_push(state: tauri::State<'_, AppState>) -> AppResult<()> {
 }
 
 #[tauri::command]
-pub fn git_pull(state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn git_pull(state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "git_pull", "IPC command invoked");
     let result = git_service::git_pull(&state);
     if let Err(ref e) = result {
@@ -299,7 +300,7 @@ pub fn git_pull(state: tauri::State<'_, AppState>) -> AppResult<()> {
 // ── Import commands ────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn import_notes(
+pub(crate) fn import_notes(
     source: ImportSource,
     source_path: &str,
     state: tauri::State<'_, AppState>,
@@ -315,7 +316,7 @@ pub fn import_notes(
 // ── Backup commands ────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn create_backup(state: tauri::State<'_, AppState>) -> AppResult<BackupInfo> {
+pub(crate) fn create_backup(state: tauri::State<'_, AppState>) -> AppResult<BackupInfo> {
     tracing::debug!(hub = "core", cmd = "create_backup", "IPC command invoked");
     let result = backup_service::create_backup(&state);
     if let Err(ref e) = result {
@@ -325,7 +326,7 @@ pub fn create_backup(state: tauri::State<'_, AppState>) -> AppResult<BackupInfo>
 }
 
 #[tauri::command]
-pub fn list_backups(state: tauri::State<'_, AppState>) -> AppResult<BackupListResult> {
+pub(crate) fn list_backups(state: tauri::State<'_, AppState>) -> AppResult<BackupListResult> {
     tracing::debug!(hub = "core", cmd = "list_backups", "IPC command invoked");
     let result = backup_service::list_backups(&state);
     if let Err(ref e) = result {
@@ -335,7 +336,7 @@ pub fn list_backups(state: tauri::State<'_, AppState>) -> AppResult<BackupListRe
 }
 
 #[tauri::command]
-pub fn delete_backup(backup_path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
+pub(crate) fn delete_backup(backup_path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
     tracing::debug!(hub = "core", cmd = "delete_backup", backup_path, "IPC command invoked");
     let result = backup_service::delete_backup(&state, backup_path);
     if let Err(ref e) = result {
@@ -347,7 +348,7 @@ pub fn delete_backup(backup_path: &str, state: tauri::State<'_, AppState>) -> Ap
 // ── Publish commands ───────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn publish_notes(
+pub(crate) fn publish_notes(
     format: ExportFormat,
     note_paths: Vec<String>,
     output_dir: Option<&str>,
@@ -364,7 +365,7 @@ pub fn publish_notes(
 // ── Stats commands ────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub fn compute_vault_stats(state: tauri::State<'_, AppState>) -> AppResult<VaultStats> {
+pub(crate) fn compute_vault_stats(state: tauri::State<'_, AppState>) -> AppResult<VaultStats> {
     tracing::debug!(hub = "core", cmd = "compute_vault_stats", "IPC command invoked");
     let result = stats_service::compute_vault_stats(&state);
     if let Err(ref e) = result {
@@ -433,7 +434,7 @@ pub async fn fetch_url(url: String) -> AppResult<String> {
 // ── Smart connections commands ────────────────────────────────────────────
 
 #[tauri::command]
-pub fn find_similar_notes(
+pub(crate) fn find_similar_notes(
     note_path: &str,
     limit: usize,
     min_score: f64,
@@ -448,7 +449,7 @@ pub fn find_similar_notes(
 }
 
 #[tauri::command]
-pub fn find_similar_to_text(
+pub(crate) fn find_similar_to_text(
     query: &str,
     limit: usize,
     min_score: f64,

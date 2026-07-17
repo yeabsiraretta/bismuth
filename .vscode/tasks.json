@@ -57,6 +57,14 @@
       "problemMatcher": ["$rustc"]
     },
     {
+      "label": "clippy:src-tauri",
+      "type": "shell",
+      "command": "cargo clippy",
+      "options": { "cwd": "${workspaceFolder}/src-tauri" },
+      "group": "test",
+      "problemMatcher": ["$rustc"]
+    },
+    {
       "label": "lint",
       "type": "shell",
       "command": "pnpm lint",

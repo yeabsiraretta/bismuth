@@ -21,6 +21,7 @@ _bmad-output/
 
 
 # IDE agent configs
+AGENTS.md
 .claude/
 .windsurf/
 
@@ -31,3 +32,10 @@ _bmad-output/
 .env.*
 !.env.example
 .npmrc
+
+# chunk active sidecar tracking
+.chunk/sidecar.json
+.chunk/sidecar.*.json
+
+# generated MCP profiles
+mcp/config.dynamic.json

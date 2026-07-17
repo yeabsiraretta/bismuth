@@ -24,6 +24,6 @@ export function getStoredScale(): number {
   return 1.0;
 }
 
-function restoreUIScale() {
+export function restoreUIScale() {
   setUIScale(getStoredScale());
 }

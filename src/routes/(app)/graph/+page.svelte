@@ -39,6 +39,7 @@
   let warmupDone = $state(false);
   let mmBounds: WorldBounds = $state({ minX: 0, minY: 0, maxX: 1, maxY: 1 });
   let alpha = $state(1);
+  let fitRaf = 0;
   const ALPHA_DECAY = 0.99;
   const ALPHA_MIN = 0.001;
 
@@ -95,9 +96,16 @@
       const rect = entries[0].contentRect;
       width = rect.width;
       height = rect.height;
+      scheduleAutoFit();
     });
     ro.observe(wrapEl);
     return () => ro.disconnect();
+  });
+
+  $effect(() => {
+    return () => {
+      if (fitRaf) cancelAnimationFrame(fitRaf);
+    };
   });
 
   $effect(() => {
@@ -108,8 +116,7 @@
 
   function startSimulation() {
     if (needsFit) {
-      fitToView();
-      snapshotWorldBounds();
+      applyFitToView();
       needsFit = false;
     }
     draw(); // immediate first paint — don't wait for rAF (tab may not be focused)
@@ -236,6 +243,20 @@
     mmBounds = computeNodeBounds();
   }
 
+  function applyFitToView() {
+    fitToView();
+    snapshotWorldBounds();
+  }
+
+  function scheduleAutoFit() {
+    if (viewMode !== '2d' || !warmupDone || nodes.length === 0) return;
+    if (fitRaf) cancelAnimationFrame(fitRaf);
+    fitRaf = requestAnimationFrame(() => {
+      fitRaf = 0;
+      applyFitToView();
+    });
+  }
+
   function fitToView() {
     if (nodes.length === 0) return;
     const b = computeNodeBounds();
@@ -246,6 +267,11 @@
     panX = width / 2 - ((b.minX + b.maxX) / 2) * zoom;
     panY = height / 2 - ((b.minY + b.maxY) / 2) * zoom;
   }
+
+  $effect(() => {
+    if (viewMode !== '2d' || !warmupDone || nodes.length === 0) return;
+    scheduleAutoFit();
+  });
 
   function handleWheel(e: WheelEvent) {
     e.preventDefault();
@@ -386,8 +412,7 @@
         class="graph-btn"
         type="button"
         onclick={() => {
-          fitToView();
-          snapshotWorldBounds();
+          applyFitToView();
         }}
         title="Fit to view">Fit</button
       >

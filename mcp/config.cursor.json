@@ -1,0 +1,9 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/config.json",
+  "mcpServers": {
+    "bismuth": {
+      "url": "http://127.0.0.1:21721/mcp",
+      "description": "Bismuth local MCP endpoint for Cursor"
+    }
+  }
+}

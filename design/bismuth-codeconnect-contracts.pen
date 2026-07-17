@@ -1,0 +1,25 @@
+# Bismuth Code-Connect Contract Patterns
+
+## Contract fields
+
+- `propsMapping`: design prop -> code prop mapping
+- `requiredProps`: props that must be present in `propsMapping`
+- `states`: canonical UI state variants (hover, focus, disabled, loading, error)
+- `slots`: named content slots and fallback content behavior
+- `events`: emitted events and payload expectations
+- `accessibility`: role/label/keyboard behavior guarantees
+- `examples`: implementation examples for handoff
+
+## Handoff policy
+
+- Run `validate_canvas_code_connect_contract` before `export_canvas_handoff`.
+- Block release when any mapping reports `status: "issues"`.
+- Keep mapping ids stable (`nodeId:framework:componentName`) to avoid churn.
+
+## Source links
+
+- MCP engine: `src-tauri/src/infrastructure/mcp_server.rs`
+- UI implementation targets:
+  - `src/lib/ui/sidebar-shell.svelte`
+  - `src/lib/hubs/editor/components/EditorToolbar.svelte`
+  - `src/lib/hubs/editor/components/NoteEditor.svelte`

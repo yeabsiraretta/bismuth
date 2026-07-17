@@ -1,15 +1,12 @@
 <script lang="ts">
   import './+page.css';
-  import { CREATIVE_IDEAS_KEY } from '@/constants/storage-keys';
+  import {
+    addCreativeIdea,
+    getCreativeIdeas,
+    removeCreativeIdea,
+  } from '@/hubs/creative/stores/ideas-store.svelte';
   import { pageTitle, SITE_URL } from '@/constants/seo';
   import { MetaTags } from 'svelte-meta-tags';
-
-  interface IdeaCard {
-    id: string;
-    text: string;
-    tags: string;
-    ts: number;
-  }
 
   const IDEA_COLORS = ['#fbbf24', '#34d399', '#60a5fa', '#f472b6', '#a78bfa', '#fb923c'];
 
@@ -83,20 +80,7 @@
     'genesis',
   ];
 
-  function loadIdeas(): IdeaCard[] {
-    try {
-      const raw = localStorage.getItem(CREATIVE_IDEAS_KEY);
-      return raw ? (JSON.parse(raw) as IdeaCard[]) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveIdeas() {
-    localStorage.setItem(CREATIVE_IDEAS_KEY, JSON.stringify(ideas));
-  }
-
-  let ideas = $state<IdeaCard[]>(loadIdeas());
+  let ideas = $derived(getCreativeIdeas());
   let newIdea = $state('');
   let currentPrompt = $state(WRITING_PROMPTS[Math.floor(Math.random() * WRITING_PROMPTS.length)]);
   let randomWords = $state<string[]>(pickRandomWords(3));
@@ -118,14 +102,12 @@
   function addIdea() {
     const text = newIdea.trim();
     if (!text) return;
-    ideas = [{ id: crypto.randomUUID(), text, tags: '', ts: Date.now() }, ...ideas];
+    addCreativeIdea(text);
     newIdea = '';
-    saveIdeas();
   }
 
   function removeIdea(id: string) {
-    ideas = ideas.filter((i) => i.id !== id);
-    saveIdeas();
+    removeCreativeIdea(id);
   }
 </script>
 

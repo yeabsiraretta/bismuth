@@ -5,18 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Bismuth</title>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Bismuth",
-        "description": "A local-first personal knowledge management app with Zettelkasten, knowledge graphs, and intelligent workflows.",
-        "url": "https://bismuth.app",
-        "applicationCategory": "Productivity",
-        "operatingSystem": "macOS, Windows, Linux",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-      }
-    </script>
     <style>
       /* ── Splash Screen ─── renders before any JS loads */
       body {
@@ -127,38 +115,6 @@ __________.__                       __  .__
 
     <div style="display: contents">%sveltekit.body%</div>
 
-    <script>
-      // Fallback: remove splash after 3s even if Svelte fails to mount
-      (function () {
-        var splash = document.getElementById('splash');
-        if (!splash) return;
-        var timeout = setTimeout(function () {
-          splash.classList.add('fade-out');
-          setTimeout(function () {
-            splash.remove();
-          }, 500);
-        }, 3000);
-        // Let SplashScreen component clear this if it mounts first
-        window.__splashTimeout = timeout;
-      })();
-
-      // Pre-mount fallback: catches errors before SvelteKit's hooks.client.ts loads.
-      // Once the app mounts, hooks.client.ts handleError takes over.
-      window.addEventListener('error', function (e) {
-        var d = document.createElement('pre');
-        d.style.cssText =
-          'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#300;color:#f88;padding:12px;font-size:12px;max-height:40vh;overflow:auto;';
-        d.textContent = '[ERROR] ' + e.message + '\n' + (e.filename || '') + ':' + e.lineno;
-        document.body.appendChild(d);
-      });
-      window.addEventListener('unhandledrejection', function (e) {
-        var d = document.createElement('pre');
-        d.style.cssText =
-          'position:fixed;bottom:0;left:0;right:0;z-index:999999;background:#300;color:#f88;padding:12px;font-size:12px;max-height:40vh;overflow:auto;';
-        d.textContent =
-          '[REJECTION] ' + (e.reason && e.reason.stack ? e.reason.stack : String(e.reason));
-        document.body.appendChild(d);
-      });
-    </script>
+    <script src="/pre-mount-fallback.js"></script>
   </body>
 </html>

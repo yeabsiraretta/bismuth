@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { invokeCommand } from '@/ipc/invoke';
 
 export interface NativeSmartConnection {
   path: string;
@@ -12,7 +12,7 @@ export async function findSimilarNotesNative(
   limit = 20,
   minScore = 0.05
 ): Promise<NativeSmartConnection[]> {
-  return invoke<NativeSmartConnection[]>('find_similar_notes', {
+  return invokeCommand<NativeSmartConnection[]>('find_similar_notes', {
     notePath,
     limit,
     minScore,
@@ -24,7 +24,7 @@ export async function findSimilarToTextNative(
   limit = 20,
   minScore = 0.05
 ): Promise<NativeSmartConnection[]> {
-  return invoke<NativeSmartConnection[]>('find_similar_to_text', {
+  return invokeCommand<NativeSmartConnection[]>('find_similar_to_text', {
     query,
     limit,
     minScore,

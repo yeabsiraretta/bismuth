@@ -1,4 +1,5 @@
 import { invokeCommand } from '@/ipc/invoke';
+import { titleFromPath, type TextNoteExtension } from '@/utils/file-kind';
 import { isTauriAvailable } from '@/utils/platform';
 
 export interface NoteResponse {
@@ -14,9 +15,18 @@ function mockNote(path: string, title: string, content = ''): NoteResponse {
   return { path, title, content, modifiedAt: now, createdAt: now };
 }
 
+function normalizePenFolder(folder?: string): string {
+  const trimmed = folder?.trim().replace(/^\/+|\/+$/g, '') ?? '';
+  if (!trimmed) return 'design';
+  if (trimmed.toLowerCase() === 'design' || trimmed.toLowerCase().startsWith('design/')) {
+    return trimmed;
+  }
+  return `design/${trimmed}`;
+}
+
 export function readNote(path: string): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
-    const title = path.split('/').pop()?.replace('.md', '') ?? 'Untitled';
+    const title = titleFromPath(path);
     return Promise.resolve(mockNote(path, title, `# ${title}\n\nStart writing here…`));
   }
   return invokeCommand<NoteResponse>('read_note', { path });
@@ -35,24 +45,27 @@ export function deleteNote(path: string): Promise<void> {
 export async function createNote(
   title: string,
   folder?: string,
-  content?: string
+  content?: string,
+  extension: TextNoteExtension = 'md'
 ): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
-    const path = folder ? `${folder}/${title}.md` : `${title}.md`;
-    return mockNote(path, title, content ?? '');
+   const targetFolder = extension === 'pen' ? normalizePenFolder(folder) : folder;
+   const path = targetFolder ? `${targetFolder}/${title}.${extension}` : `${title}.${extension}`;
+   return mockNote(path, title, content ?? '');
   }
-  const note = await invokeCommand<NoteResponse>('create_note', { title, folder });
+  const note = await invokeCommand<NoteResponse>('create_note', { title, folder, extension });
   if (content) {
-    await writeNote(note.path, content);
-    note.content = content;
+   await writeNote(note.path, content);
+   note.content = content;
   }
   return note;
 }
 
 export function renameNote(oldPath: string, newTitle: string): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
+    const ext = oldPath.endsWith('.pen') ? 'pen' : 'md';
     const dir = oldPath.split('/').slice(0, -1).join('/');
-    const newPath = dir ? `${dir}/${newTitle}.md` : `${newTitle}.md`;
+    const newPath = dir ? `${dir}/${newTitle}.${ext}` : `${newTitle}.${ext}`;
     return Promise.resolve(mockNote(newPath, newTitle));
   }
   return invokeCommand<NoteResponse>('rename_note', { oldPath, newTitle });

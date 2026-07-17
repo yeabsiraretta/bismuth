@@ -152,6 +152,13 @@
     contextMenu = null;
   }
 
+  function handleContextBackdropKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      closeContextMenu();
+    }
+  }
+
   function startRename(habit: LoadedHabit) {
     renamingPath = habit.path;
     renameValue = habit.data.name;
@@ -354,17 +361,21 @@
 
 {#if contextMenu}
   {@const cm = contextMenu}
-  <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
   <div
     class="ctx-backdrop"
-    onclick={closeContextMenu}
+    role="button"
+    tabindex="0"
+    aria-label="Close context menu"
+    onclick={(event) => {
+      if (event.target === event.currentTarget) closeContextMenu();
+    }}
+    onkeydown={handleContextBackdropKeydown}
     oncontextmenu={(e) => {
       e.preventDefault();
       closeContextMenu();
     }}
   >
-    <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-    <div class="ctx-menu" style="left:{cm.x}px;top:{cm.y}px" onclick={(e) => e.stopPropagation()}>
+    <div class="ctx-menu" style="left:{cm.x}px;top:{cm.y}px">
       <button class="ctx-item" onclick={() => startRename(cm.habit)}>Rename</button>
       <button class="ctx-item" onclick={() => handleToggleRepeatable(cm.habit)}>
         {cm.habit.data.repeatable ? '✓ ' : ''}Repeatable

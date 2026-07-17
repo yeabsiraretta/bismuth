@@ -3,6 +3,7 @@ import { MAX_CLOSED_TAB_HISTORY } from '@/constants/layout';
 import { EDITOR_TABS_KEY } from '@/constants/storage-keys';
 import { setActiveNote } from '@/hubs/core/stores/vault-store.svelte';
 import type { ClosedTabEntry, EditorTab, TabGroup, TabKind } from '@/hubs/editor/types/editor-tabs';
+import { isTextNotePath } from '@/utils/file-kind';
 import { log } from '@/utils/log/logger';
 
 let nextId = 0;
@@ -107,7 +108,7 @@ function inferKind(path: string): TabKind {
 
 export function openTab(path: string, title: string): void {
   const kind = inferKind(path);
-  if (kind === 'note' && !path.endsWith('.md')) {
+  if (kind === 'note' && !isTextNotePath(path)) {
     log.debug('Skipped opening non-note path as tab', { path });
     return;
   }

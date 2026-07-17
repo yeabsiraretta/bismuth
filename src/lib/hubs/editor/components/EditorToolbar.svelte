@@ -12,6 +12,7 @@
     onViewModeChange,
     disabled = false,
     livePreviewEnabled = true,
+    plainTextMode = false,
     highlighterColors = DEFAULT_HIGHLIGHTER_COLORS,
   }: {
     onFormat: (type: string) => void;
@@ -20,6 +21,7 @@
     onViewModeChange?: (mode: 'source' | 'live' | 'reading') => void;
     disabled?: boolean;
     livePreviewEnabled?: boolean;
+    plainTextMode?: boolean;
     highlighterColors?: HighlighterColor[];
   } = $props();
 
@@ -53,239 +55,248 @@
 </script>
 
 <div class="toolbar" role="toolbar" aria-label="Editor toolbar">
-  <!-- Formatting group: headings -->
-  <div class="toolbar-group">
-    <div class="heading-dropdown">
-      <button
-        class="tb-btn"
-        onclick={toggleHeadings}
-        title="Headings"
-        aria-label="Headings"
-        aria-expanded={showHeadings}
-        aria-haspopup="menu"
-        {disabled}
-      >
-        <BIcon name="heading" size={15} />
-        <BIcon name="caretDown" size={10} class="tb-caret" />
-      </button>
-      {#if showHeadings}
-        <div class="heading-menu" role="menu">
-          {#each [1, 2, 3, 4, 5, 6] as level (level)}
-            <button
-              class="heading-item"
-              onclick={() => selectHeading(level)}
-              role="menuitem"
-              style="font-size: {1.1 - level * 0.08}rem; font-weight: {level <= 3 ? 700 : 600}"
-            >
-              H{level}
-            </button>
-          {/each}
-        </div>
-      {/if}
+  {#if plainTextMode}
+    <div class="toolbar-group">
+      <span class="tb-pill" aria-label="Pen text mode">
+        <BIcon name="highlightPen" size={13} />
+        Pen mode (plain text)
+      </span>
     </div>
-  </div>
-
-  <div class="toolbar-sep"></div>
-
-  <!-- Formatting group: inline -->
-  <div class="toolbar-group">
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('bold')}
-      title="Bold (Cmd+B)"
-      aria-label="Bold"
-      {disabled}
-    >
-      <BIcon name="bold" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('italic')}
-      title="Italic (Cmd+I)"
-      aria-label="Italic"
-      {disabled}
-    >
-      <BIcon name="italic" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('underline')}
-      title="Underline (Cmd+U)"
-      aria-label="Underline"
-      {disabled}
-    >
-      <BIcon name="underline" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('strikethrough')}
-      title="Strikethrough (Cmd+Shift+S)"
-      aria-label="Strikethrough"
-      {disabled}
-    >
-      <BIcon name="strikethrough" size={15} />
-    </button>
-    <div class="highlight-dropdown">
-      <button
-        class="tb-btn tb-icon-highlight"
-        onclick={toggleHighlighterMenu}
-        title="Highlight Colors"
-        aria-label="Highlight Colors"
-        aria-expanded={showHighlighterMenu}
-        aria-haspopup="menu"
-        {disabled}
-      >
-        <BIcon name="highlightPen" size={15} />
-        <BIcon name="caretDown" size={10} class="tb-caret" />
-      </button>
-      {#if showHighlighterMenu}
-        <div class="highlight-menu" role="menu">
-          <div class="highlight-palette">
-            {#each highlighterColors as color (color.name)}
+  {:else}
+    <!-- Formatting group: headings -->
+    <div class="toolbar-group">
+      <div class="heading-dropdown">
+        <button
+          class="tb-btn"
+          onclick={toggleHeadings}
+          title="Headings"
+          aria-label="Headings"
+          aria-expanded={showHeadings}
+          aria-haspopup="menu"
+          {disabled}
+        >
+          <BIcon name="heading" size={15} />
+          <BIcon name="caretDown" size={10} class="tb-caret" />
+        </button>
+        {#if showHeadings}
+          <div class="heading-menu" role="menu">
+            {#each [1, 2, 3, 4, 5, 6] as level (level)}
               <button
-                class="highlight-swatch"
-                onclick={() => selectHighlightColor(color)}
-                title={color.name}
+                class="heading-item"
+                onclick={() => selectHeading(level)}
                 role="menuitem"
-                style="background: {color.color}"
-              ></button>
+                style="font-size: {1.1 - level * 0.08}rem; font-weight: {level <= 3 ? 700 : 600}"
+              >
+                H{level}
+              </button>
             {/each}
           </div>
-          <div class="highlight-menu-sep"></div>
-          <button
-            class="highlight-action"
-            onclick={() => {
-              onFormat('highlight');
-              showHighlighterMenu = false;
-            }}
-            role="menuitem"
-          >
-            <BIcon name="highlightPen" size={13} />
-            Default ==highlight==
-          </button>
-          <button
-            class="highlight-action highlight-remove"
-            onclick={removeHighlight}
-            role="menuitem"
-          >
-            <BIcon name="close" size={13} />
-            Remove highlight
-          </button>
-        </div>
-      {/if}
+        {/if}
+      </div>
     </div>
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('code')}
-      title="Inline Code (Cmd+E)"
-      aria-label="Inline Code"
-      {disabled}
-    >
-      <BIcon name="codeInline" size={15} />
-    </button>
-  </div>
 
-  <div class="toolbar-sep"></div>
+    <div class="toolbar-sep"></div>
 
-  <!-- Formatting group: lists & blocks -->
-  <div class="toolbar-group">
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('bullet')}
-      title="Bullet List"
-      aria-label="Bullet List"
-      {disabled}
-    >
-      <BIcon name="listBullet" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('numbered')}
-      title="Numbered List"
-      aria-label="Numbered List"
-      {disabled}
-    >
-      <BIcon name="listNumbered" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('checklist')}
-      title="Checklist"
-      aria-label="Checklist"
-      {disabled}
-    >
-      <BIcon name="tasks" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('blockquote')}
-      title="Blockquote"
-      aria-label="Blockquote"
-      {disabled}
-    >
-      <BIcon name="blockquote" size={15} />
-    </button>
-  </div>
+    <!-- Formatting group: inline -->
+    <div class="toolbar-group">
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('bold')}
+        title="Bold (Cmd+B)"
+        aria-label="Bold"
+        {disabled}
+      >
+        <BIcon name="bold" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('italic')}
+        title="Italic (Cmd+I)"
+        aria-label="Italic"
+        {disabled}
+      >
+        <BIcon name="italic" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('underline')}
+        title="Underline (Cmd+U)"
+        aria-label="Underline"
+        {disabled}
+      >
+        <BIcon name="underline" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('strikethrough')}
+        title="Strikethrough (Cmd+Shift+S)"
+        aria-label="Strikethrough"
+        {disabled}
+      >
+        <BIcon name="strikethrough" size={15} />
+      </button>
+      <div class="highlight-dropdown">
+        <button
+          class="tb-btn tb-icon-highlight"
+          onclick={toggleHighlighterMenu}
+          title="Highlight Colors"
+          aria-label="Highlight Colors"
+          aria-expanded={showHighlighterMenu}
+          aria-haspopup="menu"
+          {disabled}
+        >
+          <BIcon name="highlightPen" size={15} />
+          <BIcon name="caretDown" size={10} class="tb-caret" />
+        </button>
+        {#if showHighlighterMenu}
+          <div class="highlight-menu" role="menu">
+            <div class="highlight-palette">
+              {#each highlighterColors as color (color.name)}
+                <button
+                  class="highlight-swatch"
+                  onclick={() => selectHighlightColor(color)}
+                  title={color.name}
+                  role="menuitem"
+                  style="background: {color.color}"
+                ></button>
+              {/each}
+            </div>
+            <div class="highlight-menu-sep"></div>
+            <button
+              class="highlight-action"
+              onclick={() => {
+                onFormat('highlight');
+                showHighlighterMenu = false;
+              }}
+              role="menuitem"
+            >
+              <BIcon name="highlightPen" size={13} />
+              Default ==highlight==
+            </button>
+            <button
+              class="highlight-action highlight-remove"
+              onclick={removeHighlight}
+              role="menuitem"
+            >
+              <BIcon name="close" size={13} />
+              Remove highlight
+            </button>
+          </div>
+        {/if}
+      </div>
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('code')}
+        title="Inline Code (Cmd+E)"
+        aria-label="Inline Code"
+        {disabled}
+      >
+        <BIcon name="codeInline" size={15} />
+      </button>
+    </div>
 
-  <div class="toolbar-sep"></div>
+    <div class="toolbar-sep"></div>
 
-  <!-- Formatting group: insert -->
-  <div class="toolbar-group">
-    <button
-      class="tb-btn"
-      onclick={() => onFormat('wikilink')}
-      title="Wikilink (Cmd+K)"
-      aria-label="Wikilink"
-      {disabled}
-    >
-      <BIcon name="backlinks" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('link')}
-      title="Link"
-      aria-label="Link"
-      {disabled}
-    >
-      <BIcon name="links" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('image')}
-      title="Image"
-      aria-label="Image"
-      {disabled}
-    >
-      <BIcon name="media" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('hr')}
-      title="Horizontal Rule"
-      aria-label="Horizontal Rule"
-      {disabled}
-    >
-      <BIcon name="hr" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('codeblock')}
-      title="Code Block"
-      aria-label="Code Block"
-      {disabled}
-    >
-      <BIcon name="codeBlock" size={15} />
-    </button>
-    <button
-      class="tb-btn"
-      onclick={() => onInsertBlock('table')}
-      title="Table"
-      aria-label="Table"
-      {disabled}
-    >
-      <BIcon name="table" size={15} />
-    </button>
-  </div>
+    <!-- Formatting group: lists & blocks -->
+    <div class="toolbar-group">
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('bullet')}
+        title="Bullet List"
+        aria-label="Bullet List"
+        {disabled}
+      >
+        <BIcon name="listBullet" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('numbered')}
+        title="Numbered List"
+        aria-label="Numbered List"
+        {disabled}
+      >
+        <BIcon name="listNumbered" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('checklist')}
+        title="Checklist"
+        aria-label="Checklist"
+        {disabled}
+      >
+        <BIcon name="tasks" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('blockquote')}
+        title="Blockquote"
+        aria-label="Blockquote"
+        {disabled}
+      >
+        <BIcon name="blockquote" size={15} />
+      </button>
+    </div>
+
+    <div class="toolbar-sep"></div>
+
+    <!-- Formatting group: insert -->
+    <div class="toolbar-group">
+      <button
+        class="tb-btn"
+        onclick={() => onFormat('wikilink')}
+        title="Wikilink (Cmd+K)"
+        aria-label="Wikilink"
+        {disabled}
+      >
+        <BIcon name="backlinks" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('link')}
+        title="Link"
+        aria-label="Link"
+        {disabled}
+      >
+        <BIcon name="links" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('image')}
+        title="Image"
+        aria-label="Image"
+        {disabled}
+      >
+        <BIcon name="media" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('hr')}
+        title="Horizontal Rule"
+        aria-label="Horizontal Rule"
+        {disabled}
+      >
+        <BIcon name="hr" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('codeblock')}
+        title="Code Block"
+        aria-label="Code Block"
+        {disabled}
+      >
+        <BIcon name="codeBlock" size={15} />
+      </button>
+      <button
+        class="tb-btn"
+        onclick={() => onInsertBlock('table')}
+        title="Table"
+        aria-label="Table"
+        {disabled}
+      >
+        <BIcon name="table" size={15} />
+      </button>
+    </div>
+  {/if}
 
   <!-- Spacer -->
   <div class="toolbar-spacer"></div>
@@ -380,6 +391,18 @@
     transition:
       background var(--transition-fast),
       color var(--transition-fast);
+  }
+  .tb-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.45rem;
+    border-radius: var(--radius-s);
+    color: var(--color-warning);
+    background: color-mix(in oklab, var(--color-warning) 12%, transparent);
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
   }
   .tb-btn:hover {
     background: var(--color-surface-hover);

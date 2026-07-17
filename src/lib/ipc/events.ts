@@ -1,30 +1,47 @@
-import type { Event as TauriEvent, UnlistenFn } from '@tauri-apps/api/event';
-import { emit, emitTo, listen, once } from '@tauri-apps/api/event';
-
 import type { EventPayload } from '@/types/events';
+
+export type UnlistenFn = () => void;
+
+const NOOP_UNLISTEN: UnlistenFn = () => {};
 
 export async function listenEvent<T>(
   channel: string,
   handler: (payload: EventPayload<T>) => void
 ): Promise<UnlistenFn> {
-  return listen<EventPayload<T>>(channel, (event: TauriEvent<EventPayload<T>>) => {
-    handler(event.payload);
-  });
+  try {
+    const { listen } = await import('@tauri-apps/api/event');
+    return await listen<EventPayload<T>>(channel, (event) => {
+      handler(event.payload);
+    });
+  } catch {
+    return NOOP_UNLISTEN;
+  }
 }
 
 export async function listenOnce<T>(
   channel: string,
   handler: (payload: EventPayload<T>) => void
 ): Promise<UnlistenFn> {
-  return once<EventPayload<T>>(channel, (event: TauriEvent<EventPayload<T>>) => {
-    handler(event.payload);
-  });
+  try {
+    const { once } = await import('@tauri-apps/api/event');
+    return await once<EventPayload<T>>(channel, (event) => {
+      handler(event.payload);
+    });
+  } catch {
+    return NOOP_UNLISTEN;
+  }
 }
 
 export async function emitEvent<T>(channel: string, payload: T): Promise<void> {
-  return emit(channel, payload);
+  try {
+    const { emit } = await import('@tauri-apps/api/event');
+    await emit(channel, payload);
+  } catch {
+    return;
+  }
 }
 
 async function emitToWebview<T>(label: string, channel: string, payload: T): Promise<void> {
+  const { emitTo } = await import('@tauri-apps/api/event');
   return emitTo(label, channel, payload);
 }

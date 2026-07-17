@@ -1,0 +1,22 @@
+{
+  "server_name": "bismuth",
+  "env": {
+    "url": "BISMUTH_MCP_URL",
+    "protocol": "BISMUTH_MCP_PROTOCOL",
+    "host": "BISMUTH_MCP_HOST",
+    "port": "BISMUTH_MCP_PORT",
+    "path": "BISMUTH_MCP_PATH"
+  },
+  "defaults": {
+    "protocol": "http",
+    "host": "127.0.0.1",
+    "port": 21721,
+    "path": "/mcp"
+  },
+  "read_order": [
+    "BISMUTH_MCP_URL",
+    "BISMUTH_MCP_PROTOCOL + BISMUTH_MCP_HOST + BISMUTH_MCP_PORT + BISMUTH_MCP_PATH",
+    "defaults"
+  ],
+  "write_target": "mcp/config.dynamic.json"
+}

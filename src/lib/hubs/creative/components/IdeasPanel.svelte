@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { CREATIVE_IDEAS_KEY } from '@/constants/storage-keys';
+  import {
+    addCreativeIdea,
+    getCreativeIdeas,
+    removeCreativeIdea,
+    type CreativeIdea as Idea,
+  } from '@/hubs/creative/stores/ideas-store.svelte';
   import { openNote } from '@/ui/panel-actions';
   import Panel from '@/ui/panel.svelte';
   import BIcon from '@/ui/b-icon.svelte';
@@ -15,46 +20,23 @@
     'What is the simplest version?',
   ];
 
-  interface Idea {
-    id: string;
-    text: string;
-    tags: string;
-    ts: number;
-  }
-
-  let ideas = $state<Idea[]>(loadIdeas());
+  let ideas = $derived(getCreativeIdeas());
   let newText = $state('');
   let newTags = $state('');
   let prompt = $state(randomPrompt());
-
-  function loadIdeas(): Idea[] {
-    try {
-      return JSON.parse(localStorage.getItem(CREATIVE_IDEAS_KEY) ?? '[]');
-    } catch {
-      return [];
-    }
-  }
-  function save() {
-    localStorage.setItem(CREATIVE_IDEAS_KEY, JSON.stringify(ideas));
-  }
   function randomPrompt() {
     return PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
   }
 
   function addIdea() {
     if (!newText.trim()) return;
-    ideas = [
-      { id: crypto.randomUUID(), text: newText.trim(), tags: newTags.trim(), ts: Date.now() },
-      ...ideas,
-    ];
+    addCreativeIdea(newText, newTags);
     newText = '';
     newTags = '';
-    save();
   }
 
   function removeIdea(id: string) {
-    ideas = ideas.filter((i) => i.id !== id);
-    save();
+    removeCreativeIdea(id);
   }
 
   function openAsNote(idea: Idea) {

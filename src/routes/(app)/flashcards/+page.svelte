@@ -3,8 +3,11 @@
   import { pageTitle, SITE_URL } from '@/constants/seo';
   import { awardFlashcardXp } from '@/hubs/core/stores/gamification-store.svelte';
   import { getSettings } from '@/hubs/core/stores/settings-store.svelte';
-  import { getNotes } from '@/hubs/core/stores/vault-store.svelte';
-  import { getCachedContent } from '@/hubs/editor/services/file-ops';
+  import {
+    getNotes,
+    rescanVault as refreshVaultNotes,
+  } from '@/hubs/core/stores/vault-store.svelte';
+  import { getCachedContent, updateCachedContent } from '@/hubs/editor/services/file-ops';
   import { getCardsInDeck } from '@/hubs/knowledge/services/flashcard-stats';
   import {
     getAnkiDecks,
@@ -22,6 +25,7 @@
     scanMultipleNotes,
   } from '@/hubs/knowledge/stores/flashcard-store.svelte';
   import type { Flashcard, ReviewGrade } from '@/hubs/knowledge/types/flashcard-types';
+  import { createNote, readNote, writeNote } from '@/sal/note-service';
   import FlashcardAnkiTab from '@/hubs/knowledge/components/FlashcardAnkiTab.svelte';
   import FlashcardBrowseView from '@/hubs/knowledge/components/FlashcardBrowseView.svelte';
   import FlashcardStatsTab from '@/hubs/knowledge/components/FlashcardStatsTab.svelte';
@@ -69,7 +73,7 @@
     try {
       ankiResult = await syncAnkiToVault(settings.integration.ankiBackupFolder);
       if (ankiResult.errors.length > 0) ankiError = ankiResult.errors.join('\n');
-      rescanVault();
+      rescanFlashcards();
     } catch (e) {
       ankiError = (e as Error).message;
     } finally {
@@ -77,10 +81,19 @@
     }
   }
   let selectedDeck = $state('');
+  let createDeckInput = $state('');
+  let createCardDeckInput = $state('');
+  let createCardFront = $state('');
+  let createCardBack = $state('');
+  let createCardType = $state<'basic' | 'basic-reversed' | 'cloze'>('basic');
+  let createStatus = $state<string | null>(null);
+  let createError = $state<string | null>(null);
+
+  const DECK_SEGMENT_SAFE_RE = /[^a-zA-Z0-9 _-]/g;
 
   onMount(() => {
     initFlashcardStore();
-    rescanVault();
+    rescanFlashcards();
 
     const handleKeydown = (e: KeyboardEvent) => {
       if (mode !== 'study' || !currentCard) return;
@@ -101,7 +114,7 @@
     return () => document.removeEventListener('keydown', handleKeydown);
   });
 
-  function rescanVault() {
+  function rescanFlashcards() {
     const notes = getNotes();
     const noteData = notes
       .map((n) => ({ path: n.path, content: getCachedContent(n.path) ?? '' }))
@@ -112,9 +125,116 @@
   $effect(() => {
     if (autoScan) {
       const notes = getNotes();
-      if (notes.length > 0) rescanVault();
+      if (notes.length > 0) rescanFlashcards();
     }
   });
+
+  function normalizeDeckSegments(raw: string): string[] {
+    const normalized = raw
+      .trim()
+      .replace(/^Bismuth::/i, '')
+      .replaceAll('/', '::');
+    if (!normalized) return [];
+    return normalized
+      .split('::')
+      .map((part) => part.trim().replace(DECK_SEGMENT_SAFE_RE, ''))
+      .filter((part) => part.length > 0);
+  }
+
+  function deckPathFromSegments(segments: string[]): string {
+    return segments.length > 0 ? `Bismuth::${segments.join('::')}` : 'Bismuth';
+  }
+
+  function cardLine(
+    front: string,
+    back: string,
+    type: 'basic' | 'basic-reversed' | 'cloze'
+  ): string {
+    if (type === 'cloze') return front.trim();
+    if (type === 'basic-reversed') return `${front.trim()} ::: ${back.trim()}`;
+    return `${front.trim()} :: ${back.trim()}`;
+  }
+
+  async function ensureDeckNote(deckInput: string): Promise<{
+    notePath: string;
+    deckPath: string;
+    noteContent: string;
+  }> {
+    const segments = normalizeDeckSegments(deckInput);
+    if (segments.length === 0) {
+      throw new Error('Deck name is required.');
+    }
+    const deckPath = deckPathFromSegments(segments);
+    const deckFolder = `flashcards/${segments.join('/')}`;
+    const notePath = `${deckFolder}/cards.md`;
+    const existing = getNotes().find((n) => n.path === notePath);
+
+    if (!existing) {
+      const header = `# ${segments[segments.length - 1]} Flashcards\n\n#flashcards/${segments.join('/')}\n`;
+      await createNote('cards', deckFolder, header);
+      updateCachedContent(notePath, header);
+      return { notePath, deckPath, noteContent: header };
+    }
+
+    const cached = getCachedContent(notePath);
+    if (cached !== undefined) {
+      return { notePath, deckPath, noteContent: cached };
+    }
+    const note = await readNote(notePath);
+    updateCachedContent(notePath, note.content);
+    return { notePath, deckPath, noteContent: note.content };
+  }
+
+  async function handleCreateDeck() {
+    createStatus = null;
+    createError = null;
+    try {
+      const { deckPath } = await ensureDeckNote(createDeckInput);
+      await refreshVaultNotes();
+      rescanFlashcards();
+      selectedDeck = deckPath;
+      createCardDeckInput = deckPath;
+      createStatus = `Deck ready: ${deckPath}`;
+      createDeckInput = '';
+    } catch (e) {
+      createError = e instanceof Error ? e.message : String(e);
+    }
+  }
+
+  async function handleCreateCard() {
+    createStatus = null;
+    createError = null;
+    const front = createCardFront.trim();
+    const back = createCardBack.trim();
+    if (!front) {
+      createError = 'Front text is required.';
+      return;
+    }
+    if (createCardType !== 'cloze' && !back) {
+      createError = 'Back text is required for non-cloze cards.';
+      return;
+    }
+
+    try {
+      const { notePath, deckPath, noteContent } = await ensureDeckNote(
+        createCardDeckInput || selectedDeck
+      );
+      const line = cardLine(front, back, createCardType);
+      const spacer = noteContent.trimEnd().length === 0 ? '' : '\n\n';
+      const updated = `${noteContent.trimEnd()}${spacer}${line}\n`;
+      await writeNote(notePath, updated);
+      updateCachedContent(notePath, updated);
+      await refreshVaultNotes();
+      rescanFlashcards();
+      selectedDeck = deckPath;
+      createCardDeckInput = deckPath;
+      createCardFront = '';
+      createCardBack = '';
+      createStatus = `Card added to ${deckPath}`;
+    } catch (e) {
+      createError = e instanceof Error ? e.message : String(e);
+    }
+  }
 
   let allCards = $derived(getScannedCards());
   let deckTree = $derived(getDeckTree());
@@ -248,8 +368,65 @@
           {/each}
         </select>
         <span class="fc-count">{filteredCards.length} cards · {dueCards.length} due</span>
-        <button class="rescan-btn" onclick={rescanVault}>Rescan</button>
+        <button class="rescan-btn" onclick={rescanFlashcards}>Rescan</button>
       </div>
+      <div class="fc-create-row">
+        <div class="fc-create-block">
+          <h3>Create Deck</h3>
+          <div class="fc-create-fields">
+            <input
+              class="fc-input"
+              type="text"
+              placeholder="Deck name (e.g. CS::Algorithms)"
+              bind:value={createDeckInput}
+              aria-label="New deck name"
+            />
+            <button class="create-btn" onclick={handleCreateDeck}>Create Deck</button>
+          </div>
+        </div>
+        <div class="fc-create-block">
+          <h3>Create Card</h3>
+          <div class="fc-create-fields fc-create-grid">
+            <input
+              class="fc-input"
+              type="text"
+              placeholder="Deck (defaults to selected deck)"
+              bind:value={createCardDeckInput}
+              aria-label="Card deck"
+            />
+            <select class="deck-select" bind:value={createCardType} aria-label="Card type">
+              <option value="basic">Basic (::)</option>
+              <option value="basic-reversed">Basic Reversed (:::) </option>
+              <option value="cloze">Cloze</option>
+            </select>
+            <input
+              class="fc-input"
+              type="text"
+              placeholder={createCardType === 'cloze'
+                ? 'Front text with {{c1::...}} or ==...=='
+                : 'Front'}
+              bind:value={createCardFront}
+              aria-label="Card front"
+            />
+            {#if createCardType !== 'cloze'}
+              <input
+                class="fc-input"
+                type="text"
+                placeholder="Back"
+                bind:value={createCardBack}
+                aria-label="Card back"
+              />
+            {/if}
+            <button class="create-btn" onclick={handleCreateCard}>Create Card</button>
+          </div>
+        </div>
+      </div>
+      {#if createStatus}
+        <p class="fc-status">{createStatus}</p>
+      {/if}
+      {#if createError}
+        <p class="fc-error">{createError}</p>
+      {/if}
     </header>
 
     {#if mode === 'anki'}

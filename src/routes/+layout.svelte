@@ -13,6 +13,8 @@
   import '../app.css';
   import { MetaTags } from 'svelte-meta-tags';
   import SplashScreen from '$lib/ui/splash-screen.svelte';
+  import { isFeatureEnabled } from '@/feature-flags/openfeature';
+  import { isTauriAvailable } from '@/utils/platform';
 
   let { children } = $props();
 
@@ -20,7 +22,11 @@
 
   onMount(() => {
     // Register service worker only in web deployments — skip Tauri desktop app
-    if ('serviceWorker' in navigator && !('__TAURI_INTERNALS__' in window)) {
+    if (
+      'serviceWorker' in navigator &&
+      !isTauriAvailable() &&
+      isFeatureEnabled('web_service_worker')
+    ) {
       navigator.serviceWorker.register('/service-worker.js', {
         type: dev ? 'module' : 'classic',
       });

@@ -1,3 +1,5 @@
+import { stripTextNoteExtension } from '@/utils/file-kind';
+
 export interface WikiLink {
   sourcePath: string;
   targetTitle: string;
@@ -48,13 +50,13 @@ export function resolveWikilink(targetTitle: string, allNotePaths: string[]): st
   const normalized = targetTitle.toLowerCase().replace(/\s+/g, '-');
 
   const exact = allNotePaths.find((p) => {
-    const name = p.split('/').pop()?.replace('.md', '').toLowerCase();
+    const name = stripTextNoteExtension(p.split('/').pop() ?? '').toLowerCase();
     return name === normalized;
   });
   if (exact) return exact;
 
   const fuzzy = allNotePaths.find((p) => {
-    const name = p.split('/').pop()?.replace('.md', '').toLowerCase();
+    const name = stripTextNoteExtension(p.split('/').pop() ?? '').toLowerCase();
     return name?.includes(normalized);
   });
   return fuzzy ?? null;

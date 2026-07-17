@@ -33,8 +33,9 @@
     isVaultOpen,
     rescanVault,
   } from '@/hubs/core/stores/vault-store.svelte';
-  import { getStoredScale, setUIScale } from '@/hubs/core/services/zoom';
+  import { getStoredScale, restoreUIScale, setUIScale } from '@/hubs/core/services/zoom';
   import { createNote, writeNote } from '@/sal/note-service';
+  import { getTextNoteExtension, isTextNotePath, titleFromPath } from '@/utils/file-kind';
   import { openVaultDialog } from '@/sal/vault-service';
   import {
     closeAllTabs,
@@ -50,8 +51,6 @@
   import { createCanvasFile } from '@/hubs/canvas/services/canvas-file-service';
   import { initWikilinkListener } from '@/hubs/editor/services/wikilink-handler';
   import { buildDailyNotePath } from '@/hubs/navigator/services/capture-service';
-  import { listen } from '@tauri-apps/api/event';
-  import type { UnlistenFn } from '@tauri-apps/api/event';
   import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
   import { updated } from '$app/state';
   import { onMount } from 'svelte';
@@ -102,7 +101,10 @@
     initTopicLinkStore,
     destroyTopicLinkStore,
   } from '@/hubs/knowledge/stores/topic-link-store.svelte';
+  import { isTauriAvailable } from '@/utils/platform';
+  import { requestTextPrompt } from '@/utils/text-prompt';
   import { SvelteMap } from 'svelte/reactivity';
+  type UnlistenFn = () => void;
   const moduleCache = new SvelteMap<string, Component>();
   let leftComp = $state<Component | null>(null);
   let rightComp = $state<Component | null>(null);
@@ -116,7 +118,7 @@
   }
 
   async function handleNewNote() {
-    const title = prompt('New note title:');
+    const title = await requestTextPrompt({ title: 'New note title:' });
     if (!title?.trim()) return;
     try {
       const note = await createNote(title.trim());
@@ -127,8 +129,20 @@
     }
   }
 
+  async function handleNewPen() {
+    const title = await requestTextPrompt({ title: 'New pen file name:' });
+    if (!title?.trim()) return;
+    try {
+      const note = await createNote(title.trim(), 'design', '', 'pen');
+      await rescanVault();
+      window.dispatchEvent(new CustomEvent('open-note', { detail: { path: note.path } }));
+    } catch {
+      /* Tauri-only */
+    }
+  }
+
   async function handleNewCanvas() {
-    const name = prompt('New canvas name:');
+    const name = await requestTextPrompt({ title: 'New canvas name:' });
     if (!name?.trim()) return;
     try {
       const entry = await createCanvasFile(name.trim());
@@ -146,6 +160,7 @@
   const COMMANDS = buildCommands({
     navigateTo,
     handleNewNote,
+    handleNewPen,
     zoomIn,
     zoomOut,
     zoomReset,
@@ -174,8 +189,9 @@
       openTab(path, pdfTitle);
       return;
     }
-    if (!path.endsWith('.md')) return;
-    const title = path.split('/').pop()?.replace('.md', '') ?? 'Untitled';
+    if (!isTextNotePath(path)) return;
+    const title = titleFromPath(path);
+    const extension = getTextNoteExtension(path) ?? 'md';
     const folder = path.includes('/') ? path.split('/').slice(0, -1).join('/') : undefined;
     if (detail.content && detail.append) {
       const existing = getCachedContent(path) ?? '';
@@ -192,7 +208,7 @@
       return;
     }
     if (detail.content) {
-      createNote(title, folder, detail.content)
+      createNote(title, folder, detail.content, extension)
         .then(() => rescanVault())
         .then(() => {
           openTab(path, title);
@@ -255,6 +271,17 @@
 
   const ZOOM_STEP = 0.05;
   let menuUnlisteners: UnlistenFn[] = [];
+  let hasMounted = false;
+
+  function redirectToWelcome(step: string) {
+    if (window.location.pathname === '/welcome') return;
+    layoutLog.info('No vault open — redirecting to welcome', {
+      process: 'vault-route-guard',
+      step,
+      pathname: window.location.pathname,
+    });
+    goto('/welcome');
+  }
 
   function zoomIn() {
     setUIScale(getStoredScale() + ZOOM_STEP);
@@ -267,11 +294,13 @@
   }
 
   onMount(() => {
+    hasMounted = true;
     layoutLog.info('App layout mounting', { pathname: window.location.pathname });
 
     initSettings();
     initTheme();
     initLayout();
+    restoreUIScale();
     initVaultStore();
     initTabs();
     initHotkeys();
@@ -280,68 +309,75 @@
     initTopicLinkStore();
     startPerformanceObservers();
 
-    if ('__TAURI_INTERNALS__' in window) {
-      const wire = (event: string, handler: () => void) => {
-        listen(event, () => {
-          layoutLog.debug(`Received ${event}`);
-          handler();
-        }).then((fn) => menuUnlisteners.push(fn));
-      };
+    if (isTauriAvailable()) {
+      void (async () => {
+        try {
+          const { listen } = await import('@tauri-apps/api/event');
+          const wire = (event: string, handler: () => void) => {
+            listen(event, () => {
+              layoutLog.debug(`Received ${event}`);
+              handler();
+            }).then((fn) => menuUnlisteners.push(fn));
+          };
 
-      wire('menu:new-note', handleNewNote);
-      wire('menu:open-vault', () => openVaultDialog());
-      wire('menu:close-vault', () => {
-        closeVault();
-        goto('/welcome');
-      });
-      wire('menu:rescan-vault', () => rescanVault());
-      wire('menu:open-settings', () => openSettings());
-      wire('menu:toggle-sidebar', toggleLeftSidebar);
-      wire('menu:new-canvas', handleNewCanvas);
-      wire('menu:zoom-in', zoomIn);
-      wire('menu:zoom-out', zoomOut);
-      wire('menu:zoom-reset', zoomReset);
-      wire('menu:command-palette', togglePalette);
-      wire('menu:find', () => {
-        window.dispatchEvent(new CustomEvent('editor:open-search'));
-      });
-      wire('menu:replace', () => {
-        window.dispatchEvent(new CustomEvent('editor:open-search'));
-      });
+          wire('menu:new-note', handleNewNote);
+          wire('menu:open-vault', () => openVaultDialog());
+          wire('menu:close-vault', () => {
+            closeVault();
+            goto('/welcome');
+          });
+          wire('menu:rescan-vault', () => rescanVault());
+          wire('menu:open-settings', () => openSettings());
+          wire('menu:toggle-sidebar', toggleLeftSidebar);
+          wire('menu:new-canvas', handleNewCanvas);
+          wire('menu:zoom-in', zoomIn);
+          wire('menu:zoom-out', zoomOut);
+          wire('menu:zoom-reset', zoomReset);
+          wire('menu:command-palette', togglePalette);
+          wire('menu:find', () => {
+            window.dispatchEvent(new CustomEvent('editor:open-search'));
+          });
+          wire('menu:replace', () => {
+            window.dispatchEvent(new CustomEvent('editor:open-search'));
+          });
 
-      // Deep-link URI handlers (bismuth://open/..., bismuth://search/..., etc.)
-      listen('deep-link:open-note', (event) => {
-        const path = event.payload as string;
-        if (path) {
-          window.dispatchEvent(new CustomEvent('open-note', { detail: { path } }));
+          // Deep-link URI handlers (bismuth://open/..., bismuth://search/..., etc.)
+          listen('deep-link:open-note', (event) => {
+            const path = event.payload as string;
+            if (path) {
+              window.dispatchEvent(new CustomEvent('open-note', { detail: { path } }));
+            }
+          }).then((fn) => menuUnlisteners.push(fn));
+
+          listen('deep-link:search', (event) => {
+            const query = event.payload as string;
+            if (query) {
+              performSearch(query);
+              goto('/editor');
+            }
+          }).then((fn) => menuUnlisteners.push(fn));
+
+          listen('deep-link:new-note', (event) => {
+            const title = event.payload as string;
+            if (title) {
+              createNote(title)
+                .then(() => rescanVault())
+                .then(() => {
+                  window.dispatchEvent(
+                    new CustomEvent('open-note', { detail: { path: `${title}.md` } })
+                  );
+                })
+                .catch(() => {});
+            }
+          }).then((fn) => menuUnlisteners.push(fn));
+
+          listen('deep-link:focus', () => {
+            layoutLog.debug('Deep link: focus received');
+          }).then((fn) => menuUnlisteners.push(fn));
+        } catch (error) {
+          layoutLog.warn('Failed to initialize Tauri event listeners', { error: String(error) });
         }
-      }).then((fn) => menuUnlisteners.push(fn));
-
-      listen('deep-link:search', (event) => {
-        const query = event.payload as string;
-        if (query) {
-          performSearch(query);
-          goto('/editor');
-        }
-      }).then((fn) => menuUnlisteners.push(fn));
-
-      listen('deep-link:new-note', (event) => {
-        const title = event.payload as string;
-        if (title) {
-          createNote(title)
-            .then(() => rescanVault())
-            .then(() => {
-              window.dispatchEvent(
-                new CustomEvent('open-note', { detail: { path: `${title}.md` } })
-              );
-            })
-            .catch(() => {});
-        }
-      }).then((fn) => menuUnlisteners.push(fn));
-
-      listen('deep-link:focus', () => {
-        layoutLog.debug('Deep link: focus received');
-      }).then((fn) => menuUnlisteners.push(fn));
+      })();
     }
 
     const hk = (id: string, name: string, keys: string, action: () => void) =>
@@ -382,7 +418,7 @@
     window.addEventListener('tag-context', handleTagContext);
 
     if (!isVaultOpen()) {
-      goto('/welcome');
+      redirectToWelcome('mount-check');
     } else if (window.location.pathname === '/') {
       const cfg = getGeneral().homepage;
       let route = '/';
@@ -413,6 +449,7 @@
 
     const rmEvt = (e: string, h: (ev: Event) => void) => window.removeEventListener(e, h);
     return () => {
+      hasMounted = false;
       destroyWikilinkListener();
       rmEvt('open-note', handleOpenNote);
       rmEvt('open-canvas', handleOpenCanvas);
@@ -473,6 +510,11 @@
   });
 
   let hasVault = $derived(isVaultOpen());
+  $effect(() => {
+    if (hasMounted && !hasVault) {
+      redirectToWelcome('reactive-check');
+    }
+  });
   let leftCollapsed = $derived(!getLeftSidebarVisible());
   let rightCollapsed = $derived(!getRightSidebarVisible());
 

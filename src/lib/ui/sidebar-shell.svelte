@@ -254,11 +254,18 @@
             class="sb-split-handle"
             class:sb-split-resizing={isSplitResizing}
             role="separator"
+            aria-orientation="horizontal"
             aria-label="Resize split panels"
-            onmousedown={handleSplitResizeStart}
           >
+            <button
+              type="button"
+              class="sb-split-drag"
+              aria-label="Resize split panels"
+              onmousedown={handleSplitResizeStart}
+            ></button>
             <div class="sb-split-grip"></div>
             <button
+              type="button"
               class="sb-split-close"
               onclick={onCloseSplit}
               title="Close split"
@@ -527,6 +534,22 @@
     height: 2px;
     border-radius: 1px;
     background: var(--color-text-subtle);
+    position: relative;
+    z-index: 2;
+  }
+  .sb-split-drag {
+    position: absolute;
+    inset: 0;
+    border: none;
+    background: transparent;
+    cursor: row-resize;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+  }
+  .sb-split-drag:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
   }
   .sb-split-handle:hover .sb-split-grip,
   .sb-split-resizing .sb-split-grip {
@@ -550,6 +573,7 @@
     padding: 0;
     opacity: 0;
     transition: opacity 0.15s;
+    z-index: 3;
   }
   .sb-split-handle:hover .sb-split-close {
     opacity: 1;

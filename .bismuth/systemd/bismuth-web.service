@@ -1,0 +1,19 @@
+[Unit]
+Description=Bismuth web app service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/bismuth
+EnvironmentFile=-%h/.config/bismuth/bismuth-web.env
+Environment=BISMUTH_HOST=0.0.0.0
+Environment=BISMUTH_PORT=4173
+Environment=BISMUTH_STRICT_PORT=1
+Environment=BISMUTH_SKIP_BUILD=0
+ExecStart=/usr/bin/env bash %h/bismuth/scripts/serve-nas.sh
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -11,6 +11,8 @@ const config: KnipConfig = {
     'src/hooks.{client,server}.ts',
     // Vitest tests
     'src/**/*.test.ts',
+    // Vitest setup file (loaded by runner, not imported from tests directly)
+    'src/test/setup-tauri.ts',
   ],
 
   // ── Project files (what knip considers "in scope") ──────────────

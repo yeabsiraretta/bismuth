@@ -74,7 +74,7 @@
 
   let filtered = $derived(
     (() => {
-      let items = filter === 'all' ? allMedia : allMedia.filter((f) => f.type === filter);
+      let items = filter === 'all' ? [...allMedia] : allMedia.filter((f) => f.type === filter);
       if (search) {
         const q = search.toLowerCase();
         items = items.filter(

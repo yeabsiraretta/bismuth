@@ -41,6 +41,7 @@
   let loadGen = 0;
   let activeTab = $derived(getActiveTab());
   let activeTabPath = $derived(activeTab?.path ?? null);
+  let isPenFile = $derived(activeTabPath?.endsWith('.pen') ?? false);
 
   let editorSettings = $derived(getEditor());
   let generalSettings = $derived(getGeneral());
@@ -60,7 +61,7 @@
 
   let editorConfig: EditorConfig = $derived({
     ...editorSettings,
-    livePreview: editorSettings.livePreview && viewMode === 'live',
+    livePreview: !isPenFile && editorSettings.livePreview && viewMode === 'live',
     fontFamily: appearanceSettings.fontText,
     typewriter: getTypewriter(),
     vim: getVim(),
@@ -158,6 +159,12 @@
   });
 
   $effect(() => {
+    if (isPenFile && viewMode !== 'source') {
+      viewMode = 'source';
+    }
+  });
+
+  $effect(() => {
     const path = activeTabPath;
     if (path) {
       if (saveTimeout) {
@@ -186,7 +193,7 @@
       updateCachedContent(path, note.content);
     } catch {
       if (gen !== loadGen) return;
-      content = `# ${activeTab?.title ?? 'Untitled'}\n\nStart writing here...`;
+      content = isPenFile ? '' : `# ${activeTab?.title ?? 'Untitled'}\n\nStart writing here...`;
       lastSavedContent = content;
       updateCachedContent(path, content);
       log.debug('Could not load note from backend, using default content', { path });
@@ -303,6 +310,14 @@
 
 {#if activeTab}
   <div class="flex flex-col h-full">
+    {#if isPenFile}
+      <div class="px-3 py-1 text-xs border-b border-border text-text-muted bg-surface-hover/60">
+        <span class="inline-flex items-center gap-1.5">
+          <BIcon name="highlightPen" size={12} class="text-warning" />
+          Pen file mode ({activeTab.path}) — plain text workflow, stored under <code>design/</code>
+        </span>
+      </div>
+    {/if}
     {#if editorSettings.floatingToolbar}
       <EditorToolbar
         onFormat={handleFormat}
@@ -310,7 +325,8 @@
         {viewMode}
         onViewModeChange={(mode) => (viewMode = mode)}
         disabled={viewMode === 'reading'}
-        livePreviewEnabled={editorSettings.livePreview}
+        livePreviewEnabled={!isPenFile && editorSettings.livePreview}
+        plainTextMode={isPenFile}
       />
     {/if}
 

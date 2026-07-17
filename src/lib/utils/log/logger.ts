@@ -229,12 +229,19 @@ class Logger {
 
     this.counts[level]++;
 
+    const timestamp = new Date().toISOString();
     const safeMessage = scrubPaths(message);
     const safeContext = sanitizeContext(context);
     const errorDetail = this.extractError(err);
+    const processName =
+      typeof safeContext?.['process'] === 'string' ? safeContext['process'] : null;
+    const stepName = typeof safeContext?.['step'] === 'string' ? safeContext['step'] : null;
+    const processStep = [processName, stepName]
+      .filter((value): value is string => !!value)
+      .join('/');
 
     this.logEntries.push({
-      timestamp: new Date().toISOString(),
+      timestamp,
       level,
       scope: this.scope,
       message: safeMessage,
@@ -244,7 +251,14 @@ class Logger {
       this.logEntries.splice(0, this.logEntries.length - MAX_LOG_ENTRIES);
     }
 
-    const formatted = this.formatMessage(level, safeMessage, safeContext, errorDetail);
+    const formatted = this.formatMessage(
+      level,
+      timestamp,
+      safeMessage,
+      safeContext,
+      errorDetail,
+      processStep
+    );
 
     const pluginFn = PLUGIN_FNS[level];
     if (pluginFn) {
@@ -254,7 +268,10 @@ class Logger {
     if (this.consoleEnabled) {
       const consoleFn =
         level === 'fatal' || level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log';
-      console[consoleFn](`%c[${this.scope}]`, LEVEL_STYLES[level], safeMessage);
+      const scopePrefix = processStep
+        ? `${timestamp} [${this.scope}] [${processStep}]`
+        : `${timestamp} [${this.scope}]`;
+      console[consoleFn](`%c${scopePrefix} ${safeMessage}`, LEVEL_STYLES[level]);
       if (safeContext && Object.keys(safeContext).length > 0) {
         console[consoleFn]('%c  ctx:', 'color: #9ca3af', safeContext);
       }
@@ -266,11 +283,16 @@ class Logger {
 
   private formatMessage(
     _level: LogLevel,
+    timestamp: string,
     message: string,
     context?: Record<string, unknown>,
-    errorDetail?: ErrorDetail
+    errorDetail?: ErrorDetail,
+    processStep?: string
   ): string {
-    const parts = [`[${this.session}] [${this.scope}] ${message}`];
+    const header = processStep
+      ? `[${timestamp}] [${this.session}] [${this.scope}] [${processStep}] ${message}`
+      : `[${timestamp}] [${this.session}] [${this.scope}] ${message}`;
+    const parts = [header];
     if (context && Object.keys(context).length > 0) {
       parts.push(JSON.stringify(context));
     }

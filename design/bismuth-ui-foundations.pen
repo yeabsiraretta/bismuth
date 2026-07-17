@@ -1,0 +1,24 @@
+# Bismuth UI Foundations
+
+This pen anchors Bismuth-native design artifacts for reuse inside Bismuth.
+
+## Source Canvas
+
+- `design/bismuth-ui-foundations.canvas`
+
+## Token contract
+
+- `color.surface` + `color.accent` are the canonical shell + call-to-action color tokens.
+- `space.2`, `space.3`, and `radius.md` are baseline spacing/radius values for component parity.
+- Mode behavior is controlled by `designSystem.activeTokenMode` and resolved through MCP handoff tooling.
+
+## Component contract
+
+- `Button/Primary/MD` is the baseline CTA component variant.
+- `Shell/Sidebar` mirrors current app-shell ergonomics and should remain mapped to `src/lib/ui/sidebar-shell.svelte`.
+
+## Implementation notes
+
+- Use `reorder_canvas_elements` to maintain deterministic layer stacks during template updates.
+- Use `set_canvas_token_mode` before exporting handoff artifacts for theme-specific outputs.
+- Use `generate_code_connect_snippets` to produce framework-targeted snippets for implementation handoff.

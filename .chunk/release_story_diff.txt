@@ -1,0 +1,738 @@
+diff --git a/package.json b/package.json
+index 6b6395b..06d6fe8 100644
+--- a/package.json
++++ b/package.json
+@@ -7,20 +7,38 @@
+   "packageManager": "pnpm@11.11.0",
+   "scripts": {
+     "dev": "vite dev",
++    "dev:web": "node ./scripts/run-vite-web.mjs dev",
++    "dev:nas": "vite dev --host 0.0.0.0 --port 4173 --strictPort",
+     "build": "vite build",
++    "build:web": "node ./scripts/run-vite-web.mjs build",
++    "build:nas": "bash ./scripts/build-nas.sh",
+     "preview": "vite preview",
+-    "tauri": "tauri",
+-    "tauri:dev": "tauri dev",
++    "preview:nas": "vite preview --host 0.0.0.0 --port 4173 --strictPort",
++    "serve:nas": "bash ./scripts/serve-nas.sh",
++    "nas:healthcheck": "bash ./scripts/nas-healthcheck.sh",
++    "nas:bootstrap": "bash ./scripts/nas-bootstrap.sh",
++    "nas:install-service": "bash ./scripts/nas-service-install.sh",
++    "nas:uninstall-service": "bash ./scripts/nas-service-uninstall.sh",
++    "nas:status": "bash ./scripts/nas-service-status.sh",
++    "nas:logs": "bash ./scripts/nas-service-logs.sh",
++    "nas:restart": "bash ./scripts/nas-service-restart.sh",
++    "tauri": "node ./scripts/tauri-cli.mjs",
++    "tauri:dev": "node ./scripts/tauri-dev.mjs",
+     "tauri:build": "tauri build",
++    "tauri:build:linux": "tauri build --target x86_64-unknown-linux-gnu --bundles appimage,deb,rpm",
+     "start": "pnpm tauri:dev",
++    "mcp:config:render": "node ./scripts/render-mcp-config.mjs",
+     "lint": "eslint src/",
+     "lint:fix": "eslint src/ --fix",
+     "format": "prettier --write .",
+     "format:check": "prettier --check .",
+     "test": "vitest",
+-    "test:ci": "vitest run --coverage",
++    "test:coverage": "node ./scripts/run-vitest-coverage.mjs",
++    "test:ci": "node ./scripts/run-vitest-coverage.mjs",
+     "test:rust": "cd src-tauri && cargo test",
+-    "e2e": "playwright test",
++    "e2e": "playwright test -c playwright.regression.config.ts",
++    "e2e:smoke": "playwright test -c playwright.smoke.config.ts",
++    "e2e:regression": "playwright test -c playwright.regression.config.ts",
+     "e2e:ui": "playwright test --ui",
+     "knip": "knip",
+     "knip:fix": "knip --fix",
+@@ -49,8 +67,9 @@
+     "@codemirror/theme-one-dark": "^6.1.2",
+     "@codemirror/view": "^6.43.4",
+     "@lucide/svelte": "^1.23.0",
++    "@openfeature/web-sdk": "^1.9.0",
+     "@replit/codemirror-vim": "^6.3.0",
+-    "@tauri-apps/plugin-log": "^2.8.0",
++    "@tauri-apps/plugin-log": "^2.9.0",
+     "@tauri-apps/plugin-opener": "^2.5.4",
+     "@tauri-apps/plugin-store": "^2.4.3",
+     "@threlte/core": "^8.0.0",
+@@ -88,4 +107,4 @@
+     "vite": "^6.3.0",
+     "vitest": "^4.1.10"
+   }
+-}
++}
+\ No newline at end of file
+diff --git a/src-tauri/tauri.conf.json b/src-tauri/tauri.conf.json
+index c38e266..a40e44d 100644
+--- a/src-tauri/tauri.conf.json
++++ b/src-tauri/tauri.conf.json
+@@ -22,7 +22,7 @@
+         "minWidth": 800,
+         "minHeight": 600,
+         "decorations": true,
+-        "titleBarStyle": "overlay",
++        "titleBarStyle": "Overlay",
+         "hiddenTitle": true,
+         "center": true,
+         "resizable": true,
+@@ -33,14 +33,16 @@
+       }
+     ],
+     "security": {
+-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost; font-src 'self' data:; connect-src ipc: http://ipc.localhost https: http:"
++      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost; font-src 'self' data:; connect-src ipc: http://ipc.localhost https: http: ws://localhost:5173 ws://127.0.0.1:5173"
+     }
+   },
+   "plugins": {
+     "deep-link": {
+       "mobile": [],
+       "desktop": {
+-        "schemes": ["bismuth"]
++        "schemes": [
++          "bismuth"
++        ]
+       }
+     }
+   },
+@@ -61,15 +63,20 @@
+     ],
+     "fileAssociations": [
+       {
+-        "ext": ["md", "markdown"],
++        "ext": [
++          "md",
++          "markdown"
++        ],
+         "mimeType": "text/markdown",
+         "description": "Markdown Document"
+       },
+       {
+-        "ext": ["canvas"],
++        "ext": [
++          "canvas"
++        ],
+         "mimeType": "application/json",
+         "description": "Bismuth Canvas"
+       }
+     ]
+   }
+-}
++}
+\ No newline at end of file
+diff --git a/src/lib/hubs/navigator/components/CapturePanel.svelte b/src/lib/hubs/navigator/components/CapturePanel.svelte
+index 1cf89a9..3bbf744 100644
+--- a/src/lib/hubs/navigator/components/CapturePanel.svelte
++++ b/src/lib/hubs/navigator/components/CapturePanel.svelte
+@@ -171,13 +171,11 @@
+ 
+   function saveEditingChoice() {
+     if (!editingChoice || !editingChoice.name.trim()) return;
+-    const idx = choices.findIndex((c) => c.id === editingChoice!.id);
+-    if (idx >= 0) {
+-      choices[idx] = { ...editingChoice };
+-    } else {
+-      choices = [...choices, { ...editingChoice }];
+-    }
+-    choices = [...choices]; // trigger reactivity
++    const nextChoice = { ...editingChoice };
++    const hasExistingChoice = choices.some((c) => c.id === nextChoice.id);
++    choices = hasExistingChoice
++      ? choices.map((choice) => (choice.id === nextChoice.id ? nextChoice : choice))
++      : [...choices, nextChoice];
+     saveChoices(choices);
+     showChoiceEditor = false;
+     editingChoice = null;
+@@ -360,7 +358,8 @@
+                         <button
+                           class="cp-target-result-item"
+                           onclick={() => {
+-                            editingChoice!.targetPath = n.path;
++                            if (!editingChoice) return;
++                            editingChoice = { ...editingChoice, targetPath: n.path };
+                             targetSearch = '';
+                           }}
+                         >
+diff --git a/src/lib/sal/vault-service.ts b/src/lib/sal/vault-service.ts
+index 2483bbd..11ebb6a 100644
+--- a/src/lib/sal/vault-service.ts
++++ b/src/lib/sal/vault-service.ts
+@@ -6,6 +6,16 @@ import { isTauriAvailable } from '@/utils/platform';
+ import { goto } from '$app/navigation';
+ 
+ const salLog = log.child('sal:vault');
++const OPEN_VAULT_PROCESS = 'vault-open';
++const CREATE_VAULT_PROCESS = 'vault-create';
++
++function vaultProcessContext(
++  process: string,
++  step: string,
++  context?: Record<string, unknown>
++): Record<string, unknown> {
++  return { process, step, ...context };
++}
+ 
+ export interface VaultResponse {
+   name: string;
+@@ -23,19 +33,28 @@ export interface NoteMetaResponse {
+ export function openVault(path: string): Promise<VaultResponse> {
+   if (!isTauriAvailable()) {
+     const name = path.split('/').pop() || 'My Vault';
+-    salLog.info('openVault (browser fallback)', { name, path });
++    salLog.info(
++      'openVault (browser fallback)',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'fallback-resolve', { name, path })
++    );
+     return Promise.resolve({ name, rootPath: path });
+   }
+-  salLog.info('openVault (IPC)', { path });
++  salLog.info('openVault (IPC)', vaultProcessContext(OPEN_VAULT_PROCESS, 'ipc-dispatch', { path }));
+   return invokeCommand<VaultResponse>('open_vault', { path });
+ }
+ 
+ export function createVault(path: string, name: string): Promise<VaultResponse> {
+   if (!isTauriAvailable()) {
+-    salLog.info('createVault (browser fallback)', { name, path });
++    salLog.info(
++      'createVault (browser fallback)',
++      vaultProcessContext(CREATE_VAULT_PROCESS, 'fallback-resolve', { name, path })
++    );
+     return Promise.resolve({ name, rootPath: path });
+   }
+-  salLog.info('createVault (IPC)', { name, path });
++  salLog.info(
++    'createVault (IPC)',
++    vaultProcessContext(CREATE_VAULT_PROCESS, 'ipc-dispatch', { name, path })
++  );
+   return invokeCommand<VaultResponse>('create_vault', { path, name });
+ }
+ 
+@@ -44,6 +63,39 @@ export function scanVault(): Promise<NoteMetaResponse[]> {
+   return invokeCommand<NoteMetaResponse[]>('scan_vault');
+ }
+ 
++export async function finalizeVaultOpen(vault: VaultResponse): Promise<void> {
++  salLog.info(
++    'Applying vault-open state',
++    vaultProcessContext(OPEN_VAULT_PROCESS, 'state-update', {
++      name: vault.name,
++      rootPath: vault.rootPath,
++    })
++  );
++  setVault({ name: vault.name, rootPath: vault.rootPath });
++  saveRecentVault(vault.name, vault.rootPath);
++  salLog.info(
++    'Initializing vault store',
++    vaultProcessContext(OPEN_VAULT_PROCESS, 'store-init', {
++      rootPath: vault.rootPath,
++    })
++  );
++  initVaultStore();
++  await rescanVault();
++  salLog.info(
++    'Vault rescan completed',
++    vaultProcessContext(OPEN_VAULT_PROCESS, 'scan-complete', {
++      rootPath: vault.rootPath,
++    })
++  );
++  await goto('/');
++  salLog.info(
++    'Navigation after vault-open completed',
++    vaultProcessContext(OPEN_VAULT_PROCESS, 'done', {
++      rootPath: vault.rootPath,
++    })
++  );
++}
++
+ /**
+  * Show a folder picker, open the selected vault, update the store,
+  * persist to recent vaults, and navigate to /.
+@@ -51,31 +103,76 @@ export function scanVault(): Promise<NoteMetaResponse[]> {
+  * Returns true if a vault was opened, false if the user cancelled.
+  */
+ export async function openVaultDialog(): Promise<boolean> {
++  salLog.info('Starting openVaultDialog', vaultProcessContext(OPEN_VAULT_PROCESS, 'start'));
+   let path: string | null = null;
+ 
+   if (!isTauriAvailable()) {
+     path = '/demo/My Vault';
++    salLog.info(
++      'Using demo path for non-Tauri runtime',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'resolve-path-fallback', { path })
++    );
+   } else {
+     try {
++      salLog.info(
++        'Opening native folder dialog',
++        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-open')
++      );
+       const { open } = await import('@tauri-apps/plugin-dialog');
+       const selected = await open({ directory: true, multiple: false, title: 'Open Vault' });
+-      if (!selected) return false;
++      if (!selected) {
++        salLog.info(
++          'Open vault dialog cancelled by user',
++          vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-cancel')
++        );
++        return false;
++      }
+       path = Array.isArray(selected) ? selected[0] : selected;
++      salLog.info(
++        'Folder dialog returned a path',
++        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-selected', { path })
++      );
+     } catch (e) {
+-      salLog.error('Folder dialog failed', e);
++      salLog.error(
++        'Folder dialog failed',
++        e,
++        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-error')
++      );
+       return false;
+     }
+   }
+ 
+-  if (!path) return false;
++  if (!path) {
++    salLog.warn(
++      'Open vault path resolved to empty',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'resolve-path-empty')
++    );
++    return false;
++  }
+ 
+-  const vault = await openVault(path);
+-  setVault({ name: vault.name, rootPath: vault.rootPath });
+-  saveRecentVault(vault.name, vault.rootPath);
+-  initVaultStore();
+-  await rescanVault();
+-  await goto('/');
+-  return true;
++  try {
++    salLog.info(
++      'Opening vault path',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'open-vault', { path })
++    );
++    const vault = await openVault(path);
++    salLog.info(
++      'Vault open returned successfully',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'open-vault-ok', {
++        name: vault.name,
++        rootPath: vault.rootPath,
++      })
++    );
++    await finalizeVaultOpen(vault);
++    return true;
++  } catch (error) {
++    salLog.error(
++      'Open vault dialog flow failed',
++      error,
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'flow-error', { path })
++    );
++    return false;
++  }
+ }
+ 
+ function saveRecentVault(name: string, path: string) {
+@@ -86,7 +183,10 @@ function saveRecentVault(name: string, path: string) {
+     const entry = { name, path, openedAt: Date.now() };
+     recent = [entry, ...recent.filter((v) => v.path !== path)].slice(0, 5);
+     localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recent));
+-  } catch {
+-    /* ignore */
++  } catch (error) {
++    salLog.warn(
++      'Failed to persist recent vault entry',
++      vaultProcessContext(OPEN_VAULT_PROCESS, 'recent-persist-failed', { error: String(error) })
++    );
+   }
+ }
+diff --git a/src/routes/(app)/projects/+page.svelte b/src/routes/(app)/projects/+page.svelte
+index e34a428..1786182 100644
+--- a/src/routes/(app)/projects/+page.svelte
++++ b/src/routes/(app)/projects/+page.svelte
+@@ -78,8 +78,10 @@
+     e.stopPropagation();
+     const idx = STATUS_CYCLE.indexOf(project.status);
+     const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
+-    project.status = next;
+-    statusMap[project.path] = next;
++    statusMap = { ...statusMap, [project.path]: next };
++    projects = projects.map((candidate) =>
++      candidate.path === project.path ? { ...candidate, status: next } : candidate
++    );
+     saveStatusMap();
+   }
+ 
+diff --git a/src/routes/(onboarding)/welcome/+page.svelte b/src/routes/(onboarding)/welcome/+page.svelte
+index 4bf80be..b0755b3 100644
+--- a/src/routes/(onboarding)/welcome/+page.svelte
++++ b/src/routes/(onboarding)/welcome/+page.svelte
+@@ -1,17 +1,17 @@
+ <script lang="ts">
+   import './+page.css';
+-  import { goto } from '$app/navigation';
+   import { pageTitle, SITE_URL } from '@/constants/seo';
+   import { RECENT_VAULTS_KEY } from '@/constants/storage-keys';
+   import BIcon from '@/ui/b-icon.svelte';
+   import { VAULT_TEMPLATES } from '@/constants/vault-templates';
+-  import { setVault } from '@/hubs/core/stores/vault-store.svelte';
+   import { APP_VERSION } from '@/constants/app-meta';
+-  import { openVault, createVault } from '@/sal/vault-service';
++  import { createVault, finalizeVaultOpen, openVault } from '@/sal/vault-service';
+   import { log } from '@/utils/log/logger';
++  import { isTauriAvailable } from '@/utils/platform';
+   import { MetaTags } from 'svelte-meta-tags';
+ 
+   const welcomeLog = log.child('welcome');
++  const WELCOME_VAULT_PROCESS = 'welcome-vault-open';
+ 
+   const ASCII_LOGO = `__________.__                       __  .__
+ \\______   \\__| ______ _____  __ ___/  |_|  |__
+@@ -27,6 +27,13 @@
+     if (currentView === 'landing') currentView = 'home';
+   }
+ 
++  function handleLandingKeydown(event: KeyboardEvent) {
++    if (event.key === 'Enter' || event.key === ' ') {
++      event.preventDefault();
++      advanceFromLanding();
++    }
++  }
++
+   interface RecentVault {
+     name: string;
+     path: string;
+@@ -45,53 +52,78 @@
+     /* ignore */
+   }
+ 
+-  function saveRecentVault(name: string, path: string) {
+-    const entry: RecentVault = { name, path, openedAt: Date.now() };
+-    recentVaults = [entry, ...recentVaults.filter((v) => v.path !== path)].slice(0, 5);
+-    try {
+-      localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recentVaults));
+-    } catch {
+-      /* */
+-    }
+-  }
+-
+-  function isTauriAvailable(): boolean {
+-    return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+-  }
+-
+   async function openFolderDialog(title: string): Promise<string | null> {
+     if (!isTauriAvailable()) {
+-      return `/demo/${vaultName || 'My Vault'}`;
++      const demoPath = `/demo/${vaultName || 'My Vault'}`;
++      welcomeLog.info('Using fallback demo folder in non-Tauri runtime', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'resolve-path-fallback',
++        path: demoPath,
++      });
++      return demoPath;
+     }
+     try {
++      welcomeLog.info('Opening folder picker', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'dialog-open',
++        title,
++      });
+       const { open } = await import('@tauri-apps/plugin-dialog');
+       const selected = await open({ directory: true, multiple: false, title });
+-      if (!selected) return null;
++      if (!selected) {
++        welcomeLog.info('Folder picker cancelled', {
++          process: WELCOME_VAULT_PROCESS,
++          step: 'dialog-cancel',
++          title,
++        });
++        return null;
++      }
+       return Array.isArray(selected) ? selected[0] : selected;
+-    } catch {
+-      return `/demo/${vaultName || 'My Vault'}`;
++    } catch (error) {
++      welcomeLog.error(
++        'Folder picker failed',
++        error,
++        { process: WELCOME_VAULT_PROCESS, step: 'dialog-error', title }
++      );
++      throw new Error(`Folder picker failed: ${String(error)}`);
+     }
+   }
+ 
+   async function finishVaultOpen(vault: { name: string; rootPath: string }) {
+-    welcomeLog.info('finishVaultOpen', { name: vault.name, rootPath: vault.rootPath });
+-    setVault({ name: vault.name, rootPath: vault.rootPath });
+-    saveRecentVault(vault.name, vault.rootPath);
+-    welcomeLog.info('Navigating to / after vault open');
+-    await goto('/');
+-    welcomeLog.info('Navigation complete');
++    welcomeLog.info('finishVaultOpen', {
++      process: WELCOME_VAULT_PROCESS,
++      step: 'vault-flow-start',
++      name: vault.name,
++      rootPath: vault.rootPath,
++    });
++    await finalizeVaultOpen(vault);
++    welcomeLog.info('Vault-open flow completed', {
++      process: WELCOME_VAULT_PROCESS,
++      step: 'vault-flow-done',
++      rootPath: vault.rootPath,
++    });
+   }
+ 
+   async function handleCreateBlankVault() {
+     try {
+       isCreating = true;
+       errorMessage = '';
+-      welcomeLog.info('handleCreateBlankVault');
++      welcomeLog.info('handleCreateBlankVault', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'create-start',
++      });
+       const path = await openFolderDialog('Select Folder for New Vault');
+-      welcomeLog.info('Folder dialog returned', { path });
++      welcomeLog.info('Folder dialog returned', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'create-path-selected',
++        path,
++      });
+       if (path) await finishVaultOpen(await createVault(path, vaultName || 'My Vault'));
+     } catch (e) {
+-      welcomeLog.error('Failed to create vault', e);
++      welcomeLog.error('Failed to create vault', e, {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'create-failed',
++      });
+       errorMessage = `Failed to create vault: ${e}`;
+     } finally {
+       isCreating = false;
+@@ -105,6 +137,11 @@
+       const path = await openFolderDialog('Select Folder for New Vault');
+       if (path) await finishVaultOpen(await createVault(path, templateId));
+     } catch (e) {
++      welcomeLog.error('Failed to create vault from template', e, {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'template-create-failed',
++        templateId,
++      });
+       errorMessage = `Failed to create vault: ${e}`;
+     } finally {
+       isCreating = false;
+@@ -115,12 +152,22 @@
+     try {
+       isCreating = true;
+       errorMessage = '';
+-      welcomeLog.info('handleOpenExistingVault');
++      welcomeLog.info('handleOpenExistingVault', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'open-start',
++      });
+       const path = await openFolderDialog('Open Existing Vault');
+-      welcomeLog.info('Folder dialog returned', { path });
++      welcomeLog.info('Folder dialog returned', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'open-path-selected',
++        path,
++      });
+       if (path) await finishVaultOpen(await openVault(path));
+     } catch (e) {
+-      welcomeLog.error('Failed to open vault', e);
++      welcomeLog.error('Failed to open vault', e, {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'open-failed',
++      });
+       errorMessage = `Failed to open vault: ${e}`;
+     } finally {
+       isCreating = false;
+@@ -131,10 +178,18 @@
+     try {
+       isCreating = true;
+       errorMessage = '';
+-      welcomeLog.info('handleOpenRecent', { name: rv.name, path: rv.path });
++      welcomeLog.info('handleOpenRecent', {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'open-recent-start',
++        name: rv.name,
++        path: rv.path,
++      });
+       await finishVaultOpen(await openVault(rv.path));
+     } catch (e) {
+-      welcomeLog.error('Could not reopen vault', e);
++      welcomeLog.error('Could not reopen vault', e, {
++        process: WELCOME_VAULT_PROCESS,
++        step: 'open-recent-failed',
++      });
+       errorMessage = `Could not reopen vault: ${e}`;
+     } finally {
+       isCreating = false;
+@@ -173,8 +228,14 @@
+ <svelte:window onkeydown={advanceFromLanding} />
+ 
+ {#if currentView === 'landing'}
+-  <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+-  <div class="sv-landing" onclick={advanceFromLanding}>
++  <div
++    class="sv-landing"
++    role="button"
++    tabindex="0"
++    aria-label="Continue to setup"
++    onclick={advanceFromLanding}
++    onkeydown={handleLandingKeydown}
++  >
+     <pre class="sv-ascii" aria-label="Bismuth">{ASCII_LOGO}</pre>
+     <p class="sv-press-key">press any key to continue</p>
+     <footer class="sv-footer">
+
+### NEW FILE: scripts/run-vite-web.mjs
+import { spawn } from 'node:child_process';
+
+const mode = process.argv[2];
+const extraArgs = process.argv.slice(3);
+
+if (mode !== 'dev' && mode !== 'build') {
+  console.error('[run-vite-web] Usage: node ./scripts/run-vite-web.mjs <dev|build> [args...]');
+  process.exit(1);
+}
+
+const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+const child = spawn(pnpmBin, ['exec', 'vite', mode, ...extraArgs], {
+  stdio: 'inherit',
+  env: {
+    ...process.env,
+    VITE_RUNTIME_MODE: 'web',
+  },
+});
+
+child.on('exit', (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+    return;
+  }
+  process.exit(code ?? 1);
+});
+
+child.on('error', (error) => {
+  console.error('[run-vite-web] Failed to start vite:', error);
+  process.exit(1);
+});
+
+
+### NEW FILE: scripts/tauri-dev.mjs
+import { spawn } from 'node:child_process';
+
+const args = process.argv.slice(2);
+const isLinux = process.platform === 'linux';
+
+const command = isLinux ? 'bash' : process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+const commandArgs = isLinux
+  ? ['./scripts/tauri-dev.sh', ...args]
+  : ['exec', 'tauri', 'dev', ...args];
+
+const child = spawn(command, commandArgs, { stdio: 'inherit' });
+
+child.on('exit', (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+    return;
+  }
+  process.exit(code ?? 1);
+});
+
+child.on('error', (error) => {
+  console.error('[tauri:dev] Failed to start command:', error);
+  process.exit(1);
+});
+
+
+### NEW FILE: scripts/tauri-cli.mjs
+import { spawn } from 'node:child_process';
+
+const args = process.argv.slice(2);
+const [subcommand, ...rest] = args;
+const isLinux = process.platform === 'linux';
+const isDev = subcommand === 'dev';
+
+const command =
+  isLinux && isDev ? 'bash' : process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+const commandArgs =
+  isLinux && isDev ? ['./scripts/tauri-cli.sh', ...args] : ['exec', 'tauri', ...args];
+
+const child = spawn(command, commandArgs, { stdio: 'inherit' });
+
+child.on('exit', (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+    return;
+  }
+  process.exit(code ?? 1);
+});
+
+child.on('error', (error) => {
+  console.error('[tauri] Failed to start command:', error);
+  process.exit(1);
+});
+
+
+### NEW FILE: docs/release-notes/2026-07-16-next-release-cross-platform-runbook.md
+# Next Release Cross-Platform Hardening Runbook (2026-07-16)
+
+## Scope
+
+- Cross-platform script compatibility (`pnpm dev:web`, `pnpm build:web`, `pnpm tauri*` entry points)
+- Vault open/create consistency (onboarding now uses shared SAL finalize flow)
+- Immutable state safety fixes for planner + navigator capture choice editing
+- Tauri dev CSP update for Vite HMR websocket
+
+## Preflight
+
+1. Install dependencies:
+   - `pnpm install`
+2. Confirm toolchains:
+   - Node.js 22.13+
+   - pnpm 11.11.0
+   - Rust stable
+
+## Linux Commands
+
+```bash
+pnpm lint
+pnpm test -- --run
+pnpm build
+pnpm dev:web
+pnpm tauri:dev
+```
+
+## macOS Commands
+
+```bash
+pnpm lint
+pnpm test -- --run
+pnpm build
+pnpm dev:web
+pnpm tauri:dev
+```
+
+## Windows Commands (PowerShell)
+
+```powershell
+pnpm lint
+pnpm test -- --run
+pnpm build
+pnpm dev:web
+pnpm tauri:dev
+```
+
+## Validation Checklist
+
+- `pnpm dev:web` starts without inline env-var assignment errors.
+- `pnpm tauri:dev` starts and does not invoke Linux-only helpers on macOS/Windows.
+- Onboarding vault create/open and recent vault open land on `/` only after centralized vault finalize flow completes.
+- Planner Projects and Navigator Capture choice editing do not rely on in-place state mutation.
+- Vite HMR websocket connects under Tauri dev CSP.
+
+## Notes / Known Platform Gaps
+
+- Linux host validation cannot fully execute macOS/Windows native Tauri runtime paths; those commands are documented for direct execution on their host OS.

@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "elements": [
+    {
+      "id": "frame-app-shell",
+      "kind": "frame",
+      "name": "AppShell/Desktop",
+      "x": 40,
+      "y": 40,
+      "width": 1440,
+      "height": 900,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 0,
+      "autoLayout": {
+        "direction": "horizontal",
+        "gap": 0,
+        "alignItems": "stretch",
+        "justifyContent": "start"
+      },
+      "clipContent": true
+    },
+    {
+      "id": "cmp-shell-sidebar",
+      "kind": "component",
+      "name": "Shell/Sidebar",
+      "x": 80,
+      "y": 120,
+      "width": 280,
+      "height": 820,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 1,
+      "constraints": {
+        "preset": "pin-top-bottom",
+        "horizontal": "left",
+        "vertical": "top-bottom",
+        "widthMode": "fixed",
+        "heightMode": "stretch"
+      },
+      "componentProperties": {
+        "collapsed": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    {
+      "id": "cmp-shell-main",
+      "kind": "component",
+      "name": "Shell/MainPane",
+      "x": 380,
+      "y": 120,
+      "width": 980,
+      "height": 820,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 2,
+      "constraints": {
+        "preset": "fill",
+        "horizontal": "fill",
+        "vertical": "fill",
+        "widthMode": "fill",
+        "heightMode": "fill"
+      },
+      "componentProperties": {
+        "activeHub": {
+          "type": "enum",
+          "options": ["editor", "canvas", "graph", "calendar"],
+          "default": "editor"
+        }
+      }
+    }
+  ],
+  "connections": [],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

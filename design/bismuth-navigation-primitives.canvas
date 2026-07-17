@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "elements": [
+    {
+      "id": "cmp-nav-item",
+      "kind": "component",
+      "name": "Navigation/Item",
+      "x": 80,
+      "y": 80,
+      "width": 232,
+      "height": 40,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 0,
+      "componentProperties": {
+        "label": { "type": "string", "default": "Editor" },
+        "icon": { "type": "string", "default": "pencil" },
+        "active": { "type": "boolean", "default": false }
+      },
+      "constraints": {
+        "preset": "stretch",
+        "horizontal": "left-right",
+        "vertical": "top-bottom",
+        "widthMode": "stretch",
+        "heightMode": "stretch"
+      }
+    },
+    {
+      "id": "cmp-nav-section",
+      "kind": "component",
+      "name": "Navigation/Section",
+      "x": 80,
+      "y": 160,
+      "width": 232,
+      "height": 320,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 1,
+      "autoLayout": {
+        "direction": "vertical",
+        "gap": 6,
+        "alignItems": "stretch",
+        "justifyContent": "start"
+      },
+      "componentProperties": {
+        "title": { "type": "string", "default": "Workspace" },
+        "collapsible": { "type": "boolean", "default": true }
+      }
+    }
+  ],
+  "connections": [],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  }
+}

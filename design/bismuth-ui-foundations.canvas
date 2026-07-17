@@ -1,0 +1,212 @@
+{
+  "version": 1,
+  "elements": [
+    {
+      "id": "frame-shell",
+      "kind": "frame",
+      "name": "App Shell",
+      "x": 40,
+      "y": 40,
+      "width": 1280,
+      "height": 800,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 0,
+      "autoLayout": {
+        "direction": "horizontal",
+        "justifyContent": "start",
+        "alignItems": "stretch",
+        "gap": 0,
+        "padding": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "clipContent": true
+    },
+    {
+      "id": "cmp-button-primary",
+      "kind": "component",
+      "name": "Button/Primary/MD",
+      "x": 120,
+      "y": 140,
+      "width": 132,
+      "height": 40,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 1,
+      "variantSetId": "button",
+      "variantProperties": {
+        "intent": "primary",
+        "size": "md"
+      },
+      "radius": {
+        "tokenRef": "radius.md"
+      },
+      "fill": {
+        "color": {
+          "tokenRef": "color.accent"
+        }
+      },
+      "padding": {
+        "x": {
+          "tokenRef": "space.3"
+        },
+        "y": {
+          "tokenRef": "space.2"
+        }
+      }
+    },
+    {
+      "id": "inst-button-primary",
+      "kind": "instance",
+      "name": "Primary CTA",
+      "x": 320,
+      "y": 140,
+      "width": 132,
+      "height": 40,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 2,
+      "componentId": "cmp-button-primary",
+      "overrides": {
+        "label": "Get Started"
+      },
+      "detached": false
+    },
+    {
+      "id": "cmp-sidebar-shell",
+      "kind": "component",
+      "name": "Shell/Sidebar",
+      "x": 120,
+      "y": 240,
+      "width": 280,
+      "height": 760,
+      "rotation": 0,
+      "opacity": 1,
+      "locked": false,
+      "layerId": "default",
+      "zIndex": 3,
+      "fill": {
+        "color": {
+          "tokenRef": "color.surface"
+        }
+      },
+      "styleRef": "style.panel.surface"
+    }
+  ],
+  "connections": [],
+  "viewport": {
+    "x": 0,
+    "y": 0,
+    "zoom": 1
+  },
+  "designSystem": {
+    "activeTokenMode": "default"
+  },
+  "designTokens": [
+    {
+      "id": "color.surface:default",
+      "collection": "color",
+      "name": "surface",
+      "kind": "color",
+      "mode": "default",
+      "value": "#0b1120"
+    },
+    {
+      "id": "color.surface:dark",
+      "collection": "color",
+      "name": "surface",
+      "kind": "color",
+      "mode": "dark",
+      "value": "#020617"
+    },
+    {
+      "id": "color.accent:default",
+      "collection": "color",
+      "name": "accent",
+      "kind": "color",
+      "mode": "default",
+      "value": "#7c3aed"
+    },
+    {
+      "id": "space.2:default",
+      "collection": "space",
+      "name": "2",
+      "kind": "size",
+      "mode": "default",
+      "value": 8
+    },
+    {
+      "id": "space.3:default",
+      "collection": "space",
+      "name": "3",
+      "kind": "size",
+      "mode": "default",
+      "value": 12
+    },
+    {
+      "id": "radius.md:default",
+      "collection": "radius",
+      "name": "md",
+      "kind": "size",
+      "mode": "default",
+      "value": 8
+    }
+  ],
+  "sharedStyles": [
+    {
+      "id": "style.panel.surface",
+      "name": "Panel Surface",
+      "description": "Base panel surface style used by shell components",
+      "style": {
+        "fill": {
+          "color": {
+            "tokenRef": "color.surface"
+          }
+        },
+        "opacity": 1
+      },
+      "updatedAt": 1752612000000
+    }
+  ],
+  "variantSets": [
+    {
+      "id": "button",
+      "name": "Button",
+      "properties": {
+        "intent": [
+          "primary"
+        ],
+        "size": [
+          "md"
+        ]
+      },
+      "componentIds": [
+        "cmp-button-primary"
+      ],
+      "updatedAt": 1752612000000
+    }
+  ],
+  "codeConnect": [
+    {
+      "id": "cmp-sidebar-shell:svelte:SidebarShell",
+      "nodeId": "cmp-sidebar-shell",
+      "framework": "svelte",
+      "filePath": "src/lib/ui/sidebar-shell.svelte",
+      "componentName": "SidebarShell",
+      "propsMapping": {
+        "collapsed": "collapsed"
+      },
+      "instructions": "Keep spacing/padding tied to space scale tokens."
+    }
+  ]
+}
