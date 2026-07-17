@@ -31,22 +31,23 @@ pub(super) fn import_evernote(src: &Path, vault_root: &Path) -> AppResult<Import
                 result.success += s;
                 result.failed += f;
                 result.errors.extend(errs);
-            }
+            },
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", enex_file.display()));
-            }
+            },
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Evernote import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Evernote import complete"
+    );
     Ok(result)
 }
 
-fn import_enex_file(
-    src: &Path,
-    vault_root: &Path,
-) -> AppResult<(u32, u32, Vec<String>)> {
+fn import_enex_file(src: &Path, vault_root: &Path) -> AppResult<(u32, u32, Vec<String>)> {
     use quick_xml::events::Event;
     use quick_xml::reader::Reader;
 
@@ -71,10 +72,10 @@ fn import_enex_file(
                     in_note = true;
                     title.clear();
                     content_html.clear();
-                }
+                },
                 b"title" if in_note => in_title = true,
                 b"content" if in_note => in_content = true,
-                _ => {}
+                _ => {},
             },
             Ok(Event::End(ref e)) => match e.name().as_ref() {
                 b"note" if in_note => {
@@ -104,12 +105,12 @@ fn import_enex_file(
                         Err(e) => {
                             failed += 1;
                             errors.push(format!("{note_title}: {e}"));
-                        }
+                        },
                     }
-                }
+                },
                 b"title" => in_title = false,
                 b"content" => in_content = false,
-                _ => {}
+                _ => {},
             },
             Ok(Event::Text(ref e)) => {
                 if in_title {
@@ -117,21 +118,20 @@ fn import_enex_file(
                 } else if in_content {
                     content_html.push_str(&e.unescape().unwrap_or_default());
                 }
-            }
+            },
             Ok(Event::CData(ref e)) => {
                 if in_content {
-                    content_html
-                        .push_str(&String::from_utf8_lossy(e.as_ref()));
+                    content_html.push_str(&String::from_utf8_lossy(e.as_ref()));
                 }
-            }
+            },
             Ok(Event::Eof) => break,
             Err(e) => {
                 return Err(AppError::Custom(format!(
                     "XML parse error at position {}: {e}",
                     reader.error_position()
                 )));
-            }
-            _ => {}
+            },
+            _ => {},
         }
         buf.clear();
     }

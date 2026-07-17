@@ -41,8 +41,8 @@ fn run_git(cwd: &str, args: &[&str]) -> AppResult<String> {
 
 pub(crate) fn git_status(state: &AppState) -> AppResult<GitStatus> {
     let cwd = vault_path(state)?;
-    let branch_out = run_git(&cwd, &["rev-parse", "--abbrev-ref", "HEAD"])
-        .unwrap_or_else(|_| "unknown".into());
+    let branch_out =
+        run_git(&cwd, &["rev-parse", "--abbrev-ref", "HEAD"]).unwrap_or_else(|_| "unknown".into());
     let status_out = run_git(&cwd, &["status", "--porcelain"])?;
 
     let mut staged = 0usize;

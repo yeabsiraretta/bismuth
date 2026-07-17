@@ -36,10 +36,14 @@ pub(super) fn import_markdown(src: &Path, vault_root: &Path) -> AppResult<Import
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", file.display()));
-            }
+            },
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Markdown import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Markdown import complete"
+    );
     Ok(result)
 }

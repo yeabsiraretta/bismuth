@@ -58,7 +58,7 @@
   }
 
   let todayEntries = $derived(entries.filter((e) => e.date === dateStr));
-  let weekAvg = $derived(() => {
+  let weekAvg = $derived.by(() => {
     const week = entries.filter((e) => {
       const diff = Date.now() - new Date(e.date).getTime();
       return diff < 7 * 86400000;
@@ -102,8 +102,8 @@
         Today: {todayEntries.length} check-in{todayEntries.length > 1 ? 's' : ''}
       </div>
     {/if}
-    {#if weekAvg() !== null}
-      <div class="mood-stat">7-day avg: {weekAvg()} / 5</div>
+    {#if weekAvg !== null}
+      <div class="mood-stat">7-day avg: {weekAvg} / 5</div>
     {/if}
     {#if todayEntries.length > 0}
       <ul class="mood-list">

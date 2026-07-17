@@ -11,11 +11,7 @@ pub(super) fn import_logseq(src: &Path, vault_root: &Path) -> AppResult<ImportRe
     let pages_dir = src.join("pages");
     let journals_dir = src.join("journals");
 
-    let source_dir = if pages_dir.is_dir() {
-        &pages_dir
-    } else {
-        src
-    };
+    let source_dir = if pages_dir.is_dir() { &pages_dir } else { src };
 
     let files = collect_files(source_dir, &["md", "org"]);
 
@@ -32,7 +28,7 @@ pub(super) fn import_logseq(src: &Path, vault_root: &Path) -> AppResult<ImportRe
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", file.display()));
-            }
+            },
         }
     }
 
@@ -47,12 +43,16 @@ pub(super) fn import_logseq(src: &Path, vault_root: &Path) -> AppResult<ImportRe
                 Err(e) => {
                     result.failed += 1;
                     result.errors.push(format!("{}: {e}", file.display()));
-                }
+                },
             }
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Logseq import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Logseq import complete"
+    );
     Ok(result)
 }
 
@@ -110,11 +110,16 @@ fn convert_org_to_md(content: &str) -> String {
     static ORG_VERBATIM: OnceLock<Regex> = OnceLock::new();
     static ORG_STRIKE: OnceLock<Regex> = OnceLock::new();
 
-    let bold_re = ORG_BOLD.get_or_init(|| Regex::new(r"(?<!\w)\*([^\s*](?:[^*]*[^\s*])?)\*(?!\w)").unwrap());
-    let italic_re = ORG_ITALIC.get_or_init(|| Regex::new(r"(?<!\w)/([^\s/](?:[^/]*[^\s/])?)\/(?!\w)").unwrap());
-    let code_re = ORG_CODE.get_or_init(|| Regex::new(r"(?<!\w)~([^\s~](?:[^~]*[^\s~])?)~(?!\w)").unwrap());
-    let verbatim_re = ORG_VERBATIM.get_or_init(|| Regex::new(r"(?<!\w)=([^\s=](?:[^=]*[^\s=])?)=(?!\w)").unwrap());
-    let strike_re = ORG_STRIKE.get_or_init(|| Regex::new(r"(?<!\w)\+([^\s+](?:[^+]*[^\s+])?)\+(?!\w)").unwrap());
+    let bold_re =
+        ORG_BOLD.get_or_init(|| Regex::new(r"(?<!\w)\*([^\s*](?:[^*]*[^\s*])?)\*(?!\w)").unwrap());
+    let italic_re =
+        ORG_ITALIC.get_or_init(|| Regex::new(r"(?<!\w)/([^\s/](?:[^/]*[^\s/])?)\/(?!\w)").unwrap());
+    let code_re =
+        ORG_CODE.get_or_init(|| Regex::new(r"(?<!\w)~([^\s~](?:[^~]*[^\s~])?)~(?!\w)").unwrap());
+    let verbatim_re = ORG_VERBATIM
+        .get_or_init(|| Regex::new(r"(?<!\w)=([^\s=](?:[^=]*[^\s=])?)=(?!\w)").unwrap());
+    let strike_re = ORG_STRIKE
+        .get_or_init(|| Regex::new(r"(?<!\w)\+([^\s+](?:[^+]*[^\s+])?)\+(?!\w)").unwrap());
 
     let mut out = String::with_capacity(content.len());
 

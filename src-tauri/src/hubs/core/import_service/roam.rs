@@ -33,11 +33,15 @@ pub(super) fn import_roam(src: &Path, vault_root: &Path) -> AppResult<ImportResu
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", json_file.display()));
-            }
+            },
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Roam import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Roam import complete"
+    );
     Ok(result)
 }
 

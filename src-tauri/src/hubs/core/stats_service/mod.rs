@@ -153,9 +153,8 @@ pub(crate) fn extract_tags(content: &str) -> Vec<String> {
 
 const NOTE_EXTS: &[&str] = &["md", "markdown", "txt"];
 const ATTACHMENT_EXTS: &[&str] = &[
-    "png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico",
-    "pdf", "mp3", "mp4", "wav", "ogg", "webm", "mov",
-    "zip", "tar", "gz", "csv", "json", "xml",
+    "png", "jpg", "jpeg", "gif", "svg", "webp", "bmp", "ico", "pdf", "mp3", "mp4", "wav", "ogg",
+    "webm", "mov", "zip", "tar", "gz", "csv", "json", "xml",
 ];
 
 fn get_extension(path: &str) -> String {
@@ -219,8 +218,13 @@ pub(crate) fn compute_vault_stats(state: &AppState) -> AppResult<VaultStats> {
             continue;
         }
 
-        let name = note.path.rsplit('/').next().unwrap_or(&note.path)
-            .trim_end_matches(".md").to_lowercase();
+        let name = note
+            .path
+            .rsplit('/')
+            .next()
+            .unwrap_or(&note.path)
+            .trim_end_matches(".md")
+            .to_lowercase();
         all_note_names.insert(name, note.path.clone());
 
         let full_path = root_path.join(&note.path);
@@ -242,36 +246,56 @@ pub(crate) fn compute_vault_stats(state: &AppState) -> AppResult<VaultStats> {
             }
 
             match &longest_note {
-                Some(e) if wc as u64 <= e.value => {}
-                _ => longest_note = Some(NoteStatEntry {
-                    path: note.path.clone(), title: note.title.clone(), value: wc as u64,
-                }),
+                Some(e) if wc as u64 <= e.value => {},
+                _ => {
+                    longest_note = Some(NoteStatEntry {
+                        path: note.path.clone(),
+                        title: note.title.clone(),
+                        value: wc as u64,
+                    })
+                },
             }
             match &shortest_note {
-                Some(e) if wc as u64 >= e.value => {}
-                _ => shortest_note = Some(NoteStatEntry {
-                    path: note.path.clone(), title: note.title.clone(), value: wc as u64,
-                }),
+                Some(e) if wc as u64 >= e.value => {},
+                _ => {
+                    shortest_note = Some(NoteStatEntry {
+                        path: note.path.clone(),
+                        title: note.title.clone(),
+                        value: wc as u64,
+                    })
+                },
             }
         }
 
         match &newest_note {
-            Some(e) if note.created_at <= e.value => {}
-            _ => newest_note = Some(NoteStatEntry {
-                path: note.path.clone(), title: note.title.clone(), value: note.created_at,
-            }),
+            Some(e) if note.created_at <= e.value => {},
+            _ => {
+                newest_note = Some(NoteStatEntry {
+                    path: note.path.clone(),
+                    title: note.title.clone(),
+                    value: note.created_at,
+                })
+            },
         }
         match &oldest_note {
-            Some(e) if note.created_at >= e.value => {}
-            _ => oldest_note = Some(NoteStatEntry {
-                path: note.path.clone(), title: note.title.clone(), value: note.created_at,
-            }),
+            Some(e) if note.created_at >= e.value => {},
+            _ => {
+                oldest_note = Some(NoteStatEntry {
+                    path: note.path.clone(),
+                    title: note.title.clone(),
+                    value: note.created_at,
+                })
+            },
         }
         match &last_modified {
-            Some(e) if note.modified_at <= e.value => {}
-            _ => last_modified = Some(NoteStatEntry {
-                path: note.path.clone(), title: note.title.clone(), value: note.modified_at,
-            }),
+            Some(e) if note.modified_at <= e.value => {},
+            _ => {
+                last_modified = Some(NoteStatEntry {
+                    path: note.path.clone(),
+                    title: note.title.clone(),
+                    value: note.modified_at,
+                })
+            },
         }
     }
 
@@ -285,12 +309,14 @@ pub(crate) fn compute_vault_stats(state: &AppState) -> AppResult<VaultStats> {
 
     let folders = extract_folders(&all_notes.iter().map(|n| n.path.clone()).collect::<Vec<_>>());
 
-    let mut tags: Vec<TagCount> = tag_map.into_iter()
+    let mut tags: Vec<TagCount> = tag_map
+        .into_iter()
         .map(|(tag, count)| TagCount { tag, count })
         .collect();
     tags.sort_by_key(|t| std::cmp::Reverse(t.count));
 
-    let mut file_types: Vec<FileTypeCount> = ext_map.into_iter()
+    let mut file_types: Vec<FileTypeCount> = ext_map
+        .into_iter()
         .map(|(ext, (count, size))| FileTypeCount { ext, count, size })
         .collect();
     file_types.sort_by_key(|f| std::cmp::Reverse(f.count));

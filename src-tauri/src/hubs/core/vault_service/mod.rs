@@ -23,15 +23,13 @@ fn safe_join(root: &Path, rel: &str) -> AppResult<PathBuf> {
                 if !normalized.pop() {
                     return Err(AppError::Custom("Path traversal rejected".into()));
                 }
-            }
-            std::path::Component::CurDir => {}
+            },
+            std::path::Component::CurDir => {},
             other => normalized.push(other),
         }
     }
     if !normalized.starts_with(root) {
-        return Err(AppError::Custom(format!(
-            "Path escapes vault root: {rel}"
-        )));
+        return Err(AppError::Custom(format!("Path escapes vault root: {rel}")));
     }
     Ok(normalized)
 }
@@ -93,11 +91,14 @@ fn resolve_vault_root(path: &str) -> AppResult<PathBuf> {
     if trimmed.starts_with("file://") {
         let url = Url::parse(trimmed)
             .map_err(|e| AppError::Custom(format!("Invalid vault file URL: {trimmed} ({e})")))?;
-        return url.to_file_path().map_err(|_| {
-            AppError::Custom(format!(
-                "Unsupported vault file URL (cannot convert to local path): {trimmed}"
-            ))
-        }).map(normalize);
+        return url
+            .to_file_path()
+            .map_err(|_| {
+                AppError::Custom(format!(
+                    "Unsupported vault file URL (cannot convert to local path): {trimmed}"
+                ))
+            })
+            .map(normalize);
     }
     Ok(normalize(PathBuf::from(trimmed)))
 }
@@ -342,16 +343,21 @@ pub(crate) fn rename_note(
 
 /// Read multiple notes in one IPC call. Returns a vec of (path, content) pairs.
 /// Files that fail to read are silently skipped.
-pub(crate) fn batch_read_notes(state: &AppState, paths: &[String]) -> AppResult<Vec<BatchNoteContent>> {
+pub(crate) fn batch_read_notes(
+    state: &AppState,
+    paths: &[String],
+) -> AppResult<Vec<BatchNoteContent>> {
     let root = state.vault_root()?;
     let results: Vec<BatchNoteContent> = paths
         .iter()
         .filter_map(|rel| {
             let full = root.join(rel);
-            fs::read_to_string(&full).ok().map(|content| BatchNoteContent {
-                path: rel.clone(),
-                content,
-            })
+            fs::read_to_string(&full)
+                .ok()
+                .map(|content| BatchNoteContent {
+                    path: rel.clone(),
+                    content,
+                })
         })
         .collect();
     Ok(results)
@@ -420,7 +426,9 @@ pub(crate) fn build_graph_data(state: &AppState) -> AppResult<GraphDataResult> {
 // ── Tag extraction (vault-wide) ──────────────────────────────────────────────
 
 /// Extract all tags from the vault with counts, computed in Rust.
-pub(crate) fn extract_vault_tags(state: &AppState) -> AppResult<Vec<super::stats_service::TagCount>> {
+pub(crate) fn extract_vault_tags(
+    state: &AppState,
+) -> AppResult<Vec<super::stats_service::TagCount>> {
     use std::collections::HashMap;
 
     let root = state.vault_root()?;
@@ -503,7 +511,11 @@ pub(crate) fn search_vault(state: &AppState, query: &str) -> AppResult<Vec<Searc
         }
     }
 
-    results.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+    results.sort_by(|a, b| {
+        b.score
+            .partial_cmp(&a.score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     Ok(results)
 }
 
@@ -573,7 +585,12 @@ mod tests {
     fn search_finds_matches() {
         let (_tmp, state) = setup();
         create_note(&state, "Searchable", None, None).unwrap();
-        write_note(&state, "Searchable.md", "# Searchable\nfoo bar baz\nfoo again").unwrap();
+        write_note(
+            &state,
+            "Searchable.md",
+            "# Searchable\nfoo bar baz\nfoo again",
+        )
+        .unwrap();
         let results = search_vault(&state, "foo").unwrap();
         assert_eq!(results.len(), 1);
         assert_eq!(results[0].matches.len(), 2);
@@ -598,12 +615,20 @@ mod tests {
 
         let result = batch_read_notes(
             &state,
-            &["Alpha.md".to_string(), "Beta.md".to_string(), "Missing.md".to_string()],
+            &[
+                "Alpha.md".to_string(),
+                "Beta.md".to_string(),
+                "Missing.md".to_string(),
+            ],
         )
         .unwrap();
         assert_eq!(result.len(), 2);
-        assert!(result.iter().any(|r| r.path == "Alpha.md" && r.content == "alpha content"));
-        assert!(result.iter().any(|r| r.path == "Beta.md" && r.content == "beta content"));
+        assert!(result
+            .iter()
+            .any(|r| r.path == "Alpha.md" && r.content == "alpha content"));
+        assert!(result
+            .iter()
+            .any(|r| r.path == "Beta.md" && r.content == "beta content"));
     }
 
     #[test]
@@ -641,7 +666,12 @@ mod tests {
     fn extract_vault_tags_counts() {
         let (_tmp, state) = setup();
         create_note(&state, "Tagged", None, None).unwrap();
-        write_note(&state, "Tagged.md", "# Tagged\n#rust #programming\n#rust again").unwrap();
+        write_note(
+            &state,
+            "Tagged.md",
+            "# Tagged\n#rust #programming\n#rust again",
+        )
+        .unwrap();
 
         let tags = extract_vault_tags(&state).unwrap();
         let rust_tag = tags.iter().find(|t| t.tag == "rust");
@@ -694,9 +724,6 @@ mod tests {
         let (tmp, state) = setup();
         let uri = Url::from_directory_path(tmp.path()).unwrap().to_string();
         let opened = open_vault(&state, &uri).unwrap();
-        assert_eq!(
-            opened.root_path,
-            tmp.path().to_string_lossy().to_string()
-        );
+        assert_eq!(opened.root_path, tmp.path().to_string_lossy().to_string());
     }
 }

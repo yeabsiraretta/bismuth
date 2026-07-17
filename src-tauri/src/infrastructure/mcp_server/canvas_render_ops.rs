@@ -306,7 +306,11 @@ pub(super) fn build_instance_render_snapshot(
     }))
 }
 
-pub(super) fn update_instance_snapshot(doc: &mut Value, instance_id: &str, snapshot: Value) -> AppResult<()> {
+pub(super) fn update_instance_snapshot(
+    doc: &mut Value,
+    instance_id: &str,
+    snapshot: Value,
+) -> AppResult<()> {
     let elements = canvas_elements_mut(doc)?;
     for element in elements {
         if element_id(element) == Some(instance_id) {

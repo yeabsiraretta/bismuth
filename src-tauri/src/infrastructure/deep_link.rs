@@ -19,7 +19,7 @@ pub fn handle_deep_link(app: &AppHandle, urls: Vec<String>) {
             None => {
                 tracing::warn!(uri = %raw, "Ignoring non-bismuth URI");
                 continue;
-            }
+            },
         };
 
         let (host, path) = match stripped.split_once('/') {
@@ -33,7 +33,7 @@ pub fn handle_deep_link(app: &AppHandle, urls: Vec<String>) {
                     tracing::debug!(note_path = path, "Deep link: open note");
                     let _ = app.emit("deep-link:open-note", path.to_string());
                 }
-            }
+            },
             "search" => {
                 let query = if path.is_empty() {
                     String::new()
@@ -42,7 +42,7 @@ pub fn handle_deep_link(app: &AppHandle, urls: Vec<String>) {
                 };
                 tracing::debug!(query = %query, "Deep link: search");
                 let _ = app.emit("deep-link:search", query);
-            }
+            },
             "new" => {
                 let title = if path.is_empty() {
                     "Untitled".to_string()
@@ -51,14 +51,14 @@ pub fn handle_deep_link(app: &AppHandle, urls: Vec<String>) {
                 };
                 tracing::debug!(title = %title, "Deep link: new note");
                 let _ = app.emit("deep-link:new-note", title);
-            }
+            },
             "vault" => {
                 tracing::debug!("Deep link: focus vault");
                 let _ = app.emit("deep-link:focus", ());
-            }
+            },
             _ => {
                 tracing::warn!(host, path, "Unknown deep link action");
-            }
+            },
         }
     }
 }

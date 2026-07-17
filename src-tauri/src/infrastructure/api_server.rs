@@ -14,7 +14,9 @@ use axum::{Json, Router};
 use serde::{Deserialize, Serialize};
 use tower_http::cors::{Any, CorsLayer};
 
-use crate::hubs::core::{backup_service, embedding_service, git_service, stats_service, vault_service, version_service};
+use crate::hubs::core::{
+    backup_service, embedding_service, git_service, stats_service, vault_service, version_service,
+};
 use crate::infrastructure::state::AppState;
 
 /// Default port for the local API server.
@@ -112,8 +114,8 @@ async fn create_note(
         body.folder.as_deref(),
         body.extension.as_deref(),
     )
-        .map(|n| (StatusCode::CREATED, Json(n)))
-        .map_err(app_err)
+    .map(|n| (StatusCode::CREATED, Json(n)))
+    .map_err(app_err)
 }
 
 async fn delete_note_handler(
@@ -165,7 +167,10 @@ async fn list_canvases(
 ) -> Result<impl IntoResponse, (StatusCode, Json<ApiError>)> {
     vault_service::scan_vault(&state)
         .map(|notes| {
-            let canvases: Vec<_> = notes.into_iter().filter(|n| n.path.ends_with(".canvas")).collect();
+            let canvases: Vec<_> = notes
+                .into_iter()
+                .filter(|n| n.path.ends_with(".canvas"))
+                .collect();
             Json(canvases)
         })
         .map_err(app_err)
@@ -263,7 +268,9 @@ async fn read_version_handler(
 async fn list_backups_handler(
     State(state): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<ApiError>)> {
-    backup_service::list_backups(&state).map(Json).map_err(app_err)
+    backup_service::list_backups(&state)
+        .map(Json)
+        .map_err(app_err)
 }
 
 async fn create_backup_handler(
@@ -349,11 +356,20 @@ pub fn build_router(state: Arc<AppState>) -> Router {
         .route("/api/git/push", axum::routing::post(git_push_handler))
         .route("/api/git/pull", axum::routing::post(git_pull_handler))
         // Versions
-        .route("/api/versions/{*note_path}", get(list_versions_handler).post(create_version_handler))
+        .route(
+            "/api/versions/{*note_path}",
+            get(list_versions_handler).post(create_version_handler),
+        )
         .route("/api/version/{*note_path}", get(read_version_handler))
         // Backups
-        .route("/api/backups", get(list_backups_handler).post(create_backup_handler))
-        .route("/api/backups/{*path}", axum::routing::delete(delete_backup_handler))
+        .route(
+            "/api/backups",
+            get(list_backups_handler).post(create_backup_handler),
+        )
+        .route(
+            "/api/backups/{*path}",
+            axum::routing::delete(delete_backup_handler),
+        )
         // Smart connections
         .route("/api/similar/{*note_path}", get(similar_notes_handler))
         .route("/api/similar-text", get(similar_text_handler))
@@ -372,7 +388,7 @@ pub async fn start(state: Arc<AppState>) {
         Err(e) => {
             tracing::warn!(error = %e, "Failed to bind API server on {addr} — API disabled");
             return;
-        }
+        },
     };
 
     if let Err(e) = axum::serve(listener, app).await {

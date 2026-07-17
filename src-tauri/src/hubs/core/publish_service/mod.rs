@@ -61,7 +61,7 @@ pub(crate) fn publish_notes(
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{note_path}: {e}"));
-            }
+            },
         }
     }
 
@@ -90,13 +90,13 @@ fn export_note(
             let dest = out_dir.join(rel);
             ensure_parent(&dest)?;
             fs::write(&dest, &content)?;
-        }
+        },
         ExportFormat::Html => {
             let dest = out_dir.join(rel).with_extension("html");
             ensure_parent(&dest)?;
             let html = markdown_to_html(&content, rel);
             fs::write(&dest, html)?;
-        }
+        },
         ExportFormat::Pdf => {
             // PDF generation: produce a print-ready HTML file with .pdf.html extension
             // Real PDF rendering would need a headless browser or wkhtmltopdf — we generate
@@ -105,7 +105,7 @@ fn export_note(
             ensure_parent(&dest)?;
             let html = markdown_to_print_html(&content, rel);
             fs::write(&dest, html)?;
-        }
+        },
     }
 
     Ok(())
@@ -277,7 +277,10 @@ fn md_to_html_body(md: &str) -> String {
         // Blockquote
         if let Some(rest) = trimmed.strip_prefix("> ") {
             flush_paragraph(&mut paragraph, &mut out);
-            out.push_str(&format!("<blockquote><p>{}</p></blockquote>\n", inline_md(rest)));
+            out.push_str(&format!(
+                "<blockquote><p>{}</p></blockquote>\n",
+                inline_md(rest)
+            ));
             continue;
         }
 
@@ -339,7 +342,9 @@ fn inline_md(text: &str) -> String {
     s = code.replace_all(&s, "<code>$1</code>").to_string();
 
     // Images BEFORE links — link regex `[…](…)` would swallow `![…](…)` otherwise
-    s = img.replace_all(&s, r#"<img src="$2" alt="$1">"#).to_string();
+    s = img
+        .replace_all(&s, r#"<img src="$2" alt="$1">"#)
+        .to_string();
 
     // Links: [text](url)
     s = link.replace_all(&s, r#"<a href="$2">$1</a>"#).to_string();

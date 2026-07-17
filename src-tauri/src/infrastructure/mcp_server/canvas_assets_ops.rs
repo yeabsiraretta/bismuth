@@ -158,7 +158,13 @@ pub(super) fn upsert_canvas_style_op(state: &AppState, args: &Value) -> AppResul
         .get("style_id")
         .and_then(Value::as_str)
         .map(String::from)
-        .unwrap_or_else(|| format!("style-{}-{}", now_millis(), name.to_lowercase().replace(' ', "-")));
+        .unwrap_or_else(|| {
+            format!(
+                "style-{}-{}",
+                now_millis(),
+                name.to_lowercase().replace(' ', "-")
+            )
+        });
     let description = args
         .get("description")
         .and_then(Value::as_str)
@@ -346,7 +352,9 @@ pub(super) fn set_canvas_instance_variant_op(state: &AppState, args: &Value) -> 
         let instance = elements
             .iter()
             .find(|el| element_id(el) == Some(instance_id))
-            .ok_or_else(|| AppError::Custom(format!("Instance '{instance_id}' not found in {path}")))?;
+            .ok_or_else(|| {
+                AppError::Custom(format!("Instance '{instance_id}' not found in {path}"))
+            })?;
         let base_component = instance
             .get("componentId")
             .and_then(Value::as_str)
@@ -367,7 +375,8 @@ pub(super) fn set_canvas_instance_variant_op(state: &AppState, args: &Value) -> 
             .iter()
             .find(|candidate| {
                 candidate.get("kind").and_then(Value::as_str) == Some("component")
-                    && candidate.get("variantSetId").and_then(Value::as_str) == Some(set_id.as_str())
+                    && candidate.get("variantSetId").and_then(Value::as_str)
+                        == Some(set_id.as_str())
                     && candidate
                         .get("variantProperties")
                         .is_some_and(|props| properties_match(props, &selection_map))
@@ -386,8 +395,14 @@ pub(super) fn set_canvas_instance_variant_op(state: &AppState, args: &Value) -> 
             let obj = element
                 .as_object_mut()
                 .ok_or_else(|| AppError::Custom("Canvas element is not an object".into()))?;
-            obj.insert("variantSelection".into(), Value::Object(selection_map.clone()));
-            obj.insert("componentId".into(), Value::String(resolved_component_id.clone()));
+            obj.insert(
+                "variantSelection".into(),
+                Value::Object(selection_map.clone()),
+            );
+            obj.insert(
+                "componentId".into(),
+                Value::String(resolved_component_id.clone()),
+            );
             updated = true;
             break;
         }
@@ -446,7 +461,10 @@ pub(super) fn set_canvas_token_mode_op(state: &AppState, args: &Value) -> AppRes
     }))
 }
 
-pub(super) fn resolve_canvas_instance_render_op(state: &AppState, args: &Value) -> AppResult<Value> {
+pub(super) fn resolve_canvas_instance_render_op(
+    state: &AppState,
+    args: &Value,
+) -> AppResult<Value> {
     let path = required_str(args, "path")?;
     let instance_id = required_str(args, "instance_id")?;
     let mode = args.get("mode").and_then(Value::as_str);
@@ -508,7 +526,9 @@ fn normalize_vue_expression(expression: &str) -> String {
 fn generate_code_connect_snippets_for_doc(doc: &Value, node_ids: Option<&[String]>) -> Vec<Value> {
     let id_set: Option<std::collections::HashSet<&str>> =
         node_ids.map(|ids| ids.iter().map(String::as_str).collect());
-    let elements = canvas_elements(doc).map(|all| all.clone()).unwrap_or_default();
+    let elements = canvas_elements(doc)
+        .map(|all| all.clone())
+        .unwrap_or_default();
     let code_connect = root_array(doc, "codeConnect");
 
     code_connect
@@ -813,8 +833,12 @@ mod tests {
           "viewport": { "x": 0, "y": 0, "zoom": 1 },
           "designTokens": []
         });
-        vault_service::write_note(&state, path, &serde_json::to_string_pretty(&seed).expect("seed"))
-            .expect("write seed");
+        vault_service::write_note(
+            &state,
+            path,
+            &serde_json::to_string_pretty(&seed).expect("seed"),
+        )
+        .expect("write seed");
 
         let err = bind_canvas_token_op(
             &state,

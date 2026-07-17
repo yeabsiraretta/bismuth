@@ -21,15 +21,15 @@
   let expandedItem = $state<string | null>(null);
 
   let all = $derived(getAllPortentObjects());
-  let filtered = $derived(
-    all
+  let filtered = $derived.by(() => {
+    const matches = all
       .filter((o) => typeFilter === 'all' || o.type === typeFilter)
       .filter((o) => lifecycleFilter === 'all' || o.lifecycle === lifecycleFilter)
-      .filter((o) => !search || o.title.toLowerCase().includes(search.toLowerCase()))
-      .sort((a, b) => a.title.localeCompare(b.title))
-  );
+      .filter((o) => !search || o.title.toLowerCase().includes(search.toLowerCase()));
+    return [...matches].sort((a, b) => a.title.localeCompare(b.title));
+  });
 
-  let typeCounts = $derived(() => {
+  let typeCounts = $derived.by(() => {
     const counts: Record<string, number> = {};
     for (const o of all) counts[o.type] = (counts[o.type] ?? 0) + 1;
     return counts;
@@ -72,7 +72,7 @@
     <select class="pt-select" bind:value={typeFilter}>
       <option value="all">All types</option>
       {#each PORTENT_TYPES as t (t)}
-        <option value={t}>{typeLabel(t)} ({typeCounts()[t] ?? 0})</option>
+        <option value={t}>{typeLabel(t)} ({typeCounts[t] ?? 0})</option>
       {/each}
     </select>
     <select class="pt-select" bind:value={lifecycleFilter}>

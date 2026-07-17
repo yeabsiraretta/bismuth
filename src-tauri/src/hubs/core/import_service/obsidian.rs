@@ -10,7 +10,8 @@ use super::{collect_files, copy_file, ensure_parent, relative_dest, ImportResult
 pub(super) fn import_obsidian(src: &Path, vault_root: &Path) -> AppResult<ImportResult> {
     use std::sync::OnceLock;
     static WIKILINK: OnceLock<Regex> = OnceLock::new();
-    let wikilink_re = WIKILINK.get_or_init(|| Regex::new(r"\[\[([^\]\|]+)(?:\|([^\]]+))?\]\]").unwrap());
+    let wikilink_re =
+        WIKILINK.get_or_init(|| Regex::new(r"\[\[([^\]\|]+)(?:\|([^\]]+))?\]\]").unwrap());
 
     let files = collect_files(src, &["md"]);
 
@@ -27,7 +28,7 @@ pub(super) fn import_obsidian(src: &Path, vault_root: &Path) -> AppResult<Import
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", file.display()));
-            }
+            },
         }
     }
 
@@ -36,11 +37,17 @@ pub(super) fn import_obsidian(src: &Path, vault_root: &Path) -> AppResult<Import
     for file in &attachments {
         let dest = relative_dest(src, file, vault_root);
         if let Err(e) = copy_file(file, &dest) {
-            result.errors.push(format!("attachment {}: {e}", file.display()));
+            result
+                .errors
+                .push(format!("attachment {}: {e}", file.display()));
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Obsidian import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Obsidian import complete"
+    );
     Ok(result)
 }
 

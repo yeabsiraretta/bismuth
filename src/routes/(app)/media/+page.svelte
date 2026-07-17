@@ -81,7 +81,7 @@
           (f) => f.name.toLowerCase().includes(q) || f.folder.toLowerCase().includes(q)
         );
       }
-      return items.sort((a, b) =>
+      return [...items].sort((a, b) =>
         sortBy === 'date' ? b.modifiedAt - a.modifiedAt : a.name.localeCompare(b.name)
       );
     })()

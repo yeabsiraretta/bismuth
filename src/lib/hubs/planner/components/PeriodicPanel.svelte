@@ -68,10 +68,12 @@
 
   let allNotes = $derived(getNotes());
   let pastReviews = $derived(
-    allNotes
-      .filter((n) => n.path.startsWith('reviews/') && n.path.includes(`${activePeriod}-review`))
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, 10)
+    (() => {
+      const periodReviews = allNotes.filter(
+        (n) => n.path.startsWith('reviews/') && n.path.includes(`${activePeriod}-review`)
+      );
+      return [...periodReviews].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10);
+    })()
   );
 
   let vaultNotes = $derived<VaultNote[]>(

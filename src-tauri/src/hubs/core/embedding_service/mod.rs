@@ -22,18 +22,15 @@ pub(crate) struct SmartConnection {
 // ── Stop words ───────────────────────────────────────────────────────────────
 
 const STOP_WORDS: &[&str] = &[
-    "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for",
-    "of", "with", "by", "from", "is", "it", "as", "be", "was", "are",
-    "been", "being", "have", "has", "had", "do", "does", "did", "will",
-    "would", "could", "should", "may", "might", "shall", "can", "this",
-    "that", "these", "those", "i", "you", "he", "she", "we", "they",
-    "me", "him", "her", "us", "them", "my", "your", "his", "its", "our",
-    "their", "what", "which", "who", "whom", "when", "where", "why", "how",
-    "not", "no", "nor", "if", "then", "else", "so", "up", "out", "just",
-    "about", "into", "through", "during", "before", "after", "above",
-    "below", "between", "each", "all", "both", "few", "more", "most",
-    "other", "some", "such", "than", "too", "very", "also", "here",
-    "there", "again", "once", "only", "own", "same", "over", "any",
+    "a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by",
+    "from", "is", "it", "as", "be", "was", "are", "been", "being", "have", "has", "had", "do",
+    "does", "did", "will", "would", "could", "should", "may", "might", "shall", "can", "this",
+    "that", "these", "those", "i", "you", "he", "she", "we", "they", "me", "him", "her", "us",
+    "them", "my", "your", "his", "its", "our", "their", "what", "which", "who", "whom", "when",
+    "where", "why", "how", "not", "no", "nor", "if", "then", "else", "so", "up", "out", "just",
+    "about", "into", "through", "during", "before", "after", "above", "below", "between", "each",
+    "all", "both", "few", "more", "most", "other", "some", "such", "than", "too", "very", "also",
+    "here", "there", "again", "once", "only", "own", "same", "over", "any",
 ];
 
 fn is_stop_word(w: &str) -> bool {
@@ -343,8 +340,14 @@ mod tests {
     fn cosine_similarity_identical() {
         let mut terms = HashMap::new();
         terms.insert("test".to_string(), 1.0);
-        let v = TfIdfVector { terms: terms.clone(), magnitude: 1.0 };
-        let v2 = TfIdfVector { terms, magnitude: 1.0 };
+        let v = TfIdfVector {
+            terms: terms.clone(),
+            magnitude: 1.0,
+        };
+        let v2 = TfIdfVector {
+            terms,
+            magnitude: 1.0,
+        };
         let sim = cosine_similarity(&v, &v2);
         assert!((sim - 1.0).abs() < 1e-6);
     }
@@ -355,8 +358,14 @@ mod tests {
         t1.insert("foo".to_string(), 1.0);
         let mut t2 = HashMap::new();
         t2.insert("bar".to_string(), 1.0);
-        let v1 = TfIdfVector { terms: t1, magnitude: 1.0 };
-        let v2 = TfIdfVector { terms: t2, magnitude: 1.0 };
+        let v1 = TfIdfVector {
+            terms: t1,
+            magnitude: 1.0,
+        };
+        let v2 = TfIdfVector {
+            terms: t2,
+            magnitude: 1.0,
+        };
         assert_eq!(cosine_similarity(&v1, &v2), 0.0);
     }
 

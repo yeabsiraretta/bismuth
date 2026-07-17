@@ -37,7 +37,7 @@ pub(super) fn import_notion(src: &Path, vault_root: &Path) -> AppResult<ImportRe
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", file.display()));
-            }
+            },
         }
     }
 
@@ -58,11 +58,15 @@ pub(super) fn import_notion(src: &Path, vault_root: &Path) -> AppResult<ImportRe
             Err(e) => {
                 result.failed += 1;
                 result.errors.push(format!("{}: {e}", file.display()));
-            }
+            },
         }
     }
 
-    tracing::info!(success = result.success, failed = result.failed, "Notion import complete");
+    tracing::info!(
+        success = result.success,
+        failed = result.failed,
+        "Notion import complete"
+    );
     Ok(result)
 }
 
@@ -128,14 +132,14 @@ pub(super) fn html_to_markdown(html: &str) -> String {
             "pre" if !closing => {
                 in_pre = true;
                 out.push_str("\n```\n");
-            }
+            },
             "pre" if closing => {
                 in_pre = false;
                 out.push_str("\n```\n");
-            }
+            },
             "hr" => out.push_str("\n---\n"),
             "blockquote" if !closing => out.push_str("\n> "),
-            _ => {}
+            _ => {},
         }
     }
 

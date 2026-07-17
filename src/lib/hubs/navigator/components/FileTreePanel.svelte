@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { SvelteMap, SvelteSet } from 'svelte/reactivity';
+  import { SvelteMap } from 'svelte/reactivity';
+  import { SvelteSet } from 'svelte/reactivity';
   import { getNotes, rescanVault } from '@/hubs/core/stores/vault-store.svelte';
   import { openNote } from '@/ui/panel-actions';
   import Panel from '@/ui/panel.svelte';
@@ -76,7 +77,7 @@
   }
 
   function sortNodes(nodes: TreeNode[]): TreeNode[] {
-    return nodes.sort((a, b) => {
+    return [...nodes].sort((a, b) => {
       if (a.isFolder !== b.isFolder) return a.isFolder ? -1 : 1;
       return a.name.localeCompare(b.name);
     });

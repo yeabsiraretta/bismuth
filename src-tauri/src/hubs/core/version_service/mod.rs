@@ -8,7 +8,6 @@ use serde::{Deserialize, Serialize};
 use crate::infrastructure::error::{AppError, AppResult};
 use crate::infrastructure::state::AppState;
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct NoteVersion {
@@ -75,8 +74,7 @@ pub(crate) fn list_versions(state: &AppState, note_path: &str) -> AppResult<Vec<
     }
 
     let mut versions: Vec<NoteVersion> = Vec::new();
-    for entry in fs::read_dir(&ver_dir)?
-    {
+    for entry in fs::read_dir(&ver_dir)? {
         let entry = entry?;
         let path = entry.path();
         if path.extension().is_none_or(|ext| ext != "md") {
@@ -117,11 +115,7 @@ pub(crate) fn read_version(
     Ok(fs::read_to_string(&ver_file)?)
 }
 
-pub(crate) fn delete_version(
-    state: &AppState,
-    note_path: &str,
-    version_id: &str,
-) -> AppResult<()> {
+pub(crate) fn delete_version(state: &AppState, note_path: &str, version_id: &str) -> AppResult<()> {
     let root = state.vault_root()?;
 
     let ver_file = note_versions_dir(&root, note_path).join(format!("{version_id}.md"));

@@ -546,7 +546,10 @@ pub(super) fn create_canvas_instance_op(state: &AppState, args: &Value) -> AppRe
     Ok(serde_json::json!({ "path": path, "instance": instance }))
 }
 
-pub(super) fn validate_override_type(definition: &Map<String, Value>, value: &Value) -> AppResult<()> {
+pub(super) fn validate_override_type(
+    definition: &Map<String, Value>,
+    value: &Value,
+) -> AppResult<()> {
     let prop_type = definition
         .get("type")
         .and_then(Value::as_str)
@@ -597,7 +600,10 @@ pub(super) fn validate_override_type(definition: &Map<String, Value>, value: &Va
     Ok(())
 }
 
-pub(super) fn validate_instance_overrides(component: &Value, overrides: &Map<String, Value>) -> AppResult<()> {
+pub(super) fn validate_instance_overrides(
+    component: &Value,
+    overrides: &Map<String, Value>,
+) -> AppResult<()> {
     if overrides.is_empty() {
         return Ok(());
     }
@@ -620,7 +626,10 @@ pub(super) fn validate_instance_overrides(component: &Value, overrides: &Map<Str
     Ok(())
 }
 
-pub(super) fn upsert_canvas_component_property_op(state: &AppState, args: &Value) -> AppResult<Value> {
+pub(super) fn upsert_canvas_component_property_op(
+    state: &AppState,
+    args: &Value,
+) -> AppResult<Value> {
     let path = required_str(args, "path")?;
     let node_id = required_str(args, "node_id")?;
     let property_name = required_str(args, "property_name")?;
@@ -775,8 +784,12 @@ mod tests {
           "connections": [],
           "viewport": { "x": 0, "y": 0, "zoom": 1 }
         });
-        vault_service::write_note(&state, path, &serde_json::to_string_pretty(&seed).expect("seed"))
-            .expect("write seed");
+        vault_service::write_note(
+            &state,
+            path,
+            &serde_json::to_string_pretty(&seed).expect("seed"),
+        )
+        .expect("write seed");
 
         align_canvas_elements_op(&state, path, &["a".into(), "b".into()], "left").expect("align");
         let changed = load_canvas_json(&state, path).expect("load changed");
@@ -805,8 +818,12 @@ mod tests {
           "connections": [],
           "viewport": { "x": 0, "y": 0, "zoom": 1 }
         });
-        vault_service::write_note(&state, path, &serde_json::to_string_pretty(&seed).expect("seed"))
-            .expect("write seed");
+        vault_service::write_note(
+            &state,
+            path,
+            &serde_json::to_string_pretty(&seed).expect("seed"),
+        )
+        .expect("write seed");
 
         let args = serde_json::json!({
             "path": path,

@@ -94,10 +94,10 @@
   // ── Recent dailies ────────────────────────────────────────────────────────────
 
   let recentDailies = $derived(
-    allNotes
-      .filter((n) => /\d{4}-\d{2}-\d{2}\.md$/.test(n.path))
-      .sort((a, b) => b.path.localeCompare(a.path))
-      .slice(0, 7)
+    (() => {
+      const dailyMatches = allNotes.filter((n) => /\d{4}-\d{2}-\d{2}\.md$/.test(n.path));
+      return [...dailyMatches].sort((a, b) => b.path.localeCompare(a.path)).slice(0, 7);
+    })()
   );
 
   // ── On This Day review ────────────────────────────────────────────────────────

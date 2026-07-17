@@ -59,7 +59,7 @@ pub fn build() -> tauri::Builder<tauri::Wry> {
                     Err(e) => {
                         tracing::warn!(error = %e, "Failed to bind API server — API disabled");
                         return;
-                    }
+                    },
                 };
                 if let Err(e) = axum::serve(listener, api_router).await {
                     tracing::error!(error = %e, "API server exited with error");

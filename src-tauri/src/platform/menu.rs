@@ -195,21 +195,21 @@ fn handle_menu_event(app: &AppHandle, event: tauri::menu::MenuEvent) {
         "command_palette" => emit_to_main(app, "menu:command-palette"),
         "docs" => {
             let _ = tauri_plugin_opener::open_url("https://bismuth.app/docs", None::<&str>);
-        }
+        },
         "changelog" => {
             let _ = tauri_plugin_opener::open_url(
                 "https://github.com/yeabsiramoges/bismuth/blob/main/CHANGELOG.md",
                 None::<&str>,
             );
-        }
+        },
         "report_issue" => {
             let _ = tauri_plugin_opener::open_url(
                 "https://github.com/yeabsiramoges/bismuth/issues/new",
                 None::<&str>,
             );
-        }
+        },
         _ => {
             tracing::debug!(menu_item = id, "Unhandled menu event");
-        }
+        },
     }
 }

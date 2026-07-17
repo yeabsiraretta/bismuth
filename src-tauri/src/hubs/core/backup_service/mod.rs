@@ -238,8 +238,10 @@ impl<W: Write> ZipWriter<W> {
             self.writer.write_all(&0u16.to_le_bytes())?; // mod time
             self.writer.write_all(&0u16.to_le_bytes())?; // mod date
             self.writer.write_all(&entry.crc32.to_le_bytes())?;
-            self.writer.write_all(&entry.compressed_size.to_le_bytes())?;
-            self.writer.write_all(&entry.uncompressed_size.to_le_bytes())?;
+            self.writer
+                .write_all(&entry.compressed_size.to_le_bytes())?;
+            self.writer
+                .write_all(&entry.uncompressed_size.to_le_bytes())?;
             self.writer.write_all(&name_len.to_le_bytes())?;
             self.writer.write_all(&0u16.to_le_bytes())?; // extra len
             self.writer.write_all(&0u16.to_le_bytes())?; // comment len

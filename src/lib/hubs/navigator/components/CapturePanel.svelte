@@ -45,10 +45,12 @@
   );
 
   let inboxNotes = $derived(
-    allNotes
-      .filter((n) => n.path.startsWith('inbox/') || n.path.startsWith('capture/'))
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, 20)
+    (() => {
+      const matchingNotes = allNotes.filter(
+        (n) => n.path.startsWith('inbox/') || n.path.startsWith('capture/')
+      );
+      return [...matchingNotes].sort((a, b) => b.createdAt - a.createdAt).slice(0, 20);
+    })()
   );
 
   let targetResults = $derived(

@@ -61,7 +61,8 @@ pub(super) fn tool_definitions() -> Vec<McpTool> {
         },
         McpTool {
             name: "vault_stats".into(),
-            description: "Get statistics about the vault (note count, word count, tags, etc.)".into(),
+            description: "Get statistics about the vault (note count, word count, tags, etc.)"
+                .into(),
             input_schema: serde_json::json!({ "type": "object", "properties": {} }),
         },
         McpTool {

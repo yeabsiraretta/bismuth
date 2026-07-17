@@ -203,4 +203,3 @@ pub(super) fn validate_canvas_code_connect_contract_op(
         "reports": reports
     }))
 }
-

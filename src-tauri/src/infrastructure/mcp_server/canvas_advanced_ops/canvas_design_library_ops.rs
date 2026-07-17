@@ -261,8 +261,12 @@ mod tests {
           "variantSets": [],
           "codeConnect": []
         });
-        vault_service::write_note(&state, path, &serde_json::to_string_pretty(&seed).expect("seed"))
-            .expect("write seed");
+        vault_service::write_note(
+            &state,
+            path,
+            &serde_json::to_string_pretty(&seed).expect("seed"),
+        )
+        .expect("write seed");
 
         let publish_args = serde_json::json!({
             "path": path,

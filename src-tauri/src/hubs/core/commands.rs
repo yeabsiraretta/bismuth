@@ -9,8 +9,7 @@ use super::publish_service::{self, ExportFormat, PublishResult};
 use super::service::CoreService;
 use super::stats_service::{self, VaultStats};
 use super::types::{
-    AppInfo, BatchNoteContent, GraphDataResult, NoteMeta, NoteResponse, SearchResult,
-    VaultResponse,
+    AppInfo, BatchNoteContent, GraphDataResult, NoteMeta, NoteResponse, SearchResult, VaultResponse,
 };
 use super::vault_service;
 use super::version_service::{self, NoteVersion};
@@ -38,8 +37,16 @@ pub(crate) fn get_app_info(state: tauri::State<'_, AppState>) -> AppResult<AppIn
 // ── Vault commands ───────────────────────────────────────────────────────────
 
 #[tauri::command]
-pub(crate) fn open_vault(path: &str, state: tauri::State<'_, AppState>) -> AppResult<VaultResponse> {
-    tracing::debug!(hub = "core", cmd = "open_vault", path, "IPC command invoked");
+pub(crate) fn open_vault(
+    path: &str,
+    state: tauri::State<'_, AppState>,
+) -> AppResult<VaultResponse> {
+    tracing::debug!(
+        hub = "core",
+        cmd = "open_vault",
+        path,
+        "IPC command invoked"
+    );
     let result = vault_service::open_vault(&state, path);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "open_vault", error = %e, "Command failed");
@@ -53,7 +60,13 @@ pub(crate) fn create_vault(
     name: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<VaultResponse> {
-    tracing::debug!(hub = "core", cmd = "create_vault", path, name, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "create_vault",
+        path,
+        name,
+        "IPC command invoked"
+    );
     let result = vault_service::create_vault(&state, path, name);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "create_vault", error = %e, "Command failed");
@@ -89,7 +102,12 @@ pub(crate) fn write_note(
     content: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<()> {
-    tracing::debug!(hub = "core", cmd = "write_note", path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "write_note",
+        path,
+        "IPC command invoked"
+    );
     let result = vault_service::write_note(&state, path, content);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "write_note", error = %e, "Command failed");
@@ -104,7 +122,12 @@ pub(crate) fn create_note(
     extension: Option<&str>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<NoteResponse> {
-    tracing::debug!(hub = "core", cmd = "create_note", title, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "create_note",
+        title,
+        "IPC command invoked"
+    );
     let result = vault_service::create_note(&state, title, folder, extension);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "create_note", error = %e, "Command failed");
@@ -114,7 +137,12 @@ pub(crate) fn create_note(
 
 #[tauri::command]
 pub(crate) fn delete_note(path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
-    tracing::debug!(hub = "core", cmd = "delete_note", path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "delete_note",
+        path,
+        "IPC command invoked"
+    );
     let result = vault_service::delete_note(&state, path);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "delete_note", error = %e, "Command failed");
@@ -128,7 +156,13 @@ pub(crate) fn rename_note(
     new_title: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<NoteResponse> {
-    tracing::debug!(hub = "core", cmd = "rename_note", old_path, new_title, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "rename_note",
+        old_path,
+        new_title,
+        "IPC command invoked"
+    );
     let result = vault_service::rename_note(&state, old_path, new_title);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "rename_note", error = %e, "Command failed");
@@ -143,7 +177,12 @@ pub(crate) fn search_vault(
     query: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<SearchResult>> {
-    tracing::debug!(hub = "core", cmd = "search_vault", query, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "search_vault",
+        query,
+        "IPC command invoked"
+    );
     let result = vault_service::search_vault(&state, query);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "search_vault", error = %e, "Command failed");
@@ -158,7 +197,12 @@ pub(crate) fn batch_read_notes(
     paths: Vec<String>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<BatchNoteContent>> {
-    tracing::debug!(hub = "core", cmd = "batch_read_notes", count = paths.len(), "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "batch_read_notes",
+        count = paths.len(),
+        "IPC command invoked"
+    );
     let result = vault_service::batch_read_notes(&state, &paths);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "batch_read_notes", error = %e, "Command failed");
@@ -168,7 +212,11 @@ pub(crate) fn batch_read_notes(
 
 #[tauri::command]
 pub(crate) fn build_graph_data(state: tauri::State<'_, AppState>) -> AppResult<GraphDataResult> {
-    tracing::debug!(hub = "core", cmd = "build_graph_data", "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "build_graph_data",
+        "IPC command invoked"
+    );
     let result = vault_service::build_graph_data(&state);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "build_graph_data", error = %e, "Command failed");
@@ -180,7 +228,11 @@ pub(crate) fn build_graph_data(state: tauri::State<'_, AppState>) -> AppResult<G
 pub(crate) fn extract_vault_tags(
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<stats_service::TagCount>> {
-    tracing::debug!(hub = "core", cmd = "extract_vault_tags", "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "extract_vault_tags",
+        "IPC command invoked"
+    );
     let result = vault_service::extract_vault_tags(&state);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "extract_vault_tags", error = %e, "Command failed");
@@ -195,7 +247,12 @@ pub(crate) fn list_versions(
     note_path: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<NoteVersion>> {
-    tracing::debug!(hub = "core", cmd = "list_versions", note_path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "list_versions",
+        note_path,
+        "IPC command invoked"
+    );
     let result = version_service::list_versions(&state, note_path);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "list_versions", error = %e, "Command failed");
@@ -209,7 +266,12 @@ pub(crate) fn create_version(
     label: Option<&str>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<NoteVersion> {
-    tracing::debug!(hub = "core", cmd = "create_version", note_path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "create_version",
+        note_path,
+        "IPC command invoked"
+    );
     let result = version_service::create_version(&state, note_path, label);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "create_version", error = %e, "Command failed");
@@ -223,7 +285,13 @@ pub(crate) fn read_version(
     version_id: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<String> {
-    tracing::debug!(hub = "core", cmd = "read_version", note_path, version_id, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "read_version",
+        note_path,
+        version_id,
+        "IPC command invoked"
+    );
     let result = version_service::read_version(&state, note_path, version_id);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "read_version", error = %e, "Command failed");
@@ -237,7 +305,13 @@ pub(crate) fn delete_version(
     version_id: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<()> {
-    tracing::debug!(hub = "core", cmd = "delete_version", note_path, version_id, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "delete_version",
+        note_path,
+        version_id,
+        "IPC command invoked"
+    );
     let result = version_service::delete_version(&state, note_path, version_id);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "delete_version", error = %e, "Command failed");
@@ -269,7 +343,12 @@ pub(crate) fn git_stage_all(state: tauri::State<'_, AppState>) -> AppResult<()> 
 
 #[tauri::command]
 pub(crate) fn git_commit(message: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
-    tracing::debug!(hub = "core", cmd = "git_commit", message, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "git_commit",
+        message,
+        "IPC command invoked"
+    );
     let result = git_service::git_commit(&state, message);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "git_commit", error = %e, "Command failed");
@@ -305,7 +384,13 @@ pub(crate) fn import_notes(
     source_path: &str,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<ImportResult> {
-    tracing::debug!(hub = "core", cmd = "import_notes", ?source, source_path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "import_notes",
+        ?source,
+        source_path,
+        "IPC command invoked"
+    );
     let result = import_service::import_notes(&state, source, source_path);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "import_notes", error = %e, "Command failed");
@@ -337,7 +422,12 @@ pub(crate) fn list_backups(state: tauri::State<'_, AppState>) -> AppResult<Backu
 
 #[tauri::command]
 pub(crate) fn delete_backup(backup_path: &str, state: tauri::State<'_, AppState>) -> AppResult<()> {
-    tracing::debug!(hub = "core", cmd = "delete_backup", backup_path, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "delete_backup",
+        backup_path,
+        "IPC command invoked"
+    );
     let result = backup_service::delete_backup(&state, backup_path);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "delete_backup", error = %e, "Command failed");
@@ -354,7 +444,13 @@ pub(crate) fn publish_notes(
     output_dir: Option<&str>,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<PublishResult> {
-    tracing::debug!(hub = "core", cmd = "publish_notes", ?format, count = note_paths.len(), "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "publish_notes",
+        ?format,
+        count = note_paths.len(),
+        "IPC command invoked"
+    );
     let result = publish_service::publish_notes(&state, format, &note_paths, output_dir);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "publish_notes", error = %e, "Command failed");
@@ -366,7 +462,11 @@ pub(crate) fn publish_notes(
 
 #[tauri::command]
 pub(crate) fn compute_vault_stats(state: tauri::State<'_, AppState>) -> AppResult<VaultStats> {
-    tracing::debug!(hub = "core", cmd = "compute_vault_stats", "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "compute_vault_stats",
+        "IPC command invoked"
+    );
     let result = stats_service::compute_vault_stats(&state);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "compute_vault_stats", error = %e, "Command failed");
@@ -399,10 +499,29 @@ pub async fn fetch_url(url: String) -> AppResult<String> {
             .next()
             .unwrap_or("");
         let blocked = [
-            "localhost", "127.0.0.1", "0.0.0.0", "[::1]", "169.254.",
-            "10.", "192.168.", "172.16.", "172.17.", "172.18.", "172.19.",
-            "172.20.", "172.21.", "172.22.", "172.23.", "172.24.", "172.25.",
-            "172.26.", "172.27.", "172.28.", "172.29.", "172.30.", "172.31.",
+            "localhost",
+            "127.0.0.1",
+            "0.0.0.0",
+            "[::1]",
+            "169.254.",
+            "10.",
+            "192.168.",
+            "172.16.",
+            "172.17.",
+            "172.18.",
+            "172.19.",
+            "172.20.",
+            "172.21.",
+            "172.22.",
+            "172.23.",
+            "172.24.",
+            "172.25.",
+            "172.26.",
+            "172.27.",
+            "172.28.",
+            "172.29.",
+            "172.30.",
+            "172.31.",
         ];
         if blocked.iter().any(|b| host.starts_with(b) || host == *b) {
             return Err(crate::infrastructure::error::AppError::Custom(
@@ -414,16 +533,22 @@ pub async fn fetch_url(url: String) -> AppResult<String> {
             .args(["-fsSL", "--max-time", "15", &url])
             .output()
             .await
-            .map_err(|e| crate::infrastructure::error::AppError::Custom(format!("Failed to run curl: {e}")))?;
+            .map_err(|e| {
+                crate::infrastructure::error::AppError::Custom(format!("Failed to run curl: {e}"))
+            })?;
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
-            return Err(crate::infrastructure::error::AppError::Custom(
-                format!("curl failed ({}): {}", output.status, stderr.trim()),
-            ));
+            return Err(crate::infrastructure::error::AppError::Custom(format!(
+                "curl failed ({}): {}",
+                output.status,
+                stderr.trim()
+            )));
         }
-        String::from_utf8(output.stdout)
-            .map_err(|e| crate::infrastructure::error::AppError::Custom(format!("Invalid UTF-8 response: {e}")))
-    }.await;
+        String::from_utf8(output.stdout).map_err(|e| {
+            crate::infrastructure::error::AppError::Custom(format!("Invalid UTF-8 response: {e}"))
+        })
+    }
+    .await;
 
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "fetch_url", error = %e, "Command failed");
@@ -440,7 +565,13 @@ pub(crate) fn find_similar_notes(
     min_score: f64,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<SmartConnection>> {
-    tracing::debug!(hub = "core", cmd = "find_similar_notes", note_path, limit, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "find_similar_notes",
+        note_path,
+        limit,
+        "IPC command invoked"
+    );
     let result = embedding_service::find_similar_notes(&state, note_path, limit, min_score);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "find_similar_notes", error = %e, "Command failed");
@@ -455,7 +586,13 @@ pub(crate) fn find_similar_to_text(
     min_score: f64,
     state: tauri::State<'_, AppState>,
 ) -> AppResult<Vec<SmartConnection>> {
-    tracing::debug!(hub = "core", cmd = "find_similar_to_text", query, limit, "IPC command invoked");
+    tracing::debug!(
+        hub = "core",
+        cmd = "find_similar_to_text",
+        query,
+        limit,
+        "IPC command invoked"
+    );
     let result = embedding_service::find_similar_to_text(&state, query, limit, min_score);
     if let Err(ref e) = result {
         tracing::error!(hub = "core", cmd = "find_similar_to_text", error = %e, "Command failed");
