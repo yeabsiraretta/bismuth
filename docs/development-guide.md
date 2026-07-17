@@ -71,7 +71,8 @@ Notes:
 - If port `5173` is already in use, `tauri dev` startup fails.
 - `pnpm tauri:dev` and `pnpm tauri dev` now use cross-platform Node entrypoints:
   - Linux: routes through the hardened launcher (`scripts/tauri-dev.sh`) with `xvfb-run` fallback + software-rendering defaults for headless/restricted sessions.
-  - macOS/Windows: bypasses Linux-only checks/dependencies and invokes `tauri dev` directly.
+  - macOS/Windows: bypasses Linux-only checks/dependencies and invokes the local Tauri CLI JS entrypoint directly.
+- Tauri's internal `beforeDevCommand` now uses `scripts/run-vite-dev.mjs` so Windows dev does not depend on shell-specific `pnpm` spawning.
 
 ## Build
 

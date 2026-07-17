@@ -2,23 +2,14 @@ import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
 import { dirname, join } from 'node:path';
 
-const mode = process.argv[2];
-const extraArgs = process.argv.slice(3);
 const require = createRequire(import.meta.url);
-
-if (mode !== 'dev' && mode !== 'build') {
-  console.error('[run-vite-web] Usage: node ./scripts/run-vite-web.mjs <dev|build> [args...]');
-  process.exit(1);
-}
-
 const vitePackageJsonPath = require.resolve('vite/package.json');
 const viteBinPath = join(dirname(vitePackageJsonPath), 'bin', 'vite.js');
-const child = spawn(process.execPath, [viteBinPath, mode, ...extraArgs], {
+const args = process.argv.slice(2);
+
+const child = spawn(process.execPath, [viteBinPath, ...args], {
   stdio: 'inherit',
-  env: {
-    ...process.env,
-    VITE_RUNTIME_MODE: 'web',
-  },
+  env: process.env,
 });
 
 child.on('exit', (code, signal) => {
@@ -30,6 +21,6 @@ child.on('exit', (code, signal) => {
 });
 
 child.on('error', (error) => {
-  console.error('[run-vite-web] Failed to start vite:', error);
+  console.error('[run-vite-dev] Failed to start vite:', error);
   process.exit(1);
 });

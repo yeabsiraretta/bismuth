@@ -1,22 +1,17 @@
+import { createRequire } from 'node:module';
 import { spawn } from 'node:child_process';
+import { dirname, join } from 'node:path';
 
 const args = process.argv.slice(2);
 const isLinux = process.platform === 'linux';
-const packageManagerExec = process.env.npm_execpath;
-const isJsExecpath = Boolean(packageManagerExec && /\.[mc]?js$/i.test(packageManagerExec));
+const require = createRequire(import.meta.url);
 
-const command = isLinux
-  ? 'bash'
-  : isJsExecpath
-    ? process.execPath
-    : process.platform === 'win32'
-      ? 'pnpm.cmd'
-      : 'pnpm';
+const tauriPackageJsonPath = require.resolve('@tauri-apps/cli/package.json');
+const tauriBinPath = join(dirname(tauriPackageJsonPath), 'tauri.js');
+const command = isLinux ? 'bash' : process.execPath;
 const commandArgs = isLinux
   ? ['./scripts/tauri-dev.sh', ...args]
-  : isJsExecpath
-    ? [packageManagerExec, 'exec', 'tauri', 'dev', ...args]
-    : ['exec', 'tauri', 'dev', ...args];
+  : [tauriBinPath, 'dev', ...args];
 
 const child = spawn(command, commandArgs, { stdio: 'inherit' });
 

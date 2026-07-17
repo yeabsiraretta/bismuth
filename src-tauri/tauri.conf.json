@@ -6,7 +6,7 @@
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "node ./scripts/run-vite-dev.mjs dev",
     "beforeBuildCommand": "pnpm build",
     "removeUnusedCommands": true
   },
