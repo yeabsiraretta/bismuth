@@ -171,13 +171,12 @@
 
   function saveEditingChoice() {
     if (!editingChoice || !editingChoice.name.trim()) return;
-    const idx = choices.findIndex((c) => c.id === editingChoice!.id);
-    if (idx >= 0) {
-      choices[idx] = { ...editingChoice };
-    } else {
-      choices = [...choices, { ...editingChoice }];
-    }
-    choices = [...choices]; // trigger reactivity
+    const nextChoice = { ...editingChoice };
+    const existingIndex = choices.findIndex((choice) => choice.id === nextChoice.id);
+    choices =
+      existingIndex >= 0
+        ? choices.map((choice, index) => (index === existingIndex ? nextChoice : choice))
+        : [...choices, nextChoice];
     saveChoices(choices);
     showChoiceEditor = false;
     editingChoice = null;
@@ -360,7 +359,8 @@
                         <button
                           class="cp-target-result-item"
                           onclick={() => {
-                            editingChoice!.targetPath = n.path;
+                            if (!editingChoice) return;
+                            editingChoice = { ...editingChoice, targetPath: n.path };
                             targetSearch = '';
                           }}
                         >

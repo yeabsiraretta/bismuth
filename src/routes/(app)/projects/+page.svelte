@@ -78,8 +78,10 @@
     e.stopPropagation();
     const idx = STATUS_CYCLE.indexOf(project.status);
     const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
-    project.status = next;
-    statusMap[project.path] = next;
+    statusMap = { ...statusMap, [project.path]: next };
+    projects = projects.map((candidate) =>
+      candidate.path === project.path ? { ...candidate, status: next } : candidate
+    );
     saveStatusMap();
   }
 

@@ -1,17 +1,17 @@
 <script lang="ts">
   import './+page.css';
-  import { goto } from '$app/navigation';
   import { pageTitle, SITE_URL } from '@/constants/seo';
   import { RECENT_VAULTS_KEY } from '@/constants/storage-keys';
   import BIcon from '@/ui/b-icon.svelte';
   import { VAULT_TEMPLATES } from '@/constants/vault-templates';
-  import { setVault } from '@/hubs/core/stores/vault-store.svelte';
   import { APP_VERSION } from '@/constants/app-meta';
-  import { openVault, createVault } from '@/sal/vault-service';
+  import { createVault, finalizeVaultOpen, openVault } from '@/sal/vault-service';
   import { log } from '@/utils/log/logger';
+  import { isTauriAvailable } from '@/utils/platform';
   import { MetaTags } from 'svelte-meta-tags';
 
   const welcomeLog = log.child('welcome');
+  const WELCOME_VAULT_PROCESS = 'welcome-vault-open';
 
   const ASCII_LOGO = `__________.__                       __  .__
 \\______   \\__| ______ _____  __ ___/  |_|  |__
@@ -25,6 +25,13 @@
 
   function advanceFromLanding() {
     if (currentView === 'landing') currentView = 'home';
+  }
+
+  function handleLandingKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      advanceFromLanding();
+    }
   }
 
   interface RecentVault {
@@ -45,53 +52,78 @@
     /* ignore */
   }
 
-  function saveRecentVault(name: string, path: string) {
-    const entry: RecentVault = { name, path, openedAt: Date.now() };
-    recentVaults = [entry, ...recentVaults.filter((v) => v.path !== path)].slice(0, 5);
-    try {
-      localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recentVaults));
-    } catch {
-      /* */
-    }
-  }
-
-  function isTauriAvailable(): boolean {
-    return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
-  }
-
   async function openFolderDialog(title: string): Promise<string | null> {
     if (!isTauriAvailable()) {
-      return `/demo/${vaultName || 'My Vault'}`;
+      const demoPath = `/demo/${vaultName || 'My Vault'}`;
+      welcomeLog.info('Using fallback demo folder in non-Tauri runtime', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'resolve-path-fallback',
+        path: demoPath,
+      });
+      return demoPath;
     }
     try {
+      welcomeLog.info('Opening folder picker', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'dialog-open',
+        title,
+      });
       const { open } = await import('@tauri-apps/plugin-dialog');
       const selected = await open({ directory: true, multiple: false, title });
-      if (!selected) return null;
+      if (!selected) {
+        welcomeLog.info('Folder picker cancelled', {
+          process: WELCOME_VAULT_PROCESS,
+          step: 'dialog-cancel',
+          title,
+        });
+        return null;
+      }
       return Array.isArray(selected) ? selected[0] : selected;
-    } catch {
-      return `/demo/${vaultName || 'My Vault'}`;
+    } catch (error) {
+      welcomeLog.error(
+        'Folder picker failed',
+        error,
+        { process: WELCOME_VAULT_PROCESS, step: 'dialog-error', title }
+      );
+      throw new Error(`Folder picker failed: ${String(error)}`);
     }
   }
 
   async function finishVaultOpen(vault: { name: string; rootPath: string }) {
-    welcomeLog.info('finishVaultOpen', { name: vault.name, rootPath: vault.rootPath });
-    setVault({ name: vault.name, rootPath: vault.rootPath });
-    saveRecentVault(vault.name, vault.rootPath);
-    welcomeLog.info('Navigating to / after vault open');
-    await goto('/');
-    welcomeLog.info('Navigation complete');
+    welcomeLog.info('finishVaultOpen', {
+      process: WELCOME_VAULT_PROCESS,
+      step: 'vault-flow-start',
+      name: vault.name,
+      rootPath: vault.rootPath,
+    });
+    await finalizeVaultOpen(vault);
+    welcomeLog.info('Vault-open flow completed', {
+      process: WELCOME_VAULT_PROCESS,
+      step: 'vault-flow-done',
+      rootPath: vault.rootPath,
+    });
   }
 
   async function handleCreateBlankVault() {
     try {
       isCreating = true;
       errorMessage = '';
-      welcomeLog.info('handleCreateBlankVault');
+      welcomeLog.info('handleCreateBlankVault', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'create-start',
+      });
       const path = await openFolderDialog('Select Folder for New Vault');
-      welcomeLog.info('Folder dialog returned', { path });
+      welcomeLog.info('Folder dialog returned', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'create-path-selected',
+        path,
+      });
       if (path) await finishVaultOpen(await createVault(path, vaultName || 'My Vault'));
     } catch (e) {
-      welcomeLog.error('Failed to create vault', e);
+      welcomeLog.error('Failed to create vault', e, {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'create-failed',
+      });
       errorMessage = `Failed to create vault: ${e}`;
     } finally {
       isCreating = false;
@@ -105,6 +137,11 @@
       const path = await openFolderDialog('Select Folder for New Vault');
       if (path) await finishVaultOpen(await createVault(path, templateId));
     } catch (e) {
+      welcomeLog.error('Failed to create vault from template', e, {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'template-create-failed',
+        templateId,
+      });
       errorMessage = `Failed to create vault: ${e}`;
     } finally {
       isCreating = false;
@@ -115,12 +152,22 @@
     try {
       isCreating = true;
       errorMessage = '';
-      welcomeLog.info('handleOpenExistingVault');
+      welcomeLog.info('handleOpenExistingVault', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'open-start',
+      });
       const path = await openFolderDialog('Open Existing Vault');
-      welcomeLog.info('Folder dialog returned', { path });
+      welcomeLog.info('Folder dialog returned', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'open-path-selected',
+        path,
+      });
       if (path) await finishVaultOpen(await openVault(path));
     } catch (e) {
-      welcomeLog.error('Failed to open vault', e);
+      welcomeLog.error('Failed to open vault', e, {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'open-failed',
+      });
       errorMessage = `Failed to open vault: ${e}`;
     } finally {
       isCreating = false;
@@ -131,10 +178,18 @@
     try {
       isCreating = true;
       errorMessage = '';
-      welcomeLog.info('handleOpenRecent', { name: rv.name, path: rv.path });
+      welcomeLog.info('handleOpenRecent', {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'open-recent-start',
+        name: rv.name,
+        path: rv.path,
+      });
       await finishVaultOpen(await openVault(rv.path));
     } catch (e) {
-      welcomeLog.error('Could not reopen vault', e);
+      welcomeLog.error('Could not reopen vault', e, {
+        process: WELCOME_VAULT_PROCESS,
+        step: 'open-recent-failed',
+      });
       errorMessage = `Could not reopen vault: ${e}`;
     } finally {
       isCreating = false;
@@ -173,8 +228,14 @@
 <svelte:window onkeydown={advanceFromLanding} />
 
 {#if currentView === 'landing'}
-  <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-  <div class="sv-landing" onclick={advanceFromLanding}>
+  <div
+    class="sv-landing"
+    role="button"
+    tabindex="0"
+    aria-label="Continue to setup"
+    onclick={advanceFromLanding}
+    onkeydown={handleLandingKeydown}
+  >
     <pre class="sv-ascii" aria-label="Bismuth">{ASCII_LOGO}</pre>
     <p class="sv-press-key">press any key to continue</p>
     <footer class="sv-footer">

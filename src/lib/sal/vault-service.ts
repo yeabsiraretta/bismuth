@@ -6,6 +6,16 @@ import { isTauriAvailable } from '@/utils/platform';
 import { goto } from '$app/navigation';
 
 const salLog = log.child('sal:vault');
+const OPEN_VAULT_PROCESS = 'vault-open';
+const CREATE_VAULT_PROCESS = 'vault-create';
+
+function vaultProcessContext(
+  process: string,
+  step: string,
+  context?: Record<string, unknown>
+): Record<string, unknown> {
+  return { process, step, ...context };
+}
 
 export interface VaultResponse {
   name: string;
@@ -23,25 +33,67 @@ export interface NoteMetaResponse {
 export function openVault(path: string): Promise<VaultResponse> {
   if (!isTauriAvailable()) {
     const name = path.split('/').pop() || 'My Vault';
-    salLog.info('openVault (browser fallback)', { name, path });
+    salLog.info(
+      'openVault (browser fallback)',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'fallback-resolve', { name, path })
+    );
     return Promise.resolve({ name, rootPath: path });
   }
-  salLog.info('openVault (IPC)', { path });
+  salLog.info('openVault (IPC)', vaultProcessContext(OPEN_VAULT_PROCESS, 'ipc-dispatch', { path }));
   return invokeCommand<VaultResponse>('open_vault', { path });
 }
 
 export function createVault(path: string, name: string): Promise<VaultResponse> {
   if (!isTauriAvailable()) {
-    salLog.info('createVault (browser fallback)', { name, path });
+    salLog.info(
+      'createVault (browser fallback)',
+      vaultProcessContext(CREATE_VAULT_PROCESS, 'fallback-resolve', { name, path })
+    );
     return Promise.resolve({ name, rootPath: path });
   }
-  salLog.info('createVault (IPC)', { name, path });
+  salLog.info(
+    'createVault (IPC)',
+    vaultProcessContext(CREATE_VAULT_PROCESS, 'ipc-dispatch', { name, path })
+  );
   return invokeCommand<VaultResponse>('create_vault', { path, name });
 }
 
 export function scanVault(): Promise<NoteMetaResponse[]> {
   if (!isTauriAvailable()) return Promise.resolve([]);
   return invokeCommand<NoteMetaResponse[]>('scan_vault');
+}
+
+export async function finalizeVaultOpen(vault: VaultResponse): Promise<void> {
+  salLog.info(
+    'Applying vault-open state',
+    vaultProcessContext(OPEN_VAULT_PROCESS, 'state-update', {
+      name: vault.name,
+      rootPath: vault.rootPath,
+    })
+  );
+  setVault({ name: vault.name, rootPath: vault.rootPath });
+  saveRecentVault(vault.name, vault.rootPath);
+  salLog.info(
+    'Initializing vault store',
+    vaultProcessContext(OPEN_VAULT_PROCESS, 'store-init', {
+      rootPath: vault.rootPath,
+    })
+  );
+  initVaultStore();
+  await rescanVault();
+  salLog.info(
+    'Vault rescan completed',
+    vaultProcessContext(OPEN_VAULT_PROCESS, 'scan-complete', {
+      rootPath: vault.rootPath,
+    })
+  );
+  await goto('/');
+  salLog.info(
+    'Navigation after vault-open completed',
+    vaultProcessContext(OPEN_VAULT_PROCESS, 'done', {
+      rootPath: vault.rootPath,
+    })
+  );
 }
 
 /**
@@ -51,31 +103,76 @@ export function scanVault(): Promise<NoteMetaResponse[]> {
  * Returns true if a vault was opened, false if the user cancelled.
  */
 export async function openVaultDialog(): Promise<boolean> {
+  salLog.info('Starting openVaultDialog', vaultProcessContext(OPEN_VAULT_PROCESS, 'start'));
   let path: string | null = null;
 
   if (!isTauriAvailable()) {
     path = '/demo/My Vault';
+    salLog.info(
+      'Using demo path for non-Tauri runtime',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'resolve-path-fallback', { path })
+    );
   } else {
     try {
+      salLog.info(
+        'Opening native folder dialog',
+        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-open')
+      );
       const { open } = await import('@tauri-apps/plugin-dialog');
       const selected = await open({ directory: true, multiple: false, title: 'Open Vault' });
-      if (!selected) return false;
+      if (!selected) {
+        salLog.info(
+          'Open vault dialog cancelled by user',
+          vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-cancel')
+        );
+        return false;
+      }
       path = Array.isArray(selected) ? selected[0] : selected;
+      salLog.info(
+        'Folder dialog returned a path',
+        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-selected', { path })
+      );
     } catch (e) {
-      salLog.error('Folder dialog failed', e);
+      salLog.error(
+        'Folder dialog failed',
+        e,
+        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-error')
+      );
       return false;
     }
   }
 
-  if (!path) return false;
+  if (!path) {
+    salLog.warn(
+      'Open vault path resolved to empty',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'resolve-path-empty')
+    );
+    return false;
+  }
 
-  const vault = await openVault(path);
-  setVault({ name: vault.name, rootPath: vault.rootPath });
-  saveRecentVault(vault.name, vault.rootPath);
-  initVaultStore();
-  await rescanVault();
-  await goto('/');
-  return true;
+  try {
+    salLog.info(
+      'Opening vault path',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'open-vault', { path })
+    );
+    const vault = await openVault(path);
+    salLog.info(
+      'Vault open returned successfully',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'open-vault-ok', {
+        name: vault.name,
+        rootPath: vault.rootPath,
+      })
+    );
+    await finalizeVaultOpen(vault);
+    return true;
+  } catch (error) {
+    salLog.error(
+      'Open vault dialog flow failed',
+      error,
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'flow-error', { path })
+    );
+    return false;
+  }
 }
 
 function saveRecentVault(name: string, path: string) {
@@ -86,7 +183,10 @@ function saveRecentVault(name: string, path: string) {
     const entry = { name, path, openedAt: Date.now() };
     recent = [entry, ...recent.filter((v) => v.path !== path)].slice(0, 5);
     localStorage.setItem(RECENT_VAULTS_KEY, JSON.stringify(recent));
-  } catch {
-    /* ignore */
+  } catch (error) {
+    salLog.warn(
+      'Failed to persist recent vault entry',
+      vaultProcessContext(OPEN_VAULT_PROCESS, 'recent-persist-failed', { error: String(error) })
+    );
   }
 }
