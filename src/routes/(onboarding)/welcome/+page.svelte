@@ -5,6 +5,7 @@
   import BIcon from '@/ui/b-icon.svelte';
   import { VAULT_TEMPLATES } from '@/constants/vault-templates';
   import { APP_VERSION } from '@/constants/app-meta';
+  import { pickBrowserVaultDirectory } from '@/sal/browser-vault-service';
   import { createVault, finalizeVaultOpen, openVault } from '@/sal/vault-service';
   import { log } from '@/utils/log/logger';
   import { isTauriAvailable } from '@/utils/platform';
@@ -54,13 +55,15 @@
 
   async function openFolderDialog(title: string): Promise<string | null> {
     if (!isTauriAvailable()) {
-      const demoPath = `/demo/${vaultName || 'My Vault'}`;
-      welcomeLog.info('Using fallback demo folder in non-Tauri runtime', {
+      const selection = await pickBrowserVaultDirectory();
+      if (!selection) return null;
+      welcomeLog.info('Browser folder picker returned a vault', {
         process: WELCOME_VAULT_PROCESS,
-        step: 'resolve-path-fallback',
-        path: demoPath,
+        step: 'resolve-path-browser',
+        rootPath: selection.rootPath,
+        name: selection.name,
       });
-      return demoPath;
+      return selection.rootPath;
     }
     try {
       welcomeLog.info('Opening folder picker', {

@@ -1,8 +1,22 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildDeepLink } from '@/ipc/api-client';
+import { buildDeepLink, resolveApiBase } from '@/ipc/api-client';
 
 describe('api-client', () => {
+  describe('resolveApiBase', () => {
+    it('uses the local desktop API when Tauri internals are present', () => {
+      Object.assign(window, { __TAURI_INTERNALS__: {} });
+      expect(resolveApiBase()).toBe('http://127.0.0.1:21721');
+      delete (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__;
+    });
+
+    it('uses relative paths in plain web runtime', () => {
+      delete (window as Window & { __TAURI__?: unknown }).__TAURI__;
+      delete (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__;
+      expect(resolveApiBase()).toBe('');
+    });
+  });
+
   describe('buildDeepLink', () => {
     it('builds open link', () => {
       expect(buildDeepLink('open', 'folder/note.md')).toBe('bismuth://open/folder%2Fnote.md');

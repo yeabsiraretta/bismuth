@@ -8,9 +8,11 @@ import {
   stopWatching,
 } from '@/hubs/core/stores/watcher-store.svelte';
 import { clearFileCache, hydrateVaultContent } from '@/hubs/editor/services/file-ops';
+import { isBrowserVaultPath } from '@/sal/browser-vault-service';
 import { gitPull } from '@/sal/git-service';
 import { openVault as salOpenVault, scanVault as salScanVault } from '@/sal/vault-service';
 import { log } from '@/utils/log/logger';
+import { isTauriAvailable } from '@/utils/platform';
 
 export interface VaultInfo {
   name: string;
@@ -70,8 +72,11 @@ export function setVault(vault: VaultInfo | null) {
     activeNotePath = null;
   }
   try {
-    if (vault) localStorage.setItem(VAULT_INFO_KEY, JSON.stringify(vault));
-    else localStorage.removeItem(VAULT_INFO_KEY);
+    if (vault && !isBrowserVaultPath(vault.rootPath)) {
+      localStorage.setItem(VAULT_INFO_KEY, JSON.stringify(vault));
+    } else {
+      localStorage.removeItem(VAULT_INFO_KEY);
+    }
   } catch {
     /* ignore */
   }
@@ -180,7 +185,10 @@ export function initVaultStore() {
         /* settings not available yet */
       }
     })
-    .catch(() => {
+    .catch((error) => {
+      vaultLog.error('Vault store initialization failed', error, {
+        hasVault: currentVault !== null,
+      });
       storeInitialized = true;
     });
 }
@@ -233,6 +241,12 @@ async function loadVaultNotes() {
       vaultLog.debug(`Loaded ${notes.length} notes from vault`);
     }
   } catch (err) {
+    if (isTauriAvailable() || currentVault) {
+      vaultLog.error('Vault scan failed', err, {
+        hasVault: currentVault !== null,
+      });
+      return;
+    }
     if (!scanErrorLogged) {
       vaultLog.debug('Vault scan unavailable (expected in browser dev mode)', {
         error: String(err),

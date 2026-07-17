@@ -14,6 +14,10 @@ declare global {
     interface Error {
       message: string;
       code?: string;
+      details?: string;
+      source?: string;
+      status?: number;
+      timestamp?: string;
     }
 
     // No server hooks — Tauri desktop app with ssr: false

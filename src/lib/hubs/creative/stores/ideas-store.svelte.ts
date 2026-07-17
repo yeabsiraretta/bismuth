@@ -7,9 +7,6 @@ export interface CreativeIdea {
   ts: number;
 }
 
-let ideas = $state<CreativeIdea[]>([]);
-let hydrated = false;
-
 function loadIdeas(): CreativeIdea[] {
   if (typeof localStorage === 'undefined') return [];
   try {
@@ -20,24 +17,18 @@ function loadIdeas(): CreativeIdea[] {
   }
 }
 
+let ideas = $state<CreativeIdea[]>(loadIdeas());
+
 function persistIdeas(): void {
   if (typeof localStorage === 'undefined') return;
   localStorage.setItem(CREATIVE_IDEAS_KEY, JSON.stringify(ideas));
 }
 
-function ensureHydrated(): void {
-  if (hydrated) return;
-  ideas = loadIdeas();
-  hydrated = true;
-}
-
 export function getCreativeIdeas(): CreativeIdea[] {
-  ensureHydrated();
   return ideas;
 }
 
 export function addCreativeIdea(text: string, tags = ''): void {
-  ensureHydrated();
   const trimmed = text.trim();
   if (!trimmed) return;
   ideas = [{ id: crypto.randomUUID(), text: trimmed, tags: tags.trim(), ts: Date.now() }, ...ideas];
@@ -45,7 +36,6 @@ export function addCreativeIdea(text: string, tags = ''): void {
 }
 
 export function removeCreativeIdea(id: string): void {
-  ensureHydrated();
   ideas = ideas.filter((idea) => idea.id !== id);
   persistIdeas();
 }

@@ -4,19 +4,42 @@
  * All metrics are local-only (no external telemetry). Data is held
  * in-memory only — no localStorage persistence (Rust backend owns
  * persistent logging via tauri-plugin-log).
- *
- * Usage:
- *   metrics.counter('ipc.calls').inc();
- *   metrics.gauge('notes.count').set(42);
- *   metrics.histogram('editor.save.ms').observe(120);
- *   const end = metrics.timer('vault.scan');  await scan(); end();
  */
 
 const MAX_HISTOGRAM_SAMPLES = 200;
 
+type MetricType = 'counter' | 'gauge' | 'histogram';
+
+interface BaseMetric {
+  type: MetricType;
+  name: string;
+  labels?: Record<string, string>;
+  createdAt: string;
+  updatedAt: string;
+  updates: number;
+}
+
+interface CounterMetric extends BaseMetric {
+  type: 'counter';
+  value: number;
+}
+
+interface GaugeMetric extends BaseMetric {
+  type: 'gauge';
+  value: number;
+}
+
+interface HistogramMetric extends BaseMetric {
+  type: 'histogram';
+  samples: number[];
+  count: number;
+  sum: number;
+  lastValue?: number;
+}
+
 export interface MetricSnapshot {
   name: string;
-  type: 'counter' | 'gauge' | 'histogram';
+  type: MetricType;
   value?: number;
   count?: number;
   sum?: number;
@@ -26,56 +49,103 @@ export interface MetricSnapshot {
   p50?: number;
   p95?: number;
   p99?: number;
+  lastValue?: number;
+  samplesStored?: number;
   labels?: Record<string, string>;
+  createdAt: string;
+  updatedAt: string;
+  ageMs: number;
+  updates: number;
 }
 
-interface CounterMetric {
-  type: 'counter';
-  name: string;
-  value: number;
-  labels?: Record<string, string>;
+export interface MetricSummary {
+  totalMetrics: number;
+  counters: number;
+  gauges: number;
+  histograms: number;
+  totalUpdates: number;
+  staleMetrics: number;
+  lastUpdatedAt: string | null;
 }
 
-interface GaugeMetric {
-  type: 'gauge';
-  name: string;
-  value: number;
-  labels?: Record<string, string>;
+function timestamp(): string {
+  return new Date().toISOString();
 }
 
-interface HistogramMetric {
-  type: 'histogram';
-  name: string;
-  samples: number[];
-  count: number;
-  sum: number;
-  labels?: Record<string, string>;
+function metricAge(updatedAt: string): number {
+  const parsed = Date.parse(updatedAt);
+  return Number.isNaN(parsed) ? 0 : Math.max(0, Date.now() - parsed);
+}
+
+function createBaseMetric(
+  name: string,
+  labels?: Record<string, string>
+): Omit<BaseMetric, 'type'> & { labels?: Record<string, string> } {
+  const now = timestamp();
+  return {
+    name,
+    labels,
+    createdAt: now,
+    updatedAt: now,
+    updates: 0,
+  };
+}
+
+function percentile(samples: number[], ratio: number): number {
+  if (samples.length === 0) return 0;
+  if (samples.length === 1) return samples[0];
+
+  const clampedRatio = Math.min(Math.max(ratio, 0), 1);
+  const position = (samples.length - 1) * clampedRatio;
+  const lowerIndex = Math.floor(position);
+  const upperIndex = Math.ceil(position);
+  const lowerValue = samples[lowerIndex];
+  const upperValue = samples[upperIndex];
+
+  if (lowerIndex === upperIndex || lowerValue === upperValue) {
+    return lowerValue;
+  }
+
+  const weight = position - lowerIndex;
+  return Math.round((lowerValue + (upperValue - lowerValue) * weight) * 1000) / 1000;
 }
 
 class CounterHandle {
   constructor(private metric: CounterMetric) {}
+
   inc(amount = 1): void {
     this.metric.value += amount;
+    this.metric.updates++;
+    this.metric.updatedAt = timestamp();
   }
+
   get(): number {
     return this.metric.value;
   }
+
   reset(): void {
     this.metric.value = 0;
+    this.metric.updatedAt = timestamp();
   }
 }
 
 class GaugeHandle {
   constructor(private metric: GaugeMetric) {}
+
   set(value: number): void {
     this.metric.value = value;
+    this.metric.updates++;
+    this.metric.updatedAt = timestamp();
   }
+
   inc(amount = 1): void {
-    this.metric.value += amount;
+    this.set(this.metric.value + amount);
   }
+
   dec(amount = 1): void {
-    this.metric.value -= amount;
+    this.set(this.metric.value - amount);
   }
+
   get(): number {
     return this.metric.value;
   }
@@ -83,14 +153,20 @@ class GaugeHandle {
 
 class HistogramHandle {
   constructor(private metric: HistogramMetric) {}
+
   observe(value: number): void {
     this.metric.samples.push(value);
     this.metric.count++;
     this.metric.sum += value;
+    this.metric.lastValue = value;
+    this.metric.updates++;
+    this.metric.updatedAt = timestamp();
+
     if (this.metric.samples.length > MAX_HISTOGRAM_SAMPLES) {
       this.metric.samples = this.metric.samples.slice(-MAX_HISTOGRAM_SAMPLES);
     }
   }
+
   snapshot(): {
     count: number;
     sum: number;
@@ -100,27 +176,46 @@ class HistogramHandle {
     p50: number;
     p95: number;
     p99: number;
+    lastValue?: number;
+    samplesStored: number;
   } {
-    const s = [...this.metric.samples].sort((a, b) => a - b);
+    const samples = [...this.metric.samples].sort((a, b) => a - b);
     const { count, sum } = this.metric;
-    if (s.length === 0) {
-      return { count: 0, sum: 0, avg: 0, min: 0, max: 0, p50: 0, p95: 0, p99: 0 };
+    if (samples.length === 0) {
+      return {
+        count: 0,
+        sum: 0,
+        avg: 0,
+        min: 0,
+        max: 0,
+        p50: 0,
+        p95: 0,
+        p99: 0,
+        lastValue: this.metric.lastValue,
+        samplesStored: 0,
+      };
     }
+
     return {
       count,
       sum,
       avg: Math.round(sum / count),
-      min: s[0],
-      max: s[s.length - 1],
-      p50: s[Math.floor(s.length * 0.5)],
-      p95: s[Math.floor(s.length * 0.95)],
-      p99: s[Math.floor(s.length * 0.99)],
+      min: samples[0],
+      max: samples[samples.length - 1],
+      p50: percentile(samples, 0.5),
+      p95: percentile(samples, 0.95),
+      p99: percentile(samples, 0.99),
+      lastValue: this.metric.lastValue,
+      samplesStored: samples.length,
     };
   }
+
   reset(): void {
     this.metric.samples = [];
     this.metric.count = 0;
     this.metric.sum = 0;
+    this.metric.lastValue = undefined;
+    this.metric.updatedAt = timestamp();
   }
 }
 
@@ -132,7 +227,11 @@ class MetricsCollector {
   counter(name: string, labels?: Record<string, string>): CounterHandle {
     const key = this.key(name, labels);
     if (!this.counters.has(key)) {
-      this.counters.set(key, { type: 'counter', name, value: 0, labels });
+      this.counters.set(key, {
+        type: 'counter',
+        value: 0,
+        ...createBaseMetric(name, labels),
+      });
     }
     return new CounterHandle(this.counters.get(key)!);
   }
@@ -140,7 +239,11 @@ class MetricsCollector {
   gauge(name: string, labels?: Record<string, string>): GaugeHandle {
     const key = this.key(name, labels);
     if (!this.gauges.has(key)) {
-      this.gauges.set(key, { type: 'gauge', name, value: 0, labels });
+      this.gauges.set(key, {
+        type: 'gauge',
+        value: 0,
+        ...createBaseMetric(name, labels),
+      });
     }
     return new GaugeHandle(this.gauges.get(key)!);
   }
@@ -150,11 +253,10 @@ class MetricsCollector {
     if (!this.histograms.has(key)) {
       this.histograms.set(key, {
         type: 'histogram',
-        name,
         samples: [],
         count: 0,
         sum: 0,
-        labels,
+        ...createBaseMetric(name, labels),
       });
     }
     return new HistogramHandle(this.histograms.get(key)!);
@@ -162,42 +264,84 @@ class MetricsCollector {
 
   timer(name: string, labels?: Record<string, string>): () => number {
     const start = performance.now();
-    const hist = this.histogram(name, labels);
+    const histogram = this.histogram(name, labels);
     return () => {
       const ms = Math.round(performance.now() - start);
-      hist.observe(ms);
+      histogram.observe(ms);
       return ms;
     };
   }
 
   getAll(): MetricSnapshot[] {
-    const out: MetricSnapshot[] = [];
+    const snapshots: MetricSnapshot[] = [];
 
-    for (const m of this.counters.values()) {
-      out.push({ name: m.name, type: 'counter', value: m.value, labels: m.labels });
-    }
-    for (const m of this.gauges.values()) {
-      out.push({ name: m.name, type: 'gauge', value: m.value, labels: m.labels });
-    }
-    for (const m of this.histograms.values()) {
-      const h = new HistogramHandle(m);
-      const s = h.snapshot();
-      out.push({
-        name: m.name,
-        type: 'histogram',
-        labels: m.labels,
-        count: s.count,
-        sum: s.sum,
-        avg: s.avg,
-        min: s.min,
-        max: s.max,
-        p50: s.p50,
-        p95: s.p95,
-        p99: s.p99,
+    for (const metric of this.counters.values()) {
+      snapshots.push({
+        name: metric.name,
+        type: metric.type,
+        value: metric.value,
+        labels: metric.labels,
+        createdAt: metric.createdAt,
+        updatedAt: metric.updatedAt,
+        ageMs: metricAge(metric.updatedAt),
+        updates: metric.updates,
       });
     }
 
-    return out.sort((a, b) => a.name.localeCompare(b.name));
+    for (const metric of this.gauges.values()) {
+      snapshots.push({
+        name: metric.name,
+        type: metric.type,
+        value: metric.value,
+        labels: metric.labels,
+        createdAt: metric.createdAt,
+        updatedAt: metric.updatedAt,
+        ageMs: metricAge(metric.updatedAt),
+        updates: metric.updates,
+      });
+    }
+
+    for (const metric of this.histograms.values()) {
+      const snapshot = new HistogramHandle(metric).snapshot();
+      snapshots.push({
+        name: metric.name,
+        type: metric.type,
+        count: snapshot.count,
+        sum: snapshot.sum,
+        avg: snapshot.avg,
+        min: snapshot.min,
+        max: snapshot.max,
+        p50: snapshot.p50,
+        p95: snapshot.p95,
+        p99: snapshot.p99,
+        lastValue: snapshot.lastValue,
+        samplesStored: snapshot.samplesStored,
+        labels: metric.labels,
+        createdAt: metric.createdAt,
+        updatedAt: metric.updatedAt,
+        ageMs: metricAge(metric.updatedAt),
+        updates: metric.updates,
+      });
+    }
+
+    return snapshots.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  getSummary(staleAfterMs = 5 * 60_000): MetricSummary {
+    const all = this.getAll();
+    const latest = all
+      .map((metric) => metric.updatedAt)
+      .sort((a, b) => Date.parse(b) - Date.parse(a))[0];
+
+    return {
+      totalMetrics: all.length,
+      counters: all.filter((metric) => metric.type === 'counter').length,
+      gauges: all.filter((metric) => metric.type === 'gauge').length,
+      histograms: all.filter((metric) => metric.type === 'histogram').length,
+      totalUpdates: all.reduce((sum, metric) => sum + metric.updates, 0),
+      staleMetrics: all.filter((metric) => metric.ageMs > staleAfterMs).length,
+      lastUpdatedAt: latest ?? null,
+    };
   }
 
   reset(): void {
@@ -207,7 +351,15 @@ class MetricsCollector {
   }
 
   export(): string {
-    return JSON.stringify({ timestamp: new Date().toISOString(), metrics: this.getAll() }, null, 2);
+    return JSON.stringify(
+      {
+        timestamp: timestamp(),
+        summary: this.getSummary(),
+        metrics: this.getAll(),
+      },
+      null,
+      2
+    );
   }
 
   private key(name: string, labels?: Record<string, string>): string {

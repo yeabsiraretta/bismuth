@@ -1,6 +1,13 @@
 import { RECENT_VAULTS_KEY } from '@/constants/storage-keys';
-import { initVaultStore, rescanVault, setVault } from '@/hubs/core/stores/vault-store.svelte';
+import { getVault, initVaultStore, rescanVault, setVault } from '@/hubs/core/stores/vault-store.svelte';
 import { invokeCommand } from '@/ipc/invoke';
+import {
+  createBrowserVault,
+  isBrowserVaultPath,
+  openBrowserVault,
+  pickBrowserVaultDirectory,
+  scanBrowserVault,
+} from '@/sal/browser-vault-service';
 import { log } from '@/utils/log/logger';
 import { isTauriAvailable } from '@/utils/platform';
 import { goto } from '$app/navigation';
@@ -32,12 +39,8 @@ export interface NoteMetaResponse {
 
 export function openVault(path: string): Promise<VaultResponse> {
   if (!isTauriAvailable()) {
-    const name = path.split('/').pop() || 'My Vault';
-    salLog.info(
-      'openVault (browser fallback)',
-      vaultProcessContext(OPEN_VAULT_PROCESS, 'fallback-resolve', { name, path })
-    );
-    return Promise.resolve({ name, rootPath: path });
+    salLog.info('openVault (browser)', vaultProcessContext(OPEN_VAULT_PROCESS, 'browser-open', { path }));
+    return openBrowserVault(path);
   }
   salLog.info('openVault (IPC)', vaultProcessContext(OPEN_VAULT_PROCESS, 'ipc-dispatch', { path }));
   return invokeCommand<VaultResponse>('open_vault', { path });
@@ -46,10 +49,10 @@ export function openVault(path: string): Promise<VaultResponse> {
 export function createVault(path: string, name: string): Promise<VaultResponse> {
   if (!isTauriAvailable()) {
     salLog.info(
-      'createVault (browser fallback)',
-      vaultProcessContext(CREATE_VAULT_PROCESS, 'fallback-resolve', { name, path })
+      'createVault (browser)',
+      vaultProcessContext(CREATE_VAULT_PROCESS, 'browser-create', { name, path })
     );
-    return Promise.resolve({ name, rootPath: path });
+    return createBrowserVault(path, name);
   }
   salLog.info(
     'createVault (IPC)',
@@ -59,7 +62,11 @@ export function createVault(path: string, name: string): Promise<VaultResponse> 
 }
 
 export function scanVault(): Promise<NoteMetaResponse[]> {
-  if (!isTauriAvailable()) return Promise.resolve([]);
+  if (!isTauriAvailable()) {
+    const rootPath = getVault()?.rootPath;
+    if (!rootPath || !isBrowserVaultPath(rootPath)) return Promise.resolve([]);
+    return scanBrowserVault(rootPath);
+  }
   return invokeCommand<NoteMetaResponse[]>('scan_vault');
 }
 
@@ -107,11 +114,22 @@ export async function openVaultDialog(): Promise<boolean> {
   let path: string | null = null;
 
   if (!isTauriAvailable()) {
-    path = '/demo/My Vault';
-    salLog.info(
-      'Using demo path for non-Tauri runtime',
-      vaultProcessContext(OPEN_VAULT_PROCESS, 'resolve-path-fallback', { path })
-    );
+    try {
+      const selection = await pickBrowserVaultDirectory();
+      if (!selection) return false;
+      path = selection.rootPath;
+      salLog.info(
+        'Browser folder picker returned a vault',
+        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-selected-browser', path ? selection : {})
+      );
+    } catch (e) {
+      salLog.error(
+        'Browser folder dialog failed',
+        e,
+        vaultProcessContext(OPEN_VAULT_PROCESS, 'dialog-error-browser')
+      );
+      return false;
+    }
   } else {
     try {
       salLog.info(
@@ -176,6 +194,7 @@ export async function openVaultDialog(): Promise<boolean> {
 }
 
 function saveRecentVault(name: string, path: string) {
+  if (isBrowserVaultPath(path)) return;
   try {
     const stored = localStorage.getItem(RECENT_VAULTS_KEY);
     let recent: { name: string; path: string; openedAt: number }[] = [];

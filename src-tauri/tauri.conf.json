@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicegui/tauri-v2-schema/main/schema.json",
   "productName": "Bismuth",
-  "identifier": "com.bismuth.app",
+  "identifier": "com.bismuth",
   "version": "0.7.1",
   "build": {
     "frontendDist": "../build",

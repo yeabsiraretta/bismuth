@@ -1,17 +1,40 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
 
-  import { runHealthChecks, getUptime, type SystemHealth } from '@/utils/log/health';
-  import { log } from '@/utils/log/logger';
-  import type { LogCounts } from '@/utils/log/logger';
-  import { metrics, type MetricSnapshot } from '@/utils/log/metrics';
-  import { getWebVitals } from '@/utils/log/perf-observer';
+  import {
+    getUptime,
+    runHealthChecks,
+    type SystemHealth,
+  } from '@/utils/log/health';
+  import {
+    log,
+    type InteractionSummary,
+    type LogCounts,
+    type LogEntry,
+  } from '@/utils/log/logger';
+  import {
+    clearRuntimeErrors,
+    getRuntimeErrors,
+    type RuntimeErrorRecord,
+  } from '@/utils/log/runtime-errors';
+  import { metrics, type MetricSnapshot, type MetricSummary } from '@/utils/log/metrics';
+  import {
+    getPerformanceObserverStatus,
+    getWebVitals,
+    type PerformanceObserverStatus,
+  } from '@/utils/log/perf-observer';
 
   let health = $state<SystemHealth | null>(null);
   let allMetrics = $state<MetricSnapshot[]>([]);
+  let metricSummary = $state<MetricSummary | null>(null);
   let vitals: Record<string, number | null> = $state({});
+  let observerStatus = $state<PerformanceObserverStatus | null>(null);
   let logCounts = $state<LogCounts>({ debug: 0, info: 0, warn: 0, error: 0, fatal: 0 });
+  let recentLogs = $state<LogEntry[]>([]);
+  let interactionSummary = $state<InteractionSummary | null>(null);
+  let runtimeErrors = $state<RuntimeErrorRecord[]>([]);
   let refreshInterval: ReturnType<typeof setInterval>;
+
   type Section = 'health' | 'metrics' | 'vitals' | 'logs';
   let activeSection: Section = $state('health');
   let metricsFilter = $state('');
@@ -19,13 +42,18 @@
   async function refresh() {
     health = await runHealthChecks();
     allMetrics = metrics.getAll();
+    metricSummary = metrics.getSummary();
     vitals = getWebVitals();
+    observerStatus = getPerformanceObserverStatus();
     logCounts = log.getLogCounts();
+    recentLogs = log.getLogs(20);
+    interactionSummary = log.getInteractionSummary();
+    runtimeErrors = getRuntimeErrors(10);
   }
 
   onMount(() => {
-    refresh();
-    refreshInterval = setInterval(refresh, 5000);
+    void refresh();
+    refreshInterval = setInterval(() => void refresh(), 5000);
   });
 
   onDestroy(() => clearInterval(refreshInterval));
@@ -45,18 +73,51 @@
     return 'var(--color-error, #ef4444)';
   }
 
+  function formatMetricValue(metric: MetricSnapshot): string {
+    if (metric.type === 'histogram') {
+      return metric.avg != null ? `${metric.avg}` : '0';
+    }
+    return `${metric.value ?? 0}`;
+  }
+
+  function formatMetricDetails(metric: MetricSnapshot): string {
+    if (metric.type === 'histogram') {
+      return `n=${metric.count ?? 0} p50=${metric.p50 ?? 0} p95=${metric.p95 ?? 0} p99=${metric.p99 ?? 0}`;
+    }
+
+    if (metric.labels && Object.keys(metric.labels).length > 0) {
+      return Object.entries(metric.labels)
+        .map(([key, value]) => `${key}=${value}`)
+        .join(', ');
+    }
+
+    return '—';
+  }
+
+  function formatAge(ageMs: number): string {
+    if (ageMs < 1000) return `${ageMs}ms`;
+    const seconds = Math.round(ageMs / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.round(seconds / 60);
+    return `${minutes}m`;
+  }
+
+  function stringifyDetails(details?: Record<string, unknown>): string {
+    return details ? JSON.stringify(details, null, 2) : '';
+  }
+
   function resetMetrics() {
     metrics.reset();
-    refresh();
+    void refresh();
   }
 
   function exportMetrics() {
     const blob = new Blob([metrics.export()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `bismuth-metrics-${new Date().toISOString().slice(0, 19)}.json`;
-    a.click();
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `bismuth-metrics-${new Date().toISOString().slice(0, 19)}.json`;
+    anchor.click();
     URL.revokeObjectURL(url);
   }
 
@@ -64,9 +125,14 @@
     log.downloadLogs();
   }
 
+  function clearErrorHistory() {
+    clearRuntimeErrors();
+    void refresh();
+  }
+
   let filteredMetrics = $derived(
     metricsFilter
-      ? allMetrics.filter((m) => m.name.toLowerCase().includes(metricsFilter.toLowerCase()))
+      ? allMetrics.filter((metric) => metric.name.toLowerCase().includes(metricsFilter.toLowerCase()))
       : allMetrics
   );
 
@@ -82,7 +148,7 @@
 
 <div class="ob-panel">
   <h3 class="ob-heading">Observability & Monitoring</h3>
-  <p class="ob-desc">System health, performance metrics, and diagnostics</p>
+  <p class="ob-desc">Local health, metrics, performance, and diagnostics for desktop and web runtime.</p>
 
   <div class="ob-overview">
     <div
@@ -99,20 +165,24 @@
       <span class="ob-card-value">{uptime}</span>
     </div>
     <div class="ob-card">
-      <span class="ob-card-label">Metrics</span>
-      <span class="ob-card-value">{allMetrics.length}</span>
+      <span class="ob-card-label">Checks</span>
+      <span class="ob-card-value">{health?.checks.length ?? 0}</span>
     </div>
     <div class="ob-card">
-      <span class="ob-card-label">Warnings</span>
+      <span class="ob-card-label">Metrics</span>
+      <span class="ob-card-value">{metricSummary?.totalMetrics ?? allMetrics.length}</span>
+    </div>
+    <div class="ob-card">
+      <span class="ob-card-label">Runtime Errors</span>
       <span
         class="ob-card-value"
-        style="color: {logCounts.warn > 0 ? 'var(--color-warning, #f59e0b)' : 'inherit'}"
+        style="color: {runtimeErrors.length > 0 ? 'var(--color-warning, #f59e0b)' : 'inherit'}"
       >
-        {logCounts.warn}
+        {runtimeErrors.length}
       </span>
     </div>
     <div class="ob-card">
-      <span class="ob-card-label">Errors</span>
+      <span class="ob-card-label">Log Errors</span>
       <span
         class="ob-card-value"
         style="color: {logCounts.error + logCounts.fatal > 0
@@ -142,17 +212,35 @@
     <div class="ob-section">
       <div class="ob-section-header">
         <h4 class="ob-section-title">Health Checks</h4>
-        <button class="ob-btn" onclick={refresh}>Refresh</button>
+        <button class="ob-btn" onclick={() => void refresh()}>Refresh</button>
       </div>
+
       {#if health}
+        <div class="ob-summary-strip">
+          <div class="ob-summary-chip" style="border-color: {statusColor('healthy')}">
+            Healthy: {health.healthyCount}
+          </div>
+          <div class="ob-summary-chip" style="border-color: {statusColor('degraded')}">
+            Degraded: {health.degradedCount}
+          </div>
+          <div class="ob-summary-chip" style="border-color: {statusColor('unhealthy')}">
+            Unhealthy: {health.unhealthyCount}
+          </div>
+          <div class="ob-summary-chip">Last run: {health.timestamp}</div>
+        </div>
+
         {#each health.checks as check (check.name)}
           <div class="ob-check-row">
             <span class="ob-check-dot" style="background: {statusColor(check.status)}"></span>
             <div class="ob-check-info">
-              <span class="ob-check-name" style="color: {statusColor(check.status)}"
-                >{check.name}</span
-              >
+              <div class="ob-check-topline">
+                <span class="ob-check-name" style="color: {statusColor(check.status)}">{check.name}</span>
+                <span class="ob-check-time">{check.timestamp}</span>
+              </div>
               <span class="ob-check-msg">{check.message}</span>
+              {#if check.details}
+                <pre>{stringifyDetails(check.details)}</pre>
+              {/if}
             </div>
             <span class="ob-check-dur">{check.durationMs}ms</span>
           </div>
@@ -171,31 +259,43 @@
           <button class="ob-btn ob-btn-danger" onclick={resetMetrics}>Reset</button>
         </div>
       </div>
+
+      <div class="ob-mini-grid">
+        <div class="ob-mini-card">
+          <span class="ob-mini-label">Total</span>
+          <span class="ob-mini-value">{metricSummary?.totalMetrics ?? 0}</span>
+        </div>
+        <div class="ob-mini-card">
+          <span class="ob-mini-label">Updates</span>
+          <span class="ob-mini-value">{metricSummary?.totalUpdates ?? 0}</span>
+        </div>
+        <div class="ob-mini-card">
+          <span class="ob-mini-label">Histograms</span>
+          <span class="ob-mini-value">{metricSummary?.histograms ?? 0}</span>
+        </div>
+        <div class="ob-mini-card">
+          <span class="ob-mini-label">Stale</span>
+          <span class="ob-mini-value">{metricSummary?.staleMetrics ?? 0}</span>
+        </div>
+      </div>
+
       <div class="ob-metrics-grid">
         <div class="ob-metrics-header">
-          <span class="ob-col-name">Name</span>
-          <span class="ob-col-type">Type</span>
-          <span class="ob-col-value">Value</span>
-          <span class="ob-col-extra">Details</span>
+          <span>Name</span>
+          <span>Type</span>
+          <span>Value</span>
+          <span>Age</span>
+          <span>Updates</span>
+          <span>Details</span>
         </div>
-        {#each filteredMetrics as m (m.name)}
+        {#each filteredMetrics as metric (metric.name + metric.updatedAt)}
           <div class="ob-metrics-row">
-            <span class="ob-col-name ob-metric-name">{m.name}</span>
-            <span class="ob-col-type"><code>{m.type}</code></span>
-            <span class="ob-col-value">
-              {#if m.type === 'histogram'}
-                {m.avg ?? 0} avg
-              {:else}
-                {m.value ?? 0}
-              {/if}
-            </span>
-            <span class="ob-col-extra">
-              {#if m.type === 'histogram'}
-                n={m.count} p50={m.p50} p95={m.p95} p99={m.p99}
-              {:else}
-                —
-              {/if}
-            </span>
+            <span class="ob-metric-name">{metric.name}</span>
+            <span><code>{metric.type}</code></span>
+            <span class="ob-mono">{formatMetricValue(metric)}</span>
+            <span class="ob-mono">{formatAge(metric.ageMs)}</span>
+            <span class="ob-mono">{metric.updates}</span>
+            <span class="ob-col-extra">{formatMetricDetails(metric)}</span>
           </div>
         {/each}
         {#if filteredMetrics.length === 0}
@@ -205,7 +305,11 @@
     </div>
   {:else if activeSection === 'vitals'}
     <div class="ob-section">
-      <h4 class="ob-section-title">Web Vitals</h4>
+      <div class="ob-section-header">
+        <h4 class="ob-section-title">Web Vitals & Observers</h4>
+        <button class="ob-btn" onclick={() => void refresh()}>Refresh</button>
+      </div>
+
       <div class="ob-vitals-grid">
         <div class="ob-vital-card">
           <span class="ob-vital-label">First Contentful Paint</span>
@@ -217,29 +321,11 @@
         </div>
         <div class="ob-vital-card">
           <span class="ob-vital-label">Cumulative Layout Shift</span>
-          <span class="ob-vital-value"
-            >{vitals.cls != null ? Number(vitals.cls).toFixed(3) : '—'}</span
-          >
+          <span class="ob-vital-value">{vitals.cls != null ? Number(vitals.cls).toFixed(3) : '—'}</span>
         </div>
         <div class="ob-vital-card">
           <span class="ob-vital-label">Time to First Byte</span>
           <span class="ob-vital-value">{vitals.ttfb != null ? `${vitals.ttfb}ms` : '—'}</span>
-        </div>
-        <div class="ob-vital-card">
-          <span class="ob-vital-label">DOM Interactive</span>
-          <span class="ob-vital-value"
-            >{vitals.domInteractive != null ? `${vitals.domInteractive}ms` : '—'}</span
-          >
-        </div>
-        <div class="ob-vital-card">
-          <span class="ob-vital-label">DOM Complete</span>
-          <span class="ob-vital-value"
-            >{vitals.domComplete != null ? `${vitals.domComplete}ms` : '—'}</span
-          >
-        </div>
-        <div class="ob-vital-card">
-          <span class="ob-vital-label">Page Load</span>
-          <span class="ob-vital-value">{vitals.loadMs != null ? `${vitals.loadMs}ms` : '—'}</span>
         </div>
         <div class="ob-vital-card">
           <span class="ob-vital-label">Long Tasks</span>
@@ -247,14 +333,54 @@
             >{vitals.longTaskCount ?? 0} ({vitals.longTaskTotalMs ?? 0}ms)</span
           >
         </div>
+        <div class="ob-vital-card">
+          <span class="ob-vital-label">Slow Resources</span>
+          <span class="ob-vital-value">{vitals.slowResourceCount ?? 0}</span>
+        </div>
+      </div>
+
+      <div class="ob-diagnostics-grid">
+        <div class="ob-diagnostics-card">
+          <h5 class="ob-subheading">Observer State</h5>
+          <div class="ob-kv-list">
+            <div><span>Running</span><strong>{observerStatus?.running ? 'yes' : 'no'}</strong></div>
+            <div><span>Active</span><strong>{observerStatus?.activeObservers ?? 0}</strong></div>
+            <div><span>Entries</span><strong>{observerStatus?.observedEntries ?? 0}</strong></div>
+            <div><span>Started</span><strong>{observerStatus?.lastStartedAt ?? '—'}</strong></div>
+          </div>
+        </div>
+        <div class="ob-diagnostics-card">
+          <h5 class="ob-subheading">Supported Observers</h5>
+          <div class="ob-tag-list">
+            {#if observerStatus && observerStatus.supportedObservers.length > 0}
+              {#each observerStatus.supportedObservers as kind (kind)}
+                <span class="ob-tag">{kind}</span>
+              {/each}
+            {:else}
+              <p class="ob-hint">No supported observers detected yet.</p>
+            {/if}
+          </div>
+          {#if observerStatus && observerStatus.unsupportedObservers.length > 0}
+            <h5 class="ob-subheading ob-subheading-spaced">Unsupported Observers</h5>
+            <div class="ob-tag-list">
+              {#each observerStatus.unsupportedObservers as kind (kind)}
+                <span class="ob-tag ob-tag-muted">{kind}</span>
+              {/each}
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
   {:else if activeSection === 'logs'}
     <div class="ob-section">
       <div class="ob-section-header">
-        <h4 class="ob-section-title">Log Summary</h4>
-        <button class="ob-btn" onclick={downloadLogs}>Export Logs</button>
+        <h4 class="ob-section-title">Logs & Diagnostics</h4>
+        <div class="ob-header-actions">
+          <button class="ob-btn" onclick={downloadLogs}>Export Logs</button>
+          <button class="ob-btn ob-btn-danger" onclick={clearErrorHistory}>Clear Errors</button>
+        </div>
       </div>
+
       <div class="ob-log-summary">
         <div class="ob-log-row">
           <span class="ob-log-badge ob-log-debug">DEBUG</span>
@@ -272,11 +398,82 @@
           <span class="ob-log-badge ob-log-error">ERROR</span>
           <span class="ob-log-count">{logCounts.error}</span>
         </div>
-        {#if logCounts.fatal > 0}
-          <div class="ob-log-row">
-            <span class="ob-log-badge ob-log-fatal">FATAL</span>
-            <span class="ob-log-count">{logCounts.fatal}</span>
-          </div>
+        <div class="ob-log-row">
+          <span class="ob-log-badge ob-log-fatal">FATAL</span>
+          <span class="ob-log-count">{logCounts.fatal}</span>
+        </div>
+      </div>
+
+      <div class="ob-diagnostics-grid">
+        <div class="ob-diagnostics-card">
+          <h5 class="ob-subheading">Interaction Summary</h5>
+          {#if interactionSummary}
+            <div class="ob-kv-list">
+              <div><span>Total</span><strong>{interactionSummary.total}</strong></div>
+              <div><span>With errors</span><strong>{interactionSummary.withErrors}</strong></div>
+            </div>
+
+            {#if interactionSummary.categories.length > 0}
+              {#each interactionSummary.categories as item (item.category)}
+                <div class="ob-entry-item">
+                  <div class="ob-entry-head">
+                    <span class="ob-entry-level">{item.category}</span>
+                    <span class="ob-entry-time">{item.count} events</span>
+                  </div>
+                  <div class="ob-entry-message">
+                    errors={item.errorCount}
+                    {#if item.avgDurationMs != null}
+                      avg={item.avgDurationMs}ms
+                    {/if}
+                  </div>
+                </div>
+              {/each}
+            {:else}
+              <p class="ob-hint">No tracked interactions yet.</p>
+            {/if}
+          {/if}
+        </div>
+
+        <div class="ob-diagnostics-card">
+          <h5 class="ob-subheading">Recent Runtime Errors</h5>
+          {#if runtimeErrors.length === 0}
+            <p class="ob-hint">No persisted runtime errors.</p>
+          {:else}
+            {#each runtimeErrors as runtimeError (runtimeError.code)}
+              <div class="ob-error-item">
+                <div class="ob-error-head">
+                  <span class="ob-error-code">{runtimeError.code}</span>
+                  <span class="ob-error-time">{runtimeError.timestamp}</span>
+                </div>
+                <div class="ob-error-source">{runtimeError.source}</div>
+                <div class="ob-error-message">{runtimeError.message}</div>
+                {#if runtimeError.details}
+                  <pre>{runtimeError.details}</pre>
+                {/if}
+              </div>
+            {/each}
+          {/if}
+        </div>
+      </div>
+
+      <div class="ob-diagnostics-card ob-logs-card">
+        <h5 class="ob-subheading">Recent Log Entries</h5>
+        {#if recentLogs.length === 0}
+          <p class="ob-hint">No in-app log entries yet.</p>
+        {:else}
+          {#each recentLogs as entry, index (`${entry.timestamp}-${entry.scope}-${index}`)}
+            <div class="ob-entry-item">
+              <div class="ob-entry-head">
+                <span class="ob-entry-level">{entry.level.toUpperCase()}</span>
+                <span class="ob-entry-scope">{entry.scope}</span>
+                <span class="ob-entry-time">{entry.timestamp}</span>
+              </div>
+              <div class="ob-entry-message">{entry.message}</div>
+              {#if entry.context}
+                <pre>{JSON.stringify(entry.context, null, 2)}</pre>
+              {/if}
+            </div>
+          {/each}
         {/if}
       </div>
     </div>
@@ -287,312 +484,452 @@
   .ob-panel {
     max-width: 100%;
   }
+
   .ob-heading {
-    font-size: 1rem;
-    font-weight: 600;
     margin: 0 0 4px;
     color: var(--color-text);
-  }
-  .ob-desc {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    margin: 0 0 16px;
+    font-size: 1rem;
+    font-weight: 600;
   }
 
-  /* Overview strip */
-  .ob-overview {
-    display: flex;
+  .ob-desc {
+    margin: 0 0 16px;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+  }
+
+  .ob-overview,
+  .ob-mini-grid,
+  .ob-vitals-grid,
+  .ob-diagnostics-grid {
+    display: grid;
     gap: 8px;
-    flex-wrap: wrap;
+  }
+
+  .ob-overview {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     margin-bottom: 16px;
   }
-  .ob-card {
-    flex: 1;
-    min-width: 80px;
-    padding: 8px 10px;
+
+  .ob-card,
+  .ob-mini-card,
+  .ob-vital-card,
+  .ob-diagnostics-card {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-s);
-    text-align: center;
     background: var(--color-surface);
   }
-  .ob-card-label {
-    display: block;
-    font-size: 0.6rem;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .ob-card-value {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    font-family: var(--font-mono);
-    margin-top: 2px;
+
+  .ob-card,
+  .ob-mini-card,
+  .ob-vital-card {
+    padding: 10px;
   }
 
-  /* Tabs */
+  .ob-card-label,
+  .ob-mini-label,
+  .ob-vital-label {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--color-text-muted);
+    font-size: 0.6rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .ob-card-value,
+  .ob-mini-value,
+  .ob-vital-value {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  .ob-card-value {
+    font-size: 0.85rem;
+  }
+
+  .ob-mini-grid {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    margin-bottom: 12px;
+  }
+
+  .ob-mini-value {
+    font-size: 0.8rem;
+  }
+
   .ob-tabs {
     display: flex;
     gap: 2px;
+    margin-bottom: 16px;
     border-bottom: 1px solid var(--color-border);
     padding-bottom: 2px;
-    margin-bottom: 16px;
   }
+
   .ob-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
     border: none;
+    border-radius: var(--radius-s) var(--radius-s) 0 0;
     background: transparent;
     color: var(--color-text-muted);
-    font-size: 0.7rem;
     cursor: pointer;
-    border-radius: var(--radius-s) var(--radius-s) 0 0;
     font-family: inherit;
-    transition: all 0.15s;
+    font-size: 0.7rem;
+    padding: 4px 10px;
   }
+
   .ob-tab:hover {
     background: var(--color-surface-hover);
     color: var(--color-text);
   }
+
   .ob-tab-active {
     background: var(--color-surface);
     color: var(--color-text);
     font-weight: 600;
   }
 
-  /* Sections */
   .ob-section {
     margin-bottom: 20px;
   }
+
   .ob-section-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     margin-bottom: 10px;
   }
-  .ob-section-title {
+
+  .ob-section-title,
+  .ob-subheading {
+    margin: 0;
+    color: var(--color-text-muted);
     font-size: 0.7rem;
     font-weight: 600;
-    text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--color-text-muted);
-    margin: 0;
+    text-transform: uppercase;
   }
+
+  .ob-subheading {
+    color: var(--color-text);
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+  }
+
+  .ob-subheading-spaced {
+    margin-top: 12px;
+  }
+
   .ob-header-actions {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
   }
 
-  /* Buttons */
-  .ob-btn {
-    padding: 3px 10px;
-    font-size: 0.65rem;
+  .ob-btn,
+  .ob-filter {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-s);
     background: var(--color-surface);
     color: var(--color-text);
-    cursor: pointer;
     font-family: inherit;
-    transition: background var(--transition-fast);
+    font-size: 0.65rem;
   }
+
+  .ob-btn {
+    cursor: pointer;
+    padding: 3px 10px;
+  }
+
   .ob-btn:hover {
     background: var(--color-surface-hover);
   }
+
   .ob-btn-danger {
-    color: var(--color-error);
     border-color: var(--color-error);
-  }
-  .ob-btn-danger:hover {
-    background: oklch(from var(--color-error) l c h / 0.12);
+    color: var(--color-error);
   }
 
   .ob-filter {
     padding: 2px 8px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-s);
-    background: var(--color-surface);
-    color: var(--color-text);
-    font-size: 0.65rem;
     width: 130px;
-    font-family: inherit;
-  }
-  .ob-filter:focus {
-    outline: 1px solid var(--color-accent);
-    border-color: var(--color-accent);
   }
 
-  /* Health checks */
-  .ob-check-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--color-border);
+  .ob-filter:focus {
+    border-color: var(--color-accent);
+    outline: 1px solid var(--color-accent);
   }
-  .ob-check-row:last-child {
+
+  .ob-summary-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ob-summary-chip,
+  .ob-tag {
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+  }
+
+  .ob-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ob-tag-muted {
+    color: var(--color-text-muted);
+  }
+
+  .ob-check-row,
+  .ob-entry-item,
+  .ob-error-item {
+    border-bottom: 1px solid var(--color-border);
+    padding: 8px 0;
+  }
+
+  .ob-check-row:last-child,
+  .ob-entry-item:last-child,
+  .ob-error-item:last-child {
     border-bottom: none;
   }
+
+  .ob-check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
   .ob-check-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-top: 6px;
   }
+
   .ob-check-info {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
+    min-width: 0;
   }
+
+  .ob-check-topline,
+  .ob-entry-head,
+  .ob-error-head,
+  .ob-kv-list > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
   .ob-check-name {
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: capitalize;
   }
-  .ob-check-msg {
-    font-size: 0.65rem;
-    color: var(--color-text-muted);
-  }
-  .ob-check-dur {
-    font-size: 0.65rem;
-    color: var(--color-text-muted);
-    min-width: 40px;
-    text-align: right;
-    font-family: var(--font-mono);
-  }
-  .ob-hint {
-    font-size: 0.7rem;
-    color: var(--color-text-muted);
+
+  .ob-check-msg,
+  .ob-entry-message,
+  .ob-error-message {
+    color: var(--color-text);
+    font-size: 0.68rem;
+    margin-top: 2px;
   }
 
-  /* Metrics grid */
+  .ob-check-time,
+  .ob-check-dur,
+  .ob-entry-time,
+  .ob-entry-scope,
+  .ob-error-time,
+  .ob-error-code,
+  .ob-error-source {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+  }
+
+  .ob-check-dur {
+    min-width: 42px;
+    text-align: right;
+  }
+
   .ob-metrics-grid {
     font-size: 0.65rem;
   }
+
   .ob-metrics-header,
   .ob-metrics-row {
     display: grid;
-    grid-template-columns: 2fr 0.5fr 0.7fr 1.5fr;
     gap: 6px;
+    grid-template-columns: minmax(140px, 2fr) 0.7fr 0.8fr 0.7fr 0.7fr 1.8fr;
     padding: 4px 0;
   }
+
   .ob-metrics-header {
-    font-weight: 600;
-    color: var(--color-text-muted);
     border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
     padding-bottom: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-size: 0.6rem;
   }
+
   .ob-metrics-row {
     border-bottom: 1px solid var(--color-border);
   }
-  .ob-metrics-row:last-child {
-    border-bottom: none;
-  }
-  .ob-metrics-row:hover {
-    background: var(--color-surface);
-  }
-  .ob-metric-name {
+
+  .ob-metric-name,
+  .ob-mono {
     font-family: var(--font-mono);
-    font-weight: 500;
+  }
+
+  .ob-metric-name {
     color: var(--color-accent);
+    font-weight: 500;
     word-break: break-all;
   }
-  .ob-col-value {
-    font-family: var(--font-mono);
-  }
+
   .ob-col-extra {
-    font-family: var(--font-mono);
     color: var(--color-text-muted);
+    font-family: var(--font-mono);
   }
+
+  .ob-empty-row,
+  .ob-hint {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+
   .ob-empty-row {
+    grid-column: 1 / -1;
     padding: 16px;
     text-align: center;
-    color: var(--color-text-muted);
-    grid-column: 1 / -1;
-  }
-  code {
-    background: var(--color-surface);
-    padding: 1px 4px;
-    border-radius: 3px;
-    font-size: 0.6rem;
   }
 
-  /* Vitals */
-  .ob-vitals-grid {
+  .ob-vitals-grid,
+  .ob-diagnostics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ob-diagnostics-card {
+    padding: 12px;
+  }
+
+  .ob-kv-list {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 8px;
-  }
-  .ob-vital-card {
-    padding: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-s);
-    background: var(--color-surface);
-  }
-  .ob-vital-label {
-    display: block;
-    font-size: 0.6rem;
-    color: var(--color-text-muted);
-    margin-bottom: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .ob-vital-value {
-    font-size: 0.9rem;
-    font-weight: 500;
-    font-family: var(--font-mono);
+    font-size: 0.68rem;
   }
 
-  /* Logs */
-  .ob-log-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  .ob-kv-list span {
+    color: var(--color-text-muted);
   }
+
+  .ob-entry-level {
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+  }
+
+  .ob-log-summary {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
   .ob-log-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 0;
   }
+
   .ob-log-badge {
-    padding: 2px 8px;
     border-radius: var(--radius-s);
+    font-family: var(--font-mono);
     font-size: 0.6rem;
     font-weight: 600;
     min-width: 50px;
+    padding: 2px 8px;
     text-align: center;
-    font-family: var(--font-mono);
   }
+
   .ob-log-debug {
     background: var(--color-surface);
     color: var(--color-text-muted);
   }
+
   .ob-log-info {
     background: rgba(59, 130, 246, 0.15);
     color: #3b82f6;
   }
+
   .ob-log-warn {
     background: rgba(245, 158, 11, 0.15);
     color: #f59e0b;
   }
+
   .ob-log-error {
     background: rgba(239, 68, 68, 0.15);
     color: #ef4444;
   }
+
   .ob-log-fatal {
     background: rgba(220, 38, 38, 0.2);
     color: #dc2626;
   }
+
   .ob-log-count {
+    font-family: var(--font-mono);
     font-size: 0.8rem;
     font-weight: 500;
+  }
+
+  .ob-logs-card {
+    margin-top: 12px;
+  }
+
+  pre,
+  code {
+    background: var(--color-background);
+    border-radius: var(--radius-s);
+    color: var(--color-text-muted);
     font-family: var(--font-mono);
+  }
+
+  code {
+    padding: 1px 4px;
+  }
+
+  pre {
+    margin: 6px 0 0;
+    max-height: 180px;
+    overflow: auto;
+    padding: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.6rem;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 960px) {
+    .ob-metrics-header,
+    .ob-metrics-row {
+      grid-template-columns: 1.6fr 0.8fr 0.8fr 0.8fr 0.8fr 1.4fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .ob-vitals-grid,
+    .ob-diagnostics-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

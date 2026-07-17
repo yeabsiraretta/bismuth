@@ -1,8 +1,13 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
+  import { getRuntimeError, type RuntimeErrorRecord } from '@/utils/log/runtime-errors';
 
-  let { error: renderError }: { error?: { message: string; code?: string } } = $props();
+  let {
+    error: renderError,
+  }: {
+    error?: { message: string; code?: string; details?: string; source?: string; timestamp?: string };
+  } = $props();
 
   const STATUS_LABELS: Record<number, string> = {
     400: 'Bad Request',
@@ -13,6 +18,17 @@
 
   let activeError = $derived(renderError ?? page.error);
   let statusLabel = $derived(STATUS_LABELS[page.status] ?? 'Something went wrong');
+  let persistedError = $derived<RuntimeErrorRecord | null>(
+    activeError?.code ? getRuntimeError(activeError.code) : null
+  );
+  let diagnostics = $derived(activeError?.details ?? persistedError?.details);
+  let errorSource = $derived(activeError?.source ?? persistedError?.source);
+  let errorTimestamp = $derived(activeError?.timestamp ?? persistedError?.timestamp);
+
+  async function copyDiagnostics() {
+    if (!diagnostics) return;
+    await navigator.clipboard.writeText(diagnostics);
+  }
 </script>
 
 <div class="app-error">
@@ -22,6 +38,18 @@
     <p class="app-error-message">{activeError?.message ?? 'An unexpected error occurred.'}</p>
     {#if activeError?.code}
       <p class="app-error-id">Reference: {activeError.code}</p>
+    {/if}
+    {#if diagnostics}
+      <details class="app-error-details">
+        <summary>Diagnostics</summary>
+        <div class="app-error-meta">
+          {#if errorSource}<span>Source: {errorSource}</span>{/if}
+          {#if errorTimestamp}<span>Time: {errorTimestamp}</span>{/if}
+          <span>Status: {page.status}</span>
+        </div>
+        <pre>{diagnostics}</pre>
+        <button class="app-error-copy" onclick={copyDiagnostics}>Copy diagnostics</button>
+      </details>
     {/if}
     <div class="app-error-actions">
       <button class="app-error-btn primary" onclick={() => window.history.back()}>Go Back</button>
@@ -76,6 +104,55 @@
     gap: 6px;
     justify-content: center;
     flex-wrap: wrap;
+  }
+  .app-error-details {
+    margin: 0 0 18px;
+    padding: 10px 12px;
+    text-align: left;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-m);
+    background: var(--color-surface);
+  }
+  .app-error-details summary {
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .app-error-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 8px;
+    font-size: 0.62rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+  .app-error-details pre {
+    margin: 0 0 8px;
+    padding: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.62rem;
+    line-height: 1.45;
+    border-radius: var(--radius-s);
+    background: var(--color-background);
+    color: var(--color-text-muted);
+    max-height: 220px;
+    overflow: auto;
+  }
+  .app-error-copy {
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-s);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.66rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .app-error-copy:hover {
+    border-color: var(--color-accent);
   }
   .app-error-btn {
     padding: 6px 16px;

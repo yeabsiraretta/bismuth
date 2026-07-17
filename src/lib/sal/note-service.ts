@@ -1,4 +1,13 @@
+import { getVault } from '@/hubs/core/stores/vault-store.svelte';
 import { invokeCommand } from '@/ipc/invoke';
+import {
+  createBrowserNote,
+  deleteBrowserNote,
+  isBrowserVaultPath,
+  readBrowserNote,
+  renameBrowserNote,
+  writeBrowserNote,
+} from '@/sal/browser-vault-service';
 import { titleFromPath, type TextNoteExtension } from '@/utils/file-kind';
 import { isTauriAvailable } from '@/utils/platform';
 
@@ -26,6 +35,10 @@ function normalizePenFolder(folder?: string): string {
 
 export function readNote(path: string): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
+    const rootPath = getVault()?.rootPath;
+    if (rootPath && isBrowserVaultPath(rootPath)) {
+      return readBrowserNote(rootPath, path);
+    }
     const title = titleFromPath(path);
     return Promise.resolve(mockNote(path, title, `# ${title}\n\nStart writing here…`));
   }
@@ -33,12 +46,24 @@ export function readNote(path: string): Promise<NoteResponse> {
 }
 
 export function writeNote(path: string, content: string): Promise<void> {
-  if (!isTauriAvailable()) return Promise.resolve();
+  if (!isTauriAvailable()) {
+    const rootPath = getVault()?.rootPath;
+    if (rootPath && isBrowserVaultPath(rootPath)) {
+      return writeBrowserNote(rootPath, path, content);
+    }
+    return Promise.resolve();
+  }
   return invokeCommand<void>('write_note', { path, content });
 }
 
 export function deleteNote(path: string): Promise<void> {
-  if (!isTauriAvailable()) return Promise.resolve();
+  if (!isTauriAvailable()) {
+    const rootPath = getVault()?.rootPath;
+    if (rootPath && isBrowserVaultPath(rootPath)) {
+      return deleteBrowserNote(rootPath, path);
+    }
+    return Promise.resolve();
+  }
   return invokeCommand<void>('delete_note', { path });
 }
 
@@ -49,20 +74,28 @@ export async function createNote(
   extension: TextNoteExtension = 'md'
 ): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
-   const targetFolder = extension === 'pen' ? normalizePenFolder(folder) : folder;
-   const path = targetFolder ? `${targetFolder}/${title}.${extension}` : `${title}.${extension}`;
-   return mockNote(path, title, content ?? '');
+    const rootPath = getVault()?.rootPath;
+    const targetFolder = extension === 'pen' ? normalizePenFolder(folder) : folder;
+    if (rootPath && isBrowserVaultPath(rootPath)) {
+      return createBrowserNote(rootPath, title, targetFolder, content ?? '', extension);
+    }
+    const path = targetFolder ? `${targetFolder}/${title}.${extension}` : `${title}.${extension}`;
+    return mockNote(path, title, content ?? '');
   }
   const note = await invokeCommand<NoteResponse>('create_note', { title, folder, extension });
   if (content) {
-   await writeNote(note.path, content);
-   note.content = content;
+    await writeNote(note.path, content);
+    note.content = content;
   }
   return note;
 }
 
 export function renameNote(oldPath: string, newTitle: string): Promise<NoteResponse> {
   if (!isTauriAvailable()) {
+    const rootPath = getVault()?.rootPath;
+    if (rootPath && isBrowserVaultPath(rootPath)) {
+      return renameBrowserNote(rootPath, oldPath, newTitle);
+    }
     const ext = oldPath.endsWith('.pen') ? 'pen' : 'md';
     const dir = oldPath.split('/').slice(0, -1).join('/');
     const newPath = dir ? `${dir}/${newTitle}.${ext}` : `${newTitle}.${ext}`;

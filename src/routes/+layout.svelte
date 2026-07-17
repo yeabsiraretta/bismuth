@@ -14,6 +14,8 @@
   import { MetaTags } from 'svelte-meta-tags';
   import SplashScreen from '$lib/ui/splash-screen.svelte';
   import { isFeatureEnabled } from '@/feature-flags/openfeature';
+  import { startLogBridge } from '@/utils/log/logger';
+  import { installGlobalRuntimeErrorHandlers } from '@/utils/log/runtime-errors';
   import { isTauriAvailable } from '@/utils/platform';
 
   let { children } = $props();
@@ -21,6 +23,9 @@
   let dynamicTitle = $derived(page.data?.title ? `${page.data.title} — ${SITE_NAME}` : SITE_NAME);
 
   onMount(() => {
+    startLogBridge();
+    const detachRuntimeErrorHandlers = installGlobalRuntimeErrorHandlers();
+
     // Register service worker only in web deployments — skip Tauri desktop app
     if (
       'serviceWorker' in navigator &&
@@ -31,6 +36,10 @@
         type: dev ? 'module' : 'classic',
       });
     }
+
+    return () => {
+      detachRuntimeErrorHandlers();
+    };
   });
 </script>
 

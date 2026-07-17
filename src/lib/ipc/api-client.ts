@@ -10,58 +10,103 @@
  */
 
 import { invokeCommand } from '@/ipc/invoke';
+import { createLoggedRuntimeError } from '@/utils/log/runtime-errors';
 import { isTauriAvailable } from '@/utils/platform';
 
 const LOCAL_API_BASE = 'http://127.0.0.1:21721';
 const CONFIGURED_API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '').trim().replace(/\/$/, '');
-const API_BASE = CONFIGURED_API_BASE || (isTauriAvailable() ? LOCAL_API_BASE : '');
+
+export function resolveApiBase(): string {
+  return CONFIGURED_API_BASE || (isTauriAvailable() ? LOCAL_API_BASE : '');
+}
 
 function apiUrl(path: string): string {
-  return API_BASE ? `${API_BASE}${path}` : path;
+  const apiBase = resolveApiBase();
+  return apiBase ? `${apiBase}${path}` : path;
+}
+
+async function readErrorMessage(res: Response): Promise<string> {
+  try {
+    const body = (await res.json()) as { error?: string; message?: string };
+    return body.error ?? body.message ?? res.statusText;
+  } catch {
+    return res.statusText;
+  }
+}
+
+function formatFetchFailure(method: string, url: string, error: unknown): never {
+  const details = error instanceof Error ? (error.stack ?? error.message) : String(error);
+  throw createLoggedRuntimeError({
+    source: 'api-client',
+    message: `${method} ${url} failed before the Rust API responded.`,
+    details,
+  });
+}
+
+async function throwHttpFailure(method: string, url: string, res: Response): Promise<never> {
+  const message = await readErrorMessage(res);
+  throw createLoggedRuntimeError({
+    source: 'api-client',
+    message: `${method} ${url} returned HTTP ${res.status}.`,
+    details: message,
+    status: res.status,
+  });
 }
 
 // ── HTTP helpers ────────────────────────────────────────────────────────────
 
 async function httpGet<T>(path: string): Promise<T> {
-  const res = await fetch(apiUrl(path));
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(body.error ?? `HTTP ${res.status}`);
+  const url = apiUrl(path);
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch (error) {
+    formatFetchFailure('GET', url, error);
   }
+  if (!res.ok) await throwHttpFailure('GET', url, res);
   return res.json();
 }
 
 async function httpPost<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(apiUrl(path), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error ?? `HTTP ${res.status}`);
+  const url = apiUrl(path);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (error) {
+    formatFetchFailure('POST', url, error);
   }
+  if (!res.ok) await throwHttpFailure('POST', url, res);
   return res.json();
 }
 
 async function httpPut(path: string, body: unknown): Promise<void> {
-  const res = await fetch(apiUrl(path), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error ?? `HTTP ${res.status}`);
+  const url = apiUrl(path);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    formatFetchFailure('PUT', url, error);
   }
+  if (!res.ok) await throwHttpFailure('PUT', url, res);
 }
 
 async function httpDelete(path: string): Promise<void> {
-  const res = await fetch(apiUrl(path), { method: 'DELETE' });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(err.error ?? `HTTP ${res.status}`);
+  const url = apiUrl(path);
+  let res: Response;
+  try {
+    res = await fetch(url, { method: 'DELETE' });
+  } catch (error) {
+    formatFetchFailure('DELETE', url, error);
   }
+  if (!res.ok) await throwHttpFailure('DELETE', url, res);
 }
 
 // ── Dual-path API ───────────────────────────────────────────────────────────
@@ -296,34 +341,60 @@ export async function mcpCallTool(
   name: string,
   args: Record<string, unknown> = {}
 ): Promise<McpToolResult> {
-  const res = await fetch(apiUrl('/mcp'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: Date.now(),
-      method: 'tools/call',
-      params: { name, arguments: args },
-    }),
-  });
+  const url = apiUrl('/mcp');
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method: 'tools/call',
+        params: { name, arguments: args },
+      }),
+    });
+  } catch (error) {
+    formatFetchFailure('POST', url, error);
+  }
+  if (!res.ok) await throwHttpFailure('POST', url, res);
   const json = await res.json();
-  if (json.error) throw new Error(json.error.message);
+  if (json.error) {
+    throw createLoggedRuntimeError({
+      source: 'mcp-client',
+      message: `MCP tools/call ${name} failed.`,
+      details: json.error.message,
+    });
+  }
   return json.result;
 }
 
 export async function mcpListTools(): Promise<Array<{ name: string; description: string }>> {
-  const res = await fetch(apiUrl('/mcp'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: Date.now(),
-      method: 'tools/list',
-      params: {},
-    }),
-  });
+  const url = apiUrl('/mcp');
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method: 'tools/list',
+        params: {},
+      }),
+    });
+  } catch (error) {
+    formatFetchFailure('POST', url, error);
+  }
+  if (!res.ok) await throwHttpFailure('POST', url, res);
   const json = await res.json();
-  if (json.error) throw new Error(json.error.message);
+  if (json.error) {
+    throw createLoggedRuntimeError({
+      source: 'mcp-client',
+      message: 'MCP tools/list failed.',
+      details: json.error.message,
+    });
+  }
   return json.result.tools;
 }
 

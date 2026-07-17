@@ -1,7 +1,12 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import { getRuntimeError, type RuntimeErrorRecord } from '@/utils/log/runtime-errors';
 
-  let { error: renderError }: { error?: { message: string; code?: string } } = $props();
+  let {
+    error: renderError,
+  }: {
+    error?: { message: string; code?: string; details?: string; source?: string; timestamp?: string };
+  } = $props();
 
   const STATUS_LABELS: Record<number, string> = {
     400: 'Bad Request',
@@ -12,6 +17,17 @@
 
   let activeError = $derived(renderError ?? page.error);
   let statusLabel = $derived(STATUS_LABELS[page.status] ?? 'Something went wrong');
+  let persistedError = $derived<RuntimeErrorRecord | null>(
+    activeError?.code ? getRuntimeError(activeError.code) : null
+  );
+  let diagnostics = $derived(activeError?.details ?? persistedError?.details);
+  let errorSource = $derived(activeError?.source ?? persistedError?.source);
+  let errorTimestamp = $derived(activeError?.timestamp ?? persistedError?.timestamp);
+
+  async function copyDiagnostics() {
+    if (!diagnostics) return;
+    await navigator.clipboard.writeText(diagnostics);
+  }
 </script>
 
 <div class="error-page">
@@ -21,6 +37,18 @@
     <p class="error-message">{activeError?.message ?? 'An unexpected error occurred.'}</p>
     {#if activeError?.code}
       <p class="error-id">Reference: {activeError.code}</p>
+    {/if}
+    {#if diagnostics}
+      <details class="error-details">
+        <summary>Diagnostics</summary>
+        <div class="error-meta">
+          {#if errorSource}<span>Source: {errorSource}</span>{/if}
+          {#if errorTimestamp}<span>Time: {errorTimestamp}</span>{/if}
+          <span>Status: {page.status}</span>
+        </div>
+        <pre>{diagnostics}</pre>
+        <button class="error-copy" onclick={copyDiagnostics}>Copy diagnostics</button>
+      </details>
     {/if}
     <div class="error-actions">
       <button class="error-btn error-btn-primary" onclick={() => window.history.back()}
@@ -76,6 +104,55 @@
     display: flex;
     gap: 8px;
     justify-content: center;
+  }
+  .error-details {
+    margin: 0 0 20px;
+    text-align: left;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-m);
+    padding: 10px 12px;
+    background: var(--color-surface);
+  }
+  .error-details summary {
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .error-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 8px;
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+  .error-details pre {
+    margin: 0 0 8px;
+    padding: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.65rem;
+    line-height: 1.45;
+    border-radius: var(--radius-s);
+    background: var(--color-background);
+    color: var(--color-text-muted);
+    max-height: 220px;
+    overflow: auto;
+  }
+  .error-copy {
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-s);
+    background: transparent;
+    color: var(--color-text);
+    font-size: 0.68rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .error-copy:hover {
+    border-color: var(--color-accent);
   }
   .error-btn {
     padding: 8px 20px;

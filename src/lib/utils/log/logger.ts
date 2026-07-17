@@ -21,6 +21,7 @@ import {
   warn as pluginWarn,
 } from '@tauri-apps/plugin-log';
 
+import { metrics } from '@/utils/log/metrics';
 import { sanitizeContext, sanitizeErrorMessage, scrubPaths } from '@/utils/log/sanitize';
 
 const IS_PROD =
@@ -29,10 +30,10 @@ const IS_PROD =
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
-type InteractionCategory =
+export type InteractionCategory =
   'ipc' | 'navigation' | 'editor' | 'vault' | 'search' | 'ui' | 'lifecycle' | 'hub';
 
-interface InteractionEvent {
+export interface InteractionEvent {
   timestamp: string;
   category: InteractionCategory;
   action: string;
@@ -68,7 +69,7 @@ const LEVEL_STYLES: Record<LogLevel, string> = {
 const MAX_INTERACTIONS = 500;
 const MAX_LOG_ENTRIES = 1000;
 
-interface LogEntry {
+export interface LogEntry {
   timestamp: string;
   level: LogLevel;
   scope: string;
@@ -82,6 +83,17 @@ export interface LogCounts {
   warn: number;
   error: number;
   fatal: number;
+}
+
+export interface InteractionSummary {
+  total: number;
+  withErrors: number;
+  categories: Array<{
+    category: InteractionCategory;
+    count: number;
+    errorCount: number;
+    avgDurationMs: number | null;
+  }>;
 }
 
 const PLUGIN_FNS: Record<string, (msg: string) => Promise<void>> = {
@@ -101,6 +113,10 @@ async function initLogBridge(): Promise<void> {
   } catch {
     // outside Tauri runtime (tests, SSR) — silent fallback
   }
+}
+
+export function startLogBridge(): void {
+  void initLogBridge();
 }
 
 class Logger {
@@ -172,6 +188,14 @@ class Logger {
       this.interactions.splice(0, this.interactions.length - MAX_INTERACTIONS);
     }
 
+    metrics.counter('log.interactions.total', { category }).inc();
+    if (typeof durationMs === 'number') {
+      metrics.histogram('log.interactions.duration_ms', { category, action }).observe(durationMs);
+    }
+    if (errorStr) {
+      metrics.counter('log.interactions.error_total', { category }).inc();
+    }
+
     this.debug(`[${category}] ${action}`, meta);
   }
 
@@ -184,6 +208,44 @@ class Logger {
 
   getLogCounts(): LogCounts {
     return { ...this.counts };
+  }
+
+  getInteractionSummary(): InteractionSummary {
+    const buckets = new Map<
+      InteractionCategory,
+      { count: number; errorCount: number; durationTotal: number; durationCount: number }
+    >();
+
+    for (const event of this.interactions) {
+      const bucket = buckets.get(event.category) ?? {
+        count: 0,
+        errorCount: 0,
+        durationTotal: 0,
+        durationCount: 0,
+      };
+
+      bucket.count++;
+      if (event.error) bucket.errorCount++;
+      if (typeof event.durationMs === 'number') {
+        bucket.durationTotal += event.durationMs;
+        bucket.durationCount++;
+      }
+      buckets.set(event.category, bucket);
+    }
+
+    return {
+      total: this.interactions.length,
+      withErrors: this.interactions.filter((event) => !!event.error).length,
+      categories: [...buckets.entries()]
+        .map(([category, bucket]) => ({
+          category,
+          count: bucket.count,
+          errorCount: bucket.errorCount,
+          avgDurationMs:
+            bucket.durationCount > 0 ? Math.round(bucket.durationTotal / bucket.durationCount) : null,
+        }))
+        .sort((a, b) => b.count - a.count),
+    };
   }
 
   getLogs(limit = 200): LogEntry[] {
@@ -228,6 +290,8 @@ class Logger {
     if (LEVEL_ORDER[level] < LEVEL_ORDER[this.minLevel]) return;
 
     this.counts[level]++;
+    metrics.counter('log.entries.total', { level }).inc();
+    metrics.gauge('log.entries.buffered').set(this.logEntries.length + 1);
 
     const timestamp = new Date().toISOString();
     const safeMessage = scrubPaths(message);
@@ -250,6 +314,7 @@ class Logger {
     if (this.logEntries.length > MAX_LOG_ENTRIES) {
       this.logEntries.splice(0, this.logEntries.length - MAX_LOG_ENTRIES);
     }
+    metrics.gauge('log.entries.buffered').set(this.logEntries.length);
 
     const formatted = this.formatMessage(
       level,
