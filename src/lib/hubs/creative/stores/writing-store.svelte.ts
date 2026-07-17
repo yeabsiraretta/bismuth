@@ -83,8 +83,11 @@ function saveJSON(key: string, value: unknown): void {
 
 // ── State ────────────────────────────────────────────────────────
 
-let projects = $state<WritingProject[]>(loadJSON(WRITING_PROJECTS_KEY, []));
-let activeProjectId = $state<string | null>(projects.length > 0 ? projects[0].id : null);
+const initialProjects = loadJSON<WritingProject[]>(WRITING_PROJECTS_KEY, []);
+let projects = $state<WritingProject[]>(initialProjects);
+let activeProjectId = $state<string | null>(
+  initialProjects.length > 0 ? initialProjects[0].id : null
+);
 let history = $state<WritingHistory>(loadJSON(WRITING_HISTORY_KEY, { daily: {}, sprints: [] }));
 let focusSettings = $state<FocusSettings>(
   loadJSON(WRITING_FOCUS_KEY, { ...DEFAULT_FOCUS_SETTINGS })
